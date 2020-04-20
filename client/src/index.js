@@ -1,4 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 
-ReactDOM.render(<>New App</>, document.getElementById('root'))
+import store from './redux/store'
+import App from './components/App'
+
+const rootElement = document.getElementById('root')
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  rootElement
+)
