@@ -15,7 +15,7 @@ export default function App() {
               <Link to='/about'>About</Link>
             </li>
             <li>
-              <Link to='/counter'>Counter Example</Link>
+              <Link to='/counter'>Counter Redux Saga Example</Link>
             </li>
           </ul>
         </nav>
