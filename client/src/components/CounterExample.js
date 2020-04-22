@@ -5,7 +5,8 @@ import {
   increment,
   incrementAsync,
   decrement,
-  setCount
+  setCount,
+  cancelAsync
 } from '../redux/actions'
 
 function CounterExample() {
@@ -20,10 +21,11 @@ function CounterExample() {
         Counter: {counter}. {text}
       </p>
       <button onClick={() => dispatch(increment())}>Increment</button>
-      <button onClick={() => dispatch(incrementAsync())}>
-        Increment in two seconds
-      </button>
       <button onClick={() => dispatch(decrement())}>Decrement</button>
+      <button onClick={() => dispatch(incrementAsync())}>
+        Increment in two seconds (but fails when reaching 4)
+      </button>
+      <button onClick={() => dispatch(cancelAsync())}>Cancel Async</button>
       <button onClick={() => dispatch(setCount(localSetCount))}>
         Set to:{' '}
       </button>
