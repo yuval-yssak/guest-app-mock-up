@@ -1,46 +1,38 @@
 import React from 'react'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from 'react-router-dom'
+
 import Counter from './CounterExample'
+import Welcome from './Welcome'
+import Feature from './Feature'
+import Signout from './Signout'
+import Signin from './Signin'
+import Signup from './Signup'
+import Header from './Header'
 
 export default function App() {
   return (
-    <Router>
-      <header>
-        <nav>
-          <ul>
-            <li>
-              <Link to='/'>Home</Link>
-            </li>
-            <li>
-              <Link to='/about'>About</Link>
-            </li>
-            <li>
-              <Link to='/counter'>Counter Redux Saga Example</Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <main>
-        <Switch>
-          <Route path='/about'>
-            <About />
-          </Route>
-          <Route path='/counter'>
-            <Counter />
-          </Route>
-          <Route path='/'>
-            <Home />
-          </Route>
-        </Switch>
-      </main>
-    </Router>
+    <>
+      <Router>
+        <Header />
+        <main>
+          <Switch>
+            <Route path='/' exact>
+              <Redirect to='/welcome' />
+            </Route>
+            <Route path='/welcome' component={Welcome} />
+            <Route path='/signup' component={Signup} />
+            <Route path='/feature' component={Feature} />
+            <Route path='/signout' component={Signout} />
+            <Route path='/signin' component={Signin} />
+            <Route path='/counter' component={Counter} />
+          </Switch>
+        </main>
+      </Router>
+    </>
   )
-}
-
-function Home() {
-  return <h2>Home</h2>
-}
-
-function About() {
-  return <h2>About</h2>
 }

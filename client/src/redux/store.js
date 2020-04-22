@@ -5,7 +5,12 @@ import rootReducer from './reducers'
 import sagas from './sagas'
 
 const sagaMiddleware = createSagaMiddleware()
-const store = createStore(rootReducer, applyMiddleware(sagaMiddleware))
+const preloadedState = { auth: { autenticated: localStorage.getItem('token') } }
+const store = createStore(
+  rootReducer,
+  preloadedState,
+  applyMiddleware(sagaMiddleware)
+)
 sagaMiddleware.run(sagas)
 
 export default store
