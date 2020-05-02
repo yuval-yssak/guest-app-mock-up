@@ -11,32 +11,32 @@ function Header() {
       <nav>
         <ul>
           <li>
-            <Link to='/'>Home</Link>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to='/welcome'>Welcome</Link>
+            <Link to="/welcome">Welcome</Link>
           </li>
           {authenticated ? (
             <>
               <li>
-                <Link to='/signout'>Sign Out</Link>
+                <Link to="/signout">Sign Out</Link>
               </li>
               <li>
-                <Link to='/feature'>Feature</Link>
+                <Link to="/feature">Feature</Link>
               </li>
             </>
           ) : (
             <div>
               <li>
-                <Link to='/signup'>Sign Up</Link>
+                <Link to="/signup">Sign Up</Link>
               </li>
               <li>
-                <Link to='/signin'>Sign In</Link>
+                <Link to="/signin">Sign In</Link>
               </li>
             </div>
           )}
           <li>
-            <Link to='/counter'>Counter Redux Saga Example</Link>
+            <Link to="/counter">Counter Redux Saga Example</Link>
           </li>
         </ul>
       </nav>

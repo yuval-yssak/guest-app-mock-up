@@ -30,7 +30,7 @@ function CounterExample() {
         Set to:{' '}
       </button>
       <input
-        type='text'
+        type="text"
         value={localSetCount}
         onChange={e => setLocalSetCount(+e.target.value)}
       ></input>
