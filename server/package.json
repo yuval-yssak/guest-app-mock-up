@@ -12,8 +12,12 @@
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0"
   },
+  "devDependencies": {
+    "prettier": "^2.0.5"
+  },
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/index.js",
+    "prettier": "prettier --write"
   },
   "type": "module"
 }
