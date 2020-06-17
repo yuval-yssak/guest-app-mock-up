@@ -17,7 +17,7 @@ import {
   WILL_INCREMENT,
   FINISHED_ASYNC,
   FAILED_ASYNC
-} from './actionTypes'
+} from './actions'
 
 function throwOn4(current) {
   if (current.counterCount === 4) {
