@@ -1,7 +1,10 @@
 import React from 'react'
 
-import styled from 'styled-components'
-
+import styled, { ThemeProvider } from 'styled-components'
+import {
+  ThemeProvider as MuiThemeProvider,
+  createMuiTheme
+} from '@material-ui/core'
 import CssReset from './CssReset'
 
 const Main = styled.main`
@@ -16,15 +19,24 @@ const StyledP = styled.p`
   color: olive;
   border: 1px solid darkred;
   border-radius: 0.5rem;
+  background-color: ${({ theme }) => theme.palette.primary.main};
 `
 
 export default function App() {
+  const customTheme = createMuiTheme({
+    palette: { primary: { main: false ? '#fff' : '#F8BBD0' } }
+  })
+
   return (
     <>
       <CssReset />
-      <Main>
-        <StyledP>Hello World</StyledP>
-      </Main>
+      <MuiThemeProvider theme={customTheme}>
+        <ThemeProvider theme={customTheme}>
+          <Main>
+            <StyledP>Hello World</StyledP>
+          </Main>
+        </ThemeProvider>
+      </MuiThemeProvider>
     </>
   )
 }
