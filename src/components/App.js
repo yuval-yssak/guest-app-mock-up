@@ -8,12 +8,18 @@ import {
 import CssReset from './CssReset'
 
 import FloatingActionButtons from './FloatingActionButton'
+import Paper from '@material-ui/core/Paper'
+import Switch from './Switch'
 
 const Main = styled.main`
   display: grid;
   height: 100vh;
   align-items: center;
   justify-items: center;
+`
+const StyledPaper = styled(Paper)`
+  width: 100%;
+  height: 100%;
 `
 
 const StyledP = styled.p`
@@ -26,8 +32,13 @@ const StyledP = styled.p`
 `
 
 export default function App() {
+  const [darkTheme, setDarkTheme] = React.useState(false)
   const customTheme = createMuiTheme({
-    palette: { primary: { main: '#f29500' }, secondary: { main: '#ffcf00' } },
+    palette: {
+      type: darkTheme ? 'dark' : 'light',
+      primary: { main: '#f29500' },
+      secondary: { main: '#ffcf00' }
+    },
     typography: {
       fontFamily: ['Gotham Rounded SSm Aa', 'Arial', 'Helvetica', 'sans-serif']
     }
@@ -38,10 +49,16 @@ export default function App() {
       <CssReset />
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
-          <Main>
-            <FloatingActionButtons />
-            <StyledP>Hello World</StyledP>
-          </Main>
+          <StyledPaper>
+            <Switch
+              darkTheme={darkTheme}
+              onThemeChange={() => setDarkTheme(!darkTheme)}
+            />
+            <Main>
+              <FloatingActionButtons />
+              <StyledP>Hello World</StyledP>
+            </Main>
+          </StyledPaper>
         </ThemeProvider>
       </MuiThemeProvider>
     </>
