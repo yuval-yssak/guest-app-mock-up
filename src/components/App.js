@@ -30,7 +30,7 @@ const StyledPaper = styled(Paper)`
 export default function App() {
   const [darkTheme, setDarkTheme] = React.useState(false)
   const [open, setOpen] = React.useState(false)
-  const [content, setContent] = React.useState('announcements')
+  const [content, setContent] = React.useState('root')
   const customTheme = createMuiTheme({
     palette: {
       type: darkTheme ? 'dark' : 'light',

@@ -10,14 +10,16 @@ import Button from '@material-ui/core/Button'
 import styled from 'styled-components'
 
 const StyledPaper = styled(Paper)`
-  padding: 4rem 1rem;
+  padding: 4rem 3rem;
   display: grid;
   grid-template-rows: min-content 1fr;
   grid-gap: 2rem;
   align-items: center;
+  max-width: min(70rem, 80%);
 
-  @media (max-width: 24em) {
+  @media (max-width: 36.5em) {
     padding: 1.5rem 1rem;
+    max-width: 100%;
   }
 `
 
@@ -33,7 +35,6 @@ const Title = styled(Typography)`
 
     @media (max-width: 18em) {
       font-size: 1.5rem;
-      font-weight: 800;
     }
   }
 `
