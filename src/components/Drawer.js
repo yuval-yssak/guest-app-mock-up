@@ -3,13 +3,17 @@ import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import Divider from '@material-ui/core/Divider'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
-import InboxIcon from '@material-ui/icons/MoveToInbox'
-import MailIcon from '@material-ui/icons/Mail'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import AnnouncementIcon from '@material-ui/icons/Announcement'
+import ChatIcon from '@material-ui/icons/Chat'
+import InfoIcon from '@material-ui/icons/Info'
+import AccountBoxIcon from '@material-ui/icons/AccountBox'
+import SettingsIcon from '@material-ui/icons/Settings'
+import EventIcon from '@material-ui/icons/Event'
 import Switch from './Switch'
 import styled from 'styled-components'
-
+import Typography from '@material-ui/core/Typography'
 const StyledList = styled(List)`
   width: 15.625rem;
 `
@@ -18,49 +22,62 @@ export default function TemporaryDrawer({
   open,
   toggleDrawer,
   darkTheme,
-  setDarkTheme
+  setDarkTheme,
+  openPage
 }) {
-  const list = () => (
-    <div role="presentation" onClick={toggleDrawer(false)}>
-      <StyledList>
-        <ListItem>
-          <Switch
-            darkTheme={darkTheme}
-            onThemeChange={() => setDarkTheme(!darkTheme)}
-          />
-        </ListItem>
-      </StyledList>
-      <Divider />
-      <StyledList>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </StyledList>
-      <Divider />
-      <StyledList>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </StyledList>
-    </div>
-  )
-
   return (
     <div>
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
-        {list()}
+        <div role="presentation" onClick={toggleDrawer(false)}>
+          <StyledList>
+            <ListItem>
+              <Switch
+                darkTheme={darkTheme}
+                onThemeChange={() => setDarkTheme(!darkTheme)}
+              />
+            </ListItem>
+          </StyledList>
+          <Divider />
+          <StyledList>
+            <ListItem button onClick={() => openPage('announcements')}>
+              <ListItemIcon>
+                <AnnouncementIcon />
+              </ListItemIcon>
+              <ListItemText primary="Announcements" />
+            </ListItem>
+            <ListItem button onClick={() => openPage('chat')}>
+              <ListItemIcon>
+                <ChatIcon />
+              </ListItemIcon>
+              <Typography>Chat</Typography>
+            </ListItem>
+            <ListItem button onClick={() => openPage('info-section')}>
+              <ListItemIcon>
+                <InfoIcon />
+              </ListItemIcon>
+              <Typography>Info Section</Typography>
+            </ListItem>
+            <ListItem button onClick={() => openPage('account-details')}>
+              <ListItemIcon>
+                <AccountBoxIcon />
+              </ListItemIcon>
+              <Typography>Account Details</Typography>
+            </ListItem>
+            <ListItem button onClick={() => openPage('settings')}>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <Typography>Settings</Typography>
+            </ListItem>
+            <ListItem button onClick={() => openPage('activities')}>
+              <ListItemIcon>
+                <EventIcon />
+              </ListItemIcon>
+              <Typography>Activities</Typography>
+            </ListItem>
+          </StyledList>
+        </div>
       </Drawer>
-      )
     </div>
   )
 }

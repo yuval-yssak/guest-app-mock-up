@@ -22,32 +22,13 @@ const StyledPaper = styled(Paper)`
   width: 100%;
   height: 100vh;
   display: grid;
-  grid-template-rows: min-content min-content 1fr min-content;
-`
-
-const StyledBox = styled.div`
-  perspective: 35rem;
-`
-
-const StyledP = styled.p`
-  padding: 2rem;
-  color: white;
-  font-weight: 800;
-  font-size: 3rem;
-  border: 1px solid darkred;
-  border-radius: 0.5rem;
-  background-color: ${({ theme }) => theme.palette.primary.main};
-  transition: all 0.8s ease-in-out;
-  box-shadow: 0 0.2rem 0.3rem rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    transform: rotateY(180deg);
-  }
+  grid-template-rows: min-content 1fr min-content;
 `
 
 export default function App() {
   const [darkTheme, setDarkTheme] = React.useState(false)
   const [open, setOpen] = React.useState(false)
+  const [content, setContent] = React.useState('root')
   const customTheme = createMuiTheme({
     palette: {
       type: darkTheme ? 'dark' : 'light',
@@ -58,6 +39,11 @@ export default function App() {
       fontFamily: ['Gotham Rounded SSm Aa', 'Arial', 'Helvetica', 'sans-serif']
     }
   })
+
+  function openPage(pageName) {
+    setContent(pageName)
+    setOpen(false)
+  }
 
   const toggleDrawer = open => event => {
     if (
@@ -79,10 +65,13 @@ export default function App() {
             <AppBar toggleDrawer={toggleDrawer} />
 
             <Main>
-              <FloatingActionButtons />
-              <StyledBox>
-                <StyledP>Hello World</StyledP>
-              </StyledBox>
+              {content === 'root' && <FloatingActionButtons />}
+              {content === 'announcements' && <div>Announcements Page</div>}
+              {content === 'chat' && <div>Chat Page</div>}
+              {content === 'info' && <div>Info Section Pages</div>}
+              {content === 'account-details' && <div>Account Details Page</div>}
+              {content === 'settings' && <div>Settings Page</div>}
+              {content === 'activities' && <div>Activities Page</div>}
             </Main>
             <SimpleBottomNavigation />
           </StyledPaper>
@@ -91,6 +80,7 @@ export default function App() {
             toggleDrawer={toggleDrawer}
             darkTheme={darkTheme}
             setDarkTheme={setDarkTheme}
+            openPage={openPage}
           />
         </ThemeProvider>
       </MuiThemeProvider>
