@@ -19,7 +19,22 @@ const Main = styled.main`
   align-items: center;
   justify-items: center;
   overflow-y: scroll;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url(./logo.svg);
+    background-size: 100% 100%;
+    filter: opacity(0.07);
+    width: 100%;
+    height: 100%;
+  }
 `
+
 const StyledPaper = styled(Paper)`
   width: 100%;
   height: 100vh;
