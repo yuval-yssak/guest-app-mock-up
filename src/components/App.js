@@ -12,11 +12,13 @@ import Paper from '@material-ui/core/Paper'
 import SimpleBottomNavigation from './SimpleBottomNavigation'
 import AppBar from './AppBar'
 import TemporaryDrawer from './Drawer'
+import AnnouncementsPage from '../pages/AnnouncementsPage'
 
 const Main = styled.main`
   display: grid;
   align-items: center;
   justify-items: center;
+  overflow-y: scroll;
 `
 const StyledPaper = styled(Paper)`
   width: 100%;
@@ -28,7 +30,7 @@ const StyledPaper = styled(Paper)`
 export default function App() {
   const [darkTheme, setDarkTheme] = React.useState(false)
   const [open, setOpen] = React.useState(false)
-  const [content, setContent] = React.useState('root')
+  const [content, setContent] = React.useState('announcements')
   const customTheme = createMuiTheme({
     palette: {
       type: darkTheme ? 'dark' : 'light',
@@ -63,12 +65,11 @@ export default function App() {
         <ThemeProvider theme={customTheme}>
           <StyledPaper square>
             <AppBar toggleDrawer={toggleDrawer} />
-
             <Main>
               {content === 'root' && <FloatingActionButtons />}
-              {content === 'announcements' && <div>Announcements Page</div>}
+              {content === 'announcements' && <AnnouncementsPage />}
               {content === 'chat' && <div>Chat Page</div>}
-              {content === 'info' && <div>Info Section Pages</div>}
+              {content === 'info-section' && <div>Info Section Pages</div>}
               {content === 'account-details' && <div>Account Details Page</div>}
               {content === 'settings' && <div>Settings Page</div>}
               {content === 'activities' && <div>Activities Page</div>}
