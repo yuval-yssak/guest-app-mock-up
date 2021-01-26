@@ -9,8 +9,9 @@ import CssReset from './CssReset'
 
 import FloatingActionButtons from './FloatingActionButton'
 import Paper from '@material-ui/core/Paper'
-import Switch from './Switch'
 import SimpleBottomNavigation from './SimpleBottomNavigation'
+import AppBar from './AppBar'
+import TemporaryDrawer from './Drawer'
 
 const Main = styled.main`
   display: grid;
@@ -21,7 +22,7 @@ const StyledPaper = styled(Paper)`
   width: 100%;
   height: 100vh;
   display: grid;
-  grid-template-rows: min-content 1fr min-content;
+  grid-template-rows: min-content min-content 1fr min-content;
 `
 
 const StyledBox = styled.div`
@@ -46,6 +47,7 @@ const StyledP = styled.p`
 
 export default function App() {
   const [darkTheme, setDarkTheme] = React.useState(false)
+  const [open, setOpen] = React.useState(false)
   const customTheme = createMuiTheme({
     palette: {
       type: darkTheme ? 'dark' : 'light',
@@ -57,16 +59,25 @@ export default function App() {
     }
   })
 
+  const toggleDrawer = open => event => {
+    if (
+      event.type === 'keydown' &&
+      ['Tab', 'Shift', 'Space', 'Enter'].some(k => k === event.key)
+    ) {
+      return
+    }
+    console.log('toggle drawer')
+    setOpen(open)
+  }
+
   return (
     <>
       <CssReset />
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
           <StyledPaper square>
-            <Switch
-              darkTheme={darkTheme}
-              onThemeChange={() => setDarkTheme(!darkTheme)}
-            />
+            <AppBar toggleDrawer={toggleDrawer} />
+
             <Main>
               <FloatingActionButtons />
               <StyledBox>
@@ -75,6 +86,12 @@ export default function App() {
             </Main>
             <SimpleBottomNavigation />
           </StyledPaper>
+          <TemporaryDrawer
+            open={open}
+            toggleDrawer={toggleDrawer}
+            darkTheme={darkTheme}
+            setDarkTheme={setDarkTheme}
+          />
         </ThemeProvider>
       </MuiThemeProvider>
     </>

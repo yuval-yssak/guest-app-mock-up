@@ -15,6 +15,7 @@ export default function SimpleBottomNavigation() {
         setValue(newValue)
       }}
       showLabels
+      style={{ backgroundColor: '#eee' }}
     >
       <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
       <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
