@@ -1,13 +1,13 @@
-import React from 'react'
-import Accordion from '@material-ui/core/Accordion'
-import AccordionSummary from '@material-ui/core/AccordionSummary'
-import AccordionDetails from '@material-ui/core/AccordionDetails'
-import Typography from '@material-ui/core/Typography'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import Paper from '@material-ui/core/Paper'
-import Button from '@material-ui/core/Button'
+import React from "react";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Typography from "@material-ui/core/Typography";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
 
-import styled from 'styled-components'
+import styled from "styled-components";
 
 const StyledPaper = styled(Paper)`
   && {
@@ -24,7 +24,7 @@ const StyledPaper = styled(Paper)`
       max-width: 100%;
     }
   }
-`
+`;
 
 const Title = styled(Typography)`
   && {
@@ -40,14 +40,14 @@ const Title = styled(Typography)`
       font-size: 1.5rem;
     }
   }
-`
+`;
 
 const StyledAccordionDetails = styled(AccordionDetails)`
   && {
     display: grid;
     justify-items: end;
   }
-`
+`;
 
 export default function AnnouncementsPage() {
   return (
@@ -95,5 +95,5 @@ export default function AnnouncementsPage() {
         </StyledAccordionDetails>
       </Accordion>
     </StyledPaper>
-  )
+  );
 }
