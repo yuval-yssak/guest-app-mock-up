@@ -14,6 +14,7 @@ import EventIcon from '@material-ui/icons/Event'
 import Switch from './Switch'
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
+
 const StyledList = styled(List)`
   width: 15.625rem;
 `
@@ -28,7 +29,7 @@ export default function TemporaryDrawer({
   return (
     <div>
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
-        <div role="presentation" onClick={toggleDrawer(false)}>
+        <div role="navigation" onClick={toggleDrawer(false)}>
           <StyledList>
             <ListItem>
               <Switch
