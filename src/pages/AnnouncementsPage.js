@@ -2,6 +2,7 @@ import React from 'react'
 import Accordion from '@material-ui/core/Accordion'
 import AccordionSummary from '@material-ui/core/AccordionSummary'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
+import AccordionActions from '@material-ui/core/AccordionActions'
 import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Paper from '@material-ui/core/Paper'
@@ -73,12 +74,6 @@ const TempStyledTypography = styled(Typography)`
   }
 `
 
-const Buttons = styled.div.attrs({ className: 'buttons-array' })`
-  display: grid;
-  grid-gap: 0.8rem;
-  grid-auto-flow: column;
-`
-
 export default function AnnouncementsPage() {
   return (
     <StyledPaper role="article" elavation={2}>
@@ -102,16 +97,16 @@ export default function AnnouncementsPage() {
               deserunt libero, temporibus quis corrupti eveniet, ipsa minus
               exercitationem itaque in, nobis veniam?
             </Typography>
-
-            <Buttons>
-              <Button variant="contained" color="primary">
-                Confirm
-              </Button>
-              <Button variant="contained" color="secondary">
-                Respond
-              </Button>
-            </Buttons>
           </StyledAccordionDetails>
+          <AccordionActions>
+            <Button size="small">Respond</Button>
+            <Button size="small" color="primary">
+              Confirm
+            </Button>
+            <Button size="small" color="primary" variant="contained">
+              Confirm
+            </Button>
+          </AccordionActions>
         </Accordion>
         <Accordion>
           <AccordionSummary
@@ -130,14 +125,14 @@ export default function AnnouncementsPage() {
               voluptas, culpa ea impedit ex praesentium asperiores eius aut
               velit quos eum.
             </Typography>
-            <Buttons>
+            <AccordionActions>
               <Button variant="contained" color="primary">
                 Confirm
               </Button>
               <Button variant="contained" color="secondary">
                 Respond
               </Button>
-            </Buttons>
+            </AccordionActions>
           </StyledAccordionDetails>
         </Accordion>
       </Section>
@@ -160,11 +155,11 @@ export default function AnnouncementsPage() {
               nostrum, necessitatibus laborum rerum nisi debitis cum neque
               aliquid praesentium repudiandae. Mollitia, sunt.
             </Typography>
-            <Buttons>
+            <AccordionActions>
               <Button variant="contained" color="secondary">
                 Respond
               </Button>
-            </Buttons>
+            </AccordionActions>
           </StyledAccordionDetails>
         </Accordion>
       </Section>
