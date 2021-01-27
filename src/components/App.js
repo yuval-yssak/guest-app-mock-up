@@ -13,6 +13,7 @@ import SimpleBottomNavigation from './SimpleBottomNavigation'
 import AppBar from './AppBar'
 import TemporaryDrawer from './Drawer'
 import AnnouncementsPage from '../pages/AnnouncementsPage'
+import ChatPage from '../pages/ChatPage'
 
 const Background = styled.div.attrs({ className: 'background' })`
   height: 100%;
@@ -93,7 +94,7 @@ export default function App() {
                 <Main>
                   {content === 'root' && <FloatingActionButtons />}
                   {content === 'announcements' && <AnnouncementsPage />}
-                  {content === 'chat' && <div>Chat Page</div>}
+                  {content === 'chat' && <ChatPage />}
                   {content === 'info-section' && <div>Info Section Pages</div>}
                   {content === 'account-details' && (
                     <div>Account Details Page</div>
