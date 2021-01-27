@@ -14,9 +14,11 @@ import AppBar from './AppBar'
 import TemporaryDrawer from './Drawer'
 import AnnouncementsPage from '../pages/AnnouncementsPage'
 
-const Background = styled.div`
+const Background = styled.div.attrs({ className: 'background' })`
   height: 100%;
   position: relative;
+  overflow-y: hidden;
+
   &::before {
     content: '';
     position: absolute;
@@ -28,11 +30,15 @@ const Background = styled.div`
   }
 `
 
+const Scrollable = styled.div.attrs({ className: 'scrollable' })`
+  overflow-y: scroll;
+  height: 100%;
+`
+
 const Main = styled.main`
   display: grid;
   align-items: center;
   justify-items: center;
-  overflow-y: scroll;
   position: relative;
   height: 100%;
 `
@@ -83,17 +89,19 @@ export default function App() {
           <StyledPaper square>
             <AppBar toggleDrawer={toggleDrawer} />
             <Background>
-              <Main>
-                {content === 'root' && <FloatingActionButtons />}
-                {content === 'announcements' && <AnnouncementsPage />}
-                {content === 'chat' && <div>Chat Page</div>}
-                {content === 'info-section' && <div>Info Section Pages</div>}
-                {content === 'account-details' && (
-                  <div>Account Details Page</div>
-                )}
-                {content === 'settings' && <div>Settings Page</div>}
-                {content === 'activities' && <div>Activities Page</div>}
-              </Main>
+              <Scrollable>
+                <Main>
+                  {content === 'root' && <FloatingActionButtons />}
+                  {content === 'announcements' && <AnnouncementsPage />}
+                  {content === 'chat' && <div>Chat Page</div>}
+                  {content === 'info-section' && <div>Info Section Pages</div>}
+                  {content === 'account-details' && (
+                    <div>Account Details Page</div>
+                  )}
+                  {content === 'settings' && <div>Settings Page</div>}
+                  {content === 'activities' && <div>Activities Page</div>}
+                </Main>
+              </Scrollable>
             </Background>
             <SimpleBottomNavigation />
           </StyledPaper>
