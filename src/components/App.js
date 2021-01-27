@@ -14,25 +14,27 @@ import AppBar from './AppBar'
 import TemporaryDrawer from './Drawer'
 import AnnouncementsPage from '../pages/AnnouncementsPage'
 
-const Main = styled.main`
-  display: grid;
-  align-items: center;
-  justify-items: center;
-  overflow-y: scroll;
+const Background = styled.div`
+  height: 100%;
   position: relative;
-
   &::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     background-image: url(./logo.svg);
     background-size: 100% 100%;
     filter: opacity(0.07);
     width: 100%;
     height: 100%;
   }
+`
+
+const Main = styled.main`
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  overflow-y: scroll;
+  position: relative;
+  height: 100%;
 `
 
 const StyledPaper = styled(Paper)`
@@ -80,15 +82,19 @@ export default function App() {
         <ThemeProvider theme={customTheme}>
           <StyledPaper square>
             <AppBar toggleDrawer={toggleDrawer} />
-            <Main>
-              {content === 'root' && <FloatingActionButtons />}
-              {content === 'announcements' && <AnnouncementsPage />}
-              {content === 'chat' && <div>Chat Page</div>}
-              {content === 'info-section' && <div>Info Section Pages</div>}
-              {content === 'account-details' && <div>Account Details Page</div>}
-              {content === 'settings' && <div>Settings Page</div>}
-              {content === 'activities' && <div>Activities Page</div>}
-            </Main>
+            <Background>
+              <Main>
+                {content === 'root' && <FloatingActionButtons />}
+                {content === 'announcements' && <AnnouncementsPage />}
+                {content === 'chat' && <div>Chat Page</div>}
+                {content === 'info-section' && <div>Info Section Pages</div>}
+                {content === 'account-details' && (
+                  <div>Account Details Page</div>
+                )}
+                {content === 'settings' && <div>Settings Page</div>}
+                {content === 'activities' && <div>Activities Page</div>}
+              </Main>
+            </Background>
             <SimpleBottomNavigation />
           </StyledPaper>
           <TemporaryDrawer
