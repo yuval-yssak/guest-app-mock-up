@@ -11,7 +11,6 @@ import InfoIcon from '@material-ui/icons/Info'
 import AccountBoxIcon from '@material-ui/icons/AccountBox'
 import SettingsIcon from '@material-ui/icons/Settings'
 import EventIcon from '@material-ui/icons/Event'
-import Switch from './Switch'
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 
@@ -19,25 +18,12 @@ const StyledList = styled(List)`
   width: 15.625rem;
 `
 
-export default function TemporaryDrawer({
-  open,
-  toggleDrawer,
-  darkTheme,
-  setDarkTheme,
-  openPage
-}) {
+export default function TemporaryDrawer({ open, toggleDrawer, openPage }) {
   return (
     <div>
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
         <div role="navigation" onClick={toggleDrawer(false)}>
-          <StyledList>
-            <ListItem>
-              <Switch
-                darkTheme={darkTheme}
-                onThemeChange={() => setDarkTheme(!darkTheme)}
-              />
-            </ListItem>
-          </StyledList>
+          <StyledList></StyledList>
           <Divider />
           <StyledList>
             <ListItem button onClick={() => openPage('announcements')}>

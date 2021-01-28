@@ -13,6 +13,7 @@ import SimpleBottomNavigation from './SimpleBottomNavigation'
 import AppBar from './AppBar'
 import TemporaryDrawer from './Drawer'
 import AnnouncementsPage from '../pages/AnnouncementsPage'
+import SettingsPage from '../pages/SettingsPage'
 import ChatPage from '../pages/ChatPage'
 
 const Background = styled.div.attrs({ className: 'background' })`
@@ -98,7 +99,12 @@ export default function App() {
                   {content === 'account-details' && (
                     <div>Account Details Page</div>
                   )}
-                  {content === 'settings' && <div>Settings Page</div>}
+                  {content === 'settings' && (
+                    <SettingsPage
+                      darkTheme={darkTheme}
+                      setDarkTheme={setDarkTheme}
+                    />
+                  )}
                   {content === 'activities' && <div>Activities Page</div>}
                 </Main>
               </Scrollable>
@@ -108,8 +114,6 @@ export default function App() {
           <TemporaryDrawer
             open={open}
             toggleDrawer={toggleDrawer}
-            darkTheme={darkTheme}
-            setDarkTheme={setDarkTheme}
             openPage={openPage}
           />
         </ThemeProvider>
