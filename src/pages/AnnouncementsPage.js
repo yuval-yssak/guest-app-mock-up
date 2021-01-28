@@ -76,6 +76,195 @@ export default function AnnouncementsPage() {
         <Accordion>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
+            aria-controls="message-1-content"
+            id="message-1-header"
+          >
+            <Typography>
+              New sanitization station near the bay west platform
+            </Typography>
+          </AccordionSummary>
+          <StyledAccordionDetails>
+            <Typography>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
+              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
+              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
+              exercitationem itaque in, nobis veniam?
+            </Typography>
+          </StyledAccordionDetails>
+          <AccordionActions>
+            <Button variant="outlined" size="small">
+              Respond
+            </Button>
+            <Button variant="outlined" size="small" color="primary">
+              Confirm
+            </Button>
+          </AccordionActions>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="message-1-content"
+            id="message-1-header"
+          >
+            <Typography>
+              New sanitization station near the bay west platform
+            </Typography>
+          </AccordionSummary>
+          <StyledAccordionDetails>
+            <Typography>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
+              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
+              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
+              exercitationem itaque in, nobis veniam?
+            </Typography>
+          </StyledAccordionDetails>
+          <AccordionActions>
+            <Button variant="outlined" size="small">
+              Respond
+            </Button>
+            <Button variant="outlined" size="small" color="primary">
+              Confirm
+            </Button>
+          </AccordionActions>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="message-1-content"
+            id="message-1-header"
+          >
+            <Typography>
+              New sanitization station near the bay west platform
+            </Typography>
+          </AccordionSummary>
+          <StyledAccordionDetails>
+            <Typography>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
+              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
+              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
+              exercitationem itaque in, nobis veniam?
+            </Typography>
+          </StyledAccordionDetails>
+          <AccordionActions>
+            <Button variant="outlined" size="small">
+              Respond
+            </Button>
+            <Button variant="outlined" size="small" color="primary">
+              Confirm
+            </Button>
+          </AccordionActions>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="message-1-content"
+            id="message-1-header"
+          >
+            <Typography>
+              New sanitization station near the bay west platform
+            </Typography>
+          </AccordionSummary>
+          <StyledAccordionDetails>
+            <Typography>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
+              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
+              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
+              exercitationem itaque in, nobis veniam?
+            </Typography>
+          </StyledAccordionDetails>
+          <AccordionActions>
+            <Button variant="outlined" size="small">
+              Respond
+            </Button>
+            <Button variant="outlined" size="small" color="primary">
+              Confirm
+            </Button>
+          </AccordionActions>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="message-1-content"
+            id="message-1-header"
+          >
+            <Typography>
+              New sanitization station near the bay west platform
+            </Typography>
+          </AccordionSummary>
+          <StyledAccordionDetails>
+            <Typography>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
+              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
+              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
+              exercitationem itaque in, nobis veniam?
+            </Typography>
+          </StyledAccordionDetails>
+          <AccordionActions>
+            <Button variant="outlined" size="small">
+              Respond
+            </Button>
+            <Button variant="outlined" size="small" color="primary">
+              Confirm
+            </Button>
+          </AccordionActions>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="message-1-content"
+            id="message-1-header"
+          >
+            <Typography>
+              New sanitization station near the bay west platform
+            </Typography>
+          </AccordionSummary>
+          <StyledAccordionDetails>
+            <Typography>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
+              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
+              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
+              exercitationem itaque in, nobis veniam?
+            </Typography>
+          </StyledAccordionDetails>
+          <AccordionActions>
+            <Button variant="outlined" size="small">
+              Respond
+            </Button>
+            <Button variant="outlined" size="small" color="primary">
+              Confirm
+            </Button>
+          </AccordionActions>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="message-1-content"
+            id="message-1-header"
+          >
+            <Typography>
+              New sanitization station near the bay west platform
+            </Typography>
+          </AccordionSummary>
+          <StyledAccordionDetails>
+            <Typography>
+              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
+              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
+              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
+              exercitationem itaque in, nobis veniam?
+            </Typography>
+          </StyledAccordionDetails>
+          <AccordionActions>
+            <Button variant="outlined" size="small">
+              Respond
+            </Button>
+            <Button variant="outlined" size="small" color="primary">
+              Confirm
+            </Button>
+          </AccordionActions>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
             aria-controls="message-2-content"
             id="message-2-header"
           >
@@ -91,11 +280,11 @@ export default function AnnouncementsPage() {
               velit quos eum.
             </Typography>
             <AccordionActions>
-              <Button variant="contained" color="primary">
-                Confirm
-              </Button>
-              <Button variant="contained" color="secondary">
+              <Button variant="outlined" size="small">
                 Respond
+              </Button>
+              <Button variant="outlined" size="small" color="primary">
+                Confirm
               </Button>
             </AccordionActions>
           </StyledAccordionDetails>
@@ -121,7 +310,7 @@ export default function AnnouncementsPage() {
               aliquid praesentium repudiandae. Mollitia, sunt.
             </Typography>
             <AccordionActions>
-              <Button variant="contained" color="secondary">
+              <Button variant="outlined" color="secondary">
                 Respond
               </Button>
             </AccordionActions>
