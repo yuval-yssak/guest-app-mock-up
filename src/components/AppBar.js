@@ -20,16 +20,17 @@ const StyledToolbar = styled(Toolbar)`
 const PageTitle = styled(Typography)`
   && {
     text-align: center;
-    font-size: 2rem;
-    justify-self: center;
+    font-size: 1.75rem;
+    justify-self: start;
+    margin-left: 0.5rem;
 
     @media (max-width: 31em) {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       /* font-weight: 800; */
     }
 
     @media (max-width: 22em) {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
     }
   }
 `

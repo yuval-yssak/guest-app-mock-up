@@ -8,7 +8,10 @@ import styled from 'styled-components'
 
 const StyledBottomNavigation = styled(BottomNavigation)`
   && {
-    background-color: ${({ theme }) => theme.palette.grey['50']};
+    background-color: ${({ theme }) =>
+      theme.palette.type === 'dark'
+        ? theme.palette.background.default
+        : theme.palette.grey['50']};
 
     & button {
       transition: all 0.3s;
