@@ -8,7 +8,15 @@ import styled from 'styled-components'
 
 const StyledBottomNavigation = styled(BottomNavigation)`
   && {
-    background-color: ${({ theme }) => theme.palette.divider};
+    background-color: ${({ theme }) => theme.palette.grey['50']};
+
+    & button {
+      transition: all 0.3s;
+    }
+    & button:hover {
+      background-color: ${({ theme }) => theme.palette.primary.main};
+      color: ${({ theme }) => theme.palette.primary.contrastText};
+    }
   }
 `
 
