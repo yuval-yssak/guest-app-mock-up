@@ -3,7 +3,6 @@ import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
 
 export default function Switches({ darkTheme, onThemeChange }) {
-  console.log('darktheme', darkTheme)
   return (
     <div>
       <Switch

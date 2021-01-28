@@ -81,16 +81,20 @@ const UserInputSection = styled.section.attrs({
 
 const StaffMessage = styled.section.attrs({ className: 'staff-message' })`
   padding: 1rem;
-  background-color: ${({ theme }) => theme.palette.primary.light};
+  background-color: ${({ theme }) => theme.palette.primary.main};
   border: 1px solid #ddd;
   border-radius: 0.5rem;
+  color: ${({ theme }) => theme.palette.primary.contrastText};
 `
 
 const GuestMessage = styled.section.attrs({ className: 'guest-message' })`
-  padding: 1rem;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
+  && {
+    padding: 1rem;
+    background-color: ${({ theme }) => theme.palette.background.paper};
+    color: ${({ theme }) => theme.palette.text.primary};
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+  }
 `
 
 const NewBelow = styled.div.attrs({
@@ -101,7 +105,10 @@ const NewBelow = styled.div.attrs({
   position: relative;
   align-items: center;
   grid-gap: 0.5rem;
-  color: darkred;
+  color: ${({ theme }) =>
+    theme.palette.type === 'dark'
+      ? theme.palette.error.light
+      : theme.palette.error.dark};
   margin-bottom: calc(0.3rem - ${mainGridGap});
   margin-left: 0.5rem;
 
@@ -113,7 +120,7 @@ const NewBelow = styled.div.attrs({
   }
 `
 
-export default function ChatPage() {
+export default function ChatPage(props) {
   /** possible scenarios:
    * none
    * empty

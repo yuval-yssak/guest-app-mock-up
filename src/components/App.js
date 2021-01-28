@@ -78,7 +78,6 @@ export default function App() {
     ) {
       return
     }
-    console.log('toggle drawer')
     setOpen(open)
   }
 
