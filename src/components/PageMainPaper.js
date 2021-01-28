@@ -9,7 +9,7 @@ export default styled(Paper)`
     grid-template-rows: 1fr;
     grid-gap: ${mainGridGap};
     align-items: center;
-    max-width: min(70rem, 80%);
+    max-width: min(60rem, 80%);
     background-color: transparent;
 
     @media (max-width: 36.5em) {

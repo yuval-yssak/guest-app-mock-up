@@ -65,11 +65,10 @@ export default function AnnouncementsPage() {
             </Typography>
           </StyledAccordionDetails>
           <AccordionActions>
-            <Button size="small">Respond</Button>
-            <Button size="small" color="primary">
-              Confirm
+            <Button variant="outlined" size="small">
+              Respond
             </Button>
-            <Button size="small" color="primary" variant="contained">
+            <Button variant="outlined" size="small" color="primary">
               Confirm
             </Button>
           </AccordionActions>
