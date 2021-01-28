@@ -32,6 +32,7 @@ const Background = styled.div.attrs({ className: 'background' })`
   }
 `
 
+// sets the children to scroll
 const Scrollable = styled.div.attrs({ className: 'scrollable' })`
   overflow-y: scroll;
   height: 100%;
@@ -67,8 +68,10 @@ export default function App() {
         return 'Chat'
       case 'info-section':
         return 'Info Section'
-      case 'account-details':
-        return 'Account Details'
+      case 'map':
+        return 'Ashram Map'
+      case 'my-bookings':
+        return 'My Bookings'
       case 'settings':
         return 'Settings'
       case 'activities':
@@ -117,9 +120,8 @@ export default function App() {
                   {content === 'announcements' && <AnnouncementsPage />}
                   {content === 'chat' && <ChatPage />}
                   {content === 'info-section' && <div>Info Section Pages</div>}
-                  {content === 'account-details' && (
-                    <div>Account Details Page</div>
-                  )}
+                  {content === 'map' && <div>Map</div>}
+                  {content === 'my-bookings' && <div>Account Details Page</div>}
                   {content === 'settings' && (
                     <SettingsPage
                       darkTheme={darkTheme}
@@ -130,7 +132,7 @@ export default function App() {
                 </Main>
               </Scrollable>
             </Background>
-            <SimpleBottomNavigation />
+            <SimpleBottomNavigation openPage={openPage} />
           </StyledPaper>
           <TemporaryDrawer
             open={open}

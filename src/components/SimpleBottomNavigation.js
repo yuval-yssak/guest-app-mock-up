@@ -1,25 +1,43 @@
 import React from 'react'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
-import RestoreIcon from '@material-ui/icons/Restore'
-import FavoriteIcon from '@material-ui/icons/Favorite'
-import LocationOnIcon from '@material-ui/icons/LocationOn'
+import AnnouncementIcon from '@material-ui/icons/Announcement'
+import ChatIcon from '@material-ui/icons/Chat'
+import EventIcon from '@material-ui/icons/Event'
+import styled from 'styled-components'
 
-export default function SimpleBottomNavigation() {
+const StyledBottomNavigation = styled(BottomNavigation)`
+  && {
+    background-color: ${({ theme }) => theme.palette.divider};
+  }
+`
+
+export default function SimpleBottomNavigation({ openPage }) {
   const [value, setValue] = React.useState(0)
 
   return (
-    <BottomNavigation
+    <StyledBottomNavigation
       value={value}
       onChange={(event, newValue) => {
         setValue(newValue)
       }}
       showLabels
-      style={{ backgroundColor: '#eee' }}
     >
-      <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-      <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-      <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
-    </BottomNavigation>
+      <BottomNavigationAction
+        label="Announcements"
+        icon={<AnnouncementIcon />}
+        onClick={() => openPage('announcements')}
+      />
+      <BottomNavigationAction
+        label="Chat"
+        icon={<ChatIcon />}
+        onClick={() => openPage('chat')}
+      />
+      <BottomNavigationAction
+        label="Activities"
+        icon={<EventIcon />}
+        onClick={() => openPage('activities')}
+      />
+    </StyledBottomNavigation>
   )
 }
