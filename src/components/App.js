@@ -56,6 +56,27 @@ export default function App() {
   const [darkTheme, setDarkTheme] = React.useState(false)
   const [open, setOpen] = React.useState(false)
   const [content, setContent] = React.useState('root')
+
+  function getPageTitle() {
+    switch (content) {
+      case 'root':
+        return 'Root'
+      case 'announcements':
+        return 'Announcements'
+      case 'chat':
+        return 'Chat'
+      case 'info-section':
+        return 'Info Section'
+      case 'account-details':
+        return 'Account Details'
+      case 'settings':
+        return 'Settings'
+      case 'activities':
+        return 'Activities'
+      default:
+        return 'No Title...'
+    }
+  }
   const customTheme = createMuiTheme({
     palette: {
       type: darkTheme ? 'dark' : 'light',
@@ -88,7 +109,7 @@ export default function App() {
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
           <StyledPaper square>
-            <AppBar toggleDrawer={toggleDrawer} />
+            <AppBar toggleDrawer={toggleDrawer} pageTitle={getPageTitle()} />
             <Background>
               <Scrollable>
                 <Main>

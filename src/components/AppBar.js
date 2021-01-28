@@ -5,7 +5,7 @@ import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import MoreIcon from '@material-ui/icons/MoreVert'
-
+import Typography from '@material-ui/core/Typography'
 import styled from 'styled-components'
 
 const StyledToolbar = styled(Toolbar)`
@@ -13,11 +13,28 @@ const StyledToolbar = styled(Toolbar)`
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: min-content 1fr min-content;
-    justify-items: end;
+    justify-items: start;
   }
 `
 
-export default function ProminentAppBar({ toggleDrawer }) {
+const PageTitle = styled(Typography)`
+  && {
+    text-align: center;
+    font-size: 2rem;
+    justify-self: center;
+
+    @media (max-width: 31em) {
+      font-size: 1.6rem;
+      /* font-weight: 800; */
+    }
+
+    @media (max-width: 22em) {
+      font-size: 1.3rem;
+    }
+  }
+`
+
+export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
   return (
     <div>
       <AppBar position="static">
@@ -30,6 +47,7 @@ export default function ProminentAppBar({ toggleDrawer }) {
           >
             <MenuIcon />
           </IconButton>
+          <PageTitle component="h1">{pageTitle}</PageTitle>
 
           <IconButton aria-label="search" color="inherit">
             <SearchIcon />

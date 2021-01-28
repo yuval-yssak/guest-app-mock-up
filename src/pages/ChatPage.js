@@ -4,7 +4,6 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import styled from 'styled-components'
 import PageMainPaper, { mainGridGap } from '../components/PageMainPaper'
-import PageTitle from '../components/PageTitle'
 import SendIcon from '@material-ui/icons/Send'
 import IconButton from '@material-ui/core/IconButton'
 import RootRef from '@material-ui/core/RootRef'
@@ -205,7 +204,7 @@ export default function ChatPage(props) {
               None (for mock-up purposes)
             </Button>
             <Button
-              color={scenario === 'empty' ? 'primary' : 'none'}
+              color={scenario === 'empty' ? 'primary' : 'default'}
               variant="contained"
               onClick={() => setScenario('empty')}
             >
@@ -215,7 +214,7 @@ export default function ChatPage(props) {
               color={
                 scenario === 'staff initiated 1 message, unread'
                   ? 'primary'
-                  : 'none'
+                  : 'default'
               }
               variant="contained"
               onClick={() => setScenario('staff initiated 1 message, unread')}
@@ -226,7 +225,7 @@ export default function ChatPage(props) {
               color={
                 scenario === 'staff initiated 1 message, read'
                   ? 'primary'
-                  : 'none'
+                  : 'default'
               }
               variant="contained"
               onClick={() => setScenario('staff initiated 1 message, read')}
@@ -235,7 +234,7 @@ export default function ChatPage(props) {
             </Button>
             <Button
               color={
-                scenario === 'guest initiated 1 message' ? 'primary' : 'none'
+                scenario === 'guest initiated 1 message' ? 'primary' : 'default'
               }
               variant="contained"
               onClick={() => setScenario('guest initiated 1 message')}
@@ -245,14 +244,9 @@ export default function ChatPage(props) {
           </>
         )}
       </Aside>
-      {scenario === 'none' && (
-        <Chat>
-          <PageTitle>Chat</PageTitle>
-        </Chat>
-      )}
+      {scenario === 'none' && <Chat></Chat>}
       {scenario === 'empty' && (
         <Chat>
-          <PageTitle>Chat</PageTitle>
           <UserInputSection>
             <TextField
               id="user-input"
@@ -269,7 +263,6 @@ export default function ChatPage(props) {
       )}
       {scenario === 'staff initiated 1 message, unread' && (
         <Chat>
-          <PageTitle>Chat</PageTitle>
           <NewBelow />
           <StaffMessage>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit.
@@ -293,7 +286,6 @@ export default function ChatPage(props) {
       )}
       {scenario === 'staff initiated 1 message, read' && (
         <Chat>
-          <PageTitle>Chat</PageTitle>
           <StaffMessage>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             Distinctio, aspernatur vitae dignissimos, unde beatae, non possimus
@@ -316,7 +308,6 @@ export default function ChatPage(props) {
       )}
       {scenario === 'guest initiated 1 message' && (
         <Chat>
-          <PageTitle>Chat</PageTitle>
           <GuestMessage>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi velit,
             aliquam minima numquam alias officiis accusamus aut? Sequi atque

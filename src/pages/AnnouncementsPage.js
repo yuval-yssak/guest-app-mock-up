@@ -9,7 +9,6 @@ import Button from '@material-ui/core/Button'
 
 import styled from 'styled-components'
 import PageMainPaper from '../components/PageMainPaper'
-import PageTitle from '../components/PageTitle'
 
 const StyledAccordionDetails = styled(AccordionDetails)`
   && {
@@ -45,7 +44,6 @@ const TempStyledTypography = styled(Typography)`
 export default function AnnouncementsPage() {
   return (
     <PageMainPaper role="article" elavation={2}>
-      <PageTitle component="h1">Announcements</PageTitle>
       <TempStyledTypography>Unread:</TempStyledTypography>
       <Section $type="unread">
         <Accordion>
