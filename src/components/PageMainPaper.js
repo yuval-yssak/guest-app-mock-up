@@ -6,7 +6,7 @@ export default styled(Paper)`
   && {
     padding: 2rem 3rem;
     display: grid;
-    grid-template-rows: min-content 1fr;
+    grid-template-rows: 1fr;
     grid-gap: ${mainGridGap};
     align-items: center;
     max-width: min(70rem, 80%);

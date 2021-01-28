@@ -61,7 +61,7 @@ const Chat = styled(PageMainPaper).attrs({ className: 'chat' })`
   && {
     height: 100%;
     max-width: unset;
-    grid-template-rows: max-content 1fr;
+    grid-template-rows:  1fr;
     align-items: end;
   }
 `
