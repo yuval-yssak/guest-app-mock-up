@@ -41,281 +41,78 @@ const TempStyledTypography = styled(Typography)`
   }
 `
 
+const StyledAccordionSummary = styled(AccordionSummary)`
+  & p {
+    ${({ $expanded }) => $expanded && `font-weight:800;`}
+  }
+`
+
+function Announcement({ idPrefix, summary, details, read }) {
+  const [expanded, setExpanded] = React.useState(false)
+  React.useEffect(() => console.log(expanded), [expanded])
+  return (
+    <Accordion
+      expanded={expanded}
+      onChange={(_event, expanded) => setExpanded(expanded)}
+    >
+      <StyledAccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls={`${idPrefix}-content`}
+        id={`${idPrefix}-header`}
+        $expanded={expanded}
+      >
+        <Typography>{summary}</Typography>
+      </StyledAccordionSummary>
+      <StyledAccordionDetails>
+        <Typography>{details}</Typography>
+      </StyledAccordionDetails>
+      <AccordionActions>
+        <Button variant="outlined" size="small">
+          Respond
+        </Button>
+        {!read && (
+          <Button variant="outlined" size="small" color="primary">
+            Confirm
+          </Button>
+        )}
+      </AccordionActions>
+    </Accordion>
+  )
+}
+
 export default function AnnouncementsPage() {
   return (
     <PageMainPaper role="article" elavation={2}>
       <TempStyledTypography>Unread:</TempStyledTypography>
       <Section $type="unread">
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="message-1-content"
-            id="message-1-header"
-          >
-            <Typography>
-              New sanitization station near the bay west platform
-            </Typography>
-          </AccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
+        <Announcement
+          idPrefix="message-1"
+          summary="New sanitization station near the bay west platform"
+          details="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
               assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
               deserunt libero, temporibus quis corrupti eveniet, ipsa minus
-              exercitationem itaque in, nobis veniam?
-            </Typography>
-          </StyledAccordionDetails>
-          <AccordionActions>
-            <Button variant="outlined" size="small">
-              Respond
-            </Button>
-            <Button variant="outlined" size="small" color="primary">
-              Confirm
-            </Button>
-          </AccordionActions>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="message-1-content"
-            id="message-1-header"
-          >
-            <Typography>
-              New sanitization station near the bay west platform
-            </Typography>
-          </AccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
-              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
-              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
-              exercitationem itaque in, nobis veniam?
-            </Typography>
-          </StyledAccordionDetails>
-          <AccordionActions>
-            <Button variant="outlined" size="small">
-              Respond
-            </Button>
-            <Button variant="outlined" size="small" color="primary">
-              Confirm
-            </Button>
-          </AccordionActions>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="message-1-content"
-            id="message-1-header"
-          >
-            <Typography>
-              New sanitization station near the bay west platform
-            </Typography>
-          </AccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
-              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
-              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
-              exercitationem itaque in, nobis veniam?
-            </Typography>
-          </StyledAccordionDetails>
-          <AccordionActions>
-            <Button variant="outlined" size="small">
-              Respond
-            </Button>
-            <Button variant="outlined" size="small" color="primary">
-              Confirm
-            </Button>
-          </AccordionActions>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="message-1-content"
-            id="message-1-header"
-          >
-            <Typography>
-              New sanitization station near the bay west platform
-            </Typography>
-          </AccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
-              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
-              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
-              exercitationem itaque in, nobis veniam?
-            </Typography>
-          </StyledAccordionDetails>
-          <AccordionActions>
-            <Button variant="outlined" size="small">
-              Respond
-            </Button>
-            <Button variant="outlined" size="small" color="primary">
-              Confirm
-            </Button>
-          </AccordionActions>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="message-1-content"
-            id="message-1-header"
-          >
-            <Typography>
-              New sanitization station near the bay west platform
-            </Typography>
-          </AccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
-              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
-              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
-              exercitationem itaque in, nobis veniam?
-            </Typography>
-          </StyledAccordionDetails>
-          <AccordionActions>
-            <Button variant="outlined" size="small">
-              Respond
-            </Button>
-            <Button variant="outlined" size="small" color="primary">
-              Confirm
-            </Button>
-          </AccordionActions>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="message-1-content"
-            id="message-1-header"
-          >
-            <Typography>
-              New sanitization station near the bay west platform
-            </Typography>
-          </AccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
-              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
-              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
-              exercitationem itaque in, nobis veniam?
-            </Typography>
-          </StyledAccordionDetails>
-          <AccordionActions>
-            <Button variant="outlined" size="small">
-              Respond
-            </Button>
-            <Button variant="outlined" size="small" color="primary">
-              Confirm
-            </Button>
-          </AccordionActions>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="message-1-content"
-            id="message-1-header"
-          >
-            <Typography>
-              New sanitization station near the bay west platform
-            </Typography>
-          </AccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
-              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
-              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
-              exercitationem itaque in, nobis veniam?
-            </Typography>
-          </StyledAccordionDetails>
-          <AccordionActions>
-            <Button variant="outlined" size="small">
-              Respond
-            </Button>
-            <Button variant="outlined" size="small" color="primary">
-              Confirm
-            </Button>
-          </AccordionActions>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="message-1-content"
-            id="message-1-header"
-          >
-            <Typography>
-              New sanitization station near the bay west platform
-            </Typography>
-          </AccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
-              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
-              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
-              exercitationem itaque in, nobis veniam?
-            </Typography>
-          </StyledAccordionDetails>
-          <AccordionActions>
-            <Button variant="outlined" size="small">
-              Respond
-            </Button>
-            <Button variant="outlined" size="small" color="primary">
-              Confirm
-            </Button>
-          </AccordionActions>
-        </Accordion>
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="message-2-content"
-            id="message-2-header"
-          >
-            <Typography>
-              A miracle vaccine is now ditributed free without side effects!
-            </Typography>
-          </AccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam at
-              harum aliquam in reiciendis, accusamus odio perspiciatis, debitis
-              voluptas, culpa ea impedit ex praesentium asperiores eius aut
-              velit quos eum.
-            </Typography>
-            <AccordionActions>
-              <Button variant="outlined" size="small">
-                Respond
-              </Button>
-              <Button variant="outlined" size="small" color="primary">
-                Confirm
-              </Button>
-            </AccordionActions>
-          </StyledAccordionDetails>
-        </Accordion>
+              exercitationem itaque in, nobis veniam?"
+        />
+        <Announcement
+          idPrefix="message-2"
+          summary="A miracle vaccine is now ditributed free without side effects!"
+          details="Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam at
+          harum aliquam in reiciendis, accusamus odio perspiciatis, debitis
+          voluptas, culpa ea impedit ex praesentium asperiores eius aut
+          velit quos eum."
+        />
       </Section>
       <TempStyledTypography>Read:</TempStyledTypography>
       <Section $type="read">
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="message-3-content"
-            id="message-3-header"
-          >
-            <Typography>
-              A guest reported symptoms on Tuesday, Aug 11th
-            </Typography>
-          </AccordionSummary>
-          <StyledAccordionDetails>
-            <Typography>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi enim
-              blanditiis amet ipsam facilis consequatur velit cupiditate
-              nostrum, necessitatibus laborum rerum nisi debitis cum neque
-              aliquid praesentium repudiandae. Mollitia, sunt.
-            </Typography>
-            <AccordionActions>
-              <Button variant="outlined" color="secondary">
-                Respond
-              </Button>
-            </AccordionActions>
-          </StyledAccordionDetails>
-        </Accordion>
+        <Announcement
+          idPrefix="message-3"
+          summary="A guest reported symptoms on Tuesday, Aug 11th"
+          details="Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi enim
+          blanditiis amet ipsam facilis consequatur velit cupiditate
+          nostrum, necessitatibus laborum rerum nisi debitis cum neque
+          aliquid praesentium repudiandae. Mollitia, sunt."
+          read
+        />
       </Section>
     </PageMainPaper>
   )

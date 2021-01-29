@@ -57,11 +57,18 @@ const SideTitle = styled(Typography).attrs({
   }
 `
 
+const StyledIconButton = styled(IconButton)`
+  && {
+    align-self: end;
+    margin-bottom: 0.3125rem;
+  }
+`
+
 const Chat = styled(PageMainPaper).attrs({ className: 'chat' })`
   && {
     height: 100%;
     max-width: unset;
-    grid-template-rows:  1fr;
+    grid-template-rows: 1fr;
     align-items: end;
   }
 `
@@ -253,11 +260,12 @@ export default function ChatPage(props) {
               label="Chat with us"
               placeholder="Hi, I would like to"
               multiline
+              margin="dense"
               variant="outlined"
             />
-            <IconButton>
+            <StyledIconButton>
               <SendIcon />
-            </IconButton>
+            </StyledIconButton>
           </UserInputSection>
         </Chat>
       )}
@@ -276,11 +284,12 @@ export default function ChatPage(props) {
               label="Chat with us"
               placeholder="Hi, I would like to"
               multiline
+              margin="dense"
               variant="outlined"
             />
-            <IconButton>
+            <StyledIconButton>
               <SendIcon />
-            </IconButton>
+            </StyledIconButton>
           </UserInputSection>
         </Chat>
       )}
@@ -298,11 +307,12 @@ export default function ChatPage(props) {
               label="Chat with us"
               placeholder="Hi, I would like to"
               multiline
+              margin="dense"
               variant="outlined"
             />
-            <IconButton>
+            <StyledIconButton>
               <SendIcon />
-            </IconButton>
+            </StyledIconButton>
           </UserInputSection>
         </Chat>
       )}
@@ -320,11 +330,12 @@ export default function ChatPage(props) {
               label="Chat with us"
               placeholder="Hi, I would like to"
               multiline
+              margin="dense"
               variant="outlined"
             />
-            <IconButton>
+            <StyledIconButton>
               <SendIcon />
-            </IconButton>
+            </StyledIconButton>
           </UserInputSection>
         </Chat>
       )}

@@ -1,6 +1,7 @@
 import React from 'react'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
+import Badge from '@material-ui/core/Badge'
 import AnnouncementIcon from '@material-ui/icons/Announcement'
 import ChatIcon from '@material-ui/icons/Chat'
 import EventIcon from '@material-ui/icons/Event'
@@ -36,7 +37,11 @@ export default function SimpleBottomNavigation({ openPage }) {
     >
       <BottomNavigationAction
         label="Announcements"
-        icon={<AnnouncementIcon />}
+        icon={
+          <Badge badgeContent={4} color="secondary">
+            <AnnouncementIcon />
+          </Badge>
+        }
         onClick={() => openPage('announcements')}
       />
       <BottomNavigationAction
