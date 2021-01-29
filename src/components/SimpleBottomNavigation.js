@@ -24,11 +24,12 @@ const StyledBottomNavigation = styled(BottomNavigation)`
   }
 `
 
-export default function SimpleBottomNavigation({ openPage }) {
+export default function SimpleBottomNavigation({ openPage, className }) {
   const [value, setValue] = React.useState(null)
 
   return (
     <StyledBottomNavigation
+      className={className}
       value={value}
       onChange={(event, newValue) => {
         setValue(newValue)

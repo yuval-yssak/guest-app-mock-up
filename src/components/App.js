@@ -1,6 +1,6 @@
 import React from 'react'
 
-import styled, { ThemeProvider } from 'styled-components'
+import styled, { ThemeProvider, keyframes } from 'styled-components'
 import {
   ThemeProvider as MuiThemeProvider,
   createMuiTheme
@@ -16,6 +16,33 @@ import AnnouncementsPage from '../pages/AnnouncementsPage'
 import SettingsPage from '../pages/SettingsPage'
 import ChatPage from '../pages/ChatPage'
 
+const scaleFrom0 = keyframes`
+0% {
+  transform:scale(0);
+}
+
+20% {
+  transform:scale(0);
+}
+
+100% {
+  transform:scale(1);
+}`
+
+const dance = keyframes`
+0% {
+  transform: translateY(0) rotate(0);
+}
+
+70% {
+  transform: translateY(-2rem) rotate(20deg);
+}
+
+100% {
+  transform: translateY(0) rotate(0);
+}
+`
+
 const Background = styled.div.attrs({ className: 'background' })`
   height: 100%;
   position: relative;
@@ -26,9 +53,32 @@ const Background = styled.div.attrs({ className: 'background' })`
     position: absolute;
     background-image: url(./logo.svg);
     background-size: 100% 100%;
-    filter: opacity(0.07);
     width: 100%;
     height: 100%;
+    animation: ${scaleFrom0} 3s cubic-bezier(0.83, 0, 0.17, 1);
+    transition: opacity 1s cubic-bezier(0.83, 0, 0.17, 1);
+    opacity: 0.1;
+  }
+`
+
+const AnimatedBottomNavigation = styled(SimpleBottomNavigation)`
+  & button:nth-of-type(1) {
+    animation: ${dance} 0.15s 3s;
+  }
+  & button:nth-of-type(2) {
+    animation: ${dance} 0.15s 3.35s;
+  }
+  & button:nth-of-type(3) {
+    animation: ${dance} 0.15s 3.5s;
+  }
+
+  & button {
+    transition: transform 0.2s cubic-bezier(0.37, 0, 0.63, 1);
+    @media (hover: hover) {
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
   }
 `
 
@@ -132,7 +182,7 @@ export default function App() {
                 </Main>
               </Scrollable>
             </Background>
-            <SimpleBottomNavigation openPage={openPage} />
+            <AnimatedBottomNavigation openPage={openPage} />
           </StyledPaper>
           <TemporaryDrawer
             open={open}
