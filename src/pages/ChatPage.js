@@ -2,6 +2,7 @@ import React from 'react'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
+import Avatar from '@material-ui/core/Avatar'
 import styled from 'styled-components'
 import PageMainPaper, { mainGridGap } from '../components/PageMainPaper'
 import SendIcon from '@material-ui/icons/Send'
@@ -20,10 +21,12 @@ const ChatDemoLayout = styled.div.attrs({
     height: calc(100% - 4rem);
     width: 100%;
     justify-content: center;
+    overflow-y: scroll;
 
-    @media (max-width: 71.5em) {
+    @media (max-width: 87em) {
       grid-template-columns: 80%;
       grid-template-rows: min-content 1fr;
+      overflow-y: unset;
 
       & > aside {
         grid-auto-flow: column;
@@ -31,7 +34,6 @@ const ChatDemoLayout = styled.div.attrs({
         margin-top: -2rem;
         grid-gap: 1rem;
         height: 3rem;
-        overflow-y: scroll;
       }
     }
     @media (max-width: 34.5em) {
@@ -46,6 +48,7 @@ const Aside = styled.aside`
   display: grid;
   align-content: start;
   grid-gap: 0.5rem;
+  overflow-y: scroll;
 `
 
 const SideTitle = styled(Typography).attrs({
@@ -64,12 +67,14 @@ const StyledIconButton = styled(IconButton)`
   }
 `
 
-const Chat = styled(PageMainPaper).attrs({ className: 'chat' })`
+const ChatContainer = styled(PageMainPaper).attrs({ className: 'chat' })`
   && {
     height: 100%;
     max-width: unset;
     grid-template-rows: 1fr;
     align-items: end;
+    grid-template-columns: repeat(8, 1fr);
+    overflow: scroll;
   }
 `
 
@@ -79,6 +84,7 @@ const UserInputSection = styled.section.attrs({
   display: grid;
   grid-template-columns: 1fr max-content;
   grid-gap: 1rem;
+  grid-column: 1 / -1;
 
   @media (max-width: 44em) {
     grid-gap: 0;
@@ -86,6 +92,8 @@ const UserInputSection = styled.section.attrs({
 `
 
 const StaffMessage = styled.section.attrs({ className: 'staff-message' })`
+  justify-self: start;
+  grid-column: 1 / 8;
   padding: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.main};
   border: 1px solid #ddd;
@@ -93,21 +101,47 @@ const StaffMessage = styled.section.attrs({ className: 'staff-message' })`
   color: ${({ theme }) => theme.palette.primary.contrastText};
 `
 
-const GuestMessage = styled.section.attrs({ className: 'guest-message' })`
-  && {
-    padding: 1rem;
-    background-color: ${({ theme }) => theme.palette.background.paper};
-    color: ${({ theme }) => theme.palette.text.primary};
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
-  }
+const GuestMessageContainer = styled.section.attrs({
+  className: 'guest-message'
+})`
+  justify-self: end;
+  grid-column: 2 / 9;
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  align-items: start;
+  grid-gap: 0.5rem;
 `
+
+const StyledGuestMessage = styled.div.attrs({
+  className: 'guest-message-frame'
+})`
+  padding: 1rem;
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  color: ${({ theme }) => theme.palette.text.primary};
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  text-align: right;
+`
+
+const StyledAvatar = styled(Avatar)`
+  margin-top: 0.45rem;
+`
+
+function GuestMessage({ children, className }) {
+  return (
+    <GuestMessageContainer>
+      <StyledAvatar alt="user avatar" src="./images/fake-avatar.jpg" />
+      <StyledGuestMessage className={className}>{children}</StyledGuestMessage>
+    </GuestMessageContainer>
+  )
+}
 
 const NewBelow = styled.div.attrs({
   children: <Typography variant="subtitle2">New</Typography>
 })`
   display: grid;
   grid-template-columns: max-content 1fr;
+  grid-column: 1 / -1;
   position: relative;
   align-items: center;
   grid-gap: 0.5rem;
@@ -127,18 +161,34 @@ const NewBelow = styled.div.attrs({
 `
 
 export default function ChatPage(props) {
-  /** possible scenarios:
-   * none
-   * empty
-   * staff initiated 1 message, unread
-   * staff initiated 1 message, read
-   * guest initiated 1 message
-   * guest and staff talking 10 messages over 2 days
-   * guest and staff talking 60 messages
-   */
   const [scenario, setScenario] = React.useState('none')
-  const shrinkScenarios = useMediaQuery('(max-width: 71.5em)')
+  const shrinkScenarios = useMediaQuery('(max-width: 87em)')
   const [showScenarios, setShowScenarios] = React.useState(false)
+
+  const scenarios = [
+    { name: 'none', label: 'None' },
+    { name: 'empty', label: 'Empty' },
+    {
+      name: 'staff initiated 1 message, unread',
+      label: 'Staff initiated first unread message'
+    },
+    {
+      name: 'staff initiated 1 message, read',
+      label: 'Staff initiated first read message'
+    },
+    {
+      name: 'guest initiated 1 message',
+      label: 'Guest initiated first message'
+    },
+    {
+      name: 'guest and staff talking 10 messages over 2 days',
+      label: 'Communication back & forth 10 msg. over 2 days'
+    },
+    {
+      name: 'guest and staff talking 60 messages',
+      label: 'Communication back & forth 60 messages'
+    }
+  ]
   function setScenarioAndCloseMenu(newScenario) {
     setShowScenarios(false)
     setScenario(newScenario)
@@ -166,131 +216,42 @@ export default function ChatPage(props) {
               open={showScenarios}
               anchorEl={buttonRef.current}
             >
-              <MenuItem
-                selected={scenario === 'none'}
-                onClick={() => setScenarioAndCloseMenu('none')}
-              >
-                None (for mock-up purposes)
-              </MenuItem>
-              <MenuItem
-                selected={scenario === 'empty'}
-                onClick={() => setScenarioAndCloseMenu('empty')}
-              >
-                Empty chat
-              </MenuItem>
-              <MenuItem
-                selected={scenario === 'staff initiated 1 message, unread'}
-                onClick={() =>
-                  setScenarioAndCloseMenu('staff initiated 1 message, unread')
-                }
-              >
-                Staff initiated first unread message
-              </MenuItem>
-              <MenuItem
-                selected={scenario === 'staff initiated 1 message, read'}
-                onClick={() =>
-                  setScenarioAndCloseMenu('staff initiated 1 message, read')
-                }
-              >
-                Staff initiated first read message
-              </MenuItem>
-              <MenuItem
-                selected={scenario === 'guest initiated 1 message'}
-                onClick={() =>
-                  setScenarioAndCloseMenu('guest initiated 1 message')
-                }
-              >
-                Guest initiated first message
-              </MenuItem>
+              {scenarios.map(s => (
+                <MenuItem
+                  selected={scenario === s.name}
+                  onClick={() => setScenarioAndCloseMenu(s.name)}
+                  key={s.name}
+                >
+                  {s.label}
+                </MenuItem>
+              ))}
             </Menu>
           </>
         ) : (
           <>
             <SideTitle variant="h4">Scenarios</SideTitle>
-            <Button variant="outlined" onClick={() => setScenario('none')}>
-              None (for mock-up purposes)
-            </Button>
-            <Button
-              color={scenario === 'empty' ? 'primary' : 'default'}
-              variant="contained"
-              onClick={() => setScenario('empty')}
-            >
-              Empty chat
-            </Button>
-            <Button
-              color={
-                scenario === 'staff initiated 1 message, unread'
-                  ? 'primary'
-                  : 'default'
-              }
-              variant="contained"
-              onClick={() => setScenario('staff initiated 1 message, unread')}
-            >
-              Staff initiated first unread message
-            </Button>
-            <Button
-              color={
-                scenario === 'staff initiated 1 message, read'
-                  ? 'primary'
-                  : 'default'
-              }
-              variant="contained"
-              onClick={() => setScenario('staff initiated 1 message, read')}
-            >
-              Staff initiated first read message
-            </Button>
-            <Button
-              color={
-                scenario === 'guest initiated 1 message' ? 'primary' : 'default'
-              }
-              variant="contained"
-              onClick={() => setScenario('guest initiated 1 message')}
-            >
-              Guest initiated first message
-            </Button>
+            {scenarios.map(s => (
+              <Button
+                color={scenario === s.name ? 'primary' : 'default'}
+                variant="contained"
+                onClick={() => setScenario(s.name)}
+              >
+                {s.label}
+              </Button>
+            ))}
           </>
         )}
       </Aside>
-      {scenario === 'none' && <Chat></Chat>}
-      {scenario === 'empty' && (
-        <Chat>
-          <UserInputSection>
-            <TextField
-              id="user-input"
-              label="Chat with us"
-              placeholder="Hi, I would like to"
-              multiline
-              margin="dense"
-              variant="outlined"
-            />
-            <StyledIconButton>
-              <SendIcon />
-            </StyledIconButton>
-          </UserInputSection>
-        </Chat>
-      )}
+      {scenario === 'none' && <ChatContainer></ChatContainer>}
+      {scenario === 'empty' && <Chat />}
       {scenario === 'staff initiated 1 message, unread' && (
-        <Chat>
-          <NewBelow />
+        <Chat newSince={1}>
           <StaffMessage>
             Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             Distinctio, aspernatur vitae dignissimos, unde beatae, non possimus
             doloremque quod animi earum sint sit doloribus sed iste facilis in
             libero accusamus perspiciatis.
           </StaffMessage>
-          <UserInputSection>
-            <TextField
-              id="user-input"
-              label="Chat with us"
-              placeholder="Hi, I would like to"
-              multiline
-              margin="dense"
-              variant="outlined"
-            />
-            <StyledIconButton>
-              <SendIcon />
-            </StyledIconButton>
-          </UserInputSection>
         </Chat>
       )}
       {scenario === 'staff initiated 1 message, read' && (
@@ -301,19 +262,6 @@ export default function ChatPage(props) {
             doloremque quod animi earum sint sit doloribus sed iste facilis in
             libero accusamus perspiciatis.
           </StaffMessage>
-          <UserInputSection>
-            <TextField
-              id="user-input"
-              label="Chat with us"
-              placeholder="Hi, I would like to"
-              multiline
-              margin="dense"
-              variant="outlined"
-            />
-            <StyledIconButton>
-              <SendIcon />
-            </StyledIconButton>
-          </UserInputSection>
         </Chat>
       )}
       {scenario === 'guest initiated 1 message' && (
@@ -324,21 +272,86 @@ export default function ChatPage(props) {
             nihil blanditiis voluptatem rerum deserunt quo, alias itaque tempora
             similique placeat!
           </GuestMessage>
-          <UserInputSection>
-            <TextField
-              id="user-input"
-              label="Chat with us"
-              placeholder="Hi, I would like to"
-              multiline
-              margin="dense"
-              variant="outlined"
-            />
-            <StyledIconButton>
-              <SendIcon />
-            </StyledIconButton>
-          </UserInputSection>
+        </Chat>
+      )}
+      {scenario === 'guest and staff talking 10 messages over 2 days' && (
+        <Chat newSince={2}>
+          <StaffMessage>Lorem ipsum dolor sit</StaffMessage>
+          <GuestMessage>
+            Proin interdum mi non mi consequat, nec commodo odio tempor. Donec
+            aliquet pharetra sem non convallis. Morbi lobortis odio eget
+            tristique scelerisque. Quisque pretium nec lorem eu sagittis. Nullam
+            tincidunt nibh at tortor efficitur, at viverra est rutrum. Nulla
+            interdum eros ac odio rutrum, sit amet eleifend augue ornare.
+            Praesent sed consequat felis. Suspendisse aliquam fermentum nulla id
+            maximus. Sed viverra cursus dolor eget rhoncus. Sed metus dolor,
+            mollis in ligula vel, cursus lobortis massa. Aliquam vehicula eros
+            at commodo dignissim. Sed imperdiet massa magna, et tristique odio
+            lacinia eu. Curabitur tempor, leo id congue finibus, ligula orci
+            sagittis leo, id laoreet dui neque nec arcu.
+          </GuestMessage>
+          <StaffMessage>
+            Vivamus vel metus tellus. Vivamus ut placerat nunc. Donec in quam.
+          </StaffMessage>
+          <StaffMessage>Sed lobortis nisi</StaffMessage>
+          <GuestMessage>
+            Sed nec nunc sapien. Sed vel vulputate erat.
+          </GuestMessage>
+          <StaffMessage>
+            Vestibulum tincidunt elit nulla, vitae sollicitudin risus lacinia
+            commodo. Fusce pulvinar vel nunc non ornare. Duis vulputate placerat
+            iaculis. Donec facilisis, arcu in fringilla congue, sapien risus
+            viverra nibh, eget porta justo libero non est. Proin nec ex semper,
+            sagittis nunc fringilla, accumsan diam. Nunc blandit arcu at
+            efficitur lobortis. Cras et lacinia arcu, at fermentum libero. Etiam
+            convallis quis ligula vel varius. Praesent eu nulla lacinia, egestas
+            sapien eget, porta nunc. Cras condimentum mauris ac erat
+            ullamcorper, sit amet tempor ex semper. Quisque ullamcorper blandit
+            magna, ac rhoncus libero cursus dapibus. Aenean aliquet nulla
+            laoreet, rutrum risus sed, fermentum augue. Quisque congue diam eget
+            arcu ullamcorper, in tristique nisi lobortis. Vivamus ullamcorper
+            enim sit amet interdum dictum. Phasellus lobortis orci ac velit
+            accumsan commodo.
+          </StaffMessage>
+          <StaffMessage>
+            Nullam in nisi in eros convallis eleifend et posuere orci. Duis non
+            tincidunt diam, non pretium diam. Vivamus ante velit, pharetra
+            congue dignissim in, iaculis eu nisi. Duis sed dictum risus, ut
+            laoreet risus. Proin ut nisi dui. Aenean nec volutpat ex. Nullam
+            arcu libero, sollicitudin et tincidunt nec, porttitor interdum ex.
+            Aenean sagittis lobortis vestibulum. Phasellus dignissim ultricies
+            felis.
+          </StaffMessage>
+          <StaffMessage>
+            Morbi faucibus, orci facilisis ullamcorper tincidunt, odio ipsum
+            pulvinar quam, a euismod velit purus sit amet mi. Sed venenatis
+            nibh.
+          </StaffMessage>
         </Chat>
       )}
     </ChatDemoLayout>
+  )
+}
+
+function Chat({ children, newSince }) {
+  const displayMessages = React.Children.toArray(children)
+  if (newSince) displayMessages.splice(newSince * -1, 0, <NewBelow />)
+  return (
+    <ChatContainer>
+      {displayMessages}
+      <UserInputSection>
+        <TextField
+          id="user-input"
+          label="Chat with us"
+          placeholder="Hi, I would like to"
+          multiline
+          margin="dense"
+          variant="outlined"
+        />
+        <StyledIconButton>
+          <SendIcon />
+        </StyledIconButton>
+      </UserInputSection>
+    </ChatContainer>
   )
 }
