@@ -16,7 +16,7 @@ const ChatDemoLayout = styled.div.attrs({
 })`
   && {
     display: grid;
-    grid-template-columns: 1fr minmax(60%, 60rem) 1fr;
+    grid-template-columns: 1fr minmax(60rem, 80%) 1fr;
     height: calc(100% - 4rem);
     width: 100%;
     justify-content: center;

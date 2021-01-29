@@ -25,7 +25,7 @@ const StyledBottomNavigation = styled(BottomNavigation)`
 `
 
 export default function SimpleBottomNavigation({ openPage }) {
-  const [value, setValue] = React.useState(0)
+  const [value, setValue] = React.useState(null)
 
   return (
     <StyledBottomNavigation
@@ -46,7 +46,11 @@ export default function SimpleBottomNavigation({ openPage }) {
       />
       <BottomNavigationAction
         label="Chat"
-        icon={<ChatIcon />}
+        icon={
+          <Badge badgeContent={3} color="secondary">
+            <ChatIcon />
+          </Badge>
+        }
         onClick={() => openPage('chat')}
       />
       <BottomNavigationAction
