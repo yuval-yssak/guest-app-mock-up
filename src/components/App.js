@@ -21,10 +21,6 @@ const scaleFrom0 = keyframes`
   transform:scale(0);
 }
 
-20% {
-  transform:scale(0);
-}
-
 100% {
   transform:scale(1);
 }`
@@ -55,7 +51,7 @@ const Background = styled.div.attrs({ className: 'background' })`
     background-size: 100% 100%;
     width: 100%;
     height: 100%;
-    animation: ${scaleFrom0} 3s cubic-bezier(0.83, 0, 0.17, 1);
+    animation: ${scaleFrom0} 1.6s cubic-bezier(0.83, 0, 0.17, 1);
     transition: opacity 1s cubic-bezier(0.83, 0, 0.17, 1);
     opacity: 0.1;
   }
@@ -63,13 +59,13 @@ const Background = styled.div.attrs({ className: 'background' })`
 
 const AnimatedBottomNavigation = styled(SimpleBottomNavigation)`
   & button:nth-of-type(1) {
-    animation: ${dance} 0.15s 3s;
+    animation: ${dance} 0.15s 1s;
   }
   & button:nth-of-type(2) {
-    animation: ${dance} 0.15s 3.35s;
+    animation: ${dance} 0.15s 1.35s;
   }
   & button:nth-of-type(3) {
-    animation: ${dance} 0.15s 3.5s;
+    animation: ${dance} 0.15s 1.5s;
   }
 
   & button {
