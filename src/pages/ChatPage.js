@@ -19,6 +19,10 @@ dayjs.extend(relativeTime)
 const breakpointScenarioSideDisplay = '(max-width: 87em)'
 const breakpointFullLine = '(max-width: 26.25em)'
 
+const guestPhoto = './images/fake-avatar.jpg'
+const staff1Photo = './images/pranava-chaitanya.jpg'
+const staff2Photo = './images/iswara-chaitanya.jpg'
+
 const ChatDemoLayout = styled.div.attrs({
   className: 'chat-demo-layout'
 })`
@@ -102,17 +106,19 @@ const UserInputSection = styled.section.attrs({
   }
 `
 
-const StaffMessage = styled.section.attrs({ className: 'staff-message' })`
+const StaffMessageContainer = styled.section.attrs({
+  className: 'staff-message'
+})`
   justify-self: start;
   grid-column: 1 / 8;
-  padding: 1rem;
-  background-color: ${({ theme }) => theme.palette.primary.main};
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  color: ${({ theme }) => theme.palette.primary.contrastText};
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  align-items: start;
+  grid-gap: 0.5rem;
 
   @media ${breakpointFullLine} {
     grid-column: 1 / -1;
+    grid-template-columns: minmax(min-content, max-content);
   }
 `
 
@@ -122,7 +128,7 @@ const GuestMessageContainer = styled.section.attrs({
   justify-self: end;
   grid-column: 2 / 9;
   display: grid;
-  grid-template-columns: min-content 1fr;
+  grid-template-columns: 1fr min-content;
   align-items: start;
   grid-gap: 0.5rem;
 
@@ -138,6 +144,17 @@ const StyledGuestMessage = styled.div.attrs({
   padding: 1rem;
   background-color: ${({ theme }) => theme.palette.background.paper};
   color: ${({ theme }) => theme.palette.text.primary};
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  text-align: right;
+`
+
+const StyledStaffMessage = styled.div.attrs({
+  className: 'staff-message-frame'
+})`
+  padding: 1rem;
+  background-color: ${({ theme }) => theme.palette.primary.main};
+  color: ${({ theme }) => theme.palette.primary.contrastText};
   border: 1px solid #ddd;
   border-radius: 0.5rem;
   text-align: right;
@@ -201,7 +218,6 @@ function GuestMessage({ children, className, name, src, time }) {
         </>
       ) : (
         <>
-          <StyledAvatar alt="user avatar" src={src} />
           <StyledGuestMessage className={className}>
             <MessageHead>
               <Typography className="message-name">{name}</Typography>
@@ -211,12 +227,48 @@ function GuestMessage({ children, className, name, src, time }) {
             </MessageHead>
             {children}
           </StyledGuestMessage>
+          <StyledAvatar alt="user avatar" src={src} />
         </>
       )}
     </GuestMessageContainer>
   )
 }
 
+function StaffMessage({ children, className, name, src, time }) {
+  const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
+
+  return (
+    <StaffMessageContainer>
+      {avatarInFrame ? (
+        <>
+          <StyledStaffMessage className={className}>
+            <MessageHead>
+              <Typography className="message-name">{name}</Typography>
+              <StyledAvatar alt="user avatar" src={src} />
+              <Typography className="message-time" variant="body2">
+                {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
+              </Typography>
+            </MessageHead>
+            {children}
+          </StyledStaffMessage>
+        </>
+      ) : (
+        <>
+          <StyledAvatar alt="user avatar" src={src} />
+          <StyledStaffMessage className={className}>
+            <MessageHead>
+              <Typography className="message-name">{name}</Typography>
+              <Typography className="message-time" variant="body2">
+                {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
+              </Typography>
+            </MessageHead>
+            {children}
+          </StyledStaffMessage>
+        </>
+      )}
+    </StaffMessageContainer>
+  )
+}
 const NewBelow = styled.div.attrs({
   children: <Typography variant="subtitle2">New</Typography>
 })`
@@ -333,7 +385,11 @@ export default function ChatPage() {
       {scenario === 'empty' && <Chat />}
       {scenario === 'staff initiated 1 message, unread' && (
         <Chat newSince={1}>
-          <StaffMessage>
+          <StaffMessage
+            src={staff1Photo}
+            name="Pranava Chaitanya"
+            time={dayjs().subtract(9, 'minutes')}
+          >
             Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             Distinctio, aspernatur vitae dignissimos, unde beatae, non possimus
             doloremque quod animi earum sint sit doloribus sed iste facilis in
@@ -343,7 +399,11 @@ export default function ChatPage() {
       )}
       {scenario === 'staff initiated 1 message, read' && (
         <Chat>
-          <StaffMessage>
+          <StaffMessage
+            src={staff2Photo}
+            name="Iswara Chaitanya"
+            time={dayjs().subtract(3, 'days')}
+          >
             Lorem ipsum dolor sit, amet consectetur adipisicing elit.
             Distinctio, aspernatur vitae dignissimos, unde beatae, non possimus
             doloremque quod animi earum sint sit doloribus sed iste facilis in
@@ -354,7 +414,7 @@ export default function ChatPage() {
       {scenario === 'guest initiated 1 message' && (
         <Chat>
           <GuestMessage
-            src="./images/fake-avatar.jpg"
+            src={guestPhoto}
             name="Adriel Steuber"
             time={dayjs()
               .subtract(1, 'days')
@@ -371,9 +431,15 @@ export default function ChatPage() {
       )}
       {scenario === 'guest and staff talking 10 messages over 2 days' && (
         <Chat newSince={2}>
-          <StaffMessage>Lorem ipsum dolor sit</StaffMessage>
+          <StaffMessage
+            src={staff1Photo}
+            name="Pranava Chaitanya"
+            time={dayjs().subtract(10, 'hours').minute(5).second(30)}
+          >
+            Lorem ipsum dolor sit
+          </StaffMessage>
           <GuestMessage
-            src="./images/fake-avatar.jpg"
+            src={guestPhoto}
             name="Adriel Steuber"
             time={dayjs().subtract(10, 'hours').minute(11).second(42)}
           >
@@ -389,18 +455,32 @@ export default function ChatPage() {
             lacinia eu. Curabitur tempor, leo id congue finibus, ligula orci
             sagittis leo, id laoreet dui neque nec arcu.
           </GuestMessage>
-          <StaffMessage>
+          <StaffMessage
+            src={staff1Photo}
+            name="Pranava Chaitanya"
+            time={dayjs().subtract(2, 'hours').add(45, 'minutes')}
+          >
             Vivamus vel metus tellus. Vivamus ut placerat nunc. Donec in quam.
           </StaffMessage>
-          <StaffMessage>Sed lobortis nisi</StaffMessage>
+          <StaffMessage
+            src={staff2Photo}
+            name="Iswara Chaitanya"
+            time={dayjs().subtract(2, 'hours').add(46, 'minutes')}
+          >
+            Sed lobortis nisi
+          </StaffMessage>
           <GuestMessage
-            src="./images/fake-avatar.jpg"
+            src={guestPhoto}
             name="Adriel Steuber"
             time={dayjs().subtract(1, 'hour').add(5, 'minutes').minute(39)}
           >
             Sed nec nunc sapien. Sed vel vulputate erat.
           </GuestMessage>
-          <StaffMessage>
+          <StaffMessage
+            src={staff1Photo}
+            name="Pranava Chaitanya"
+            time={dayjs().subtract(20, 'minutes')}
+          >
             Vestibulum tincidunt elit nulla, vitae sollicitudin risus lacinia
             commodo. Fusce pulvinar vel nunc non ornare. Duis vulputate placerat
             iaculis. Donec facilisis, arcu in fringilla congue, sapien risus
@@ -416,7 +496,11 @@ export default function ChatPage() {
             enim sit amet interdum dictum. Phasellus lobortis orci ac velit
             accumsan commodo.
           </StaffMessage>
-          <StaffMessage>
+          <StaffMessage
+            src={staff1Photo}
+            name="Pranava Chaitanya"
+            time={dayjs().subtract(10, 'minutes')}
+          >
             Nullam in nisi in eros convallis eleifend et posuere orci. Duis non
             tincidunt diam, non pretium diam. Vivamus ante velit, pharetra
             congue dignissim in, iaculis eu nisi. Duis sed dictum risus, ut
@@ -425,7 +509,11 @@ export default function ChatPage() {
             Aenean sagittis lobortis vestibulum. Phasellus dignissim ultricies
             felis.
           </StaffMessage>
-          <StaffMessage>
+          <StaffMessage
+            src={staff2Photo}
+            name="Iswara Chaitanya"
+            time={dayjs().subtract(2, 'minutes')}
+          >
             Morbi faucibus, orci facilisis ullamcorper tincidunt, odio ipsum
             pulvinar quam, a euismod velit purus sit amet mi. Sed venenatis
             nibh.
