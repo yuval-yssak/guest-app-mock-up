@@ -16,7 +16,9 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
-const scenarioSideDisplayBreakpoint = '87em'
+const breakpointScenarioSideDisplay = '(max-width: 87em)'
+const breakpointFullLine = '(max-width: 26.25em)'
+
 const ChatDemoLayout = styled.div.attrs({
   className: 'chat-demo-layout'
 })`
@@ -28,7 +30,7 @@ const ChatDemoLayout = styled.div.attrs({
     justify-content: center;
     overflow-y: scroll;
 
-    @media (max-width: ${scenarioSideDisplayBreakpoint}) {
+    @media ${breakpointScenarioSideDisplay} {
       grid-template-columns: 80%;
       grid-template-rows: min-content 1fr;
       overflow-y: unset;
@@ -109,7 +111,7 @@ const StaffMessage = styled.section.attrs({ className: 'staff-message' })`
   border-radius: 0.5rem;
   color: ${({ theme }) => theme.palette.primary.contrastText};
 
-  @media (max-width: 26.25em) {
+  @media ${breakpointFullLine} {
     grid-column: 1 / -1;
   }
 `
@@ -124,7 +126,7 @@ const GuestMessageContainer = styled.section.attrs({
   align-items: start;
   grid-gap: 0.5rem;
 
-  @media (max-width: 26.25em) {
+  @media ${breakpointFullLine} {
     grid-column: 1 / -1;
     grid-template-columns: minmax(min-content, max-content);
   }
@@ -143,6 +145,11 @@ const StyledGuestMessage = styled.div.attrs({
 
 const StyledAvatar = styled(Avatar)`
   margin-top: 0.45rem;
+
+  @media ${breakpointFullLine} {
+    grid-area: 1 / 2 / 3 / -1;
+    margin-top: unset;
+  }
 `
 
 const MessageHead = styled.div`
@@ -151,15 +158,19 @@ const MessageHead = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(5rem, max-content));
   grid-column-gap: 1rem;
   justify-content: space-between;
-  opacity: 0.7;
   margin-bottom: 0.7rem;
 
   @media (max-width: 49em) {
     grid-template-columns: minmax(min-content, max-content);
   }
 
-  & > * {
+  @media ${breakpointFullLine} {
+    grid-template-columns: minmax(min-content, max-content) min-content;
+  }
+
+  & > p {
     text-align: left;
+    opacity: 0.7;
   }
 
   & .message-name {
@@ -167,23 +178,41 @@ const MessageHead = styled.div`
   }
   & .message-time {
     line-height: 1.73;
-    /* justify-self: end; */
   }
 `
 
 function GuestMessage({ children, className, name, src, time }) {
+  const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
+
   return (
     <GuestMessageContainer>
-      <StyledAvatar alt="user avatar" src={src} />
-      <StyledGuestMessage className={className}>
-        <MessageHead>
-          <Typography className="message-name">{name}</Typography>
-          <Typography className="message-time" variant="body2">
-            {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
-          </Typography>
-        </MessageHead>
-        {children}
-      </StyledGuestMessage>
+      {avatarInFrame ? (
+        <>
+          <StyledGuestMessage className={className}>
+            <MessageHead>
+              <Typography className="message-name">{name}</Typography>
+              <StyledAvatar alt="user avatar" src={src} />
+              <Typography className="message-time" variant="body2">
+                {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
+              </Typography>
+            </MessageHead>
+            {children}
+          </StyledGuestMessage>
+        </>
+      ) : (
+        <>
+          <StyledAvatar alt="user avatar" src={src} />
+          <StyledGuestMessage className={className}>
+            <MessageHead>
+              <Typography className="message-name">{name}</Typography>
+              <Typography className="message-time" variant="body2">
+                {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
+              </Typography>
+            </MessageHead>
+            {children}
+          </StyledGuestMessage>
+        </>
+      )}
     </GuestMessageContainer>
   )
 }
@@ -193,7 +222,7 @@ const NewBelow = styled.div.attrs({
 })`
   display: grid;
   grid-template-columns: max-content 1fr;
-  grid-column: 1 / -1;
+  grid-column: 1 / 8;
   position: relative;
   align-items: center;
   grid-gap: 0.5rem;
@@ -204,6 +233,11 @@ const NewBelow = styled.div.attrs({
   margin-bottom: calc(0.3rem - ${mainGridGap});
   margin-left: 0.5rem;
 
+  @media ${breakpointFullLine} {
+    grid-column: 1 / -1;
+  }
+
+  // horizontal line after the "New"
   &:after {
     content: '';
     height: 1px;
@@ -214,9 +248,7 @@ const NewBelow = styled.div.attrs({
 
 export default function ChatPage() {
   const [scenario, setScenario] = React.useState('none')
-  const shrinkScenarios = useMediaQuery(
-    `(max-width: ${scenarioSideDisplayBreakpoint})`
-  )
+  const shrinkScenarios = useMediaQuery(`${breakpointScenarioSideDisplay}`)
   const [showScenarios, setShowScenarios] = React.useState(false)
 
   const scenarios = [
