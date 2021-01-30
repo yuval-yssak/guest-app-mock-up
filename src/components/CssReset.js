@@ -25,10 +25,10 @@ export default createGlobalStyle`
    box-sizing: border-box;
 
 	@media (max-width:25em) {
-		font-size:85%;
+		font-size:90%;
 	}
 	@media (max-width:14em) {
-		font-size:75%;
+		font-size:80%;
 	}
 }
 
