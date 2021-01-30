@@ -117,58 +117,62 @@ const UserInputSection = styled.section.attrs({
   }
 `
 
-const StaffMessageContainer = styled.section.attrs({
+const MessageContainer = styled.section`
+  display: grid;
+  align-items: start;
+  grid-gap: 0.5rem;
+
+  @media ${breakpointFullLine} {
+    && {
+      grid-column: 1 / -1;
+      grid-template-columns: minmax(min-content, max-content);
+    }
+  }
+
+  &:hover {
+    & .message-head > p {
+      opacity: 1;
+      transform: translateX(2px);
+    }
+  }
+`
+
+const StaffMessageContainer = styled(MessageContainer).attrs({
   className: 'staff-message'
 })`
   justify-self: start;
   grid-column: 1 / 8;
-  display: grid;
   grid-template-columns: min-content 1fr;
-  align-items: start;
-  grid-gap: 0.5rem;
-
-  @media ${breakpointFullLine} {
-    grid-column: 1 / -1;
-    grid-template-columns: minmax(min-content, max-content);
-  }
 `
 
-const GuestMessageContainer = styled.section.attrs({
+const GuestMessageContainer = styled(MessageContainer).attrs({
   className: 'guest-message'
 })`
   justify-self: end;
   grid-column: 2 / 9;
-  display: grid;
   grid-template-columns: 1fr min-content;
-  align-items: start;
-  grid-gap: 0.5rem;
-
-  @media ${breakpointFullLine} {
-    grid-column: 1 / -1;
-    grid-template-columns: minmax(min-content, max-content);
-  }
 `
 
-const StyledGuestMessage = styled.div.attrs({
+const MessageFrame = styled.div`
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  padding: 1rem;
+`
+
+const GuestMessageFrame = styled(MessageFrame).attrs({
   className: 'guest-message-frame'
 })`
-  padding: 1rem;
   background-color: ${({ theme }) => theme.palette.background.paper};
   color: ${({ theme }) => theme.palette.text.primary};
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
   text-align: right;
 `
 
-const StyledStaffMessage = styled.div.attrs({
+const StaffMessageFrame = styled(MessageFrame).attrs({
   className: 'staff-message-frame'
 })`
-  padding: 1rem;
   background-color: ${({ theme }) => theme.palette.primary.main};
   color: ${({ theme }) => theme.palette.primary.contrastText};
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  text-align: right;
+  text-align: left;
 `
 
 const GuestAvatar = styled(Avatar)`
@@ -187,7 +191,7 @@ const StaffAvatar = styled(GuestAvatar)`
 `
 
 // top row of the message frame. Includes sender name and message date
-const GuestMessageHead = styled.div`
+const GuestMessageHead = styled.div.attrs({ className: 'message-head' })`
   display: grid;
   align-items: start;
   // display name along side time, time does not break into lines
@@ -210,6 +214,7 @@ const GuestMessageHead = styled.div`
   & > p {
     text-align: left;
     opacity: 0.7;
+    transition: all 0.08s;
   }
 
   & .message-name {
@@ -236,7 +241,7 @@ function GuestMessage({ children, className, name, src, time }) {
     <GuestMessageContainer>
       {avatarInFrame ? (
         <>
-          <StyledGuestMessage className={className}>
+          <GuestMessageFrame className={className}>
             <GuestMessageHead>
               <Typography className="message-name">{name}</Typography>
               <GuestAvatar alt="user avatar" src={src} />
@@ -245,11 +250,11 @@ function GuestMessage({ children, className, name, src, time }) {
               </Typography>
             </GuestMessageHead>
             {children}
-          </StyledGuestMessage>
+          </GuestMessageFrame>
         </>
       ) : (
         <>
-          <StyledGuestMessage className={className}>
+          <GuestMessageFrame className={className}>
             <GuestMessageHead>
               <Typography className="message-name">{name}</Typography>
               <Typography className="message-time" variant="body2">
@@ -257,7 +262,7 @@ function GuestMessage({ children, className, name, src, time }) {
               </Typography>
             </GuestMessageHead>
             {children}
-          </StyledGuestMessage>
+          </GuestMessageFrame>
           <GuestAvatar alt="user avatar" src={src} />
         </>
       )}
@@ -272,7 +277,7 @@ function StaffMessage({ children, className, name, src, time }) {
     <StaffMessageContainer>
       {avatarInFrame ? (
         <>
-          <StyledStaffMessage className={className}>
+          <StaffMessageFrame className={className}>
             <StaffMessageHead>
               <Typography className="message-name">{name}</Typography>
               <StaffAvatar alt={`${name} photo`} src={src} />
@@ -281,12 +286,12 @@ function StaffMessage({ children, className, name, src, time }) {
               </Typography>
             </StaffMessageHead>
             {children}
-          </StyledStaffMessage>
+          </StaffMessageFrame>
         </>
       ) : (
         <>
           <StaffAvatar alt={`${name} photo`} src={src} />
-          <StyledStaffMessage className={className}>
+          <StaffMessageFrame className={className}>
             <GuestMessageHead>
               <Typography className="message-name">{name}</Typography>
               <Typography className="message-time" variant="body2">
@@ -294,7 +299,7 @@ function StaffMessage({ children, className, name, src, time }) {
               </Typography>
             </GuestMessageHead>
             {children}
-          </StyledStaffMessage>
+          </StaffMessageFrame>
         </>
       )}
     </StaffMessageContainer>
