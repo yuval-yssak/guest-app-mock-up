@@ -17,6 +17,8 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
 const breakpointScenarioSideDisplay = '(max-width: 87em)'
+
+// below this breakpoint the avatar enters the message frame
 const breakpointFullLine = '(max-width: 26.25em)'
 
 const guestPhoto = './images/fake-avatar.jpg'
@@ -94,6 +96,11 @@ const ChatContainer = styled(PageMainPaper).attrs({ className: 'chat' })`
     @media (max-width: 20em) {
       padding: 0;
     }
+
+    * p {
+      // prevent very long words or URLs from breaking the design
+      overflow-wrap: anywhere;
+    }
   }
 `
 
@@ -168,33 +175,35 @@ const GuestAvatar = styled(Avatar)`
   margin-top: 0.45rem;
 
   @media ${breakpointFullLine} {
-    grid-area: 1 / 2 / 3 / -1;
     margin-top: unset;
+    grid-area: 1 / 2 / 3 / -1; // take the entire left column
   }
 `
 
-const StaffAvatar = styled(Avatar)`
-  margin-top: 0.45rem;
-
+const StaffAvatar = styled(GuestAvatar)`
   @media ${breakpointFullLine} {
-    grid-area: 1 / 1 / 3 / 2;
-    margin-top: unset;
+    grid-area: 1 / 1 / 3 / 2; // take the entire right column
   }
 `
 
+// top row of the message frame. Includes sender name and message date
 const GuestMessageHead = styled.div`
   display: grid;
   align-items: start;
-  grid-template-columns: repeat(auto-fit, minmax(5rem, max-content));
+  // display name along side time, time does not break into lines
+  grid-template-columns: 1fr max-content;
   grid-column-gap: 1rem;
   justify-content: space-between;
   margin-bottom: 0.7rem;
 
-  @media (max-width: 49em) {
+  @media (max-width: 51.4em) {
+    // adjust sender's name and message dates in separate rows
     grid-template-columns: minmax(min-content, max-content);
   }
 
   @media ${breakpointFullLine} {
+    // the message frame includes the avatar inside it.
+    // It is placed on the right, taking min-content.
     grid-template-columns: minmax(min-content, max-content) min-content;
   }
 
@@ -213,6 +222,8 @@ const GuestMessageHead = styled.div`
 
 const StaffMessageHead = styled(GuestMessageHead)`
   @media ${breakpointFullLine} {
+    // the message frame includes the avatar inside it.
+    // It is placed on the left, taking min-content.
     grid-template-columns: min-content minmax(min-content, max-content);
     justify-content: start;
   }
