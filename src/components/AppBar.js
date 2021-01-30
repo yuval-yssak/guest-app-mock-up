@@ -23,15 +23,6 @@ const PageTitle = styled(Typography)`
     font-size: 1.75rem;
     justify-self: start;
     margin-left: 0.5rem;
-
-    @media (max-width: 31em) {
-      font-size: 1.5rem;
-      /* font-weight: 800; */
-    }
-
-    @media (max-width: 22em) {
-      font-size: 1.2rem;
-    }
   }
 `
 

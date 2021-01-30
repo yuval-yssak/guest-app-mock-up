@@ -11,7 +11,12 @@ import RootRef from '@material-ui/core/RootRef'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
+import dayjs from 'dayjs'
 
+import relativeTime from 'dayjs/plugin/relativeTime'
+dayjs.extend(relativeTime)
+
+const scenarioSideDisplayBreakpoint = '87em'
 const ChatDemoLayout = styled.div.attrs({
   className: 'chat-demo-layout'
 })`
@@ -23,7 +28,7 @@ const ChatDemoLayout = styled.div.attrs({
     justify-content: center;
     overflow-y: scroll;
 
-    @media (max-width: 87em) {
+    @media (max-width: ${scenarioSideDisplayBreakpoint}) {
       grid-template-columns: 80%;
       grid-template-rows: min-content 1fr;
       overflow-y: unset;
@@ -75,6 +80,10 @@ const ChatContainer = styled(PageMainPaper).attrs({ className: 'chat' })`
     align-items: end;
     grid-template-columns: repeat(8, 1fr);
     overflow: scroll;
+
+    @media (max-width: 20em) {
+      padding: 0;
+    }
   }
 `
 
@@ -99,6 +108,10 @@ const StaffMessage = styled.section.attrs({ className: 'staff-message' })`
   border: 1px solid #ddd;
   border-radius: 0.5rem;
   color: ${({ theme }) => theme.palette.primary.contrastText};
+
+  @media (max-width: 26.25em) {
+    grid-column: 1 / -1;
+  }
 `
 
 const GuestMessageContainer = styled.section.attrs({
@@ -110,6 +123,11 @@ const GuestMessageContainer = styled.section.attrs({
   grid-template-columns: min-content 1fr;
   align-items: start;
   grid-gap: 0.5rem;
+
+  @media (max-width: 26.25em) {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(min-content, max-content);
+  }
 `
 
 const StyledGuestMessage = styled.div.attrs({
@@ -127,11 +145,45 @@ const StyledAvatar = styled(Avatar)`
   margin-top: 0.45rem;
 `
 
-function GuestMessage({ children, className }) {
+const MessageHead = styled.div`
+  display: grid;
+  align-items: start;
+  grid-template-columns: repeat(auto-fit, minmax(5rem, max-content));
+  grid-column-gap: 1rem;
+  justify-content: space-between;
+  opacity: 0.7;
+  margin-bottom: 0.7rem;
+
+  @media (max-width: 49em) {
+    grid-template-columns: minmax(min-content, max-content);
+  }
+
+  & > * {
+    text-align: left;
+  }
+
+  & .message-name {
+    justify-self: start;
+  }
+  & .message-time {
+    line-height: 1.73;
+    /* justify-self: end; */
+  }
+`
+
+function GuestMessage({ children, className, name, src, time }) {
   return (
     <GuestMessageContainer>
-      <StyledAvatar alt="user avatar" src="./images/fake-avatar.jpg" />
-      <StyledGuestMessage className={className}>{children}</StyledGuestMessage>
+      <StyledAvatar alt="user avatar" src={src} />
+      <StyledGuestMessage className={className}>
+        <MessageHead>
+          <Typography className="message-name">{name}</Typography>
+          <Typography className="message-time" variant="body2">
+            {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
+          </Typography>
+        </MessageHead>
+        {children}
+      </StyledGuestMessage>
     </GuestMessageContainer>
   )
 }
@@ -160,9 +212,11 @@ const NewBelow = styled.div.attrs({
   }
 `
 
-export default function ChatPage(props) {
+export default function ChatPage() {
   const [scenario, setScenario] = React.useState('none')
-  const shrinkScenarios = useMediaQuery('(max-width: 87em)')
+  const shrinkScenarios = useMediaQuery(
+    `(max-width: ${scenarioSideDisplayBreakpoint})`
+  )
   const [showScenarios, setShowScenarios] = React.useState(false)
 
   const scenarios = [
@@ -266,7 +320,15 @@ export default function ChatPage(props) {
       )}
       {scenario === 'guest initiated 1 message' && (
         <Chat>
-          <GuestMessage>
+          <GuestMessage
+            src="./images/fake-avatar.jpg"
+            name="Adriel Steuber"
+            time={dayjs()
+              .subtract(1, 'days')
+              .add(5, 'hours')
+              .minute(31)
+              .second(4)}
+          >
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi velit,
             aliquam minima numquam alias officiis accusamus aut? Sequi atque
             nihil blanditiis voluptatem rerum deserunt quo, alias itaque tempora
@@ -277,7 +339,11 @@ export default function ChatPage(props) {
       {scenario === 'guest and staff talking 10 messages over 2 days' && (
         <Chat newSince={2}>
           <StaffMessage>Lorem ipsum dolor sit</StaffMessage>
-          <GuestMessage>
+          <GuestMessage
+            src="./images/fake-avatar.jpg"
+            name="Adriel Steuber"
+            time={dayjs().subtract(10, 'hours').minute(11).second(42)}
+          >
             Proin interdum mi non mi consequat, nec commodo odio tempor. Donec
             aliquet pharetra sem non convallis. Morbi lobortis odio eget
             tristique scelerisque. Quisque pretium nec lorem eu sagittis. Nullam
@@ -294,7 +360,11 @@ export default function ChatPage(props) {
             Vivamus vel metus tellus. Vivamus ut placerat nunc. Donec in quam.
           </StaffMessage>
           <StaffMessage>Sed lobortis nisi</StaffMessage>
-          <GuestMessage>
+          <GuestMessage
+            src="./images/fake-avatar.jpg"
+            name="Adriel Steuber"
+            time={dayjs().subtract(1, 'hour').add(5, 'minutes').minute(39)}
+          >
             Sed nec nunc sapien. Sed vel vulputate erat.
           </GuestMessage>
           <StaffMessage>

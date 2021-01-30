@@ -16,6 +16,11 @@ const StyledBottomNavigation = styled(BottomNavigation)`
 
     & button {
       transition: all 0.3s;
+
+      @media (max-width: 19.25em) {
+        min-width: 60px;
+        padding: 0;
+      }
     }
     & button:hover {
       background-color: ${({ theme }) => theme.palette.primary.main};

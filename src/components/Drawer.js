@@ -3,6 +3,8 @@ import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import Divider from '@material-ui/core/Divider'
 import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import AnnouncementIcon from '@material-ui/icons/Announcement'
 import ChatIcon from '@material-ui/icons/Chat'
@@ -15,22 +17,25 @@ import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 
 const StyledList = styled(List)`
-  width: 15.625rem;
+  && {
+    width: 15.625rem;
+    padding-top: 0;
+  }
 `
 
-const StyledAvatar = styled(Avatar)`
-  margin: 0.7rem;
-`
 export default function TemporaryDrawer({ open, toggleDrawer, openPage }) {
   return (
     <div>
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
         <div role="navigation" onClick={toggleDrawer(false)}>
           <StyledList>
-            <StyledAvatar alt="user avatar" src="./images/fake-avatar.jpg" />
-          </StyledList>
-          <Divider />
-          <StyledList>
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar alt="user avatar" src="./images/fake-avatar.jpg" />
+              </ListItemAvatar>
+              <ListItemText primary="Adriel Steuber" />
+            </ListItem>
+            <Divider />
             <ListItem button onClick={() => openPage('announcements')}>
               <ListItemIcon>
                 <AnnouncementIcon />
