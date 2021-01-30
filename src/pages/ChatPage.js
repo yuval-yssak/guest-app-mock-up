@@ -321,6 +321,7 @@ export default function ChatPage() {
                 color={scenario === s.name ? 'primary' : 'default'}
                 variant="contained"
                 onClick={() => setScenario(s.name)}
+                key={s.name}
               >
                 {s.label}
               </Button>

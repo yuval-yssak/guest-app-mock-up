@@ -14,13 +14,27 @@ const StyledToolbar = styled(Toolbar)`
     grid-auto-flow: column;
     grid-template-columns: min-content 1fr min-content;
     justify-items: start;
+
+    @media screen and (max-width: 37.5em), screen and (max-height: 25em) {
+      min-height: 2.9rem;
+
+      & > * {
+        padding: 0.3rem;
+      }
+    }
+
+    @media screen and (max-width: 20em), screen and (max-height: 20em) {
+      & > * {
+        padding: 0 0.3rem;
+      }
+    }
   }
 `
 
 const PageTitle = styled(Typography)`
   && {
     text-align: center;
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     justify-self: start;
     margin-left: 0.5rem;
   }

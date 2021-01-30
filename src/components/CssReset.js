@@ -24,11 +24,17 @@ export default createGlobalStyle`
  html {
    box-sizing: border-box;
 
-	@media (max-width:25em) {
+	@media (max-width: 37.5em) {
 		font-size:90%;
 	}
-	@media (max-width:14em) {
+	@media (max-width: 30em) {
 		font-size:80%;
+	}
+	@media (max-width: 20em) {
+		font-size:70%;
+	}
+	@media (max-width: 17em) {
+		font-size:60%;
 	}
 }
 

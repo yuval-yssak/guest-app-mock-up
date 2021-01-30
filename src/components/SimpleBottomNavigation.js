@@ -2,10 +2,13 @@ import React from 'react'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import Badge from '@material-ui/core/Badge'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 import AnnouncementIcon from '@material-ui/icons/Announcement'
 import ChatIcon from '@material-ui/icons/Chat'
 import EventIcon from '@material-ui/icons/Event'
 import styled from 'styled-components'
+
+const breakpointSmallHeight = 'screen and (max-height: 20em)'
 
 const StyledBottomNavigation = styled(BottomNavigation)`
   && {
@@ -13,6 +16,11 @@ const StyledBottomNavigation = styled(BottomNavigation)`
       theme.palette.type === 'dark'
         ? theme.palette.background.default
         : theme.palette.grey['50']};
+    height: unset;
+
+    & .MuiBottomNavigationAction-label.MuiBottomNavigationAction-iconOnly {
+      display: none;
+    }
 
     & button {
       transition: all 0.3s;
@@ -30,6 +38,7 @@ const StyledBottomNavigation = styled(BottomNavigation)`
 `
 
 export default function SimpleBottomNavigation({ openPage, className }) {
+  const smallDeviceHeight = useMediaQuery(breakpointSmallHeight)
   const [value, setValue] = React.useState(null)
 
   return (
@@ -39,7 +48,7 @@ export default function SimpleBottomNavigation({ openPage, className }) {
       onChange={(event, newValue) => {
         setValue(newValue)
       }}
-      showLabels
+      showLabels={!smallDeviceHeight}
     >
       <BottomNavigationAction
         label="Announcements"
