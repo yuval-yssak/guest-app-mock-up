@@ -87,6 +87,10 @@ const ChatContainer = styled(PageMainPaper).attrs({ className: 'chat' })`
     grid-template-columns: repeat(8, 1fr);
     overflow: scroll;
 
+    @media (max-width: 50em) {
+      padding: 1rem 1.5rem;
+    }
+
     @media (max-width: 20em) {
       padding: 0;
     }
@@ -160,7 +164,7 @@ const StyledStaffMessage = styled.div.attrs({
   text-align: right;
 `
 
-const StyledAvatar = styled(Avatar)`
+const GuestAvatar = styled(Avatar)`
   margin-top: 0.45rem;
 
   @media ${breakpointFullLine} {
@@ -169,7 +173,16 @@ const StyledAvatar = styled(Avatar)`
   }
 `
 
-const MessageHead = styled.div`
+const StaffAvatar = styled(Avatar)`
+  margin-top: 0.45rem;
+
+  @media ${breakpointFullLine} {
+    grid-area: 1 / 1 / 3 / 2;
+    margin-top: unset;
+  }
+`
+
+const GuestMessageHead = styled.div`
   display: grid;
   align-items: start;
   grid-template-columns: repeat(auto-fit, minmax(5rem, max-content));
@@ -198,6 +211,13 @@ const MessageHead = styled.div`
   }
 `
 
+const StaffMessageHead = styled(GuestMessageHead)`
+  @media ${breakpointFullLine} {
+    grid-template-columns: min-content minmax(min-content, max-content);
+    justify-content: start;
+  }
+`
+
 function GuestMessage({ children, className, name, src, time }) {
   const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
 
@@ -206,28 +226,28 @@ function GuestMessage({ children, className, name, src, time }) {
       {avatarInFrame ? (
         <>
           <StyledGuestMessage className={className}>
-            <MessageHead>
+            <GuestMessageHead>
               <Typography className="message-name">{name}</Typography>
-              <StyledAvatar alt="user avatar" src={src} />
+              <GuestAvatar alt="user avatar" src={src} />
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
               </Typography>
-            </MessageHead>
+            </GuestMessageHead>
             {children}
           </StyledGuestMessage>
         </>
       ) : (
         <>
           <StyledGuestMessage className={className}>
-            <MessageHead>
+            <GuestMessageHead>
               <Typography className="message-name">{name}</Typography>
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
               </Typography>
-            </MessageHead>
+            </GuestMessageHead>
             {children}
           </StyledGuestMessage>
-          <StyledAvatar alt="user avatar" src={src} />
+          <GuestAvatar alt="user avatar" src={src} />
         </>
       )}
     </GuestMessageContainer>
@@ -242,26 +262,26 @@ function StaffMessage({ children, className, name, src, time }) {
       {avatarInFrame ? (
         <>
           <StyledStaffMessage className={className}>
-            <MessageHead>
+            <StaffMessageHead>
               <Typography className="message-name">{name}</Typography>
-              <StyledAvatar alt="user avatar" src={src} />
+              <StaffAvatar alt={`${name} photo`} src={src} />
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
               </Typography>
-            </MessageHead>
+            </StaffMessageHead>
             {children}
           </StyledStaffMessage>
         </>
       ) : (
         <>
-          <StyledAvatar alt="user avatar" src={src} />
+          <StaffAvatar alt={`${name} photo`} src={src} />
           <StyledStaffMessage className={className}>
-            <MessageHead>
+            <GuestMessageHead>
               <Typography className="message-name">{name}</Typography>
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
               </Typography>
-            </MessageHead>
+            </GuestMessageHead>
             {children}
           </StyledStaffMessage>
         </>
