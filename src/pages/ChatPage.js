@@ -35,16 +35,16 @@ const ChatDemoLayout = styled.div.attrs({
     width: 100%;
     justify-content: center;
     overflow-y: scroll;
+    height: 100%;
+    align-self: start;
 
     @media ${breakpointScenarioSideDisplay} {
       grid-template-columns: 80%;
       grid-template-rows: min-content 1fr;
-      overflow-y: unset;
 
       & > aside {
         grid-auto-flow: column;
         max-width: unset;
-        margin-top: -2rem;
         grid-gap: 1rem;
         height: 3rem;
       }
@@ -76,18 +76,28 @@ const SideTitle = styled(Typography).attrs({
 const StyledIconButton = styled(IconButton)`
   && {
     align-self: end;
-    margin-bottom: 0.3125rem;
   }
 `
 
-const ChatContainer = styled(PageMainPaper).attrs({ className: 'chat' })`
+const ChatContainer = styled.div.attrs({ className: 'chat' })`
+  display: grid;
+  grid-template-rows: 1fr max-content;
+  overflow: hidden;
+
+  * p {
+    // prevent very long words or URLs from breaking the design
+    overflow-wrap: anywhere;
+  }
+`
+
+const MessagesScrollable = styled(PageMainPaper).attrs({
+  className: 'messages-scrollable'
+})`
   && {
-    height: 100%;
-    max-width: unset;
-    grid-template-rows: 1fr;
-    align-items: end;
     grid-template-columns: repeat(8, 1fr);
+    align-items: end;
     overflow: scroll;
+    max-width: unset;
 
     @media (max-width: 50em) {
       padding: 1rem 1.5rem;
@@ -95,11 +105,6 @@ const ChatContainer = styled(PageMainPaper).attrs({ className: 'chat' })`
 
     @media (max-width: 20em) {
       padding: 0;
-    }
-
-    * p {
-      // prevent very long words or URLs from breaking the design
-      overflow-wrap: anywhere;
     }
   }
 `
@@ -565,7 +570,7 @@ function Chat({ children, newSince }) {
   if (newSince) displayMessages.splice(newSince * -1, 0, <NewBelow />)
   return (
     <ChatContainer>
-      {displayMessages}
+      <MessagesScrollable>{displayMessages}</MessagesScrollable>
       <UserInputSection>
         <TextField
           id="user-input"

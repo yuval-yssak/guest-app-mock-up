@@ -17,6 +17,15 @@ const StyledAccordionDetails = styled(AccordionDetails)`
   }
 `
 
+const ScrollablePageMainPaper = styled(PageMainPaper).attrs({
+  className: 'scrollable'
+})`
+  && {
+    height: 100%;
+    overflow: scroll;
+  }
+`
+
 const Section = styled.section.attrs(({ $type }) => ({
   className: `${$type}-announcements`
 }))`
@@ -82,7 +91,7 @@ function Announcement({ idPrefix, summary, details, read }) {
 
 export default function AnnouncementsPage() {
   return (
-    <PageMainPaper role="article" elavation={2}>
+    <ScrollablePageMainPaper role="article" elavation={2}>
       <TempStyledTypography>Unread:</TempStyledTypography>
       <Section $type="unread">
         <Announcement
@@ -114,6 +123,6 @@ export default function AnnouncementsPage() {
           read
         />
       </Section>
-    </PageMainPaper>
+    </ScrollablePageMainPaper>
   )
 }

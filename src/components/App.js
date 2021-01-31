@@ -78,12 +78,6 @@ const AnimatedBottomNavigation = styled(SimpleBottomNavigation)`
   }
 `
 
-// sets the children to scroll
-const Scrollable = styled.div.attrs({ className: 'scrollable' })`
-  overflow-y: scroll;
-  height: 100%;
-`
-
 const Main = styled.main`
   display: grid;
   align-items: center;
@@ -160,23 +154,21 @@ export default function App() {
           <StyledPaper square>
             <AppBar toggleDrawer={toggleDrawer} pageTitle={getPageTitle()} />
             <Background>
-              <Scrollable>
-                <Main>
-                  {content === 'root' && <FloatingActionButtons />}
-                  {content === 'announcements' && <AnnouncementsPage />}
-                  {content === 'chat' && <ChatPage />}
-                  {content === 'info-section' && <div>Info Section Pages</div>}
-                  {content === 'map' && <div>Map</div>}
-                  {content === 'my-bookings' && <div>Account Details Page</div>}
-                  {content === 'settings' && (
-                    <SettingsPage
-                      darkTheme={darkTheme}
-                      setDarkTheme={setDarkTheme}
-                    />
-                  )}
-                  {content === 'activities' && <div>Activities Page</div>}
-                </Main>
-              </Scrollable>
+              <Main>
+                {content === 'root' && <FloatingActionButtons />}
+                {content === 'announcements' && <AnnouncementsPage />}
+                {content === 'chat' && <ChatPage />}
+                {content === 'info-section' && <div>Info Section Pages</div>}
+                {content === 'map' && <div>Map</div>}
+                {content === 'my-bookings' && <div>Account Details Page</div>}
+                {content === 'settings' && (
+                  <SettingsPage
+                    darkTheme={darkTheme}
+                    setDarkTheme={setDarkTheme}
+                  />
+                )}
+                {content === 'activities' && <div>Activities Page</div>}
+              </Main>
             </Background>
             <AnimatedBottomNavigation openPage={openPage} />
           </StyledPaper>
