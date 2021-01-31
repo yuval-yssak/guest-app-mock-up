@@ -25,20 +25,6 @@ const scaleFrom0 = keyframes`
   transform:scale(1);
 }`
 
-const dance = keyframes`
-0% {
-  transform: translateY(0) rotate(0);
-}
-
-70% {
-  transform: translateY(-2rem) rotate(20deg);
-}
-
-100% {
-  transform: translateY(0) rotate(0);
-}
-`
-
 const Background = styled.div.attrs({ className: 'background' })`
   height: 100%;
   position: relative;
@@ -53,21 +39,11 @@ const Background = styled.div.attrs({ className: 'background' })`
     height: 100%;
     animation: ${scaleFrom0} 1.6s cubic-bezier(0.83, 0, 0.17, 1);
     transition: opacity 1s cubic-bezier(0.83, 0, 0.17, 1);
-    opacity: 0.1;
+    opacity: ${({ theme }) => (theme.palette.type === 'dark' ? 0.08 : 0.1)};
   }
 `
 
 const AnimatedBottomNavigation = styled(SimpleBottomNavigation)`
-  & button:nth-of-type(1) {
-    animation: ${dance} 0.15s 1s;
-  }
-  & button:nth-of-type(2) {
-    animation: ${dance} 0.15s 1.35s;
-  }
-  & button:nth-of-type(3) {
-    animation: ${dance} 0.15s 1.5s;
-  }
-
   & button {
     transition: transform 0.2s cubic-bezier(0.37, 0, 0.63, 1);
     @media (hover: hover) {
@@ -97,6 +73,15 @@ export default function App() {
   const [darkTheme, setDarkTheme] = React.useState(false)
   const [open, setOpen] = React.useState(false)
   const [content, setContent] = React.useState('root')
+  const mainRef = React.createRef()
+
+  // focus on main (content area) once the page is switched over.
+  //
+  // This means that the user while hitting the tab key will bring the focus
+  // into the first focusable element within the content area.
+  React.useEffect(() => {
+    mainRef.current.focus()
+  }, [content, mainRef])
 
   function getPageTitle() {
     switch (content) {
@@ -154,7 +139,7 @@ export default function App() {
           <StyledPaper square>
             <AppBar toggleDrawer={toggleDrawer} pageTitle={getPageTitle()} />
             <Background>
-              <Main>
+              <Main ref={mainRef} tabIndex={-1}>
                 {content === 'root' && <FloatingActionButtons />}
                 {content === 'announcements' && <AnnouncementsPage />}
                 {content === 'chat' && <ChatPage />}

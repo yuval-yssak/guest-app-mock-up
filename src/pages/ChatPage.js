@@ -139,6 +139,9 @@ const MessageContainer = styled.section`
   }
 
   &:hover {
+    & .MuiAvatar-root {
+      transform: scale(1.2);
+    }
     & .message-head > p {
       opacity: 1;
       transform: translateX(2px);
@@ -163,7 +166,8 @@ const GuestMessageContainer = styled(MessageContainer).attrs({
 `
 
 const MessageFrame = styled.div`
-  border: 1px solid #ddd;
+  border: 1px solid
+    ${({ theme }) => (theme.palette.type === 'dark' ? '#888' : '#ddd')};
   border-radius: 0.5rem;
   padding: 1rem;
 `
@@ -179,13 +183,20 @@ const GuestMessageFrame = styled(MessageFrame).attrs({
 const StaffMessageFrame = styled(MessageFrame).attrs({
   className: 'staff-message-frame'
 })`
-  background-color: ${({ theme }) => theme.palette.primary.main};
-  color: ${({ theme }) => theme.palette.primary.contrastText};
+  background-color: ${({ theme }) =>
+    theme.palette.type === 'dark'
+      ? theme.palette.grey['700']
+      : theme.palette.grey['50']};
+  color: ${({ theme }) =>
+    theme.palette.type === 'dark'
+      ? '#fff'
+      : theme.palette.primary.contrastText};
   text-align: left;
 `
 
 const GuestAvatar = styled(Avatar)`
   margin-top: 0.45rem;
+  transition: all 0.2s;
 
   @media ${breakpointFullLine} {
     margin-top: unset;
@@ -245,6 +256,9 @@ const StaffMessageHead = styled(GuestMessageHead)`
 
 function GuestMessage({ children, className, name, src, time }) {
   const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
+
+  setInterval(forceUpdate, 6e3)
 
   return (
     <GuestMessageContainer>
@@ -252,8 +266,12 @@ function GuestMessage({ children, className, name, src, time }) {
         <>
           <GuestMessageFrame className={className}>
             <GuestMessageHead>
-              <Typography className="message-name">{name}</Typography>
-              <GuestAvatar alt="user avatar" src={src} />
+              <Typography className="message-name"></Typography>
+              <GuestAvatar
+                className="guest-avatar"
+                alt="user avatar"
+                src={src}
+              />
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
               </Typography>
@@ -265,14 +283,14 @@ function GuestMessage({ children, className, name, src, time }) {
         <>
           <GuestMessageFrame className={className}>
             <GuestMessageHead>
-              <Typography className="message-name">{name}</Typography>
+              <Typography className="message-name"></Typography>
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
               </Typography>
             </GuestMessageHead>
             {children}
           </GuestMessageFrame>
-          <GuestAvatar alt="user avatar" src={src} />
+          <GuestAvatar className="guest-avatar" alt="user avatar" src={src} />
         </>
       )}
     </GuestMessageContainer>
@@ -281,6 +299,10 @@ function GuestMessage({ children, className, name, src, time }) {
 
 function StaffMessage({ children, className, name, src, time }) {
   const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
+
+  // update component every minute
+  setInterval(forceUpdate, 6e3)
 
   return (
     <StaffMessageContainer>
@@ -289,7 +311,11 @@ function StaffMessage({ children, className, name, src, time }) {
           <StaffMessageFrame className={className}>
             <StaffMessageHead>
               <Typography className="message-name">{name}</Typography>
-              <StaffAvatar alt={`${name} photo`} src={src} />
+              <StaffAvatar
+                className="staff-avatar"
+                alt={`${name} photo`}
+                src={src}
+              />
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
               </Typography>
@@ -299,7 +325,11 @@ function StaffMessage({ children, className, name, src, time }) {
         </>
       ) : (
         <>
-          <StaffAvatar alt={`${name} photo`} src={src} />
+          <StaffAvatar
+            className="guest-avatar"
+            alt={`${name} photo`}
+            src={src}
+          />
           <StaffMessageFrame className={className}>
             <GuestMessageHead>
               <Typography className="message-name">{name}</Typography>
@@ -324,10 +354,8 @@ const NewBelow = styled.div.attrs({
   position: relative;
   align-items: center;
   grid-gap: 0.5rem;
-  color: ${({ theme }) =>
-    theme.palette.type === 'dark'
-      ? theme.palette.error.light
-      : theme.palette.error.dark};
+
+  color: ${({ theme }) => theme.palette.warning.main};
   margin-bottom: calc(0.3rem - ${mainGridGap});
   margin-left: 0.5rem;
 
@@ -571,8 +599,25 @@ export default function ChatPage() {
 }
 
 function Chat({ children, newSince }) {
+  const [userInput, setUserInput] = React.useState('')
   const dividerRef = React.useRef()
   const messagesParentRef = React.useRef()
+  const userInputRef = React.createRef()
+  const [statefulMessages, setStatefulMessages] = React.useState()
+
+  // manage local state
+  React.useEffect(() => {
+    const displayMessages = React.Children.toArray(children)
+
+    if (newSince)
+      displayMessages.splice(
+        newSince * -1,
+        0,
+        <NewBelow key="unread-divider" ref={dividerRef} />
+      )
+
+    setStatefulMessages(displayMessages)
+  }, [newSince, children])
 
   // show last read message or first unread messages
   React.useEffect(() => {
@@ -581,16 +626,31 @@ function Chat({ children, newSince }) {
       messagesParentRef.current
         ?.querySelector('section:last-child')
         ?.scrollIntoView()
-  }, [newSince])
+  }, [statefulMessages, newSince])
 
-  const displayMessages = React.Children.toArray(children)
-  if (newSince)
-    displayMessages.splice(newSince * -1, 0, <NewBelow ref={dividerRef} />)
+  // once user input is changed, focus back on the text area.
+  React.useEffect(() => {
+    userInputRef.current.querySelector('textarea')?.focus()
+  }, [userInput, userInputRef])
+
+  function submitMessage() {
+    // insert the user input as a guest message
+    setStatefulMessages(
+      statefulMessages.concat(
+        <GuestMessage src={guestPhoto} name="Adriel Steuber" time={dayjs()}>
+          {userInput}
+        </GuestMessage>
+      )
+    )
+
+    // clear the text area for new input.
+    setUserInput('')
+  }
 
   return (
     <ChatContainer>
       <MessagesScrollable ref={messagesParentRef}>
-        {displayMessages}
+        {statefulMessages}
       </MessagesScrollable>
       <UserInputSection>
         <TextField
@@ -600,8 +660,11 @@ function Chat({ children, newSince }) {
           multiline
           margin="dense"
           variant="outlined"
+          value={userInput}
+          onChange={e => setUserInput(e.target.value)}
+          ref={userInputRef}
         />
-        <StyledIconButton>
+        <StyledIconButton onClick={submitMessage}>
           <SendIcon />
         </StyledIconButton>
       </UserInputSection>
