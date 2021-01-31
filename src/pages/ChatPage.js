@@ -106,6 +106,10 @@ const MessagesScrollable = styled(PageMainPaper).attrs({
     @media (max-width: 20em) {
       padding: 0;
     }
+
+    & > section:last-child {
+      padding-bottom: 2rem;
+    }
   }
 `
 
@@ -311,6 +315,7 @@ function StaffMessage({ children, className, name, src, time }) {
   )
 }
 const NewBelow = styled.div.attrs({
+  className: 'unread-messages-divider',
   children: <Typography variant="subtitle2">New</Typography>
 })`
   display: grid;
@@ -335,7 +340,7 @@ const NewBelow = styled.div.attrs({
     content: '';
     height: 1px;
     background-color: currentColor;
-    width: calc(100% - 0.5rem);
+    width: 100%;
   }
 `
 
@@ -566,11 +571,27 @@ export default function ChatPage() {
 }
 
 function Chat({ children, newSince }) {
+  const dividerRef = React.useRef()
+  const messagesParentRef = React.useRef()
+
+  // show last read message or first unread messages
+  React.useEffect(() => {
+    if (newSince) dividerRef.current?.scrollIntoView()
+    else
+      messagesParentRef.current
+        ?.querySelector('section:last-child')
+        ?.scrollIntoView()
+  }, [newSince])
+
   const displayMessages = React.Children.toArray(children)
-  if (newSince) displayMessages.splice(newSince * -1, 0, <NewBelow />)
+  if (newSince)
+    displayMessages.splice(newSince * -1, 0, <NewBelow ref={dividerRef} />)
+
   return (
     <ChatContainer>
-      <MessagesScrollable>{displayMessages}</MessagesScrollable>
+      <MessagesScrollable ref={messagesParentRef}>
+        {displayMessages}
+      </MessagesScrollable>
       <UserInputSection>
         <TextField
           id="user-input"
