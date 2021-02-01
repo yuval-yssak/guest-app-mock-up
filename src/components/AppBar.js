@@ -3,10 +3,10 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
-import SearchIcon from '@material-ui/icons/Search'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import Typography from '@material-ui/core/Typography'
 import styled from 'styled-components'
+import DarkModeSwitch from '../components/DarkModeSwitch'
 
 const StyledToolbar = styled(Toolbar)`
   && {
@@ -55,9 +55,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
           </IconButton>
           <PageTitle component="h1">{pageTitle}</PageTitle>
 
-          <IconButton aria-label="search" color="inherit">
-            <SearchIcon />
-          </IconButton>
+          <DarkModeSwitch />
           <IconButton
             aria-label="display more actions"
             edge="end"
