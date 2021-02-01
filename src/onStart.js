@@ -1,4 +1,4 @@
-import { reaction, autorun } from 'mobx'
+import { reaction } from 'mobx'
 
 export default function onStart(rootStore) {
   // whenever the view changes - push to browser history

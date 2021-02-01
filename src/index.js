@@ -5,10 +5,11 @@ import { Store } from './models/Store'
 import { Provider } from './models/reactHook'
 import App from './components/App'
 import onStart from './onStart'
+import defaultStore from './defaultStore'
 
 const rootElement = document.getElementById('root')
 
-let rootStore = Store.create()
+let rootStore = Store.create(defaultStore)
 
 window.store = rootStore
 
@@ -27,7 +28,7 @@ try {
   render()
 
   if (module.hot) {
-    module.hot.accept(['./models/View'], () => {
+    module.hot.accept(['./models/Store'], () => {
       // Store definition changed, recreate a new one from old state
       window.store = rootStore = Store.create(getSnapshot(rootStore))
     })

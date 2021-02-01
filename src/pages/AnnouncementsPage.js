@@ -1,4 +1,5 @@
 import React from 'react'
+import { observer } from 'mobx-react-lite'
 import Accordion from '@material-ui/core/Accordion'
 import AccordionSummary from '@material-ui/core/AccordionSummary'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
@@ -9,6 +10,8 @@ import Button from '@material-ui/core/Button'
 
 import styled from 'styled-components'
 import PageMainPaper from '../components/PageMainPaper'
+
+import { useMst } from '../models/reactHook'
 
 const StyledAccordionDetails = styled(AccordionDetails)`
   && {
@@ -56,9 +59,10 @@ const StyledAccordionSummary = styled(AccordionSummary)`
   }
 `
 
-function Announcement({ idPrefix, summary, details, read }) {
-  const [expanded, setExpanded] = React.useState(false)
-
+function Announcement({ id, summary, details, timestamp, status }) {
+  const { announcements } = useMst()
+  const [expanded, setExpanded] = React.useState(status === 'unread')
+  console.log('ann', status)
   return (
     <Accordion
       expanded={expanded}
@@ -66,8 +70,8 @@ function Announcement({ idPrefix, summary, details, read }) {
     >
       <StyledAccordionSummary
         expandIcon={<ExpandMoreIcon />}
-        aria-controls={`${idPrefix}-content`}
-        id={`${idPrefix}-header`}
+        aria-controls={`${id}-content`}
+        id={`${id}-header`}
         $expanded={expanded}
       >
         <Typography>{summary}</Typography>
@@ -79,8 +83,13 @@ function Announcement({ idPrefix, summary, details, read }) {
         <Button variant="outlined" size="small">
           Respond
         </Button>
-        {!read && (
-          <Button variant="outlined" size="small" color="primary">
+        {status === 'unread' && (
+          <Button
+            variant="outlined"
+            size="small"
+            color="primary"
+            onClick={() => announcements.announcementById(id).toggle()}
+          >
             Confirm
           </Button>
         )}
@@ -89,40 +98,24 @@ function Announcement({ idPrefix, summary, details, read }) {
   )
 }
 
-export default function AnnouncementsPage() {
+const getAnnouncementComponent = announcement => (
+  <Announcement {...announcement} key={announcement.id} />
+)
+
+function AnnouncementsPage() {
+  const { announcements } = useMst()
   return (
-    <ScrollablePageMainPaper role="article" elavation={2}>
+    <ScrollablePageMainPaper role="article" elevation={0}>
       <TempStyledTypography>Unread:</TempStyledTypography>
       <Section $type="unread">
-        <Announcement
-          idPrefix="message-1"
-          summary="New sanitization station near the bay west platform"
-          details="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non
-              assumenda facilis quidem. Nostrum architecto cumque qui! Tempore
-              deserunt libero, temporibus quis corrupti eveniet, ipsa minus
-              exercitationem itaque in, nobis veniam?"
-        />
-        <Announcement
-          idPrefix="message-2"
-          summary="A miracle vaccine is now ditributed free without side effects!"
-          details="Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam at
-          harum aliquam in reiciendis, accusamus odio perspiciatis, debitis
-          voluptas, culpa ea impedit ex praesentium asperiores eius aut
-          velit quos eum."
-        />
+        {announcements.unread.map(getAnnouncementComponent)}
       </Section>
       <TempStyledTypography>Read:</TempStyledTypography>
       <Section $type="read">
-        <Announcement
-          idPrefix="message-3"
-          summary="A guest reported symptoms on Tuesday, Aug 11th"
-          details="Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi enim
-          blanditiis amet ipsam facilis consequatur velit cupiditate
-          nostrum, necessitatibus laborum rerum nisi debitis cum neque
-          aliquid praesentium repudiandae. Mollitia, sunt."
-          read
-        />
+        {announcements.read.map(getAnnouncementComponent)}
       </Section>
     </ScrollablePageMainPaper>
   )
 }
+
+export default observer(AnnouncementsPage)

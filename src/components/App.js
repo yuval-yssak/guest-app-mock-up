@@ -11,7 +11,7 @@ import CssReset from './CssReset'
 
 import FloatingActionButtons from './FloatingActionButton'
 import Paper from '@material-ui/core/Paper'
-import SimpleBottomNavigation from './SimpleBottomNavigation'
+import MainBottomNavigation from './SimpleBottomNavigation'
 import AppBar from './AppBar'
 import TemporaryDrawer from './Drawer'
 import AnnouncementsPage from '../pages/AnnouncementsPage'
@@ -46,7 +46,7 @@ const Background = styled.div.attrs({ className: 'background' })`
   }
 `
 
-const AnimatedBottomNavigation = styled(SimpleBottomNavigation)`
+const AnimatedBottomNavigation = styled(MainBottomNavigation)`
   & button {
     transition: transform 0.2s cubic-bezier(0.37, 0, 0.63, 1);
     @media (hover: hover) {
@@ -73,7 +73,7 @@ const StyledPaper = styled(Paper)`
 `
 
 function App() {
-  const [open, setOpen] = React.useState(false)
+  const [drawerOpen, setDrawerOpen] = React.useState(false)
   const mainRef = React.createRef()
   const store = useMst()
 
@@ -85,21 +85,21 @@ function App() {
 
   function getPageTitle() {
     switch (store.view.page) {
-      case 'root':
+      case '/':
         return 'Root'
-      case 'announcements':
+      case '/announcements':
         return 'Announcements'
-      case 'chat':
+      case '/chat':
         return 'Chat'
-      case 'info-section':
+      case '/info-section':
         return 'Info Section'
-      case 'map':
+      case '/map':
         return 'Ashram Map'
-      case 'my-bookings':
+      case '/my-bookings':
         return 'My Bookings'
-      case 'settings':
+      case '/settings':
         return 'Settings'
-      case 'activities':
+      case '/activities':
         return 'Activities'
       default:
         return 'No Title...'
@@ -124,7 +124,7 @@ function App() {
     ) {
       return
     }
-    setOpen(open)
+    setDrawerOpen(open)
   }
 
   return (
@@ -154,7 +154,7 @@ function App() {
             </Background>
             <AnimatedBottomNavigation />
           </StyledPaper>
-          <TemporaryDrawer open={open} toggleDrawer={toggleDrawer} />
+          <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
         </ThemeProvider>
       </MuiThemeProvider>
     </>
