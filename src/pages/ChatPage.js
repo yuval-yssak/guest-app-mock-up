@@ -1,17 +1,14 @@
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Avatar from '@material-ui/core/Avatar'
 import styled from 'styled-components'
 import PageMainPaper, { mainGridGap } from '../components/PageMainPaper'
 import SendIcon from '@material-ui/icons/Send'
 import IconButton from '@material-ui/core/IconButton'
-import RootRef from '@material-ui/core/RootRef'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import dayjs from 'dayjs'
+import { useMst } from '../models/reactHook'
 
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
@@ -21,58 +18,6 @@ const breakpointScenarioSideDisplay = '(max-width: 87em)'
 // below this breakpoint the avatar enters the message frame
 const breakpointFullLine = '(max-width: 26.25em)'
 
-const guestPhoto = './images/fake-avatar.jpg'
-const staff1Photo = './images/pranava-chaitanya.jpg'
-const staff2Photo = './images/iswara-chaitanya.jpg'
-
-const ChatDemoLayout = styled.div.attrs({
-  className: 'chat-demo-layout'
-})`
-  && {
-    display: grid;
-    grid-template-columns: 1fr minmax(60rem, 80%) 1fr;
-    height: calc(100% - 4rem);
-    width: 100%;
-    justify-content: center;
-    overflow-y: scroll;
-    height: 100%;
-    align-self: start;
-
-    @media ${breakpointScenarioSideDisplay} {
-      grid-template-columns: 80%;
-      grid-template-rows: min-content 1fr;
-
-      & > aside {
-        grid-auto-flow: column;
-        max-width: unset;
-        grid-gap: 1rem;
-        height: 3rem;
-      }
-    }
-    @media (max-width: 34.5em) {
-      grid-template-columns: 100%;
-    }
-  }
-`
-
-const Aside = styled.aside`
-  padding: 0 1rem;
-  max-width: 15rem;
-  display: grid;
-  align-content: start;
-  grid-gap: 0.5rem;
-  overflow-y: scroll;
-`
-
-const SideTitle = styled(Typography).attrs({
-  className: 'title',
-  variant: 'h4'
-})`
-  && {
-    margin-bottom: 1rem;
-  }
-`
-
 const StyledIconButton = styled(IconButton)`
   && {
     align-self: end;
@@ -80,9 +25,20 @@ const StyledIconButton = styled(IconButton)`
 `
 
 const ChatContainer = styled.div.attrs({ className: 'chat' })`
+  width: min(75rem, 80%);
   display: grid;
-  grid-template-rows: 1fr max-content;
-  overflow: hidden;
+  grid-template-rows: 1fr max-content; // keep the user input at the bottom
+  grid-gap: 2rem;
+  height: 100%;
+  overflow: hidden; // scrolling is only in the inner messages container
+
+  @media (max-width: 62.5em) {
+    width: 90%;
+  }
+
+  @media (max-width: 45em) {
+    width: 100%;
+  }
 
   * p {
     // prevent very long words or URLs from breaking the design
@@ -139,15 +95,8 @@ const MessageContainer = styled.section`
   }
 
   & .MuiAvatar-root:hover {
-    // todo: put this seleeector in its rightfulplace
+    // todo: put this selector in its rightfulplace
     transform: scale(2);
-  }
-
-  &:hover {
-    & .message-head > p {
-      opacity: 1;
-      transform: translateX(2px);
-    }
   }
 `
 
@@ -407,240 +356,41 @@ const NewBelow = styled.div.attrs({
 `
 
 export default function ChatPage() {
-  const [scenario, setScenario] = React.useState('none')
-  const shrinkScenarios = useMediaQuery(`${breakpointScenarioSideDisplay}`)
-  const [showScenarios, setShowScenarios] = React.useState(false)
-
-  const scenarios = [
-    { name: 'none', label: 'None' },
-    { name: 'empty', label: 'Empty' },
-    {
-      name: 'staff initiated 1 message, unread',
-      label: 'Staff initiated first unread message'
-    },
-    {
-      name: 'staff initiated 1 message, read',
-      label: 'Staff initiated first read message'
-    },
-    {
-      name: 'guest initiated 1 message',
-      label: 'Guest initiated first message'
-    },
-    {
-      name: 'guest and staff talking 10 messages over 2 days',
-      label: 'Communication back & forth 10 msg. over 2 days'
-    },
-    {
-      name: 'guest and staff talking 60 messages',
-      label: 'Communication back & forth 60 messages'
-    }
-  ]
-  function setScenarioAndCloseMenu(newScenario) {
-    setShowScenarios(false)
-    setScenario(newScenario)
-  }
-  const buttonRef = React.useRef()
+  const store = useMst()
 
   return (
-    <ChatDemoLayout>
-      <Aside>
-        {shrinkScenarios ? (
-          <>
-            <RootRef rootRef={buttonRef}>
-              <Button
-                style={{ justifySelf: 'start', fontWeight: 700 }}
-                variant="contained"
-                size="large"
-                onClick={() => setShowScenarios(true)}
-              >
-                Scenarios
-              </Button>
-            </RootRef>
-            <Menu
-              id="simple-menu"
-              keepMounted
-              open={showScenarios}
-              anchorEl={buttonRef.current}
-            >
-              {scenarios.map(s => (
-                <MenuItem
-                  selected={scenario === s.name}
-                  onClick={() => setScenarioAndCloseMenu(s.name)}
-                  key={s.name}
-                >
-                  {s.label}
-                </MenuItem>
-              ))}
-            </Menu>
-          </>
+    <Chat newSince={store.chat.unreadCount}>
+      {store.chat.messages.map(message =>
+        message.messageSide === 'staff' ? (
+          <StaffMessage
+            key={message.timestamp}
+            src={message.person.imageSrc}
+            name={message.person.personName}
+            time={dayjs(message.timestamp)}
+          >
+            {message.content}
+          </StaffMessage>
         ) : (
-          <>
-            <SideTitle variant="h4">Scenarios</SideTitle>
-            {scenarios.map(s => (
-              <Button
-                color={scenario === s.name ? 'primary' : 'default'}
-                variant="contained"
-                onClick={() => setScenario(s.name)}
-                key={s.name}
-              >
-                {s.label}
-              </Button>
-            ))}
-          </>
-        )}
-      </Aside>
-      {scenario === 'none' && <ChatContainer></ChatContainer>}
-      {scenario === 'empty' && <Chat />}
-      {scenario === 'staff initiated 1 message, unread' && (
-        <Chat newSince={1}>
-          <StaffMessage
-            src={staff1Photo}
-            name="Pranava Chaitanya"
-            time={dayjs().subtract(9, 'minutes')}
-          >
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-            Distinctio, aspernatur vitae dignissimos, unde beatae, non possimus
-            doloremque quod animi earum sint sit doloribus sed iste facilis in
-            libero accusamus perspiciatis.
-          </StaffMessage>
-        </Chat>
-      )}
-      {scenario === 'staff initiated 1 message, read' && (
-        <Chat>
-          <StaffMessage
-            src={staff2Photo}
-            name="Iswara Chaitanya"
-            time={dayjs().subtract(3, 'days')}
-          >
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-            Distinctio, aspernatur vitae dignissimos, unde beatae, non possimus
-            doloremque quod animi earum sint sit doloribus sed iste facilis in
-            libero accusamus perspiciatis.
-          </StaffMessage>
-        </Chat>
-      )}
-      {scenario === 'guest initiated 1 message' && (
-        <Chat>
           <GuestMessage
-            src={guestPhoto}
-            name="Adriel Steuber"
-            time={dayjs()
-              .subtract(1, 'days')
-              .add(5, 'hours')
-              .minute(31)
-              .second(4)}
+            key={message.timestamp}
+            src={message.person.imageSrc}
+            name={message.person.personName}
+            time={dayjs(message.timestamp)}
           >
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi velit,
-            aliquam minima numquam alias officiis accusamus aut? Sequi atque
-            nihil blanditiis voluptatem rerum deserunt quo, alias itaque tempora
-            similique placeat!
+            {message.content}
           </GuestMessage>
-        </Chat>
+        )
       )}
-      {scenario === 'guest and staff talking 10 messages over 2 days' && (
-        <Chat newSince={2}>
-          <StaffMessage
-            src={staff1Photo}
-            name="Pranava Chaitanya"
-            time={dayjs().subtract(10, 'hours').minute(5).second(30)}
-          >
-            Lorem ipsum dolor sit
-          </StaffMessage>
-          <GuestMessage
-            src={guestPhoto}
-            name="Adriel Steuber"
-            time={dayjs().subtract(10, 'hours').minute(11).second(42)}
-          >
-            Proin interdum mi non mi consequat, nec commodo odio tempor. Donec
-            aliquet pharetra sem non convallis. Morbi lobortis odio eget
-            tristique scelerisque. Quisque pretium nec lorem eu sagittis. Nullam
-            tincidunt nibh at tortor efficitur, at viverra est rutrum. Nulla
-            interdum eros ac odio rutrum, sit amet eleifend augue ornare.
-            Praesent sed consequat felis. Suspendisse aliquam fermentum nulla id
-            maximus. Sed viverra cursus dolor eget rhoncus. Sed metus dolor,
-            mollis in ligula vel, cursus lobortis massa. Aliquam vehicula eros
-            at commodo dignissim. Sed imperdiet massa magna, et tristique odio
-            lacinia eu. Curabitur tempor, leo id congue finibus, ligula orci
-            sagittis leo, id laoreet dui neque nec arcu.
-          </GuestMessage>
-          <StaffMessage
-            src={staff1Photo}
-            name="Pranava Chaitanya"
-            time={dayjs().subtract(2, 'hours').add(45, 'minutes')}
-          >
-            Vivamus vel metus tellus. Vivamus ut placerat nunc. Donec in quam.
-          </StaffMessage>
-          <StaffMessage
-            src={staff2Photo}
-            name="Iswara Chaitanya"
-            time={dayjs().subtract(2, 'hours').add(46, 'minutes')}
-          >
-            Sed lobortis nisi
-          </StaffMessage>
-          <GuestMessage
-            src={guestPhoto}
-            name="Adriel Steuber"
-            time={dayjs().subtract(1, 'hour').add(5, 'minutes').minute(39)}
-          >
-            Sed nec nunc sapien. Sed vel vulputate erat.
-          </GuestMessage>
-          <StaffMessage
-            src={staff1Photo}
-            name="Pranava Chaitanya"
-            time={dayjs().subtract(20, 'minutes')}
-          >
-            Vestibulum tincidunt elit nulla, vitae sollicitudin risus lacinia
-            commodo. Fusce pulvinar vel nunc non ornare. Duis vulputate placerat
-            iaculis. Donec facilisis, arcu in fringilla congue, sapien risus
-            viverra nibh, eget porta justo libero non est. Proin nec ex semper,
-            sagittis nunc fringilla, accumsan diam. Nunc blandit arcu at
-            efficitur lobortis. Cras et lacinia arcu, at fermentum libero. Etiam
-            convallis quis ligula vel varius. Praesent eu nulla lacinia, egestas
-            sapien eget, porta nunc. Cras condimentum mauris ac erat
-            ullamcorper, sit amet tempor ex semper. Quisque ullamcorper blandit
-            magna, ac rhoncus libero cursus dapibus. Aenean aliquet nulla
-            laoreet, rutrum risus sed, fermentum augue. Quisque congue diam eget
-            arcu ullamcorper, in tristique nisi lobortis. Vivamus ullamcorper
-            enim sit amet interdum dictum. Phasellus lobortis orci ac velit
-            accumsan commodo.
-          </StaffMessage>
-          <StaffMessage
-            src={staff1Photo}
-            name="Pranava Chaitanya"
-            time={dayjs().subtract(10, 'minutes')}
-          >
-            Nullam in nisi in eros convallis eleifend et posuere orci. Duis non
-            tincidunt diam, non pretium diam. Vivamus ante velit, pharetra
-            congue dignissim in, iaculis eu nisi. Duis sed dictum risus, ut
-            laoreet risus. Proin ut nisi dui. Aenean nec volutpat ex. Nullam
-            arcu libero, sollicitudin et tincidunt nec, porttitor interdum ex.
-            Aenean sagittis lobortis vestibulum. Phasellus dignissim ultricies
-            felis.
-          </StaffMessage>
-          <StaffMessage
-            src={staff2Photo}
-            name="Iswara Chaitanya"
-            time={dayjs().subtract(2, 'minutes')}
-          >
-            Morbi faucibus, orci facilisis ullamcorper tincidunt, odio ipsum
-            pulvinar quam, a euismod velit purus sit amet mi. Sed venenatis
-            nibh.
-          </StaffMessage>
-          <StaffMessage name="Bhargavi" time={dayjs().subtract(1, 'minutes')}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit,
-            magnam.
-          </StaffMessage>
-        </Chat>
-      )}
-    </ChatDemoLayout>
+    </Chat>
   )
 }
 
 function Chat({ children, newSince }) {
+  const store = useMst()
   const [userInput, setUserInput] = React.useState('')
   const dividerRef = React.useRef()
   const messagesParentRef = React.useRef()
-  const userInputRef = React.createRef()
+  const userInputRef = React.useRef()
   const [statefulMessages, setStatefulMessages] = React.useState()
 
   // manage local state
@@ -668,14 +418,18 @@ function Chat({ children, newSince }) {
 
   // once user input is changed, focus back on the text area.
   React.useEffect(() => {
-    userInputRef.current.querySelector('textarea')?.focus()
+    userInputRef.current?.querySelector('textarea')?.focus()
   }, [userInput, userInputRef])
 
   function submitMessage() {
     // insert the user input as a guest message
     setStatefulMessages(
       statefulMessages.concat(
-        <GuestMessage src={guestPhoto} name="Adriel Steuber" time={dayjs()}>
+        <GuestMessage
+          src={store.loggedInUser.imageSrc}
+          name={store.loggedInUser.peronName}
+          time={dayjs()}
+        >
           {userInput}
         </GuestMessage>
       )
@@ -684,6 +438,8 @@ function Chat({ children, newSince }) {
     // clear the text area for new input.
     setUserInput('')
   }
+
+  if (!store.loggedInUser) return <h1>Not Logged In</h1>
 
   return (
     <ChatContainer>
@@ -702,7 +458,7 @@ function Chat({ children, newSince }) {
           onChange={e => setUserInput(e.target.value)}
           ref={userInputRef}
         />
-        <StyledIconButton onClick={submitMessage}>
+        <StyledIconButton aria-label="send" onClick={submitMessage}>
           <SendIcon />
         </StyledIconButton>
       </UserInputSection>

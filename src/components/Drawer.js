@@ -1,6 +1,7 @@
 import React from 'react'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
+import Badge from '@material-ui/core/Badge'
 import Divider from '@material-ui/core/Divider'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -26,7 +27,7 @@ const StyledList = styled(List)`
 `
 
 export default function TemporaryDrawer({ open, toggleDrawer }) {
-  const { view } = useMst()
+  const store = useMst()
   return (
     <div>
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
@@ -34,24 +35,34 @@ export default function TemporaryDrawer({ open, toggleDrawer }) {
           <StyledList>
             <ListItem>
               <ListItemAvatar>
-                <Avatar alt="user avatar" src="./images/fake-avatar.jpg" />
+                <Avatar
+                  alt={store.loggedInUser?.personName}
+                  src={store.loggedInUser?.imageSrc}
+                />
               </ListItemAvatar>
-              <ListItemText primary="Adriel Steuber" />
+              <ListItemText primary={store.loggedInUser?.personName} />
             </ListItem>
             <Divider />
-            <ListItem button onClick={() => view.openAnnouncementsPage()}>
+            <ListItem button onClick={() => store.view.openAnnouncementsPage()}>
               <ListItemIcon>
-                <AnnouncementIcon />
+                <Badge
+                  badgeContent={store.announcements.unread.length}
+                  color="secondary"
+                >
+                  <AnnouncementIcon />
+                </Badge>
               </ListItemIcon>
               <Typography>Announcements</Typography>
             </ListItem>
-            <ListItem button onClick={() => view.openChatPage()}>
+            <ListItem button onClick={() => store.view.openChatPage()}>
               <ListItemIcon>
-                <ChatIcon />
+                <Badge badgeContent={store.chat.unreadCount} color="secondary">
+                  <ChatIcon />
+                </Badge>
               </ListItemIcon>
               <Typography>Chat</Typography>
             </ListItem>
-            <ListItem button onClick={() => view.openActivitiesPage()}>
+            <ListItem button onClick={() => store.view.openActivitiesPage()}>
               <ListItemIcon>
                 <EventIcon />
               </ListItemIcon>
@@ -76,7 +87,7 @@ export default function TemporaryDrawer({ open, toggleDrawer }) {
               <Typography>Map</Typography>
             </ListItem>
             <Divider />
-            <ListItem button onClick={() => view.openSettingsPage()}>
+            <ListItem button onClick={() => store.view.openSettingsPage()}>
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>

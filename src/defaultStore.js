@@ -1,7 +1,18 @@
 import dayjs from 'dayjs'
 
+const staff1 = {
+  personName: 'Pranava Chaitanya',
+  imageSrc: './images/pranava-chaitanya.jpg'
+}
+
+const loggedInUser = {
+  personName: 'Richard Barrett',
+  imageSrc: './images/32.jpg'
+}
+
 const defaultStore = {
   view: { page: '/' },
+  loggedInUser,
   announcements: {
     unread: [
       {
@@ -32,6 +43,31 @@ const defaultStore = {
         timestamp: dayjs().subtract(4, 'days').toDate()
       }
     ]
+  },
+  chat: {
+    messages: [
+      {
+        messageSide: 'staff',
+        person: staff1,
+        timestamp: dayjs().subtract(10, 'hours').minute(5).second(30).toDate(),
+        content: 'Lorem ipsum dolor sit'
+      },
+      {
+        messageSide: 'guest',
+        person: loggedInUser,
+        timestamp: dayjs().subtract(10, 'hours').minute(6).second(3).toDate(),
+        content:
+          'Inventore vitae doloremque consectetur incidunt fugiat dolore nemo pariatur ut harum dolorem eveniet non officiis voluptatum qui, temporibus quaerat accusamus blanditiis expedita perferendis eum tempora dolor animi labore! Ad reiciendis voluptas similique quo magnam nostrum quis corporis eius facere est debitis mollitia alias, ex reprehenderit dicta vitae, amet numquam repellendus iste. Rem minima itaque non, autem necessitatibus veniam recusandae deserunt fugit, excepturi est debitis quas omnis accusantium tenetur amet illum maxime quaerat consequatur? Similique esse natus eligendi dolorem id! Harum!'
+      },
+      {
+        messageSide: 'staff',
+        person: staff1,
+        timestamp: dayjs().subtract(8, 'hours').minute(5).second(30).toDate(),
+        content:
+          'Ratione, officia voluptates adipisci quis vero debitis! Illo, temporibus facere saepe officia voluptatum soluta dolor enim nesciunt aliquam exercitationem. Eum saepe adipisci nemo vero ipsum totam minima deleniti exercitationem, nam eveniet debitis voluptates corporis officia. Amet at dolorum sapiente, nostrum doloribus sint tempore quisquam molestiae.'
+      }
+    ],
+    lastReadTimestamp: dayjs().subtract(9, 'hours').toDate()
   }
 }
 

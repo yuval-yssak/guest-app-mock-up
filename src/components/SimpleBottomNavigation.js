@@ -80,7 +80,7 @@ function MainBottomNavigation({ className }) {
       <BottomNavigationAction
         label="Chat"
         icon={
-          <Badge badgeContent={3} color="secondary">
+          <Badge badgeContent={store.chat.unreadCount} color="secondary">
             <ChatIcon />
           </Badge>
         }
