@@ -16,7 +16,6 @@ const viewModel = types
   })
   .views(self => ({
     get currentURL() {
-      console.log('getting url', self.page)
       switch (self.page) {
         case '':
         case '/':
@@ -45,7 +44,6 @@ const viewModel = types
     openChatPage: () => (self.page = '/chat'),
     setFromURL() {
       const newView = getViewFromURL()
-      console.log('setting from url', window.location.pathname, newView.page)
       self.page = newView.page
       self.id = newView.id
     }
@@ -54,8 +52,6 @@ const viewModel = types
 export const View = types.optional(viewModel, getViewFromURL())
 
 function getViewFromURL() {
-  console.log('get view from url')
-
   const { pathname } = window.location
   const matchCustom = match('/custom/:id')
   const matchedCustom = matchCustom(pathname)

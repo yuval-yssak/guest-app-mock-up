@@ -58,7 +58,7 @@ const StyledAccordionSummary = styled(AccordionSummary)`
 
 function Announcement({ idPrefix, summary, details, read }) {
   const [expanded, setExpanded] = React.useState(false)
-  React.useEffect(() => console.log(expanded), [expanded])
+
   return (
     <Accordion
       expanded={expanded}

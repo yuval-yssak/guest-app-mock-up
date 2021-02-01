@@ -73,7 +73,6 @@ const StyledPaper = styled(Paper)`
 `
 
 function App() {
-  const [darkTheme, setDarkTheme] = React.useState(false)
   const [open, setOpen] = React.useState(false)
   const mainRef = React.createRef()
   const store = useMst()
@@ -109,7 +108,7 @@ function App() {
 
   const customTheme = createMuiTheme({
     palette: {
-      type: darkTheme ? 'dark' : 'light',
+      type: store.preferences.darkMode ? 'dark' : 'light',
       primary: { main: '#f29500' },
       secondary: { main: '#ffcf00' }
     },
@@ -147,12 +146,7 @@ function App() {
                 {store.view.page === '/my-bookings' && (
                   <div>Account Details Page</div>
                 )}
-                {store.view.page === '/settings' && (
-                  <SettingsPage
-                    darkTheme={darkTheme}
-                    setDarkTheme={setDarkTheme}
-                  />
-                )}
+                {store.view.page === '/settings' && <SettingsPage />}
                 {store.view.page === '/activities' && (
                   <div>Activities Page</div>
                 )}
