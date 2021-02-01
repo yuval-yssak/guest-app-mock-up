@@ -9,6 +9,7 @@ const viewModel = types
       types.literal('/chat'),
       types.literal('/announcements'),
       types.literal('/activities'),
+      types.literal('/settings'),
       types.literal('/custom')
     ),
     id: types.maybe(types.string)
@@ -40,6 +41,7 @@ const viewModel = types
     },
     openAnnouncementsPage: () => (self.page = '/announcements'),
     openActivitiesPage: () => (self.page = '/activities'),
+    openSettingsPage: () => (self.page = '/settings'),
     openChatPage: () => (self.page = '/chat'),
     setFromURL() {
       const newView = getViewFromURL()
@@ -70,6 +72,7 @@ function getViewFromURL() {
         return { page: '/' }
       case '/chat':
       case '/activities':
+      case '/settings':
       case '/announcements':
         return { page: matchedGeneral.path }
       default:

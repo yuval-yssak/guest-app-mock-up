@@ -27,14 +27,12 @@ try {
   render()
 
   if (module.hot) {
-    console.log('module hot')
     module.hot.accept(['./models/View'], () => {
       // Store definition changed, recreate a new one from old state
       window.store = rootStore = Store.create(getSnapshot(rootStore))
     })
 
     module.hot.accept(['./components/App'], () => {
-      console.log('accept')
       // Componenent definition changed, re-render app
       render()
     })

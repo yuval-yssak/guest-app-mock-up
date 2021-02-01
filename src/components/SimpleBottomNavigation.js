@@ -7,6 +7,7 @@ import AnnouncementIcon from '@material-ui/icons/Announcement'
 import ChatIcon from '@material-ui/icons/Chat'
 import EventIcon from '@material-ui/icons/Event'
 import styled from 'styled-components'
+import { useMst } from '../models/reactHook'
 
 const breakpointSmallHeight = 'screen and (max-height: 20em)'
 
@@ -37,7 +38,8 @@ const StyledBottomNavigation = styled(BottomNavigation)`
   }
 `
 
-export default function SimpleBottomNavigation({ openPage, className }) {
+export default function SimpleBottomNavigation({ className }) {
+  const store = useMst()
   const smallDeviceHeight = useMediaQuery(breakpointSmallHeight)
   const [value, setValue] = React.useState(null)
 
@@ -57,7 +59,7 @@ export default function SimpleBottomNavigation({ openPage, className }) {
             <AnnouncementIcon />
           </Badge>
         }
-        onClick={() => openPage('announcements')}
+        onClick={() => store.view.openAnnouncementsPage()}
       />
       <BottomNavigationAction
         label="Chat"
@@ -66,12 +68,12 @@ export default function SimpleBottomNavigation({ openPage, className }) {
             <ChatIcon />
           </Badge>
         }
-        onClick={() => openPage('chat')}
+        onClick={() => store.view.openChatPage()}
       />
       <BottomNavigationAction
         label="Activities"
         icon={<EventIcon />}
-        onClick={() => openPage('activities')}
+        onClick={() => store.view.openActivitiesPage()}
       />
     </StyledBottomNavigation>
   )
