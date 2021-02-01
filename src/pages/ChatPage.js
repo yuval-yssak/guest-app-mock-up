@@ -138,10 +138,12 @@ const MessageContainer = styled.section`
     }
   }
 
+  & .MuiAvatar-root:hover {
+    // todo: put this seleeector in its rightfulplace
+    transform: scale(2);
+  }
+
   &:hover {
-    & .MuiAvatar-root {
-      transform: scale(1.2);
-    }
     & .message-head > p {
       opacity: 1;
       transform: translateX(2px);
@@ -169,7 +171,8 @@ const MessageFrame = styled.div`
   border: 1px solid
     ${({ theme }) => (theme.palette.type === 'dark' ? '#888' : '#ddd')};
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 0.7rem;
+  text-align: left;
 `
 
 const GuestMessageFrame = styled(MessageFrame).attrs({
@@ -177,7 +180,6 @@ const GuestMessageFrame = styled(MessageFrame).attrs({
 })`
   background-color: ${({ theme }) => theme.palette.background.paper};
   color: ${({ theme }) => theme.palette.text.primary};
-  text-align: right;
 `
 
 const StaffMessageFrame = styled(MessageFrame).attrs({
@@ -191,7 +193,6 @@ const StaffMessageFrame = styled(MessageFrame).attrs({
     theme.palette.type === 'dark'
       ? '#fff'
       : theme.palette.primary.contrastText};
-  text-align: left;
 `
 
 const GuestAvatar = styled(Avatar)`
@@ -218,7 +219,7 @@ const GuestMessageHead = styled.div.attrs({ className: 'message-head' })`
   grid-template-columns: 1fr max-content;
   grid-column-gap: 1rem;
   justify-content: space-between;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.3rem;
 
   @media (max-width: 51.4em) {
     // adjust sender's name and message dates in separate rows
@@ -270,7 +271,14 @@ function GuestMessage({ children, className, name, src, time }) {
               <GuestAvatar
                 className="guest-avatar"
                 alt="user avatar"
-                src={src}
+                {...(src
+                  ? { src }
+                  : {
+                      children: name
+                        .split(/\s/)
+                        .map(word => word[0])
+                        .join('')
+                    })}
               />
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
@@ -290,7 +298,18 @@ function GuestMessage({ children, className, name, src, time }) {
             </GuestMessageHead>
             {children}
           </GuestMessageFrame>
-          <GuestAvatar className="guest-avatar" alt="user avatar" src={src} />
+          <GuestAvatar
+            className="guest-avatar"
+            alt="user avatar"
+            {...(src
+              ? { src }
+              : {
+                  children: name
+                    .split(/\s/)
+                    .map(word => word[0])
+                    .join('')
+                })}
+          />
         </>
       )}
     </GuestMessageContainer>
@@ -314,7 +333,14 @@ function StaffMessage({ children, className, name, src, time }) {
               <StaffAvatar
                 className="staff-avatar"
                 alt={`${name} photo`}
-                src={src}
+                {...(src
+                  ? { src }
+                  : {
+                      children: name
+                        .split(/\s/)
+                        .map(word => word[0])
+                        .join('')
+                    })}
               />
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
@@ -328,7 +354,14 @@ function StaffMessage({ children, className, name, src, time }) {
           <StaffAvatar
             className="guest-avatar"
             alt={`${name} photo`}
-            src={src}
+            {...(src
+              ? { src }
+              : {
+                  children: name
+                    .split(/\s/)
+                    .map(word => word[0])
+                    .join('')
+                })}
           />
           <StaffMessageFrame className={className}>
             <GuestMessageHead>
@@ -592,6 +625,10 @@ export default function ChatPage() {
             pulvinar quam, a euismod velit purus sit amet mi. Sed venenatis
             nibh.
           </StaffMessage>
+          <StaffMessage name="Bhargavi" time={dayjs().subtract(1, 'minutes')}>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit,
+            magnam.
+          </StaffMessage>
         </Chat>
       )}
     </ChatDemoLayout>
@@ -649,7 +686,7 @@ function Chat({ children, newSince }) {
 
   return (
     <ChatContainer>
-      <MessagesScrollable ref={messagesParentRef}>
+      <MessagesScrollable elevation={0} ref={messagesParentRef}>
         {statefulMessages}
       </MessagesScrollable>
       <UserInputSection>
