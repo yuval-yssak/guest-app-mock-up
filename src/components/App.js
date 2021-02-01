@@ -15,6 +15,7 @@ import TemporaryDrawer from './Drawer'
 import AnnouncementsPage from '../pages/AnnouncementsPage'
 import SettingsPage from '../pages/SettingsPage'
 import ChatPage from '../pages/ChatPage'
+import { useMst } from '../models/reactHook'
 
 const scaleFrom0 = keyframes`
 0% {
@@ -74,6 +75,8 @@ export default function App() {
   const [open, setOpen] = React.useState(false)
   const [content, setContent] = React.useState('root')
   const mainRef = React.createRef()
+  const store = useMst()
+  React.useEffect(() => console.log(store.toJSON()))
 
   // focus on main (content area) once the page is switched over.
   //
@@ -117,6 +120,8 @@ export default function App() {
   })
 
   function openPage(pageName) {
+    if (pageName === 'announcements') {
+    }
     setContent(pageName)
     setOpen(false)
   }

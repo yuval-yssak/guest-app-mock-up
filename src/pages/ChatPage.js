@@ -257,8 +257,9 @@ const StaffMessageHead = styled(GuestMessageHead)`
 
 function GuestMessage({ children, className, name, src, time }) {
   const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
 
+  // update component every minute
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
   setInterval(forceUpdate, 6e3)
 
   return (
@@ -318,9 +319,9 @@ function GuestMessage({ children, className, name, src, time }) {
 
 function StaffMessage({ children, className, name, src, time }) {
   const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
 
   // update component every minute
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
   setInterval(forceUpdate, 6e3)
 
   return (
