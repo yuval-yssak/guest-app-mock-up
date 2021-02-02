@@ -9,7 +9,6 @@ import {
 import { observer } from 'mobx-react-lite'
 import CssReset from './CssReset'
 
-import FloatingActionButtons from './FloatingActionButton'
 import Paper from '@material-ui/core/Paper'
 import MainBottomNavigation from './SimpleBottomNavigation'
 import AppBar from './AppBar'
@@ -136,7 +135,7 @@ function App() {
             <AppBar toggleDrawer={toggleDrawer} pageTitle={getPageTitle()} />
             <Background>
               <Main ref={mainRef} tabIndex={-1}>
-                {store.view.page === '/root' && <FloatingActionButtons />}
+                {store.view.page === '/root' && <h1>Dashboard</h1>}
                 {store.view.page === '/announcements' && <AnnouncementsPage />}
                 {store.view.page === '/chat' && <ChatPage />}
                 {store.view.page === '/info-section' && (

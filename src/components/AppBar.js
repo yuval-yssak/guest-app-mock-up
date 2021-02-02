@@ -40,6 +40,13 @@ const PageTitle = styled(Typography)`
   }
 `
 
+const OneLineDarkModeSwitch = styled(DarkModeSwitch)`
+  && {
+    display: grid;
+    grid-template-columns: max-content max-content;
+  }
+`
+
 export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
   return (
     <div>
@@ -55,7 +62,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
           </IconButton>
           <PageTitle component="h1">{pageTitle}</PageTitle>
 
-          <DarkModeSwitch />
+          <OneLineDarkModeSwitch />
           <IconButton
             aria-label="display more actions"
             edge="end"
