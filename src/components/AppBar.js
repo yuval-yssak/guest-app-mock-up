@@ -12,7 +12,7 @@ const StyledToolbar = styled(Toolbar)`
   && {
     display: grid;
     grid-auto-flow: column;
-    grid-template-columns: min-content 1fr min-content;
+    grid-template-columns: min-content 1fr minmax(min-content, max-content) max-content;
     justify-items: start;
 
     @media screen and (max-width: 37.5em), screen and (max-height: 25em) {
@@ -43,7 +43,16 @@ const PageTitle = styled(Typography)`
 const OneLineDarkModeSwitch = styled(DarkModeSwitch)`
   && {
     display: grid;
-    grid-template-columns: max-content max-content;
+    grid-template-columns: max-content minmax(min-content, max-content);
+    justify-self: end;
+    margin: 0;
+    padding: 0;
+
+    @media (max-width: 14.2em) {
+      & .MuiFormControlLabel-label {
+        display: none;
+      }
+    }
   }
 `
 

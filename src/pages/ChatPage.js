@@ -13,10 +13,8 @@ import { useMst } from '../models/reactHook'
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
-const breakpointScenarioSideDisplay = '(max-width: 87em)'
-
 // below this breakpoint the avatar enters the message frame
-const breakpointFullLine = '(max-width: 26.25em)'
+const breakpointFullLine = '(max-width: 37.5em)'
 
 const StyledIconButton = styled(IconButton)`
   && {
@@ -77,8 +75,9 @@ const UserInputSection = styled.section.attrs({
   grid-gap: 1rem;
   grid-column: 1 / -1;
 
-  @media (max-width: 44em) {
+  @media (max-width: 50em) {
     grid-gap: 0;
+    margin-left: 0.6rem;
   }
 `
 
@@ -89,8 +88,13 @@ const MessageContainer = styled.section`
 
   @media ${breakpointFullLine} {
     && {
-      grid-column: 1 / -1;
       grid-template-columns: minmax(min-content, max-content);
+    }
+  }
+
+  @media (max-width: 25em) {
+    && {
+      grid-column: 1 / -1;
     }
   }
 
