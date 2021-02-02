@@ -40,6 +40,8 @@ const PageTitle = styled(Typography)`
   }
 `
 
+const breakpointShrinkDarkModeSwitch = '(max-width: 14.2em)'
+
 const OneLineDarkModeSwitch = styled(DarkModeSwitch)`
   && {
     display: grid;
@@ -48,13 +50,40 @@ const OneLineDarkModeSwitch = styled(DarkModeSwitch)`
     margin: 0;
     padding: 0;
 
-    @media (max-width: 14.2em) {
+    @media ${breakpointShrinkDarkModeSwitch} {
+      transform: scale(0.75);
+
       & .MuiFormControlLabel-label {
-        display: none;
+        // hide label but keep label for accessibility
+        position: absolute;
+        top: -40rem;
       }
     }
   }
 `
+
+const SwitchContainer = styled.div.attrs({
+  className: 'dark-mode-switch-shrinkable-container'
+})`
+  && {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+  @media ${breakpointShrinkDarkModeSwitch} {
+    height: 3rem;
+    display: grid;
+    align-content: center;
+  }
+`
+
+function ShrinkableDarkModeSwitch() {
+  return (
+    <SwitchContainer>
+      <OneLineDarkModeSwitch />
+    </SwitchContainer>
+  )
+}
 
 export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
   return (
@@ -71,7 +100,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
           </IconButton>
           <PageTitle component="h1">{pageTitle}</PageTitle>
 
-          <OneLineDarkModeSwitch />
+          <ShrinkableDarkModeSwitch />
           <IconButton
             aria-label="display more actions"
             edge="end"
