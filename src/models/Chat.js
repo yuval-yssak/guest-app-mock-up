@@ -19,6 +19,11 @@ const ChatModel = types
     lastReadTimestamp: types.optional(types.Date, new Date(null))
   })
   .views(self => ({
+    get orderedMessages() {
+      return self.messages
+        .slice()
+        .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+    },
     get unreadCount() {
       return self.messages.reduce(
         (count, message) =>

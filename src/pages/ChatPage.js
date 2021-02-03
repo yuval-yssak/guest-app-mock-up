@@ -1,4 +1,5 @@
 import React from 'react'
+import { observer } from 'mobx-react-lite'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Avatar from '@material-ui/core/Avatar'
@@ -30,11 +31,11 @@ const ChatContainer = styled.div.attrs({ className: 'chat' })`
   height: 100%;
   overflow: hidden; // scrolling is only in the inner messages container
 
-  @media (max-width: 62.5em) {
+  @media (max-width: 74.5em) {
     width: 90%;
   }
 
-  @media (max-width: 45em) {
+  @media (max-width: 58em) {
     width: 100%;
   }
 
@@ -86,12 +87,15 @@ const MessageContainer = styled.section`
   align-items: start;
   grid-gap: 0.5rem;
 
+  // below this breakpoint there is only one column since the avatar is
+  // inside the message frame
   @media ${breakpointFullLine} {
     && {
       grid-template-columns: minmax(min-content, max-content);
     }
   }
 
+  // both staff and guest messages take all columns below this breakpoint
   @media (max-width: 25em) {
     && {
       grid-column: 1 / -1;
@@ -104,16 +108,20 @@ const MessageContainer = styled.section`
   }
 `
 
+// staff messages take the left 7/8ths portion of the view
+// they show the avatar to the left of the message frame
 const StaffMessageContainer = styled(MessageContainer).attrs({
-  className: 'staff-message'
+  className: 'staff-message-section'
 })`
   justify-self: start;
   grid-column: 1 / 8;
   grid-template-columns: min-content 1fr;
 `
 
+// guest messages take the right 7/8ths portion of the view
+// they show the avatar to the right of the message frame
 const GuestMessageContainer = styled(MessageContainer).attrs({
-  className: 'guest-message'
+  className: 'guest-message-section'
 })`
   justify-self: end;
   grid-column: 2 / 9;
@@ -138,29 +146,27 @@ const GuestMessageFrame = styled(MessageFrame).attrs({
 const StaffMessageFrame = styled(MessageFrame).attrs({
   className: 'staff-message-frame'
 })`
-  background-color: ${({ theme }) =>
-    theme.palette.type === 'dark'
-      ? theme.palette.grey['700']
-      : theme.palette.grey['50']};
-  color: ${({ theme }) =>
-    theme.palette.type === 'dark'
-      ? '#fff'
-      : theme.palette.primary.contrastText};
+  background-color: ${({ theme: { palette } }) =>
+    palette.type === 'dark' ? palette.grey['700'] : palette.grey['50']};
+  color: ${({ theme: { palette } }) =>
+    palette.type === 'dark' ? '#fff' : palette.primary.contrastText};
 `
 
 const GuestAvatar = styled(Avatar)`
   margin-top: 0.45rem;
   transition: all 0.2s;
 
+  // take the entire left column within the message frae
   @media ${breakpointFullLine} {
     margin-top: unset;
-    grid-area: 1 / 2 / 3 / -1; // take the entire left column
+    grid-area: 1 / 2 / 3 / -1;
   }
 `
 
+// take the entire right column within the message frame
 const StaffAvatar = styled(GuestAvatar)`
   @media ${breakpointFullLine} {
-    grid-area: 1 / 1 / 3 / 2; // take the entire right column
+    grid-area: 1 / 1 / 3 / 2;
   }
 `
 
@@ -168,7 +174,8 @@ const StaffAvatar = styled(GuestAvatar)`
 const GuestMessageHead = styled.div.attrs({ className: 'message-head' })`
   display: grid;
   align-items: start;
-  // display name along side time, time does not break into lines
+
+  // display name along side time, preserve time in one row
   grid-template-columns: 1fr max-content;
   grid-column-gap: 1rem;
   justify-content: space-between;
@@ -367,60 +374,47 @@ const NewBelow = styled.div.attrs({
   }
 `
 
-export default function ChatPage() {
-  const store = useMst()
-
-  return (
-    <Chat newSince={store.chat.unreadCount}>
-      {store.chat.messages.map(message =>
-        message.messageSide === 'staff' ? (
-          <StaffMessage
-            key={message.timestamp}
-            src={message.person.imageSrc}
-            name={message.person.personName}
-            time={dayjs(message.timestamp)}
-          >
-            {message.content}
-          </StaffMessage>
-        ) : (
-          <GuestMessage
-            key={message.timestamp}
-            src={message.person.imageSrc}
-            name={message.person.personName}
-            time={dayjs(message.timestamp)}
-          >
-            {message.content}
-          </GuestMessage>
-        )
-      )}
-    </Chat>
-  )
-}
-
-function Chat({ children, newSince }) {
+function ChatPage() {
   const store = useMst()
   const [userInput, setUserInput] = React.useState('')
+
   const dividerRef = React.useRef()
   const messagesParentRef = React.useRef()
   const userInputRef = React.useRef()
 
-  const displayMessages = React.Children.toArray(children)
+  // build message react components
+  const messages = store.chat.orderedMessages.map(message => {
+    const props = {
+      key: message.timestamp,
+      src: message.person.imageSrc,
+      name: message.person.personName,
+      time: dayjs(message.timestamp),
+      children: message.content
+    }
 
-  if (newSince)
-    displayMessages.splice(
-      newSince * -1,
+    return message.messageSide === 'staff' ? (
+      <StaffMessage {...props} />
+    ) : (
+      <GuestMessage {...props} />
+    )
+  })
+
+  // add "New" messages divider
+  if (store.chat.unreadCount)
+    messages.splice(
+      store.chat.unreadCount * -1,
       0,
       <NewBelow key="unread-divider" ref={dividerRef} />
     )
 
   // show last read message or first unread messages
   React.useEffect(() => {
-    if (newSince) dividerRef.current?.scrollIntoView()
+    if (store.chat.unreadCount) dividerRef.current?.scrollIntoView()
     else
       messagesParentRef.current
         ?.querySelector('section:last-child')
         ?.scrollIntoView()
-  }, [newSince])
+  }, [store.chat.unreadCount])
 
   // once user input is changed, focus back on the text area.
   React.useEffect(() => {
@@ -439,7 +433,7 @@ function Chat({ children, newSince }) {
   return (
     <ChatContainer>
       <MessagesScrollable elevation={0} ref={messagesParentRef}>
-        {displayMessages}
+        {messages}
       </MessagesScrollable>
       <UserInputSection>
         <TextField
@@ -460,3 +454,5 @@ function Chat({ children, newSince }) {
     </ChatContainer>
   )
 }
+
+export default observer(ChatPage)
