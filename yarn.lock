@@ -7618,6 +7618,11 @@ mobx-state-tree@^5.0.1:
   resolved "https://registry.yarnpkg.com/mobx-state-tree/-/mobx-state-tree-5.0.1.tgz#d495725fe11075d8fde8f02ab65db6736b44e014"
   integrity sha512-XZafwF1sJe6sp8L1kgf9Tz0SLo/UPf2pxsonnHaBQNsqbebw+0GC+IT3WxPEIe0/aQ73q4nY4SRgW1uyfd1KRA==
 
+mobx-utils@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/mobx-utils/-/mobx-utils-6.0.3.tgz#4dcc3ae65d089dfa6a4a04d7683816d01b1060a1"
+  integrity sha512-dNtwCe6g+Gv5BEzh6lMtGhrUM6bnEPHV3m5cNLCTaH/7t0c4KyRaV0HHcsuLQE7lBC8x3SZXo7hmliLJoOAL9A==
+
 mobx@^6.1.4:
   version "6.1.4"
   resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.1.4.tgz#6ba17f4e291146a3a26605a9c3a0c3ff8aea1e0b"

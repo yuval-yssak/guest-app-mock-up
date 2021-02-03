@@ -65,6 +65,13 @@ const defaultStore = {
         timestamp: dayjs().subtract(8, 'hours').minute(5).second(30).toDate(),
         content:
           'Ratione, officia voluptates adipisci quis vero debitis! Illo, temporibus facere saepe officia voluptatum soluta dolor enim nesciunt aliquam exercitationem. Eum saepe adipisci nemo vero ipsum totam minima deleniti exercitationem, nam eveniet debitis voluptates corporis officia. Amet at dolorum sapiente, nostrum doloribus sint tempore quisquam molestiae.'
+      },
+      {
+        messageSide: 'staff',
+        person: { personName: 'Bhargavi', imageSrc: '' },
+        timestamp: dayjs().subtract(44, 'minutes').toDate(),
+        content:
+          'Necessitatibus iste officia nostrum ipsa amet vitae natus debitis sapiente in, incidunt illum reiciendis adipisci at consequuntur fugit nulla iure a ratione! Earum consequuntur molestias asperiores iusto voluptatibus rerum in.'
       }
     ],
     lastReadTimestamp: dayjs().subtract(9, 'hours').toDate()

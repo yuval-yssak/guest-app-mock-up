@@ -11,9 +11,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import dayjs from 'dayjs'
 import { useMst } from '../models/reactHook'
 
-import relativeTime from 'dayjs/plugin/relativeTime'
-dayjs.extend(relativeTime)
-
 // below this breakpoint the avatar enters the message frame
 const breakpointFullLine = '(max-width: 37.5em)'
 
@@ -279,22 +276,8 @@ const StaffMessageHead = styled(MessageHead)`
   }
 `
 
-// todo: move this into store in order to keep the component dumb
-function useRenderEveryMinute() {
-  // update component every minute
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
-
-  React.useEffect(() => {
-    const interval = setInterval(forceUpdate, 6e3)
-
-    return () => clearInterval(interval)
-  }, [])
-}
-
-function GuestMessage({ children, className, name, src, time }) {
+const GuestMessage = ({ children, className, name, src, timeSignature }) => {
   const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
-
-  useRenderEveryMinute()
 
   return (
     <GuestMessageContainer>
@@ -305,7 +288,7 @@ function GuestMessage({ children, className, name, src, time }) {
               <GuestAvatar src={src} name={name} />
               <Typography className="message-name"></Typography>
               <Typography className="message-time" variant="body2">
-                {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
+                {timeSignature}
               </Typography>
             </GuestMessageHead>
             {children}
@@ -317,7 +300,7 @@ function GuestMessage({ children, className, name, src, time }) {
             <GuestMessageHead>
               <Typography className="message-name"></Typography>
               <Typography className="message-time" variant="body2">
-                {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
+                {timeSignature}
               </Typography>
             </GuestMessageHead>
             {children}
@@ -329,10 +312,8 @@ function GuestMessage({ children, className, name, src, time }) {
   )
 }
 
-function StaffMessage({ children, className, name, src, time }) {
+const StaffMessage = ({ children, className, name, src, timeSignature }) => {
   const showAvatarInFrame = useMediaQuery(`${breakpointFullLine}`)
-
-  useRenderEveryMinute()
 
   return (
     <StaffMessageContainer>
@@ -343,7 +324,7 @@ function StaffMessage({ children, className, name, src, time }) {
               <StaffAvatar name={name} src={src} />
               <Typography className="message-name">{name}</Typography>
               <Typography className="message-time" variant="body2">
-                {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
+                {timeSignature}
               </Typography>
             </StaffMessageHead>
             {children}
@@ -356,7 +337,7 @@ function StaffMessage({ children, className, name, src, time }) {
             <GuestMessageHead>
               <Typography className="message-name">{name}</Typography>
               <Typography className="message-time" variant="body2">
-                {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
+                {timeSignature}
               </Typography>
             </GuestMessageHead>
             {children}
@@ -381,7 +362,7 @@ function ChatPage() {
       key: message.timestamp,
       src: message.person.imageSrc,
       name: message.person.personName,
-      time: dayjs(message.timestamp),
+      timeSignature: message.timeSignature,
       children: message.content
     }
 
