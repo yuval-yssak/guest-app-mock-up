@@ -82,6 +82,34 @@ const UserInputSection = styled.section.attrs({
   }
 `
 
+const UnreadMessagesDivider = styled.div.attrs({
+  className: 'unread-messages-divider',
+  children: <Typography variant="subtitle2">New</Typography>
+})`
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-column: 1 / 8;
+  position: relative;
+  align-items: center;
+  grid-gap: 0.5rem;
+
+  color: ${({ theme }) => theme.palette.warning.main};
+  margin-bottom: calc(0.3rem - ${mainGridGap});
+  margin-left: 0.5rem;
+
+  @media ${breakpointFullLine} {
+    grid-column: 1 / -1;
+  }
+
+  // horizontal line after the "New"
+  &:after {
+    content: '';
+    height: 1px;
+    background-color: currentColor;
+    width: 100%;
+  }
+`
+
 const MessageContainer = styled.section`
   display: grid;
   align-items: start;
@@ -152,26 +180,59 @@ const StaffMessageFrame = styled(MessageFrame).attrs({
     palette.type === 'dark' ? '#fff' : palette.primary.contrastText};
 `
 
-const GuestAvatar = styled(Avatar)`
+const StyledAvatar = styled(Avatar)`
   margin-top: 0.45rem;
   transition: all 0.2s;
+`
 
-  // take the entire left column within the message frae
+const StyledGuestAvatar = styled(StyledAvatar).attrs({
+  className: 'guest-avatar'
+})`
   @media ${breakpointFullLine} {
     margin-top: unset;
+    // take the entire right column within the message frame
     grid-area: 1 / 2 / 3 / -1;
   }
 `
 
-// take the entire right column within the message frame
-const StaffAvatar = styled(GuestAvatar)`
+const StyledStaffAvatar = styled(StyledAvatar).attrs({
+  className: 'staff-avatar'
+})`
   @media ${breakpointFullLine} {
+    // take the entire left column within the message frae
     grid-area: 1 / 1 / 3 / 2;
   }
 `
 
+function getInitials(name) {
+  return name
+    .split(/\s/)
+    .map(word => word[0])
+    .join('')
+}
+
+const GuestAvatar = ({ src, name }) => {
+  if (src) return <StyledGuestAvatar alt="user avatar" src={src} />
+  else
+    return (
+      <StyledGuestAvatar alt="user avatar">
+        {getInitials(name)}
+      </StyledGuestAvatar>
+    )
+}
+
+const StaffAvatar = ({ src, name }) => {
+  if (src) return <StyledStaffAvatar alt={`${name} photo`} src={src} />
+  else
+    return (
+      <StyledStaffAvatar alt={`${name} photo`}>
+        {getInitials(name)}
+      </StyledStaffAvatar>
+    )
+}
+
 // top row of the message frame. Includes sender name and message date
-const GuestMessageHead = styled.div.attrs({ className: 'message-head' })`
+const MessageHead = styled.div.attrs({ className: 'message-head' })`
   display: grid;
   align-items: start;
 
@@ -186,12 +247,6 @@ const GuestMessageHead = styled.div.attrs({ className: 'message-head' })`
     grid-template-columns: minmax(min-content, max-content);
   }
 
-  @media ${breakpointFullLine} {
-    // the message frame includes the avatar inside it.
-    // It is placed on the right, taking min-content.
-    grid-template-columns: minmax(min-content, max-content) min-content;
-  }
-
   & > p {
     text-align: left;
     opacity: 0.7;
@@ -201,12 +256,21 @@ const GuestMessageHead = styled.div.attrs({ className: 'message-head' })`
   & .message-name {
     justify-self: start;
   }
+
   & .message-time {
     line-height: 1.73;
   }
 `
 
-const StaffMessageHead = styled(GuestMessageHead)`
+const GuestMessageHead = styled(MessageHead)`
+  @media ${breakpointFullLine} {
+    // the message frame includes the avatar inside it.
+    // It is placed on the right, taking min-content.
+    grid-template-columns: minmax(min-content, max-content) min-content;
+  }
+`
+
+const StaffMessageHead = styled(MessageHead)`
   @media ${breakpointFullLine} {
     // the message frame includes the avatar inside it.
     // It is placed on the left, taking min-content.
@@ -238,19 +302,8 @@ function GuestMessage({ children, className, name, src, time }) {
         <>
           <GuestMessageFrame className={className}>
             <GuestMessageHead>
+              <GuestAvatar src={src} name={name} />
               <Typography className="message-name"></Typography>
-              <GuestAvatar
-                className="guest-avatar"
-                alt="user avatar"
-                {...(src
-                  ? { src }
-                  : {
-                      children: name
-                        .split(/\s/)
-                        .map(word => word[0])
-                        .join('')
-                    })}
-              />
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
               </Typography>
@@ -269,18 +322,7 @@ function GuestMessage({ children, className, name, src, time }) {
             </GuestMessageHead>
             {children}
           </GuestMessageFrame>
-          <GuestAvatar
-            className="guest-avatar"
-            alt="user avatar"
-            {...(src
-              ? { src }
-              : {
-                  children: name
-                    .split(/\s/)
-                    .map(word => word[0])
-                    .join('')
-                })}
-          />
+          <GuestAvatar src={src} name={name} />
         </>
       )}
     </GuestMessageContainer>
@@ -288,29 +330,18 @@ function GuestMessage({ children, className, name, src, time }) {
 }
 
 function StaffMessage({ children, className, name, src, time }) {
-  const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
+  const showAvatarInFrame = useMediaQuery(`${breakpointFullLine}`)
 
   useRenderEveryMinute()
 
   return (
     <StaffMessageContainer>
-      {avatarInFrame ? (
+      {showAvatarInFrame ? (
         <>
           <StaffMessageFrame className={className}>
             <StaffMessageHead>
+              <StaffAvatar name={name} src={src} />
               <Typography className="message-name">{name}</Typography>
-              <StaffAvatar
-                className="staff-avatar"
-                alt={`${name} photo`}
-                {...(src
-                  ? { src }
-                  : {
-                      children: name
-                        .split(/\s/)
-                        .map(word => word[0])
-                        .join('')
-                    })}
-              />
               <Typography className="message-time" variant="body2">
                 {`${time.format('MMM D, YYYY h:mm A')} (${dayjs().to(time)})`}
               </Typography>
@@ -320,18 +351,7 @@ function StaffMessage({ children, className, name, src, time }) {
         </>
       ) : (
         <>
-          <StaffAvatar
-            className="guest-avatar"
-            alt={`${name} photo`}
-            {...(src
-              ? { src }
-              : {
-                  children: name
-                    .split(/\s/)
-                    .map(word => word[0])
-                    .join('')
-                })}
-          />
+          <StaffAvatar name={name} src={src} />
           <StaffMessageFrame className={className}>
             <GuestMessageHead>
               <Typography className="message-name">{name}</Typography>
@@ -346,33 +366,6 @@ function StaffMessage({ children, className, name, src, time }) {
     </StaffMessageContainer>
   )
 }
-const NewBelow = styled.div.attrs({
-  className: 'unread-messages-divider',
-  children: <Typography variant="subtitle2">New</Typography>
-})`
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  grid-column: 1 / 8;
-  position: relative;
-  align-items: center;
-  grid-gap: 0.5rem;
-
-  color: ${({ theme }) => theme.palette.warning.main};
-  margin-bottom: calc(0.3rem - ${mainGridGap});
-  margin-left: 0.5rem;
-
-  @media ${breakpointFullLine} {
-    grid-column: 1 / -1;
-  }
-
-  // horizontal line after the "New"
-  &:after {
-    content: '';
-    height: 1px;
-    background-color: currentColor;
-    width: 100%;
-  }
-`
 
 function ChatPage() {
   const store = useMst()
@@ -404,7 +397,7 @@ function ChatPage() {
     messages.splice(
       store.chat.unreadCount * -1,
       0,
-      <NewBelow key="unread-divider" ref={dividerRef} />
+      <UnreadMessagesDivider key="unread-divider" ref={dividerRef} />
     )
 
   // show last read message or first unread messages
@@ -441,6 +434,7 @@ function ChatPage() {
           label="Chat with us"
           placeholder="Hi, I would like to"
           multiline
+          rowsMax={5}
           margin="dense"
           variant="outlined"
           value={userInput}
