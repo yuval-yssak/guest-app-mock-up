@@ -1,16 +1,11 @@
 import React from 'react'
-
-import Switch from '../components/Switch'
-
 import PageMainPaper from '../components/PageMainPaper'
+import DarkModeSwitch from '../components/DarkModeSwitch'
 
-export default function SettingsPage({ darkTheme, setDarkTheme }) {
+export default function SettingsPage() {
   return (
     <PageMainPaper role="article" elavation={2}>
-      <Switch
-        darkTheme={darkTheme}
-        onThemeChange={() => setDarkTheme(!darkTheme)}
-      />
+      <DarkModeSwitch />
     </PageMainPaper>
   )
 }

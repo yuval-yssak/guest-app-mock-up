@@ -1,6 +1,7 @@
 import React from 'react'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
+import Badge from '@material-ui/core/Badge'
 import Divider from '@material-ui/core/Divider'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -10,11 +11,13 @@ import AnnouncementIcon from '@material-ui/icons/Announcement'
 import ChatIcon from '@material-ui/icons/Chat'
 import EventIcon from '@material-ui/icons/Event'
 import InfoIcon from '@material-ui/icons/Info'
+import MapIcon from '@material-ui/icons/Map'
 import AccountBoxIcon from '@material-ui/icons/AccountBox'
 import SettingsIcon from '@material-ui/icons/Settings'
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
+import { useMst } from '../models/reactHook'
 
 const StyledList = styled(List)`
   && {
@@ -23,7 +26,8 @@ const StyledList = styled(List)`
   }
 `
 
-export default function TemporaryDrawer({ open, toggleDrawer, openPage }) {
+export default function TemporaryDrawer({ open, toggleDrawer }) {
+  const store = useMst()
   return (
     <div>
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
@@ -31,49 +35,59 @@ export default function TemporaryDrawer({ open, toggleDrawer, openPage }) {
           <StyledList>
             <ListItem>
               <ListItemAvatar>
-                <Avatar alt="user avatar" src="./images/fake-avatar.jpg" />
+                <Avatar
+                  alt={store.loggedInUser?.personName}
+                  src={store.loggedInUser?.imageSrc}
+                />
               </ListItemAvatar>
-              <ListItemText primary="Adriel Steuber" />
+              <ListItemText primary={store.loggedInUser?.personName} />
             </ListItem>
             <Divider />
-            <ListItem button onClick={() => openPage('announcements')}>
+            <ListItem button onClick={() => store.view.openAnnouncementsPage()}>
               <ListItemIcon>
-                <AnnouncementIcon />
+                <Badge
+                  badgeContent={store.announcements.unread.length}
+                  color="secondary"
+                >
+                  <AnnouncementIcon />
+                </Badge>
               </ListItemIcon>
               <Typography>Announcements</Typography>
             </ListItem>
-            <ListItem button onClick={() => openPage('chat')}>
+            <ListItem button onClick={() => store.view.openChatPage()}>
               <ListItemIcon>
-                <ChatIcon />
+                <Badge badgeContent={store.chat.unreadCount} color="secondary">
+                  <ChatIcon />
+                </Badge>
               </ListItemIcon>
               <Typography>Chat</Typography>
             </ListItem>
-            <ListItem button onClick={() => openPage('activities')}>
+            <ListItem button onClick={() => store.view.openActivitiesPage()}>
               <ListItemIcon>
                 <EventIcon />
               </ListItemIcon>
               <Typography>Activities</Typography>
             </ListItem>
-            <ListItem button onClick={() => openPage('my-bookings')}>
+            <ListItem button>
               <ListItemIcon>
                 <AccountBoxIcon />
               </ListItemIcon>
               <Typography>My Bookings</Typography>
             </ListItem>
-            <ListItem button onClick={() => openPage('info-section')}>
+            <ListItem button>
               <ListItemIcon>
                 <InfoIcon />
               </ListItemIcon>
               <Typography>Info Section</Typography>
             </ListItem>
-            <ListItem button onClick={() => openPage('map')}>
+            <ListItem button>
               <ListItemIcon>
-                <InfoIcon />
+                <MapIcon />
               </ListItemIcon>
               <Typography>Map</Typography>
             </ListItem>
             <Divider />
-            <ListItem button onClick={() => openPage('settings')}>
+            <ListItem button onClick={() => store.view.openSettingsPage()}>
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>

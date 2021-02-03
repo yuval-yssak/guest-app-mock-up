@@ -5,16 +5,18 @@ import {
   ThemeProvider as MuiThemeProvider,
   createMuiTheme
 } from '@material-ui/core'
+
+import { observer } from 'mobx-react-lite'
 import CssReset from './CssReset'
 
-import FloatingActionButtons from './FloatingActionButton'
 import Paper from '@material-ui/core/Paper'
-import SimpleBottomNavigation from './SimpleBottomNavigation'
+import MainBottomNavigation from './SimpleBottomNavigation'
 import AppBar from './AppBar'
 import TemporaryDrawer from './Drawer'
 import AnnouncementsPage from '../pages/AnnouncementsPage'
 import SettingsPage from '../pages/SettingsPage'
 import ChatPage from '../pages/ChatPage'
+import { useMst } from '../models/reactHook'
 
 const scaleFrom0 = keyframes`
 0% {
@@ -43,7 +45,7 @@ const Background = styled.div.attrs({ className: 'background' })`
   }
 `
 
-const AnimatedBottomNavigation = styled(SimpleBottomNavigation)`
+const AnimatedBottomNavigation = styled(MainBottomNavigation)`
   & button {
     transition: transform 0.2s cubic-bezier(0.37, 0, 0.63, 1);
     @media (hover: hover) {
@@ -69,45 +71,43 @@ const StyledPaper = styled(Paper)`
   grid-template-rows: min-content 1fr min-content;
 `
 
-export default function App() {
-  const [darkTheme, setDarkTheme] = React.useState(false)
-  const [open, setOpen] = React.useState(false)
-  const [content, setContent] = React.useState('root')
+function App() {
+  const [drawerOpen, setDrawerOpen] = React.useState(false)
   const mainRef = React.createRef()
+  const store = useMst()
 
+  // todo:
   // focus on main (content area) once the page is switched over.
   //
   // This means that the user while hitting the tab key will bring the focus
   // into the first focusable element within the content area.
-  React.useEffect(() => {
-    mainRef.current.focus()
-  }, [content, mainRef])
 
   function getPageTitle() {
-    switch (content) {
-      case 'root':
+    switch (store.view.page) {
+      case '/':
         return 'Root'
-      case 'announcements':
+      case '/announcements':
         return 'Announcements'
-      case 'chat':
+      case '/chat':
         return 'Chat'
-      case 'info-section':
+      case '/info-section':
         return 'Info Section'
-      case 'map':
+      case '/map':
         return 'Ashram Map'
-      case 'my-bookings':
+      case '/my-bookings':
         return 'My Bookings'
-      case 'settings':
+      case '/settings':
         return 'Settings'
-      case 'activities':
+      case '/activities':
         return 'Activities'
       default:
         return 'No Title...'
     }
   }
+
   const customTheme = createMuiTheme({
     palette: {
-      type: darkTheme ? 'dark' : 'light',
+      type: store.preferences.darkMode ? 'dark' : 'light',
       primary: { main: '#f29500' },
       secondary: { main: '#ffcf00' }
     },
@@ -116,11 +116,6 @@ export default function App() {
     }
   })
 
-  function openPage(pageName) {
-    setContent(pageName)
-    setOpen(false)
-  }
-
   const toggleDrawer = open => event => {
     if (
       event.type === 'keydown' &&
@@ -128,7 +123,7 @@ export default function App() {
     ) {
       return
     }
-    setOpen(open)
+    setDrawerOpen(open)
   }
 
   return (
@@ -140,30 +135,29 @@ export default function App() {
             <AppBar toggleDrawer={toggleDrawer} pageTitle={getPageTitle()} />
             <Background>
               <Main ref={mainRef} tabIndex={-1}>
-                {content === 'root' && <FloatingActionButtons />}
-                {content === 'announcements' && <AnnouncementsPage />}
-                {content === 'chat' && <ChatPage />}
-                {content === 'info-section' && <div>Info Section Pages</div>}
-                {content === 'map' && <div>Map</div>}
-                {content === 'my-bookings' && <div>Account Details Page</div>}
-                {content === 'settings' && (
-                  <SettingsPage
-                    darkTheme={darkTheme}
-                    setDarkTheme={setDarkTheme}
-                  />
+                {store.view.page === '/root' && <h1>Dashboard</h1>}
+                {store.view.page === '/announcements' && <AnnouncementsPage />}
+                {store.view.page === '/chat' && <ChatPage />}
+                {store.view.page === '/info-section' && (
+                  <div>Info Section Pages</div>
                 )}
-                {content === 'activities' && <div>Activities Page</div>}
+                {store.view.page === '/map' && <div>Map</div>}
+                {store.view.page === '/my-bookings' && (
+                  <div>Account Details Page</div>
+                )}
+                {store.view.page === '/settings' && <SettingsPage />}
+                {store.view.page === '/activities' && (
+                  <div>Activities Page</div>
+                )}
               </Main>
             </Background>
-            <AnimatedBottomNavigation openPage={openPage} />
+            <AnimatedBottomNavigation />
           </StyledPaper>
-          <TemporaryDrawer
-            open={open}
-            toggleDrawer={toggleDrawer}
-            openPage={openPage}
-          />
+          <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
         </ThemeProvider>
       </MuiThemeProvider>
     </>
   )
 }
+
+export default observer(App)
