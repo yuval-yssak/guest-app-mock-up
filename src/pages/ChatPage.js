@@ -208,12 +208,22 @@ const StaffMessageHead = styled(GuestMessageHead)`
   }
 `
 
+// todo: move this into store in order to keep the component dumb
+function useRenderEveryMinute() {
+  // update component every minute
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
+
+  React.useEffect(() => {
+    const interval = setInterval(forceUpdate, 6e3)
+
+    return () => clearInterval(interval)
+  }, [])
+}
+
 function GuestMessage({ children, className, name, src, time }) {
   const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
 
-  // update component every minute
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
-  setInterval(forceUpdate, 6e3)
+  useRenderEveryMinute()
 
   return (
     <GuestMessageContainer>
@@ -273,9 +283,7 @@ function GuestMessage({ children, className, name, src, time }) {
 function StaffMessage({ children, className, name, src, time }) {
   const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
 
-  // update component every minute
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
-  setInterval(forceUpdate, 6e3)
+  useRenderEveryMinute()
 
   return (
     <StaffMessageContainer>
@@ -395,21 +403,15 @@ function Chat({ children, newSince }) {
   const dividerRef = React.useRef()
   const messagesParentRef = React.useRef()
   const userInputRef = React.useRef()
-  const [statefulMessages, setStatefulMessages] = React.useState()
 
-  // manage local state
-  React.useEffect(() => {
-    const displayMessages = React.Children.toArray(children)
+  const displayMessages = React.Children.toArray(children)
 
-    if (newSince)
-      displayMessages.splice(
-        newSince * -1,
-        0,
-        <NewBelow key="unread-divider" ref={dividerRef} />
-      )
-
-    setStatefulMessages(displayMessages)
-  }, [newSince, children])
+  if (newSince)
+    displayMessages.splice(
+      newSince * -1,
+      0,
+      <NewBelow key="unread-divider" ref={dividerRef} />
+    )
 
   // show last read message or first unread messages
   React.useEffect(() => {
@@ -418,7 +420,7 @@ function Chat({ children, newSince }) {
       messagesParentRef.current
         ?.querySelector('section:last-child')
         ?.scrollIntoView()
-  }, [statefulMessages, newSince])
+  }, [newSince])
 
   // once user input is changed, focus back on the text area.
   React.useEffect(() => {
@@ -426,18 +428,7 @@ function Chat({ children, newSince }) {
   }, [userInput, userInputRef])
 
   function submitMessage() {
-    // insert the user input as a guest message
-    setStatefulMessages(
-      statefulMessages.concat(
-        <GuestMessage
-          src={store.loggedInUser.imageSrc}
-          name={store.loggedInUser.peronName}
-          time={dayjs()}
-        >
-          {userInput}
-        </GuestMessage>
-      )
-    )
+    // todo: insert the user input as a guest message
 
     // clear the text area for new input.
     setUserInput('')
@@ -448,7 +439,7 @@ function Chat({ children, newSince }) {
   return (
     <ChatContainer>
       <MessagesScrollable elevation={0} ref={messagesParentRef}>
-        {statefulMessages}
+        {displayMessages}
       </MessagesScrollable>
       <UserInputSection>
         <TextField
