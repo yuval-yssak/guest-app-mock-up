@@ -1,4 +1,4 @@
-import { types, getParent, clone } from 'mobx-state-tree'
+import { types } from 'mobx-state-tree'
 
 const MessagePerson = types.model('MessagePerson', {
   personName: types.string,
