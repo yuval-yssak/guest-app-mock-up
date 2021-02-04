@@ -8,8 +8,8 @@ import PageMainPaper, { mainGridGap } from '../components/PageMainPaper'
 import SendIcon from '@material-ui/icons/Send'
 import IconButton from '@material-ui/core/IconButton'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
-import dayjs from 'dayjs'
 import { useMst } from '../models/reactHook'
+import dayjs from 'dayjs'
 
 // below this breakpoint the avatar enters the message frame
 const breakpointFullLine = '(max-width: 37.5em)'
@@ -89,6 +89,7 @@ const UnreadMessagesDivider = styled.div.attrs({
   position: relative;
   align-items: center;
   grid-gap: 0.5rem;
+  z-index: 3;
 
   color: ${({ theme }) => theme.palette.warning.main};
   margin-bottom: calc(0.3rem - ${mainGridGap});
@@ -107,10 +108,37 @@ const UnreadMessagesDivider = styled.div.attrs({
   }
 `
 
+const StickyDayLabel = styled.div.attrs(({ day }) => ({
+  className: 'day-label',
+  children: <Typography variant="h6">{day}</Typography>
+}))`
+  justify-self: center;
+  padding: 0.7rem 2rem;
+  border-radius: 1.2rem;
+  background-color: ${({ theme }) => theme.palette.secondary.main};
+  color: ${({ theme }) => theme.palette.primary.contrastText};
+  grid-column: 1 / -1;
+  position: sticky;
+  top: 0.4rem;
+  width: 13rem;
+  text-align: center;
+  z-index: 2;
+
+  @media screen and (max-height: 25em) {
+    font-size: 1rem;
+    padding: 0.2rem 2rem;
+    top: -0.3rem;
+  }
+  @media screen and (max-height: 20em) {
+    font-size: 0.8rem;
+  }
+`
+
 const MessageContainer = styled.section`
   display: grid;
   align-items: start;
   grid-gap: 0.5rem;
+  position: relative;
 
   // below this breakpoint there is only one column since the avatar is
   // inside the message frame
@@ -357,21 +385,59 @@ function ChatPage() {
   const userInputRef = React.useRef()
 
   // build message react components
-  const messages = store.chat.orderedMessages.map(message => {
-    const props = {
-      key: message.timestamp,
-      src: message.person.imageSrc,
-      name: message.person.personName,
-      timeSignature: message.timeSignature,
-      children: message.content
-    }
+  const messages = store.chat.orderedMessages
+    .reduce((allComponents, message) => {
+      const shortDate = dayjs(message.timestamp)
+        .startOf('day')
+        .isSame(dayjs().startOf('day'))
+        ? 'Today'
+        : dayjs(message.timestamp)
+            .startOf('day')
+            .isSame(dayjs().subtract(1, 'days').startOf('day'))
+        ? 'Yesterday'
+        : dayjs(message.timestamp)
+            .startOf('week')
+            .isSame(dayjs().startOf('week'))
+        ? dayjs(message.timestamp).format('dddd')
+        : dayjs(message.timestamp)
+            .startOf('year')
+            .isSame(dayjs().startOf('year'))
+        ? dayjs(message.timestamp).format('MMM D')
+        : dayjs(message.timestamp).format('MMM D, YYYY')
 
-    return message.messageSide === 'staff' ? (
-      <StaffMessage {...props} />
-    ) : (
-      <GuestMessage {...props} />
-    )
-  })
+      if (allComponents.length === 0)
+        return [...allComponents, { shortDate }, message]
+
+      if (
+        dayjs(message.timestamp)
+          .startOf('day')
+          .isSame(
+            dayjs(allComponents[allComponents.length - 1]?.timestamp).startOf(
+              'day'
+            )
+          )
+      )
+        return [...allComponents, message]
+      else return [...allComponents, { shortDate }, message]
+    }, [])
+
+    .map(message => {
+      if (message.shortDate) return <StickyDayLabel day={message.shortDate} />
+
+      const props = {
+        key: message.timestamp,
+        src: message.person.imageSrc,
+        name: message.person.personName,
+        timeSignature: message.timeSignature,
+        children: message.content
+      }
+
+      return message.messageSide === 'staff' ? (
+        <StaffMessage {...props} />
+      ) : (
+        <GuestMessage {...props} />
+      )
+    })
 
   // add "New" messages divider
   if (store.chat.unreadCount)

@@ -42,7 +42,7 @@ const ChatModel = types
       function displayTime(timestamp) {
         const relativeTime = dayjs(now()).to(timestamp)
 
-        if (dayjs(now()).diff(timestamp, 'minutes') < 45) return relativeTime
+        if (dayjs(now()).diff(timestamp, 'minutes') < 60) return relativeTime
         else
           return `${dayjs(timestamp).format(
             'MMM D, YYYY h:mm A'

@@ -48,6 +48,42 @@ const defaultStore = {
     messages: [
       {
         messageSide: 'staff',
+        person: loggedInUser,
+        timestamp: dayjs()
+          .subtract(2, 'years')
+          .add(8, 'months')
+          .add(3, 'days')
+          .toDate(),
+        content: 'Impedit aperiam labore aspernatur!'
+      },
+      {
+        messageSide: 'staff',
+        person: loggedInUser,
+        timestamp: dayjs().subtract(2, 'weeks').toDate(),
+        content:
+          'Perspiciatis ipsa repellendus, numquam temporibus vitae amet dolorum! A cupiditate voluptas quasi laboriosam!'
+      },
+      {
+        messageSide: 'guest',
+        person: loggedInUser,
+        timestamp: dayjs().subtract(3, 'days').toDate(),
+        content:
+          'Aut fugiat voluptate alias porro dolor sunt placeat! Incidunt hic odit quo'
+      },
+      {
+        messageSide: 'staff',
+        person: loggedInUser,
+        timestamp: dayjs().subtract(2, 'days').toDate(),
+        content: 'Optio accusantium quisquam omnis, assumenda esse'
+      },
+      {
+        messageSide: 'guest',
+        person: loggedInUser,
+        timestamp: dayjs().subtract(1, 'day').toDate(),
+        content: 'Veritatis, aut corporis.'
+      },
+      {
+        messageSide: 'staff',
         person: staff1,
         timestamp: dayjs().subtract(10, 'hours').minute(5).second(30).toDate(),
         content: 'Lorem ipsum dolor sit'
