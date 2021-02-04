@@ -37,7 +37,8 @@ const Section = styled.section.attrs(({ $type }) => ({
 }))`
   padding: 0.5rem;
 
-  && .MuiAccordion-root {
+  && .unread-message-heading + .MuiAccordion-root,
+  && .read-message-heading + .MuiAccordion-root {
     margin-top: 0;
   }
 
