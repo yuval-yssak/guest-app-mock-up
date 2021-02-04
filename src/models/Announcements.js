@@ -20,25 +20,26 @@ const AnnouncementModel = types
   }))
 const AnnouncementsModel = types
   .model('Announcements', {
-    unread: types.array(AnnouncementModel),
-    read: types.array(AnnouncementModel)
+    all: types.array(AnnouncementModel)
   })
   .views(self => ({
     announcementById(id) {
-      return self.unread.concat(self.read).find(a => a.id === id)
+      return self.all.find(a => a.id === id)
+    },
+    get unread() {
+      return self.all.filter(a => a.status === 'unread')
+    },
+    get read() {
+      return self.all.filter(a => a.status === 'read')
     }
   }))
   .actions(self => ({
     add(announcement) {
-      if (announcement.status === 'read') self.read.push(announcement)
-      else self.unread.push(announcement)
+      self.all.push(announcement)
     },
     remove(id) {
-      const unreadIndex = self.unread.findIndex(a => a.id === id)
-      if (unreadIndex > -1) self.unread.splice(unreadIndex, 1)
-
-      const readIndex = self.read.findIndex(a => a.id === id)
-      if (readIndex > -1) self.read.splice(readIndex, 1)
+      const index = self.all.findIndex(a => a.id === id)
+      if (index > -1) self.all.splice(index, 1)
     }
   }))
 

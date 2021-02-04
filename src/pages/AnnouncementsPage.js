@@ -12,6 +12,7 @@ import styled from 'styled-components'
 import PageMainPaper from '../components/PageMainPaper'
 
 import { useMst } from '../models/reactHook'
+import dayjs from 'dayjs'
 
 const StyledAccordionDetails = styled(AccordionDetails)`
   && {
@@ -26,6 +27,8 @@ const ScrollablePageMainPaper = styled(PageMainPaper).attrs({
   && {
     height: 100%;
     overflow: scroll;
+    grid-template-rows: min-content 1fr;
+    align-items: center;
   }
 `
 
@@ -42,13 +45,13 @@ const Section = styled.section.attrs(({ $type }) => ({
   ${({ $type }) =>
     $type === 'unread' &&
     `
-  & .MuiAccordionSummary-content p {
+  & .announcement-summary {
     font-weight: 800;
   }`}
 `
 
 const StyledAccordionSummary = styled(AccordionSummary)`
-  & p {
+  & .announcement-summary {
     ${({ $expanded }) => $expanded && `font-weight:800;`}
   }
 `
@@ -57,28 +60,40 @@ const MessageTypeHeading = styled(Typography)`
   line-height: 1;
 `
 
-const UnreadSectionHeading = styled.div.attrs({
+const SectionHeading = styled.div`
+  color: ${({ theme }) => theme.palette.primary.contrastText};
+  padding: 0.5rem 1rem;
+`
+
+const UnreadSectionHeading = styled(SectionHeading).attrs({
   className: 'unread-message-heading',
   'aria-label': 'unread messages',
   children: <MessageTypeHeading variant="h6">Unread</MessageTypeHeading>
 })`
   background-color: ${({ theme }) => theme.palette.primary.light};
-  padding: 0.5rem 1rem;
 `
 
-const ReadSectionHeading = styled.div.attrs({
+const ReadSectionHeading = styled(SectionHeading).attrs({
   className: 'read-message-heading',
   'aria-label': 'read messages',
   children: <MessageTypeHeading variant="h6">Read</MessageTypeHeading>
 })`
   background-color: #ffdca4;
-  padding: 0.5rem 1rem;
 `
 
-function Announcement({ id, summary, details, timestamp, status }) {
-  const { announcements } = useMst()
+const AnnouncementHead = styled.div.attrs({
+  className: 'announcement-head'
+})`
+  display: grid;
+  grid-template-columns: minmax(min-content, max-content) max-content;
+  width: 100%;
+  justify-content: space-between;
+`
+
+function Announcement({ announcement }) {
+  const { id, summary, details, timestamp, status } = announcement
   const [expanded, setExpanded] = React.useState(status === 'unread')
-  console.log('ann', status)
+
   return (
     <Accordion
       expanded={expanded}
@@ -90,7 +105,10 @@ function Announcement({ id, summary, details, timestamp, status }) {
         id={`${id}-header`}
         $expanded={expanded}
       >
-        <Typography>{summary}</Typography>
+        <AnnouncementHead>
+          <Typography className="announcement-summary">{summary}</Typography>
+          <Typography>{dayjs(timestamp).format('MMM D, YYYY')}</Typography>
+        </AnnouncementHead>
       </StyledAccordionSummary>
       <StyledAccordionDetails>
         <Typography>{details}</Typography>
@@ -104,7 +122,7 @@ function Announcement({ id, summary, details, timestamp, status }) {
             variant="outlined"
             size="small"
             color="primary"
-            onClick={() => announcements.announcementById(id).toggle()}
+            onClick={() => announcement.toggle()}
           >
             Confirm
           </Button>
@@ -115,7 +133,7 @@ function Announcement({ id, summary, details, timestamp, status }) {
 }
 
 const getAnnouncementComponent = announcement => (
-  <Announcement {...announcement} key={announcement.id} />
+  <Announcement announcement={announcement} key={announcement.id} />
 )
 
 function AnnouncementsPage() {
