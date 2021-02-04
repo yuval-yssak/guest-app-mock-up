@@ -67,6 +67,7 @@ const UserInputSection = styled.section.attrs({
   grid-template-columns: 1fr max-content;
   grid-gap: 1rem;
   grid-column: 1 / -1;
+  width: 100%;
 
   @media (max-width: 50em) {
     grid-gap: 0;
