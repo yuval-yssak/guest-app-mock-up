@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Avatar from '@material-ui/core/Avatar'
 import styled from 'styled-components'
-import PageMainPaper, { mainGridGap } from '../components/PageMainPaper'
+import PageMainPaper from '../components/PageMainPaper'
 import SendIcon from '@material-ui/icons/Send'
 import IconButton from '@material-ui/core/IconButton'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
@@ -21,12 +21,13 @@ const StyledIconButton = styled(IconButton)`
 `
 
 const ChatContainer = styled.div.attrs({ className: 'chat' })`
-  width: min(75rem, 80%);
+  width: min(65rem, 80%);
   display: grid;
   grid-template-rows: 1fr max-content; // keep the user input at the bottom
   grid-gap: 2rem;
   height: 100%;
   overflow: hidden; // scrolling is only in the inner messages container
+  justify-items: center;
 
   @media (max-width: 74.5em) {
     width: 90%;
@@ -34,6 +35,7 @@ const ChatContainer = styled.div.attrs({ className: 'chat' })`
 
   @media (max-width: 58em) {
     width: 100%;
+    padding: 0 0.3rem;
   }
 
   * p {
@@ -46,18 +48,11 @@ const MessagesScrollable = styled(PageMainPaper).attrs({
   className: 'messages-scrollable'
 })`
   && {
+    width: 100%;
     grid-template-columns: repeat(8, 1fr);
     align-items: end;
     overflow: scroll;
-    max-width: unset;
-
-    @media (max-width: 50em) {
-      padding: 1rem 1.5rem;
-    }
-
-    @media (max-width: 20em) {
-      padding: 0;
-    }
+    grid-gap: 2rem;
 
     & > section:last-child {
       padding-bottom: 2rem;
@@ -92,7 +87,7 @@ const UnreadMessagesDivider = styled.div.attrs({
   z-index: 3;
 
   color: ${({ theme }) => theme.palette.warning.main};
-  margin-bottom: calc(0.3rem - ${mainGridGap});
+  margin-bottom: calc(0.3rem - 2rem);
   margin-left: 0.5rem;
 
   @media ${breakpointFullLine} {
@@ -114,7 +109,7 @@ const StickyDayLabel = styled.div.attrs(({ day }) => ({
 }))`
   justify-self: center;
   padding: 0.7rem 2rem;
-  border-radius: 1.2rem;
+  border-radius: 1.1rem;
   background-color: ${({ theme }) => theme.palette.secondary.main};
   color: ${({ theme }) => theme.palette.primary.contrastText};
   grid-column: 1 / -1;
@@ -422,7 +417,10 @@ function ChatPage() {
     }, [])
 
     .map(message => {
-      if (message.shortDate) return <StickyDayLabel day={message.shortDate} />
+      if (message.shortDate)
+        return (
+          <StickyDayLabel day={message.shortDate} key={message.shortDate} />
+        )
 
       const props = {
         key: message.timestamp,
