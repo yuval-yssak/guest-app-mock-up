@@ -33,8 +33,10 @@ const Section = styled.section.attrs(({ $type }) => ({
   className: `${$type}-announcements`
 }))`
   padding: 0.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0.4rem;
+
+  && .MuiAccordion-root {
+    margin-top: 0;
+  }
 
   // give a bold font for summaries under the unread category
   ${({ $type }) =>
@@ -45,18 +47,32 @@ const Section = styled.section.attrs(({ $type }) => ({
   }`}
 `
 
-const TempStyledTypography = styled(Typography)`
-  && {
-    margin-bottom: -3rem; // TODO: lay out properly
-    color: darkred;
-    font-weight: 800;
-  }
-`
-
 const StyledAccordionSummary = styled(AccordionSummary)`
   & p {
     ${({ $expanded }) => $expanded && `font-weight:800;`}
   }
+`
+
+const MessageTypeHeading = styled(Typography)`
+  line-height: 1;
+`
+
+const UnreadSectionHeading = styled.div.attrs({
+  className: 'unread-message-heading',
+  'aria-label': 'unread messages',
+  children: <MessageTypeHeading variant="h6">Unread</MessageTypeHeading>
+})`
+  background-color: ${({ theme }) => theme.palette.primary.light};
+  padding: 0.5rem 1rem;
+`
+
+const ReadSectionHeading = styled.div.attrs({
+  className: 'read-message-heading',
+  'aria-label': 'read messages',
+  children: <MessageTypeHeading variant="h6">Read</MessageTypeHeading>
+})`
+  background-color: #ffdca4;
+  padding: 0.5rem 1rem;
 `
 
 function Announcement({ id, summary, details, timestamp, status }) {
@@ -106,12 +122,12 @@ function AnnouncementsPage() {
   const { announcements } = useMst()
   return (
     <ScrollablePageMainPaper role="article" elevation={0}>
-      <TempStyledTypography>Unread:</TempStyledTypography>
       <Section $type="unread">
+        {announcements.unread.length ? <UnreadSectionHeading /> : undefined}
         {announcements.unread.map(getAnnouncementComponent)}
       </Section>
-      <TempStyledTypography>Read:</TempStyledTypography>
       <Section $type="read">
+        {announcements.read.length ? <ReadSectionHeading /> : undefined}
         {announcements.read.map(getAnnouncementComponent)}
       </Section>
     </ScrollablePageMainPaper>
