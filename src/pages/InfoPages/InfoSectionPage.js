@@ -16,13 +16,15 @@ const StyledPageMainPaper = styled(PageMainPaper).attrs({
   clasName: 'info-section-container'
 })`
   && {
-    justify-content: space-around;
-    grid-template-columns: repeat(auto-fit, minmax(min-content, 20rem));
-    grid-gap: 2rem;
-    align-items: center;
-    overflow: scroll;
     height: 100%;
-    align-content: start;
+    overflow: scroll;
+    grid-template-columns: repeat(auto-fit, minmax(min-content, 20rem));
+    justify-content: space-around;
+    grid-gap: 2rem;
+    grid-template-rows: unset;
+    align-content: safe center;
+    align-items: stretch;
+    padding: 2rem;
   }
 `
 
