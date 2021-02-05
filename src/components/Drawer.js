@@ -29,6 +29,10 @@ const StyledList = styled(List).attrs({ className: 'drawer-list' })`
         padding-top: 0.5rem;
       }
     }
+
+    & > .MuiDivider-root + .MuiListItem-root {
+      margin-top: 0.5rem;
+    }
   }
 `
 
