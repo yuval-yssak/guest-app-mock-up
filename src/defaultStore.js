@@ -5,6 +5,11 @@ const staff1 = {
   imageSrc: './images/pranava-chaitanya.jpg'
 }
 
+const staff2 = {
+  personName: 'Iswara Chaitanya',
+  imageSrc: './images/iswara-chaitanya.jpg'
+}
+
 const loggedInUser = {
   personName: 'Richard Barrett',
   imageSrc: './images/32.jpg'
@@ -139,7 +144,7 @@ const defaultStore = {
     messages: [
       {
         messageSide: 'staff',
-        person: loggedInUser,
+        person: staff1,
         timestamp: dayjs()
           .subtract(2, 'years')
           .add(8, 'months')
@@ -149,7 +154,7 @@ const defaultStore = {
       },
       {
         messageSide: 'staff',
-        person: loggedInUser,
+        person: staff2,
         timestamp: dayjs().subtract(2, 'weeks').toDate(),
         content:
           'Perspiciatis ipsa repellendus, numquam temporibus vitae amet dolorum! A cupiditate voluptas quasi laboriosam!'
@@ -163,7 +168,7 @@ const defaultStore = {
       },
       {
         messageSide: 'staff',
-        person: loggedInUser,
+        person: staff1,
         timestamp: dayjs().subtract(2, 'days').toDate(),
         content: 'Optio accusantium quisquam omnis, assumenda esse'
       },

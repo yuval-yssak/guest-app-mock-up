@@ -4,11 +4,11 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Avatar from '@material-ui/core/Avatar'
 import styled from 'styled-components'
-import PageMainPaper from '../components/PageMainPaper'
 import SendIcon from '@material-ui/icons/Send'
 import IconButton from '@material-ui/core/IconButton'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useMst } from '../models/reactHook'
+import PageContentWrapper from '../components/PageContentWrapper'
 import dayjs from 'dayjs'
 
 // below this breakpoint the avatar enters the message frame
@@ -20,20 +20,17 @@ const StyledIconButton = styled(IconButton)`
   }
 `
 
-const ChatContainer = styled.div.attrs({ className: 'chat' })`
-  width: min(65rem, 80%);
-  display: grid;
+const ChatContainer = styled(PageContentWrapper).attrs({ className: 'chat' })`
   grid-template-rows: 1fr max-content; // keep the user input at the bottom
   grid-gap: 2rem;
-  height: 100%;
   overflow: hidden; // scrolling is only in the inner messages container
   justify-items: center;
 
-  @media (max-width: 74.5em) {
+  @media (max-width: 64em) {
     width: 90%;
   }
 
-  @media (max-width: 58em) {
+  @media (max-width: 52em) {
     width: 100%;
     padding: 0 0.3rem;
   }
@@ -44,10 +41,15 @@ const ChatContainer = styled.div.attrs({ className: 'chat' })`
   }
 `
 
-const MessagesScrollable = styled(PageMainPaper).attrs({
+const MessagesScrollable = styled.div.attrs({
   className: 'messages-scrollable'
 })`
   && {
+    display: grid;
+    height: 100%;
+    grid-template-rows: 1fr;
+    background-color: transparent;
+
     width: 100%;
     grid-template-columns: repeat(8, 1fr);
     align-items: end;
@@ -477,7 +479,7 @@ function ChatPage() {
 
   return (
     <ChatContainer>
-      <MessagesScrollable tabIndex="0" elevation={0} ref={messagesParentRef}>
+      <MessagesScrollable tabIndex="0" ref={messagesParentRef}>
         {messages}
       </MessagesScrollable>
       <UserInputSection>

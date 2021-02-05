@@ -9,7 +9,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Button from '@material-ui/core/Button'
 import FlagIcon from '@material-ui/icons/Flag'
 import styled from 'styled-components'
-import PageMainPaper from '../components/PageMainPaper'
+import PageContentWrapper from '../components/PageContentWrapper'
 
 import { useMst } from '../models/reactHook'
 import dayjs from 'dayjs'
@@ -21,11 +21,10 @@ const StyledAccordionDetails = styled(AccordionDetails)`
   }
 `
 
-const ScrollablePageMainPaper = styled(PageMainPaper).attrs({
+const ScrollablePageContentWrapper = styled(PageContentWrapper).attrs({
   className: 'scrollable'
 })`
   && {
-    height: 100%;
     overflow: scroll;
     grid-template-rows: min-content 1fr;
     align-items: start;
@@ -173,7 +172,7 @@ const getAnnouncementComponent = announcement => (
 function AnnouncementsPage() {
   const { announcements } = useMst()
   return (
-    <ScrollablePageMainPaper role="article" elevation={0}>
+    <ScrollablePageContentWrapper role="article">
       <Section $type="unread">
         {announcements.unread.length ? <UnreadSectionHeading /> : undefined}
         {announcements.unread.map(getAnnouncementComponent)}
@@ -182,7 +181,7 @@ function AnnouncementsPage() {
         {announcements.read.length ? <ReadSectionHeading /> : undefined}
         {announcements.read.map(getAnnouncementComponent)}
       </Section>
-    </ScrollablePageMainPaper>
+    </ScrollablePageContentWrapper>
   )
 }
 

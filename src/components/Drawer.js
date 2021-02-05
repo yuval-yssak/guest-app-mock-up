@@ -19,14 +19,24 @@ import Typography from '@material-ui/core/Typography'
 import Avatar from '@material-ui/core/Avatar'
 import { useMst } from '../models/reactHook'
 
-const StyledList = styled(List)`
+const StyledList = styled(List).attrs({ className: 'drawer-list' })`
   && {
     width: 15.625rem;
     padding-top: 0;
 
-    & .MuiListItem-root:first-child {
-      margin-top: 0.5rem;
+    @media (max-width: 20em) {
+      & > .MuiListItem-root {
+        padding-top: 0.5rem;
+      }
     }
+  }
+`
+
+const StyledListItemIcon = styled(ListItemIcon).attrs({
+  className: 'list-item-icon'
+})`
+  && {
+    min-width: 2.8rem;
   }
 `
 
@@ -48,53 +58,53 @@ export default function TemporaryDrawer({ open, toggleDrawer }) {
             </ListItem>
             <Divider />
             <ListItem button onClick={() => store.view.openAnnouncementsPage()}>
-              <ListItemIcon>
+              <StyledListItemIcon>
                 <Badge
                   badgeContent={store.announcements.unread.length}
                   color="secondary"
                 >
                   <AnnouncementIcon />
                 </Badge>
-              </ListItemIcon>
+              </StyledListItemIcon>
               <Typography>Announcements</Typography>
             </ListItem>
             <ListItem button onClick={() => store.view.openChatPage()}>
-              <ListItemIcon>
+              <StyledListItemIcon>
                 <Badge badgeContent={store.chat.unreadCount} color="secondary">
                   <ChatIcon />
                 </Badge>
-              </ListItemIcon>
+              </StyledListItemIcon>
               <Typography>Chat</Typography>
             </ListItem>
             <ListItem button onClick={() => store.view.openActivitiesPage()}>
-              <ListItemIcon>
+              <StyledListItemIcon>
                 <EventIcon />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <Typography>Activities</Typography>
             </ListItem>
             <ListItem button>
-              <ListItemIcon>
+              <StyledListItemIcon>
                 <AccountBoxIcon />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <Typography>My Bookings</Typography>
             </ListItem>
             <ListItem button onClick={() => store.view.openInfoSectionPage()}>
-              <ListItemIcon>
+              <StyledListItemIcon>
                 <InfoIcon />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <Typography>Info Section</Typography>
             </ListItem>
             <ListItem button>
-              <ListItemIcon>
+              <StyledListItemIcon>
                 <MapIcon />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <Typography>Map</Typography>
             </ListItem>
             <Divider />
             <ListItem button onClick={() => store.view.openSettingsPage()}>
-              <ListItemIcon>
+              <StyledListItemIcon>
                 <SettingsIcon />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <Typography>Settings</Typography>
             </ListItem>
           </StyledList>

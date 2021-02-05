@@ -1,5 +1,5 @@
 import React from 'react'
-import PageMainPaper from '../../components/PageMainPaper'
+import PageContentWrapper from '../../components/PageContentWrapper'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea'
 import CardActions from '@material-ui/core/CardActions'
@@ -12,11 +12,10 @@ import InfoArrivingAtTheAirport from './InfoArrivingAtTheAirport'
 import styled from 'styled-components'
 import { useMst } from '../../models/reactHook'
 
-const StyledPageMainPaper = styled(PageMainPaper).attrs({
+const StyledPageContentWrapper = styled(PageContentWrapper).attrs({
   clasName: 'info-section-container'
 })`
   && {
-    height: 100%;
     overflow: scroll;
     grid-template-columns: repeat(auto-fit, minmax(min-content, 25rem));
     justify-content: center;
@@ -73,7 +72,7 @@ export default function InfoSetingsPage({ page }) {
   if (page === 'arriving-at-the-airport') return <InfoArrivingAtTheAirport />
 
   return (
-    <StyledPageMainPaper>
+    <StyledPageContentWrapper>
       <MediaCard
         topic="What to bring?"
         description="Nam molestias, officia eaque illum architecto delectus itaque
@@ -153,6 +152,6 @@ export default function InfoSetingsPage({ page }) {
           title="Krishna walking on the beach with a yoga mat"
         />
       </MediaCard>
-    </StyledPageMainPaper>
+    </StyledPageContentWrapper>
   )
 }

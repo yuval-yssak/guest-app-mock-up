@@ -9,7 +9,6 @@ import {
 import { observer } from 'mobx-react-lite'
 import CssReset from './CssReset'
 
-import Paper from '@material-ui/core/Paper'
 import MainBottomNavigation from './SimpleBottomNavigation'
 import AppBar from './AppBar'
 import TemporaryDrawer from './Drawer'
@@ -65,7 +64,7 @@ const Main = styled.main`
   height: 100%;
 `
 
-const StyledPaper = styled(Paper)`
+const AppWrapper = styled.div`
   width: 100%;
   height: 100vh;
   display: grid;
@@ -132,7 +131,7 @@ function App() {
       <CssReset />
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
-          <StyledPaper square>
+          <AppWrapper square>
             <AppBar toggleDrawer={toggleDrawer} pageTitle={getPageTitle()} />
             <Background>
               <Main ref={mainRef} tabIndex={-1}>
@@ -153,7 +152,7 @@ function App() {
               </Main>
             </Background>
             <AnimatedBottomNavigation />
-          </StyledPaper>
+          </AppWrapper>
           <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
         </ThemeProvider>
       </MuiThemeProvider>

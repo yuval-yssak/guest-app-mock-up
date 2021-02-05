@@ -1,9 +1,9 @@
 import React from 'react'
-import PageMainPaper from '../components/PageMainPaper'
+import PageContentWrapper from '../components/PageContentWrapper'
 import DarkModeSwitch from '../components/DarkModeSwitch'
 import styled from 'styled-components'
 
-const StyledPageMainPaper = styled(PageMainPaper).attrs({
+const StyledPageContentWrapper = styled(PageContentWrapper).attrs({
   clasName: 'setting-page-container'
 })`
   justify-content: center;
@@ -11,8 +11,8 @@ const StyledPageMainPaper = styled(PageMainPaper).attrs({
 
 export default function SettingsPage() {
   return (
-    <StyledPageMainPaper role="article" elavation={2}>
+    <StyledPageContentWrapper role="article">
       <DarkModeSwitch />
-    </StyledPageMainPaper>
+    </StyledPageContentWrapper>
   )
 }
