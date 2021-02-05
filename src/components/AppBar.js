@@ -34,7 +34,7 @@ const StyledToolbar = styled(Toolbar)`
 const PageTitle = styled(Typography)`
   && {
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     justify-self: start;
     margin-left: 0.5rem;
   }

@@ -51,7 +51,7 @@ const AnimatedBottomNavigation = styled(MainBottomNavigation)`
     transition: transform 0.2s cubic-bezier(0.37, 0, 0.63, 1);
     @media (hover: hover) {
       &:hover {
-        transform: scale(1.05);
+        /* transform: scale(1.05); */
       }
     }
   }
