@@ -16,6 +16,7 @@ import TemporaryDrawer from './Drawer'
 import AnnouncementsPage from '../pages/AnnouncementsPage'
 import SettingsPage from '../pages/SettingsPage'
 import ChatPage from '../pages/ChatPage'
+import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
 import { useMst } from '../models/reactHook'
 
 const scaleFrom0 = keyframes`
@@ -139,7 +140,7 @@ function App() {
                 {store.view.page === '/announcements' && <AnnouncementsPage />}
                 {store.view.page === '/chat' && <ChatPage />}
                 {store.view.page === '/info-section' && (
-                  <div>Info Section Pages</div>
+                  <InfoSectionPage page={store.view.id} />
                 )}
                 {store.view.page === '/map' && <div>Map</div>}
                 {store.view.page === '/my-bookings' && (

@@ -74,7 +74,7 @@ export default function TemporaryDrawer({ open, toggleDrawer }) {
               </ListItemIcon>
               <Typography>My Bookings</Typography>
             </ListItem>
-            <ListItem button>
+            <ListItem button onClick={() => store.view.openInfoSectionPage()}>
               <ListItemIcon>
                 <InfoIcon />
               </ListItemIcon>

@@ -6,11 +6,12 @@ const viewModel = types
     page: types.union(
       types.literal(''),
       types.literal('/'),
-      types.literal('/chat'),
-      types.literal('/announcements'),
       types.literal('/activities'),
-      types.literal('/settings'),
-      types.literal('/custom')
+      types.literal('/announcements'),
+      types.literal('/chat'),
+      types.literal('/custom'),
+      types.literal('/info-section'),
+      types.literal('/settings')
     ),
     id: types.maybe(types.string)
   })
@@ -21,8 +22,14 @@ const viewModel = types
         case '/':
           return '/'
         case '/custom':
-          const toPath = compile('/custom/:id')
-          return toPath({ id: self.id || '' })
+          const customToPath = compile('/custom/:id')
+          return customToPath({ id: self.id || '' })
+        case '/info-section':
+          if (self.id) {
+            const infoSectionToPath = compile('/info-section/:id')
+            return infoSectionToPath({ id: self.id })
+          }
+          return self.page
         default:
           return self.page
       }
@@ -30,18 +37,22 @@ const viewModel = types
   }))
 
   .actions(self => ({
-    openHomePage() {
-      self.page = '/'
-      self.id = undefined
-    },
+    openActivitiesPage: () => (self.page = '/activities'),
+    openAnnouncementsPage: () => (self.page = '/announcements'),
+    openChatPage: () => (self.page = '/chat'),
     openCustomPage(id) {
       self.page = '/custom'
       self.id = id
     },
-    openAnnouncementsPage: () => (self.page = '/announcements'),
-    openActivitiesPage: () => (self.page = '/activities'),
+    openHomePage() {
+      self.page = '/'
+      self.id = undefined
+    },
+    openInfoSectionPage: id => {
+      self.page = '/info-section'
+      self.id = id
+    },
     openSettingsPage: () => (self.page = '/settings'),
-    openChatPage: () => (self.page = '/chat'),
     setFromURL() {
       const newView = getViewFromURL()
       self.page = newView.page
@@ -58,6 +69,15 @@ function getViewFromURL() {
 
   if (matchedCustom) return { page: 'custom', id: matchedCustom.params.id }
 
+  const matchInfoSection = match('/info-section/:id')
+  const matchedInfoSection = matchInfoSection(pathname)
+
+  if (matchedInfoSection)
+    return {
+      page: '/info-section',
+      id: matchedInfoSection.params.id
+    }
+
   const matchGeneral = match('/:page')
   const matchedGeneral = matchGeneral(pathname)
 
@@ -66,10 +86,11 @@ function getViewFromURL() {
       case '':
       case '/':
         return { page: '/' }
-      case '/chat':
       case '/activities':
-      case '/settings':
       case '/announcements':
+      case '/chat':
+      case '/info-section':
+      case '/settings':
         return { page: matchedGeneral.path }
       default:
         return { page: '/' }
