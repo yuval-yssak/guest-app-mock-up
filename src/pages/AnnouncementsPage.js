@@ -7,7 +7,7 @@ import AccordionActions from '@material-ui/core/AccordionActions'
 import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Button from '@material-ui/core/Button'
-
+import FlagIcon from '@material-ui/icons/Flag'
 import styled from 'styled-components'
 import PageMainPaper from '../components/PageMainPaper'
 
@@ -28,14 +28,14 @@ const ScrollablePageMainPaper = styled(PageMainPaper).attrs({
     height: 100%;
     overflow: scroll;
     grid-template-rows: min-content 1fr;
-    align-items: center;
+    align-items: start;
   }
 `
 
 const Section = styled.section.attrs(({ $type }) => ({
   className: `${$type}-announcements`
 }))`
-  padding: 0.5rem;
+  padding: 1rem;
 
   && .unread-message-heading + .MuiAccordion-root,
   && .read-message-heading + .MuiAccordion-root {
@@ -64,6 +64,10 @@ const MessageTypeHeading = styled(Typography)`
 const SectionHeading = styled.div`
   color: ${({ theme }) => theme.palette.primary.contrastText};
   padding: 0.5rem 1rem;
+  & h6 {
+    font-size: 1rem;
+    line-height: 1;
+  }
 `
 
 const UnreadSectionHeading = styled(SectionHeading).attrs({
@@ -86,27 +90,37 @@ const AnnouncementHead = styled.div.attrs({
   className: 'announcement-head'
 })`
   display: grid;
-  grid-template-columns: minmax(min-content, 1fr) max-content max-content;
+  grid-template-columns: minmax(min-content, 1fr) max-content max-content max-content;
   width: 100%;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
+  grid-gap: 0.5rem;
 `
 
-const HighPriority = styled.img.attrs({
-  className: 'high-priority',
-  alt: 'high priority icon',
-  src: 'images/warning.svg'
+const Important = styled(Typography).attrs({
+  className: 'important',
+  'aria-label': 'important'
 })`
-  height: 2rem;
-  position: relative;
-  top: -0.3rem;
-  margin-right: 0.2rem;
+  && {
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    margin-right: 0.4rem;
+  }
 `
+
+function HighPriority({ withAnnotation }) {
+  return (
+    <>
+      <FlagIcon color="primary" />
+      {withAnnotation && <Important color="primary">Important</Important>}
+    </>
+  )
+}
 
 function Announcement({ announcement }) {
   const { id, summary, details, timestamp, status, priority } = announcement
   const [expanded, setExpanded] = React.useState(status === 'unread')
-
+  const store = useMst()
   return (
     <Accordion
       expanded={expanded}
@@ -120,7 +134,9 @@ function Announcement({ announcement }) {
       >
         <AnnouncementHead>
           <Typography className="announcement-summary">{summary}</Typography>
-          {priority === 'high' && <HighPriority />}
+          {priority === 'high' && (
+            <HighPriority withAnnotation={status === 'unread'} />
+          )}
           <Typography>{dayjs(timestamp).format('MMM D, YYYY')}</Typography>
         </AnnouncementHead>
       </StyledAccordionSummary>
@@ -128,7 +144,11 @@ function Announcement({ announcement }) {
         <Typography>{details}</Typography>
       </StyledAccordionDetails>
       <AccordionActions>
-        <Button variant="outlined" size="small">
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => store.view.openChatPage()}
+        >
           Respond
         </Button>
         {status === 'unread' && (

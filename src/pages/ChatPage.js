@@ -109,16 +109,17 @@ const StickyDayLabel = styled.div.attrs(({ day }) => ({
   children: <Typography variant="h6">{day}</Typography>
 }))`
   justify-self: center;
-  padding: 0.7rem 2rem;
+  padding: 0.1rem;
   border-radius: 1.1rem;
-  background-color: ${({ theme }) => theme.palette.secondary.main};
-  color: ${({ theme }) => theme.palette.primary.contrastText};
+  background-color: #eee;
+  color: #555;
   grid-column: 1 / -1;
   position: sticky;
   top: 0.4rem;
-  width: 13rem;
+  width: 7.3rem;
   text-align: center;
   z-index: 2;
+  font-size: 0.78rem;
 
   @media screen and (max-height: 25em) {
     font-size: 1rem;
@@ -127,6 +128,11 @@ const StickyDayLabel = styled.div.attrs(({ day }) => ({
   }
   @media screen and (max-height: 20em) {
     font-size: 0.8rem;
+  }
+
+  // todo: fix with specifity
+  & h6 {
+    font-size: 0.85rem !important;
   }
 `
 

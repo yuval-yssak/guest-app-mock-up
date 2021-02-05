@@ -18,13 +18,14 @@ const StyledPageMainPaper = styled(PageMainPaper).attrs({
   && {
     height: 100%;
     overflow: scroll;
-    grid-template-columns: repeat(auto-fit, minmax(min-content, 20rem));
-    justify-content: space-around;
+    grid-template-columns: repeat(auto-fit, minmax(min-content, 25rem));
+    justify-content: center;
     grid-gap: 2rem;
     grid-template-rows: unset;
     align-content: safe center;
     align-items: stretch;
     padding: 2rem;
+    width: 100%;
   }
 `
 
@@ -37,8 +38,8 @@ const StyledCard = styled(Card)`
 const StyledCardMedia = styled(CardMedia)`
   && {
     width: 100%;
-    height: 176px;
-    background-position: -2.875rem -1.3125rem;
+    height: 148px;
+    background-position: cover;
   }
 `
 
@@ -82,7 +83,6 @@ export default function InfoSetingsPage({ page }) {
           "
         action={() => store.view.openInfoSectionPage('what-to-bring')}
       >
-        {' '}
         <StyledCardMedia
           image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/C2AdaptiveYoga-1024x579.jpg"
           title="Shambhu on the beach meditation"
@@ -93,11 +93,61 @@ export default function InfoSetingsPage({ page }) {
         description="Dolorem sequi esse inventore temporibus facere vitae vero
         laborum illum eveniet animi optio quos
         quam, nihil, corrupti
-        amet repellat distinctio,
-        ut voluptatibus dolorum. Eveniet amet velit eligendi vero ullam eos!"
+        amet repellat distinctio,"
         action={() => store.view.openInfoSectionPage('arriving-at-the-airport')}
       >
-        {' '}
+        <StyledCardMedia
+          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
+          title="Krishna walking on the beach with a yoga mat"
+        />
+      </MediaCard>
+      <MediaCard
+        topic="Arriving at the airport"
+        description="Dolorem sequi esse inventore temporibus facere vitae vero
+        laborum illum eveniet animi optio quos
+        quam, nihil, corrupti
+        amet repellat distinctio,"
+        action={() => store.view.openInfoSectionPage('arriving-at-the-airport')}
+      >
+        <StyledCardMedia
+          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
+          title="Krishna walking on the beach with a yoga mat"
+        />
+      </MediaCard>
+      <MediaCard
+        topic="Arriving at the airport"
+        description="Dolorem sequi esse inventore temporibus facere vitae vero
+        laborum illum eveniet animi optio quos
+        quam, nihil, corrupti
+        amet repellat distinctio,"
+        action={() => store.view.openInfoSectionPage('arriving-at-the-airport')}
+      >
+        <StyledCardMedia
+          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
+          title="Krishna walking on the beach with a yoga mat"
+        />
+      </MediaCard>
+      <MediaCard
+        topic="Arriving at the airport"
+        description="Dolorem sequi esse inventore temporibus facere vitae vero
+        laborum illum eveniet animi optio quos
+        quam, nihil, corrupti
+        amet repellat distinctio,"
+        action={() => store.view.openInfoSectionPage('arriving-at-the-airport')}
+      >
+        <StyledCardMedia
+          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
+          title="Krishna walking on the beach with a yoga mat"
+        />
+      </MediaCard>
+      <MediaCard
+        topic="Arriving at the airport"
+        description="Dolorem sequi esse inventore temporibus facere vitae vero
+        laborum illum eveniet animi optio quos
+        quam, nihil, corrupti
+        amet repellat distinctio,"
+        action={() => store.view.openInfoSectionPage('arriving-at-the-airport')}
+      >
         <StyledCardMedia
           image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
           title="Krishna walking on the beach with a yoga mat"

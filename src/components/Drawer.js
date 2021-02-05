@@ -23,6 +23,10 @@ const StyledList = styled(List)`
   && {
     width: 15.625rem;
     padding-top: 0;
+
+    & .MuiListItem-root:first-child {
+      margin-top: 0.5rem;
+    }
   }
 `
 
