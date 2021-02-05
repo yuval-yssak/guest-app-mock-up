@@ -471,7 +471,7 @@ function ChatPage() {
 
   return (
     <ChatContainer>
-      <MessagesScrollable elevation={0} ref={messagesParentRef}>
+      <MessagesScrollable tabIndex="0" elevation={0} ref={messagesParentRef}>
         {messages}
       </MessagesScrollable>
       <UserInputSection>
