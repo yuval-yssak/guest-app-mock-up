@@ -6,7 +6,8 @@ const AnnouncementModel = types
     summary: types.string,
     details: types.string,
     timestamp: types.Date,
-    status: types.union(types.literal('read'), types.literal('unread'))
+    status: types.union(types.literal('read'), types.literal('unread')),
+    priority: types.union(types.literal('low'), types.literal('high'))
   })
   .actions(self => ({
     toggle() {

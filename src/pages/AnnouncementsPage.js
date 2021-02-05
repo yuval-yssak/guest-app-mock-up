@@ -86,13 +86,25 @@ const AnnouncementHead = styled.div.attrs({
   className: 'announcement-head'
 })`
   display: grid;
-  grid-template-columns: minmax(min-content, max-content) max-content;
+  grid-template-columns: minmax(min-content, 1fr) max-content max-content;
   width: 100%;
   justify-content: space-between;
+  align-items: center;
+`
+
+const HighPriority = styled.img.attrs({
+  className: 'high-priority',
+  alt: 'high priority icon',
+  src: 'images/warning.svg'
+})`
+  height: 2rem;
+  position: relative;
+  top: -0.3rem;
+  margin-right: 0.2rem;
 `
 
 function Announcement({ announcement }) {
-  const { id, summary, details, timestamp, status } = announcement
+  const { id, summary, details, timestamp, status, priority } = announcement
   const [expanded, setExpanded] = React.useState(status === 'unread')
 
   return (
@@ -108,6 +120,7 @@ function Announcement({ announcement }) {
       >
         <AnnouncementHead>
           <Typography className="announcement-summary">{summary}</Typography>
+          {priority === 'high' && <HighPriority />}
           <Typography>{dayjs(timestamp).format('MMM D, YYYY')}</Typography>
         </AnnouncementHead>
       </StyledAccordionSummary>
