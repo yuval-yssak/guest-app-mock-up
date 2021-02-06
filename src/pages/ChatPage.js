@@ -106,9 +106,15 @@ const UnreadMessagesDivider = styled.div.attrs({
   }
 `
 
+const DayLabelText = styled(Typography).attrs({ variant: 'h6' })`
+  && {
+    font-size: 0.85rem;
+  }
+`
+
 const StickyDayLabel = styled.div.attrs(({ day }) => ({
   className: 'day-label',
-  children: <Typography variant="h6">{day}</Typography>
+  children: <DayLabelText>{day}</DayLabelText>
 }))`
   justify-self: center;
   padding: 0.1rem;
@@ -121,21 +127,6 @@ const StickyDayLabel = styled.div.attrs(({ day }) => ({
   width: 7.3rem;
   text-align: center;
   z-index: 2;
-  font-size: 0.78rem;
-
-  @media screen and (max-height: 25em) {
-    font-size: 1rem;
-    padding: 0.2rem 2rem;
-    top: -0.3rem;
-  }
-  @media screen and (max-height: 20em) {
-    font-size: 0.8rem;
-  }
-
-  // todo: fix with specifity
-  & h6 {
-    font-size: 0.85rem !important;
-  }
 `
 
 const MessageContainer = styled.section`

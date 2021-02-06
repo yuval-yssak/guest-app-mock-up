@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button'
 import FlagIcon from '@material-ui/icons/Flag'
 import styled from 'styled-components'
 import PageContentWrapper from '../components/PageContentWrapper'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import { useMst } from '../models/reactHook'
 import dayjs from 'dayjs'
@@ -96,6 +97,18 @@ const AnnouncementHead = styled.div.attrs({
   justify-content: space-between;
   align-items: start;
   grid-gap: 0.5rem;
+
+  @media (max-width: 45em) {
+    grid-template-columns: ${({ $priority }) =>
+      `${
+        $priority === 'high' && 'min-content'
+      } minmax(min-content, max-content)`};
+    justify-content: start;
+
+    & .announcement-summary {
+      grid-area: 1 / 1 / 2 / -1;
+    }
+  }
 `
 
 const Important = styled(Typography).attrs({
@@ -125,6 +138,7 @@ function HighPriority({ withAnnotation }) {
 function Announcement({ announcement }) {
   const { id, summary, details, timestamp, status, priority } = announcement
   const [expanded, setExpanded] = React.useState(status === 'unread')
+  const smallScreen = useMediaQuery('(max-width: 23.125em)')
   const store = useMst()
   return (
     <Accordion
@@ -140,7 +154,9 @@ function Announcement({ announcement }) {
         <AnnouncementHead $priority={priority}>
           <Typography className="announcement-summary">{summary}</Typography>
           {priority === 'high' && (
-            <HighPriority withAnnotation={status === 'unread'} />
+            <HighPriority
+              withAnnotation={status === 'unread' && !smallScreen}
+            />
           )}
           <Typography>{dayjs(timestamp).format('MMM D, YYYY')}</Typography>
         </AnnouncementHead>

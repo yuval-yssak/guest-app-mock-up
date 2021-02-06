@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import styled from 'styled-components'
 import DarkModeSwitch from '../components/DarkModeSwitch'
 
-const StyledToolbar = styled(Toolbar)`
+const StyledToolbar = styled(Toolbar).attrs({ className: 'toolbar' })`
   && {
     display: grid;
     grid-auto-flow: column;
@@ -37,10 +37,16 @@ const PageTitle = styled(Typography)`
     font-size: 1.4rem;
     justify-self: start;
     margin-left: 0.5rem;
+
+    @media screen and (max-width: 37.5em), screen and (max-height: 25em) {
+      font-size: 1.1rem;
+      padding: 0;
+      max-width: 6rem;
+    }
   }
 `
 
-const breakpointShrinkDarkModeSwitch = '(max-width: 14.2em)'
+const breakpointShrinkDarkModeSwitch = '(max-width: 21.8em)'
 
 const OneLineDarkModeSwitch = styled(DarkModeSwitch)`
   && {
@@ -52,6 +58,8 @@ const OneLineDarkModeSwitch = styled(DarkModeSwitch)`
 
     @media ${breakpointShrinkDarkModeSwitch} {
       transform: scale(0.75);
+      margin-right: -1.1rem;
+      /* sc-dOSReg iDtCxH dark-mode-switch-shrinkable-container */
 
       & .MuiFormControlLabel-label {
         // hide label but keep label for accessibility

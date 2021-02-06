@@ -28,7 +28,7 @@ const StyledBottomNavigation = styled(BottomNavigation)`
       transition: all 0.3s;
 
       @media (max-width: 19.25em) {
-        min-width: 60px;
+        min-width: 45px;
         padding: 0;
       }
     }
