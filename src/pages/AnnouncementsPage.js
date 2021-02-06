@@ -26,7 +26,7 @@ const ScrollablePageContentWrapper = styled(PageContentWrapper).attrs({
   className: 'scrollable'
 })`
   && {
-    overflow: scroll;
+    overflow-y: scroll;
     grid-template-rows: min-content 1fr;
     align-items: start;
   }

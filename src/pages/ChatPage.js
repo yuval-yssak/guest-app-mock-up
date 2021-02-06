@@ -1,5 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react-lite'
+import { getSnapshot } from 'mobx-state-tree'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import Avatar from '@material-ui/core/Avatar'
@@ -53,7 +54,7 @@ const MessagesScrollable = styled.div.attrs({
     width: 100%;
     grid-template-columns: repeat(8, 1fr);
     align-items: end;
-    overflow: scroll;
+    overflow-y: scroll;
     grid-gap: 2rem;
 
     & > section:last-child {
@@ -445,14 +446,17 @@ function ChatPage() {
       <UnreadMessagesDivider key="unread-divider" ref={dividerRef} />
     )
 
-  // show last read message or first unread messages
+  // scroll last read message or first unread messages on any update
   React.useEffect(() => {
-    if (store.chat.unreadCount) dividerRef.current?.scrollIntoView()
-    else
-      messagesParentRef.current
-        ?.querySelector('section:last-child')
-        ?.scrollIntoView()
-  }, [store.chat.unreadCount])
+    setTimeout(() => {
+      if (store.chat.unreadCount) dividerRef.current?.scrollIntoView()
+      else {
+        messagesParentRef.current
+          ?.querySelector('section:last-child')
+          ?.scrollIntoView({ behavior: 'smooth' })
+      }
+    }, 0)
+  }, [store.chat.unreadCount, messages.length])
 
   // once user input is changed, focus back on the text area.
   React.useEffect(() => {
@@ -460,7 +464,12 @@ function ChatPage() {
   }, [userInput, userInputRef])
 
   function submitMessage() {
-    // todo: insert the user input as a guest message
+    store.chat.insertMessage({
+      messageSide: 'guest',
+      person: getSnapshot(store.loggedInUser),
+      timestamp: new Date(),
+      content: userInput
+    })
 
     // clear the text area for new input.
     setUserInput('')
@@ -486,7 +495,7 @@ function ChatPage() {
           onChange={e => setUserInput(e.target.value)}
           ref={userInputRef}
         />
-        <StyledIconButton aria-label="send" onClick={submitMessage}>
+        <StyledIconButton aria-label="send" onClick={() => submitMessage()}>
           <SendIcon />
         </StyledIconButton>
       </UserInputSection>

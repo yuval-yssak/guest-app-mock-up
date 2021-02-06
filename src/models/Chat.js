@@ -26,7 +26,7 @@ const MessagePerson = types.model('MessagePerson', {
 
 const Message = types.model('Message', {
   messageSide: types.union(types.literal('guest'), types.literal('staff')),
-  person: MessagePerson,
+  person: MessagePerson, // todo: should be a reference to person model
   timestamp: types.Date,
   content: types.string
 })
@@ -69,6 +69,11 @@ const ChatModel = types
       )
     }
   }))
-  .actions(self => ({}))
+  .actions(self => ({
+    insertMessage(message) {
+      self.messages.push(message)
+      self.lastReadTimestamp = new Date()
+    }
+  }))
 
 export const Chat = types.optional(ChatModel, { messages: [] })

@@ -43,6 +43,9 @@ const StyledPageContentWrapper = styled(PageContentWrapper).attrs({
 const StyledCard = styled(Card)`
   && {
     overflow: visible;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 `
 
