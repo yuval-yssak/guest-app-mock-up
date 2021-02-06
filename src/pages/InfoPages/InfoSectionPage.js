@@ -24,7 +24,19 @@ const StyledPageContentWrapper = styled(PageContentWrapper).attrs({
     align-content: safe center;
     align-items: stretch;
     padding: 2rem;
-    width: 100%;
+    width: 83rem;
+
+    @media (max-width: 83em) {
+      width: 90%;
+    }
+
+    @media (max-width: 55em) {
+      padding: 1rem;
+    }
+
+    @media (max-width: 28em) {
+      width: 100%;
+    }
   }
 `
 
