@@ -66,22 +66,32 @@ const Main = styled.main`
 
 const AppWrapper = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+  height: calc(
+    var(--vh, 1vh) * 100
+  ); // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
   display: grid;
   grid-template-rows: min-content 1fr min-content;
   background-color: ${({ theme }) => theme.palette.background.paper};
 `
+
+function setGlobalVhProperty() {
+  // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+  let vh = window.innerHeight * 0.01
+  // Then we set the value in the --vh custom property to the root of the document
+  document.documentElement.style.setProperty('--vh', `${vh}px`)
+}
 
 function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false)
   const mainRef = React.createRef()
   const store = useMst()
 
-  // todo:
-  // focus on main (content area) once the page is switched over.
-  //
-  // This means that the user while hitting the tab key will bring the focus
-  // into the first focusable element within the content area.
+  React.useEffect(() => {
+    setGlobalVhProperty()
+    window.addEventListener('resize', setGlobalVhProperty)
+    return () => window.removeEventListener('resize', setGlobalVhProperty)
+  }, [])
 
   function getPageTitle() {
     switch (store.view.page) {
