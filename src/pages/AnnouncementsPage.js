@@ -89,7 +89,9 @@ const AnnouncementHead = styled.div.attrs({
   className: 'announcement-head'
 })`
   display: grid;
-  grid-template-columns: minmax(min-content, 1fr) max-content max-content max-content;
+  grid-template-columns: minmax(min-content, 1fr) max-content ${({
+      $priority
+    }) => $priority === 'high' && 'max-content'};
   width: 100%;
   justify-content: space-between;
   align-items: start;
@@ -103,16 +105,20 @@ const Important = styled(Typography).attrs({
   && {
     font-weight: 700;
     letter-spacing: 1.2px;
-    margin-right: 0.4rem;
+    margin: 0 0.4rem;
   }
+`
+
+const HighPriorityContainer = styled.div`
+  display: flex;
 `
 
 function HighPriority({ withAnnotation }) {
   return (
-    <>
+    <HighPriorityContainer>
       <FlagIcon color="primary" />
       {withAnnotation && <Important color="primary">Important</Important>}
-    </>
+    </HighPriorityContainer>
   )
 }
 
@@ -131,7 +137,7 @@ function Announcement({ announcement }) {
         id={`${id}-header`}
         $expanded={expanded}
       >
-        <AnnouncementHead>
+        <AnnouncementHead $priority={priority}>
           <Typography className="announcement-summary">{summary}</Typography>
           {priority === 'high' && (
             <HighPriority withAnnotation={status === 'unread'} />
@@ -171,6 +177,7 @@ const getAnnouncementComponent = announcement => (
 
 function AnnouncementsPage() {
   const { announcements } = useMst()
+
   return (
     <ScrollablePageContentWrapper role="article">
       <Section $type="unread">

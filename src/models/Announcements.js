@@ -1,4 +1,10 @@
-import { types, getParent, clone } from 'mobx-state-tree'
+import { types } from 'mobx-state-tree'
+
+function compareByPriorityAndTimestamp(a, b) {
+  if (a.priority === 'high' && b.priority === 'low') return -1
+  if (b.priority === 'high' && a.priority === 'low') return 1
+  return b.timestamp - a.timestamp
+}
 
 const AnnouncementModel = types
   .model('Announcement', {
@@ -12,11 +18,6 @@ const AnnouncementModel = types
   .actions(self => ({
     toggle() {
       self.status = self.status === 'read' ? 'unread' : 'read'
-      const cloned = clone(self)
-      const parent = getParent(self, 2)
-
-      parent.remove(self.id)
-      parent.add(cloned)
     }
   }))
 const AnnouncementsModel = types
@@ -28,10 +29,14 @@ const AnnouncementsModel = types
       return self.all.find(a => a.id === id)
     },
     get unread() {
-      return self.all.filter(a => a.status === 'unread')
+      return self.all
+        .filter(a => a.status === 'unread')
+        .sort(compareByPriorityAndTimestamp)
     },
     get read() {
-      return self.all.filter(a => a.status === 'read')
+      return self.all
+        .filter(a => a.status === 'read')
+        .sort(compareByPriorityAndTimestamp)
     }
   }))
   .actions(self => ({
