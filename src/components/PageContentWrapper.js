@@ -5,10 +5,11 @@ export default styled.div`
   height: 100%;
   grid-template-rows: 1fr;
   align-items: center;
-  width: min(60rem, 80%);
+  grid-template-columns: min(60rem, 80%);
+  justify-content: center;
   background-color: transparent;
 
   @media (max-width: 36.5em) {
-    width: 100%;
+    grid-template-columns: 100%;
   }
 `

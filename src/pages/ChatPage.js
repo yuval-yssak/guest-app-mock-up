@@ -25,14 +25,9 @@ const ChatContainer = styled(PageContentWrapper).attrs({ className: 'chat' })`
   grid-template-rows: 1fr max-content; // keep the user input at the bottom
   grid-gap: 2rem;
   overflow: hidden; // scrolling is only in the inner messages container
-  justify-items: center;
-
-  @media (max-width: 64em) {
-    width: 90%;
-  }
+  grid-template-columns: 100%;
 
   @media (max-width: 52em) {
-    width: 100%;
     padding: 0 0.3rem;
   }
 
@@ -42,6 +37,7 @@ const ChatContainer = styled(PageContentWrapper).attrs({ className: 'chat' })`
   }
 `
 
+const messageScrollableGridGap = '2rem'
 const MessagesScrollable = styled.div.attrs({
   className: 'messages-scrollable'
 })`
@@ -52,13 +48,17 @@ const MessagesScrollable = styled.div.attrs({
     background-color: transparent;
 
     width: 100%;
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(
+      8,
+      calc((min(60rem, 80%) - ${messageScrollableGridGap} * 7) / 8)
+    );
+    justify-content: center;
     align-items: end;
     overflow-y: scroll;
-    grid-gap: 2rem;
+    grid-gap: ${messageScrollableGridGap};
 
     & > section:last-child {
-      padding-bottom: 2rem;
+      padding-bottom: ${messageScrollableGridGap};
     }
   }
 `
