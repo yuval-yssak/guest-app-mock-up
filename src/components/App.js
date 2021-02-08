@@ -103,6 +103,8 @@ function App() {
         return 'Chat'
       case '/info-section':
         return 'Info Section'
+      case '/info-section/abc/123':
+        return 'Info Section ABC 123'
       case '/map':
         return 'Ashram Map'
       case '/my-bookings':
@@ -151,6 +153,9 @@ function App() {
                 {store.view.page === '/chat' && <ChatPage />}
                 {store.view.page === '/info-section' && (
                   <InfoSectionPage page={store.view.id} />
+                )}
+                {store.view.page === '/info-section/abc/123' && (
+                  <div>Specific page inside two levels of navigation</div>
                 )}
                 {store.view.page === '/map' && <div>Map</div>}
                 {store.view.page === '/my-bookings' && (
