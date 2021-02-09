@@ -84,7 +84,7 @@ const ReadSectionHeading = styled(SectionHeading).attrs({
   children: <MessageTypeHeading variant="h6">Read</MessageTypeHeading>
 })`
   background-color: ${({ theme }) =>
-    theme.palette.grey[theme.palette.type == 'dark' ? '500' : '300']};
+    theme.palette.grey[theme.palette.type === 'dark' ? '500' : '300']};
 `
 
 const AnnouncementHead = styled.div.attrs({

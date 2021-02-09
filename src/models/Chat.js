@@ -1,23 +1,6 @@
 import { types } from 'mobx-state-tree'
 import dayjs from 'dayjs'
 import { now } from 'mobx-utils'
-import relativeTime from 'dayjs/plugin/relativeTime'
-dayjs.extend(relativeTime, {
-  // strict thresholds (the default displays 45 minutes+ as an hour 🤷)
-  thresholds: [
-    { l: 's', r: 1 },
-    { l: 'm', r: 1 },
-    { l: 'mm', r: 59, d: 'minute' },
-    { l: 'h', r: 1 },
-    { l: 'hh', r: 23, d: 'hour' },
-    { l: 'd', r: 1 },
-    { l: 'dd', r: 29, d: 'day' },
-    { l: 'M', r: 1 },
-    { l: 'MM', r: 11, d: 'month' },
-    { l: 'y' },
-    { l: 'yy', d: 'year' }
-  ]
-})
 
 const MessagePerson = types.model('MessagePerson', {
   personName: types.string,
@@ -40,13 +23,11 @@ const ChatModel = types
   .views(self => ({
     get displayMessages() {
       function displayTime(timestamp) {
-        const relativeTime = dayjs(now()).to(timestamp)
-
-        if (dayjs(now()).diff(timestamp, 'minutes') < 60) return relativeTime
-        else
-          return `${dayjs(timestamp).format(
-            'MMM D, YYYY h:mm A'
-          )} (${relativeTime})`
+        if (dayjs(timestamp).year() !== dayjs(now()).year())
+          return dayjs(timestamp).format('MMM D, YYYY HH:mm')
+        if (dayjs(now()).subtract(1, 'day').startOf('day').isAfter(timestamp))
+          return dayjs(timestamp).format('MMM D HH:mm')
+        return dayjs(timestamp).format('HH:mm')
       }
 
       return self.messages.map(message => ({
