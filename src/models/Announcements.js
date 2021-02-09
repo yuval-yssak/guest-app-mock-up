@@ -32,9 +32,7 @@ const AnnouncementsModel = types
         .sort(compareByTimestamp)
     },
     get read() {
-      return self.all
-        .filter(a => a.status === 'read')
-        .sort(compareByTimestamp)
+      return self.all.filter(a => a.status === 'read').sort(compareByTimestamp)
     }
   }))
   .actions(self => ({

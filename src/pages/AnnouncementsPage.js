@@ -58,7 +58,10 @@ const StyledAccordionSummary = styled(AccordionSummary)`
 `
 
 const MessageTypeHeading = styled(Typography)`
-  line-height: 1;
+  && {
+    line-height: 1;
+    font-weight: 700;
+  }
 `
 
 const SectionHeading = styled.div`
