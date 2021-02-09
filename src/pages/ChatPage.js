@@ -57,6 +57,21 @@ const MessagesScrollable = styled.div.attrs({
     overflow-y: scroll;
     grid-gap: ${messageScrollableGridGap};
 
+    @media (max-width: 52em) {
+      grid-template-columns: repeat(
+        8,
+        calc((90% - ${messageScrollableGridGap} * 7) / 8)
+      );
+      padding: 0 0.3rem;
+    }
+
+    @media (max-width: 32.5em) {
+      grid-template-columns: repeat(
+        8,
+        calc((100% - ${messageScrollableGridGap} * 7) / 8)
+      );
+    }
+
     & > section:last-child {
       padding-bottom: ${messageScrollableGridGap};
     }
@@ -83,7 +98,7 @@ const UserInputSection = styled.section.attrs({
     margin-left: 0.6rem;
   }
 
-  @media (max-width: 20.625em) {
+  @media (max-width: 32.5em) {
     width: 100%;
   }
 `
@@ -329,19 +344,19 @@ const GuestMessage = ({ children, className, name, src, timeSignature }) => {
           </GuestMessageFrame>
         </>
       ) : (
-          <>
-            <GuestMessageFrame className={className}>
-              <GuestMessageHead>
-                <Typography className="message-name"></Typography>
-                <Typography className="message-time" variant="body2">
-                  {timeSignature}
-                </Typography>
-              </GuestMessageHead>
-              {children}
-            </GuestMessageFrame>
-            <GuestAvatar src={src} name={name} />
-          </>
-        )}
+        <>
+          <GuestMessageFrame className={className}>
+            <GuestMessageHead>
+              <Typography className="message-name"></Typography>
+              <Typography className="message-time" variant="body2">
+                {timeSignature}
+              </Typography>
+            </GuestMessageHead>
+            {children}
+          </GuestMessageFrame>
+          <GuestAvatar src={src} name={name} />
+        </>
+      )}
     </GuestMessageContainer>
   )
 }
@@ -365,19 +380,19 @@ const StaffMessage = ({ children, className, name, src, timeSignature }) => {
           </StaffMessageFrame>
         </>
       ) : (
-          <>
-            <StaffAvatar name={name} src={src} />
-            <StaffMessageFrame className={className}>
-              <GuestMessageHead>
-                <Typography className="message-name">{name}</Typography>
-                <Typography className="message-time" variant="body2">
-                  {timeSignature}
-                </Typography>
-              </GuestMessageHead>
-              {children}
-            </StaffMessageFrame>
-          </>
-        )}
+        <>
+          <StaffAvatar name={name} src={src} />
+          <StaffMessageFrame className={className}>
+            <GuestMessageHead>
+              <Typography className="message-name">{name}</Typography>
+              <Typography className="message-time" variant="body2">
+                {timeSignature}
+              </Typography>
+            </GuestMessageHead>
+            {children}
+          </StaffMessageFrame>
+        </>
+      )}
     </StaffMessageContainer>
   )
 }
@@ -398,18 +413,18 @@ function ChatPage() {
         .isSame(dayjs().startOf('day'))
         ? 'Today'
         : dayjs(message.timestamp)
-          .startOf('day')
-          .isSame(dayjs().subtract(1, 'days').startOf('day'))
-          ? 'Yesterday'
-          : dayjs(message.timestamp)
+            .startOf('day')
+            .isSame(dayjs().subtract(1, 'days').startOf('day'))
+        ? 'Yesterday'
+        : dayjs(message.timestamp)
             .startOf('week')
             .isSame(dayjs().startOf('week'))
-            ? dayjs(message.timestamp).format('dddd')
-            : dayjs(message.timestamp)
-              .startOf('year')
-              .isSame(dayjs().startOf('year'))
-              ? dayjs(message.timestamp).format('MMM D')
-              : dayjs(message.timestamp).format('MMM D, YYYY')
+        ? dayjs(message.timestamp).format('dddd')
+        : dayjs(message.timestamp)
+            .startOf('year')
+            .isSame(dayjs().startOf('year'))
+        ? dayjs(message.timestamp).format('MMM D')
+        : dayjs(message.timestamp).format('MMM D, YYYY')
 
       if (allComponents.length === 0)
         return [...allComponents, { shortDate }, message]
@@ -444,8 +459,8 @@ function ChatPage() {
       return message.messageSide === 'staff' ? (
         <StaffMessage {...props} />
       ) : (
-          <GuestMessage {...props} />
-        )
+        <GuestMessage {...props} />
+      )
     })
 
   // add "New" messages divider
