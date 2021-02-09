@@ -83,7 +83,8 @@ const ReadSectionHeading = styled(SectionHeading).attrs({
   'aria-label': 'read messages',
   children: <MessageTypeHeading variant="h6">Read</MessageTypeHeading>
 })`
-  background-color: #ffdca4;
+  background-color: ${({ theme }) =>
+    theme.palette.grey[theme.palette.type == 'dark' ? '500' : '300']};
 `
 
 const AnnouncementHead = styled.div.attrs({
