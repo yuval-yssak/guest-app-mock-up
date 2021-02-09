@@ -1,8 +1,6 @@
 import { types } from 'mobx-state-tree'
 
-function compareByPriorityAndTimestamp(a, b) {
-  if (a.priority === 'high' && b.priority === 'low') return -1
-  if (b.priority === 'high' && a.priority === 'low') return 1
+function compareByTimestamp(a, b) {
   return b.timestamp - a.timestamp
 }
 
@@ -31,12 +29,12 @@ const AnnouncementsModel = types
     get unread() {
       return self.all
         .filter(a => a.status === 'unread')
-        .sort(compareByPriorityAndTimestamp)
+        .sort(compareByTimestamp)
     },
     get read() {
       return self.all
         .filter(a => a.status === 'read')
-        .sort(compareByPriorityAndTimestamp)
+        .sort(compareByTimestamp)
     }
   }))
   .actions(self => ({
