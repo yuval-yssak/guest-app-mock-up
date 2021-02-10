@@ -126,12 +126,9 @@ export default function InfoSetingsPage({ page }) {
         />
       </MediaCard>
       <MediaCard
-        topic="Arriving at the airport"
-        description="Dolorem sequi esse inventore temporibus facere vitae vero
-        laborum illum eveniet animi optio quos
-        quam, nihil, corrupti
-        amet repellat distinctio,"
-        action={() => store.view.openInfoSectionPage('arriving-at-the-airport')}
+        topic="Practice Guide"
+        description="How to meditate? Yoga asanas | Pranayama | Chants"
+        action={() => store.view.openInfoSectionPage('practice-guide')}
       >
         <StyledCardMedia
           image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"

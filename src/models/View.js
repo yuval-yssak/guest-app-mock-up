@@ -12,6 +12,7 @@ const viewModel = types
       types.literal('/custom'),
       types.literal('/info-section'),
       types.literal('/info-section/arriving-at-the-airport'),
+      types.literal('/info-section/practice-guide'),
       types.literal('/info-section/abc/123'),
       types.literal('/settings')
     ),
@@ -98,6 +99,7 @@ function getViewFromURL() {
       case '/chat':
       case '/info-section':
       case '/info-section/arriving-at-the-airport':
+      case '/info-section/practice-guide':
       case '/info-section/abc/123':
       case '/settings':
         return { page: matchedGeneral.path || matchedInfoSection.path }
