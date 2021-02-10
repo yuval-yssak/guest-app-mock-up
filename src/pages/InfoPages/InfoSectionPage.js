@@ -103,11 +103,8 @@ export default function InfoSetingsPage({ page }) {
         />
       </MediaCard>
       <MediaCard
-        topic="Arriving at the airport"
-        description="Dolorem sequi esse inventore temporibus facere vitae vero
-        laborum illum eveniet animi optio quos
-        quam, nihil, corrupti
-        amet repellat distinctio,"
+        topic="Trip Logistics"
+        description="Travel planning, trip considerations, what to bring, the check-in and check-out process and room move procedure"
         action={() => store.view.openInfoSectionPage('arriving-at-the-airport')}
       >
         <StyledCardMedia
@@ -116,7 +113,7 @@ export default function InfoSetingsPage({ page }) {
         />
       </MediaCard>
       <MediaCard
-        topic="Arriving at the airport"
+        topic="Amenities"
         description="Dolorem sequi esse inventore temporibus facere vitae vero
         laborum illum eveniet animi optio quos
         quam, nihil, corrupti

@@ -11,6 +11,7 @@ const viewModel = types
       types.literal('/chat'),
       types.literal('/custom'),
       types.literal('/info-section'),
+      types.literal('/info-section/arriving-at-the-airport'),
       types.literal('/info-section/abc/123'),
       types.literal('/settings')
     ),
@@ -56,6 +57,9 @@ const viewModel = types
     openInfoSectionAbc123() {
       self.page = '/info-section/abc/123'
     },
+    openInfoSectionArriving() {
+      self.page = '/info-section/arriving-at-the-airport'
+    },
     openSettingsPage: () => (self.page = '/settings'),
     setFromURL() {
       const newView = getViewFromURL()
@@ -73,12 +77,17 @@ function getViewFromURL() {
 
   if (matchedCustom) return { page: 'custom', id: matchedCustom.params.id }
 
-  const matchInfoSection = match('/info-section/:id1/:id2')
+  const matchInfoSection = match([
+    '/info-section/:id1/:id2',
+    '/info-section/:id1'
+  ])
   const matchedInfoSection = matchInfoSection(pathname)
 
   const matchGeneral = match('/:page')
   const matchedGeneral = matchGeneral(pathname)
-
+  console.log(matchedInfoSection)
+  console.log(matchedInfoSection.path)
+  console.log('path is', matchedGeneral.path || matchedInfoSection.path)
   if (matchedGeneral || matchedInfoSection)
     switch (matchedGeneral.path || matchedInfoSection.path) {
       case '':
@@ -88,6 +97,7 @@ function getViewFromURL() {
       case '/announcements':
       case '/chat':
       case '/info-section':
+      case '/info-section/arriving-at-the-airport':
       case '/info-section/abc/123':
       case '/settings':
         return { page: matchedGeneral.path || matchedInfoSection.path }
