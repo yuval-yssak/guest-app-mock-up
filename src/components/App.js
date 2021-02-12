@@ -38,7 +38,7 @@ const Background = styled.div.attrs({ className: 'background' })`
   &::before {
     content: '';
     position: absolute;
-    background-image: url(./logo.svg);
+    background-image: url(/logo.svg);
     background-size: 100% 100%;
     width: 100%;
     height: 100%;

@@ -2,17 +2,17 @@ import dayjs from 'dayjs'
 
 const staff1 = {
   personName: 'Pranava Chaitanya',
-  imageSrc: './images/pranava-chaitanya.jpg'
+  imageSrc: '/images/pranava-chaitanya.jpg'
 }
 
 const staff2 = {
   personName: 'Iswara Chaitanya',
-  imageSrc: './images/iswara-chaitanya.jpg'
+  imageSrc: '/images/iswara-chaitanya.jpg'
 }
 
 const loggedInUser = {
   personName: 'Richard Barrett',
-  imageSrc: './images/32.jpg'
+  imageSrc: '/images/32.jpg'
 }
 
 const defaultStore = {

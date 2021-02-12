@@ -105,7 +105,7 @@ export default function InfoSetingsPage({ page }) {
         action={() => store.view.openInfoSectionPage('covid-19-guidelines')}
       >
         <SVGCardMedia
-          image="images/coronavirus-5107715.svg"
+          image="/images/coronavirus-5107715.svg"
           title="Coronavirus"
         />
       </MediaCard>

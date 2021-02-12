@@ -201,7 +201,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
               messageSide: 'staff',
               person: {
                 personName: 'Pranava Chaitanya',
-                imageSrc: './images/pranava-chaitanya.jpg'
+                imageSrc: '/images/pranava-chaitanya.jpg'
               },
               timestamp: new Date(),
               content: lorem.generateSentences(
@@ -219,7 +219,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
             applySnapshot(store, {
               loggedInUser: {
                 personName: 'Richard Barrett',
-                imageSrc: './images/32.jpg'
+                imageSrc: '/images/32.jpg'
               }
             })
             handleMoreClose()
