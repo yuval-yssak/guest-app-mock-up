@@ -7,7 +7,7 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import InfoWhatToBringPage from './InfoWhatToBringPage'
+import InfoCovid19GuidelinesPage from './InfoCovid19GuidelinesPage'
 import InfoArrivingAtTheAirport from './InfoArrivingAtTheAirport'
 import styled from 'styled-components'
 import { useMst } from '../../models/reactHook'
@@ -53,7 +53,14 @@ const StyledCardMedia = styled(CardMedia)`
   && {
     width: 100%;
     height: 148px;
-    background-position: cover;
+    background-size: cover;
+  }
+`
+
+const SVGCardMedia = styled(StyledCardMedia)`
+  && {
+    background-size: max(9rem, 30%);
+    background-position: center;
   }
 `
 
@@ -83,23 +90,23 @@ function MediaCard({ topic, description, action, children }) {
 export default function InfoSetingsPage({ page }) {
   const store = useMst()
 
-  if (page === 'what-to-bring') return <InfoWhatToBringPage />
+  if (page === 'covid-19-guidelines') return <InfoCovid19GuidelinesPage />
   if (page === 'arriving-at-the-airport') return <InfoArrivingAtTheAirport />
 
   return (
     <StyledPageContentWrapper>
       <MediaCard
-        topic="What to bring?"
+        topic="COVID 19 Guidelines"
         description="Nam molestias, officia eaque illum architecto delectus itaque
             voluptate, ab cupiditate ipsam laudantium reprehenderit vel quis?
             Sapiente, nihil pariatur! Ipsum sint commodi tempora quos natus
             consequatur eaque qui facilis quae.
           "
-        action={() => store.view.openInfoSectionPage('what-to-bring')}
+        action={() => store.view.openInfoSectionPage('covid-19-guidelines')}
       >
-        <StyledCardMedia
-          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/C2AdaptiveYoga-1024x579.jpg"
-          title="Shambhu on the beach meditation"
+        <SVGCardMedia
+          image="images/coronavirus-5107715.svg"
+          title="Coronavirus"
         />
       </MediaCard>
       <MediaCard
