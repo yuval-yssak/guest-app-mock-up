@@ -1,4 +1,4 @@
-import { types } from 'mobx-state-tree'
+import { types, getRoot } from 'mobx-state-tree'
 
 function compareByTimestamp(a, b) {
   return b.timestamp - a.timestamp
@@ -33,6 +33,12 @@ const AnnouncementsModel = types
     },
     get read() {
       return self.all.filter(a => a.status === 'read').sort(compareByTimestamp)
+    },
+    get snackbar() {
+      const importantUnread = self.unread.find(a => a.priority === 'high')
+      return importantUnread && getRoot(self).view.page !== '/announcements'
+        ? importantUnread.summary
+        : ''
     }
   }))
   .actions(self => ({
@@ -42,6 +48,9 @@ const AnnouncementsModel = types
     remove(id) {
       const index = self.all.findIndex(a => a.id === id)
       if (index > -1) self.all.splice(index, 1)
+    },
+    clearAll() {
+      self.all = []
     }
   }))
 

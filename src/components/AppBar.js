@@ -1,12 +1,28 @@
 import React from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import Typography from '@material-ui/core/Typography'
 import styled from 'styled-components'
 import DarkModeSwitch from '../components/DarkModeSwitch'
+import { useMst } from '../models/reactHook'
+import { LoremIpsum } from 'lorem-ipsum'
+import { v4 as uuidv4 } from 'uuid'
+
+const lorem = new LoremIpsum({
+  sentencesPerParagraph: {
+    max: 8,
+    min: 4
+  },
+  wordsPerSentence: {
+    max: 16,
+    min: 4
+  }
+})
 
 const StyledToolbar = styled(Toolbar).attrs({ className: 'toolbar' })`
   && {
@@ -94,6 +110,17 @@ function ShrinkableDarkModeSwitch() {
 }
 
 export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
+  const store = useMst()
+  const [moreEl, setMoreEl] = React.useState(null)
+
+  const handleMoreClick = event => {
+    setMoreEl(event.currentTarget)
+  }
+
+  const handleMoreClose = () => {
+    setMoreEl(null)
+  }
+
   return (
     <div>
       <AppBar position="static">
@@ -113,11 +140,59 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
             aria-label="display more actions"
             edge="end"
             color="inherit"
+            aria-haspopup="true"
+            onClick={handleMoreClick}
           >
             <MoreIcon />
           </IconButton>
         </StyledToolbar>
       </AppBar>
+      <Menu
+        id="simple-menu"
+        anchorEl={moreEl}
+        keepMounted
+        open={Boolean(moreEl)}
+        onClose={handleMoreClose}
+      >
+        <MenuItem
+          onClick={() => {
+            store.announcements.add({
+              id: uuidv4(),
+              summary: lorem.generateWords(8),
+              details: lorem.generateSentences(2),
+              timestamp: new Date(),
+              status: 'unread',
+              priority: 'high'
+            })
+            handleMoreClose()
+          }}
+        >
+          Create an important Announcement
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            store.announcements.add({
+              id: uuidv4(),
+              summary: lorem.generateWords(8),
+              details: lorem.generateSentences(2),
+              timestamp: new Date(),
+              status: 'unread',
+              priority: 'low'
+            })
+            handleMoreClose()
+          }}
+        >
+          Create an Announcement
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            store.announcements.clearAll()
+            handleMoreClose()
+          }}
+        >
+          Clear all announcements
+        </MenuItem>
+      </Menu>
     </div>
   )
 }

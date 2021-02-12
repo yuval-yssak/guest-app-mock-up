@@ -18,6 +18,7 @@ import ChatPage from '../pages/ChatPage'
 import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
 import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirport'
 import InfoPracticeGuide from '../pages/InfoPages/InfoPracticeGuide'
+import AnnouncementSnackbar from './AnnouncementSnackbar'
 import { useMst } from '../models/reactHook'
 
 const scaleFrom0 = keyframes`
@@ -148,6 +149,7 @@ function App() {
   return (
     <>
       <CssReset />
+      <AnnouncementSnackbar />
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
           <AppWrapper square>
