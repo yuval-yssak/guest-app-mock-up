@@ -17,7 +17,6 @@ import SettingsPage from '../pages/SettingsPage'
 import ChatPage from '../pages/ChatPage'
 import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
 import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirport'
-import InfoPracticeGuide from '../pages/InfoPages/InfoPracticeGuide'
 import AnnouncementSnackbar from './AnnouncementSnackbar'
 import { useMst } from '../models/reactHook'
 
@@ -168,9 +167,6 @@ function App() {
                 {store.view.page ===
                   '/info-section/arriving-at-the-airport' && (
                   <InfoArrivingAtTheAirport />
-                )}
-                {store.view.page === '/info-section/practice-guide' && (
-                  <InfoPracticeGuide />
                 )}
                 {store.view.page === '/map' && <div>Map</div>}
                 {store.view.page === '/my-bookings' && (

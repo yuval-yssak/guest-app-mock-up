@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import InfoCovid19GuidelinesPage from './InfoCovid19GuidelinesPage'
 import InfoArrivingAtTheAirport from './InfoArrivingAtTheAirport'
+import InfoPracticeGuide from './InfoPracticeGuide'
 import styled from 'styled-components'
 import { useMst } from '../../models/reactHook'
 
@@ -92,6 +93,7 @@ export default function InfoSetingsPage({ page }) {
 
   if (page === 'covid-19-guidelines') return <InfoCovid19GuidelinesPage />
   if (page === 'arriving-at-the-airport') return <InfoArrivingAtTheAirport />
+  if (page === 'practice-guide') return <InfoPracticeGuide />
 
   return (
     <StyledPageContentWrapper>
