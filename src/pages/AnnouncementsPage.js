@@ -198,11 +198,26 @@ const getAnnouncementComponent = announcement => (
   <Announcement announcement={announcement} key={announcement.id} />
 )
 
+const NoAnnouncementsTitle = styled(Typography)`
+  && {
+    text-align: center;
+    margin-top: 5rem;
+  }
+`
+
 function AnnouncementsPage() {
   const { announcements } = useMst()
 
   return (
     <ScrollablePageContentWrapper role="article">
+      {!announcements.all.length && (
+        <Section $type="no">
+          <NoAnnouncementsTitle>
+            There are no posted announcements at the moment. We'll let you know
+            when something important comes up.
+          </NoAnnouncementsTitle>
+        </Section>
+      )}
       <Section $type="unread">
         {announcements.unread.length ? <UnreadSectionHeading /> : undefined}
         {announcements.unread.map(getAnnouncementComponent)}

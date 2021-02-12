@@ -145,12 +145,11 @@ export default function InfoSetingsPage({ page }) {
         />
       </MediaCard>
       <MediaCard
-        topic="Arriving at the airport"
+        topic="Our Community"
         description="Dolorem sequi esse inventore temporibus facere vitae vero
         laborum illum eveniet animi optio quos
         quam, nihil, corrupti
         amet repellat distinctio,"
-        action={() => store.view.openInfoSectionPage('arriving-at-the-airport')}
       >
         <StyledCardMedia
           image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
@@ -158,12 +157,83 @@ export default function InfoSetingsPage({ page }) {
         />
       </MediaCard>
       <MediaCard
-        topic="Arriving at the airport"
+        topic="Our Tradition"
         description="Dolorem sequi esse inventore temporibus facere vitae vero
         laborum illum eveniet animi optio quos
         quam, nihil, corrupti
         amet repellat distinctio,"
-        action={() => store.view.openInfoSectionPage('arriving-at-the-airport')}
+      >
+        <StyledCardMedia
+          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
+          title="Krishna walking on the beach with a yoga mat"
+        />
+      </MediaCard>
+      <MediaCard
+        topic="What you can do during your stay"
+        description="Dolorem sequi esse inventore temporibus facere vitae vero
+        laborum illum eveniet animi optio quos
+        quam, nihil, corrupti
+        amet repellat distinctio,"
+      >
+        <StyledCardMedia
+          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
+          title="Krishna walking on the beach with a yoga mat"
+        />
+      </MediaCard>
+      <MediaCard
+        topic="Where things are"
+        description="Dolorem sequi esse inventore temporibus facere vitae vero
+        laborum illum eveniet animi optio quos
+        quam, nihil, corrupti
+        amet repellat distinctio,"
+      >
+        <StyledCardMedia
+          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
+          title="Krishna walking on the beach with a yoga mat"
+        />
+      </MediaCard>
+      <MediaCard
+        topic="Guidelines, Expectations and Safety"
+        description="Dolorem sequi esse inventore temporibus facere vitae vero
+        laborum illum eveniet animi optio quos
+        quam, nihil, corrupti
+        amet repellat distinctio,"
+      >
+        <StyledCardMedia
+          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
+          title="Krishna walking on the beach with a yoga mat"
+        />
+      </MediaCard>
+      <MediaCard
+        topic="About Satsangs and Pujas"
+        description="Dolorem sequi esse inventore temporibus facere vitae vero
+        laborum illum eveniet animi optio quos
+        quam, nihil, corrupti
+        amet repellat distinctio,"
+      >
+        <StyledCardMedia
+          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
+          title="Krishna walking on the beach with a yoga mat"
+        />
+      </MediaCard>
+      <MediaCard
+        topic="Get involved and find new friends"
+        description="Dolorem sequi esse inventore temporibus facere vitae vero
+        laborum illum eveniet animi optio quos
+        quam, nihil, corrupti
+        amet repellat distinctio,"
+      >
+        <StyledCardMedia
+          image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"
+          title="Krishna walking on the beach with a yoga mat"
+        />
+      </MediaCard>
+      <MediaCard
+        topic="Well Being Center"
+        description="Dolorem sequi esse inventore temporibus facere vitae vero
+        laborum illum eveniet animi optio quos
+        quam, nihil, corrupti
+        amet repellat distinctio,"
       >
         <StyledCardMedia
           image="https://online.sivanandabahamas.org/wp-content/uploads/2020/06/CKarmaYogi-1024x579.jpg"

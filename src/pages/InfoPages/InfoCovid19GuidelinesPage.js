@@ -4,6 +4,7 @@ import styled from 'styled-components'
 const Article = styled.article`
   overflow-y: scroll;
   height: 100%;
+  padding-left: 2rem;
 `
 
 export default function InfoCovid19GuidelinesPage() {
@@ -14,61 +15,60 @@ export default function InfoCovid19GuidelinesPage() {
         To assist with preventing the spread of COVID-19 and reduce the risk of
         exposure, registered guests will need to follow these government
         protocols:
-        <ol>
-          <li>
-            Everyone traveling to The Bahamas must obtain a negative COVID-19
-            RT-PCR (swab) test taken no more than five (5) days prior to their
-            arrival date in The Bahamas. Children 10 and under are not required
-            to take a test.
-            <ol type="a">
-              <li>
-                Once a negative COVID-19 RT-PCR (swab) test is obtained,
-                travelers can apply for their required Bahamas Travel Health
-                Visa at travel.gov.bs.
-              </li>
-              <li>
-                All visitors are required to opt-in to mandatory COVID-19 health
-                insurance when applying for their Travel Health Visa. The
-                insurance will cover travelers for COVID-19 related medical
-                expenses for the duration of their stay in The Bahamas. To learn
-                more about The Bahamas Travel Health Visa and health insurance,
-                visit bahamas.com/tourism-reopening.
-              </li>
-              <li>
-                c. The cost of the Travel Health Visa is dependent on the length
-                of stay and is subject to change.
-                <ul>
-                  <li>$40 per person for a 4-night, five-day stay</li>
-                  <li>$60 per person for more than a four-night stay.</li>
-                  <li>Children 10 years and under are free</li>
-                  <li>The fee includes mandatory health insurance.</li>
-                </ul>
-              </li>
-              <li>
-                d. Please print copies of the following for each traveler:
-                <ul>
-                  <li>Negative COVID-19 test results</li>
-                  <li>Approved travel health visa with QR code visible</li>
-                  <li>Receipt for payment of the Travel Health Visa</li>
-                </ul>
-              </li>
-            </ol>
-          </li>
-          <li>
-            Visitors that stay longer than four (4) nights must take the Bahamas
-            government-mandated Rapid Antigen test on Day 5 of their stay. There
-            are many local medical centres offering the tests and results are
-            emailed usually by end of day.
-          </li>
-          <li>
-            Bahamian residents not from New Providence Island/Paradise Island
-            will be required to provide a valid domestic travel health visa
-            issued by The Bahamas Ministry of Health. For purposes of this
-            policy, a valid domestic travel health visa means not expired and
-            approved status.
-          </li>
-        </ol>
       </p>
+      <ol>
+        <li>
+          Everyone traveling to The Bahamas must obtain a negative COVID-19
+          RT-PCR (swab) test taken no more than five (5) days prior to their
+          arrival date in The Bahamas. Children 10 and under are not required to
+          take a test.
+          <ol type="a" style={{ paddingLeft: '1rem' }}>
+            <li>
+              Once a negative COVID-19 RT-PCR (swab) test is obtained, travelers
+              can apply for their required Bahamas Travel Health Visa at
+              travel.gov.bs.
+            </li>
+            <li>
+              All visitors are required to opt-in to mandatory COVID-19 health
+              insurance when applying for their Travel Health Visa. The
+              insurance will cover travelers for COVID-19 related medical
+              expenses for the duration of their stay in The Bahamas. To learn
+              more about The Bahamas Travel Health Visa and health insurance,
+              visit bahamas.com/tourism-reopening.
+            </li>
+            <li>
+              The cost of the Travel Health Visa is dependent on the length of
+              stay and is subject to change.
+              <ul style={{ paddingLeft: '1rem' }}>
+                <li>$40 per person for a 4-night, five-day stay</li>
+                <li>$60 per person for more than a four-night stay.</li>
+                <li>Children 10 years and under are free</li>
+                <li>The fee includes mandatory health insurance.</li>
+              </ul>
+            </li>
+            <li>
+              Please print copies of the following for each traveler:
+              <ul style={{ paddingLeft: '1rem' }}>
+                <li>Negative COVID-19 test results</li>
+                <li>Approved travel health visa with QR code visible</li>
+                <li>Receipt for payment of the Travel Health Visa</li>
+              </ul>
+            </li>
+          </ol>
+        </li>
+        <li>
+          Visitors that stay longer than four (4) nights must take the Bahamas
+          government-mandated Rapid Antigen test on Day 5 of their stay. There
+          are many local medical centres offering the tests and results are
+          emailed usually by end of day.
+        </li>
+        <li>
+          Bahamian residents not from New Providence Island/Paradise Island will
+          be required to provide a valid domestic travel health visa issued by
+          The Bahamas Ministry of Health. For purposes of this policy, a valid
+          domestic travel health visa means not expired and approved status.
+        </li>
+      </ol>
 
       <p>
         We recommend all travelers interested in visiting The Bahamas review
