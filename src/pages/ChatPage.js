@@ -489,7 +489,7 @@ function ChatPage() {
   }, [userInput, userInputRef])
 
   function submitMessage() {
-    store.chat.insertMessage({
+    store.chat.insertGuestMessage({
       messageSide: 'guest',
       person: getSnapshot(store.loggedInUser),
       timestamp: new Date(),

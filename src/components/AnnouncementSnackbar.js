@@ -10,7 +10,6 @@ const ActionableSnackbar = styled(Snackbar)`
 `
 
 function AnnouncementSnackbar() {
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false)
   const store = useMst()
 
   return (
@@ -19,7 +18,6 @@ function AnnouncementSnackbar() {
       open={!!store.announcements.snackbar}
       onClick={() => {
         store.view.openAnnouncementsPage()
-        // store.announcements.clearSnackbar()
       }}
       message={store.announcements.snackbar}
       key={uuidv4()}

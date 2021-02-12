@@ -16,7 +16,7 @@ export default function InfoCovid19GuidelinesPage() {
   return (
     <div style={{ textAlign: 'center' }}>
       <p style={{ fontSize: '2rem' }}>
-        Stay at <pre>localhost</pre>
+        Stay at <pre>127.0.0.1</pre>
         <br />
         Wear a <pre>255.255.254.0</pre>
       </p>

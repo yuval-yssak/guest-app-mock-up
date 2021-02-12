@@ -172,7 +172,10 @@ function Announcement({ announcement }) {
         <Button
           variant="outlined"
           size="small"
-          onClick={() => store.view.openChatPage()}
+          onClick={() => {
+            store.view.openChatPage()
+            if (announcement.status === 'unread') announcement.toggle()
+          }}
         >
           Respond
         </Button>

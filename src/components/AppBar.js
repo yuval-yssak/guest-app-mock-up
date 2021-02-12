@@ -3,6 +3,7 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import MoreIcon from '@material-ui/icons/MoreVert'
@@ -12,6 +13,7 @@ import DarkModeSwitch from '../components/DarkModeSwitch'
 import { useMst } from '../models/reactHook'
 import { LoremIpsum } from 'lorem-ipsum'
 import { v4 as uuidv4 } from 'uuid'
+import { applySnapshot } from 'mobx-state-tree'
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -19,8 +21,8 @@ const lorem = new LoremIpsum({
     min: 4
   },
   wordsPerSentence: {
-    max: 16,
-    min: 4
+    max: 8,
+    min: 3
   }
 })
 
@@ -191,6 +193,39 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
           }}
         >
           Clear all announcements
+        </MenuItem>
+        <Divider />
+        <MenuItem
+          onClick={() => {
+            store.chat.insertStaffMessage({
+              messageSide: 'staff',
+              person: {
+                personName: 'Pranava Chaitanya',
+                imageSrc: './images/pranava-chaitanya.jpg'
+              },
+              timestamp: new Date(),
+              content: lorem.generateSentences(
+                Math.floor(Math.random() * 10 + 1)
+              )
+            })
+            handleMoreClose()
+          }}
+        >
+          Insert a staff message
+        </MenuItem>
+        <Divider />
+        <MenuItem
+          onClick={() => {
+            applySnapshot(store, {
+              loggedInUser: {
+                personName: 'Richard Barrett',
+                imageSrc: './images/32.jpg'
+              }
+            })
+            handleMoreClose()
+          }}
+        >
+          Load empty preset
         </MenuItem>
       </Menu>
     </div>
