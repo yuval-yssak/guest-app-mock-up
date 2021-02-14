@@ -14,21 +14,20 @@ import styled from 'styled-components'
 import { useMst } from '../../models/reactHook'
 
 const StyledPageContentWrapper = styled(PageContentWrapper).attrs({
-  clasName: 'info-section-container'
+  className: 'info-section-container'
 })`
   && {
-    overflow: scroll;
-    grid-template-columns: repeat(auto-fit, minmax(min-content, 25rem));
+    overflow-y: scroll;
+    grid-template-columns: repeat(auto-fit, minmax(min-content, 21.25rem));
     justify-content: center;
     grid-gap: 2rem;
     grid-template-rows: unset;
     align-content: safe center;
     align-items: stretch;
-    padding: 2rem;
-    width: 83rem;
+    padding: 0 calc((100% - 69rem) / 2);
 
-    @media (max-width: 83em) {
-      width: 90%;
+    @media (max-width: 69em) {
+      padding: 0 5%;
     }
 
     @media (max-width: 55em) {
@@ -36,7 +35,7 @@ const StyledPageContentWrapper = styled(PageContentWrapper).attrs({
     }
 
     @media (max-width: 28em) {
-      width: 100%;
+      padding: 1rem 0.4rem;
     }
   }
 `
@@ -55,13 +54,20 @@ const StyledCardMedia = styled(CardMedia)`
     width: 100%;
     height: 148px;
     background-size: cover;
+    background-position: top;
   }
 `
 
-const SVGCardMedia = styled(StyledCardMedia)`
+const SVGCardMedia = styled(StyledCardMedia).attrs(({ className }) => ({
+  className
+}))`
   && {
     background-size: max(9rem, 30%);
-    background-position: center;
+  }
+
+  &.covid-jagadambika {
+    background-size: cover;
+    background-position: bottom;
   }
 `
 
@@ -107,8 +113,9 @@ export default function InfoSetingsPage({ page }) {
         action={() => store.view.openInfoSectionPage('covid-19-guidelines')}
       >
         <SVGCardMedia
-          image="/images/coronavirus-5107715.svg"
-          title="Coronavirus"
+          image="/images/jagadambika-beach-anjaneyasana.jpeg"
+          title="Jagadmabika in Anjaneyasana on the beach"
+          className="covid-jagadambika"
         />
       </MediaCard>
       <MediaCard

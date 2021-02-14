@@ -47,20 +47,20 @@ const Section = styled.section.attrs(({ $type }) => ({
     $type === 'unread' &&
     `
   & .announcement-summary {
-    font-weight: 800;
+    font-weight: 500;
   }`}
 `
 
 const StyledAccordionSummary = styled(AccordionSummary)`
   & .announcement-summary {
-    ${({ $expanded }) => $expanded && `font-weight:800;`}
+    ${({ $expanded }) => $expanded && `font-weight:500;`}
   }
 `
 
 const MessageTypeHeading = styled(Typography)`
   && {
     line-height: 1;
-    font-weight: 700;
+    font-weight: 500;
   }
 `
 
@@ -120,7 +120,7 @@ const Important = styled(Typography).attrs({
   'aria-label': 'important'
 })`
   && {
-    font-weight: 700;
+    font-weight: 500;
     letter-spacing: 1.2px;
     margin: 0 0.4rem;
   }

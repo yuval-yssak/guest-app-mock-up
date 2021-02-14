@@ -131,7 +131,18 @@ function App() {
       secondary: { main: '#ffcf00' }
     },
     typography: {
-      fontFamily: ['Gotham Rounded SSm Aa', 'Arial', 'Helvetica', 'sans-serif']
+      fontFamily: [
+        'Gotham Rounded SSm A',
+        'Gotham Rounded SSm B',
+        'Open Sans',
+        'Helvetica',
+        'Arial',
+        'sans-serif'
+      ],
+      allVariants: { fontWeight: 300 },
+      h2: { fontSize: '2rem' },
+      h3: { fontSize: '1.4rem' },
+      body1: { fontSize: '1.2rem' }
     }
   })
 

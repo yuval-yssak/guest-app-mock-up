@@ -59,7 +59,7 @@ const PageTitle = styled(Typography)`
     @media screen and (max-width: 37.5em), screen and (max-height: 25em) {
       font-size: 1.1rem;
       padding: 0;
-      max-width: 6rem;
+      max-width: 7rem;
     }
   }
 `
