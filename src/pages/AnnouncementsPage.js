@@ -202,6 +202,7 @@ const NoAnnouncementsTitle = styled(Typography)`
   && {
     text-align: center;
     margin-top: 5rem;
+    ${({ theme }) => theme.palette.type === 'dark' && `color:  #fff`};
   }
 `
 
