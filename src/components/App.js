@@ -160,9 +160,9 @@ function App() {
   return (
     <>
       <CssReset />
-      <AnnouncementSnackbar />
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
+          <AnnouncementSnackbar />
           <AppWrapper square>
             <AppBar toggleDrawer={toggleDrawer} pageTitle={getPageTitle()} />
             <Background>

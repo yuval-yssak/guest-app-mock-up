@@ -8,7 +8,7 @@ export const Article = styled(PageContentWrapper).attrs({
   && {
     overflow-y: scroll;
     color: ${({ theme }) =>
-      theme.palette.grey[theme.palette.type === 'dark' ? '50' : '800']};
+      theme.palette.grey[theme.palette.type === 'dark' ? '50' : '700']};
 
     align-items: end;
     box-sizing: content-box;
@@ -19,19 +19,23 @@ export const Article = styled(PageContentWrapper).attrs({
   }
 `
 
-export const Heading1 = styled(Typography).attrs({ variant: 'h1' })`
+const InfoSectionTypography = styled(Typography).attrs({
+  className: 'info-section-typography'
+})``
+
+export const Heading1 = styled(InfoSectionTypography).attrs({ variant: 'h1' })`
   && {
     margin: 1rem 0 0.6rem;
   }
 `
 
-export const Heading2 = styled(Typography).attrs({ variant: 'h2' })`
+export const Heading2 = styled(InfoSectionTypography).attrs({ variant: 'h2' })`
   && {
     margin: 1rem 0 0.6rem;
   }
 `
 
-export const Heading3 = styled(Typography).attrs({ variant: 'h3' })`
+export const Heading3 = styled(InfoSectionTypography).attrs({ variant: 'h3' })`
   && {
     &:not(&:first-of-type) {
       margin: 0.8rem 0 0.15rem;
@@ -43,7 +47,7 @@ export const Heading3 = styled(Typography).attrs({ variant: 'h3' })`
   }
 `
 
-export const Heading4 = styled(Typography).attrs({ variant: 'h4' })`
+export const Heading4 = styled(InfoSectionTypography).attrs({ variant: 'h4' })`
   && {
     &:not(&:first-of-type) {
       margin: 0.8rem 0 0.15rem;
@@ -55,7 +59,9 @@ export const Heading4 = styled(Typography).attrs({ variant: 'h4' })`
   }
 `
 
-export const Paragraph = styled(Typography).attrs({ variant: 'body1' })`
+export const Paragraph = styled(InfoSectionTypography).attrs({
+  variant: 'body1'
+})`
   && {
     line-height: 1.3;
 
@@ -70,7 +76,9 @@ export const Paragraph = styled(Typography).attrs({ variant: 'body1' })`
   }
 `
 
-export const LeadText = styled(Typography).attrs({ variant: 'body1' })`
+export const LeadText = styled(InfoSectionTypography).attrs({
+  variant: 'body1'
+})`
   &&& {
     font-weight: 500;
     line-height: 1.2;

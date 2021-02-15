@@ -1,5 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react-lite'
+import Paper from '@material-ui/core/Paper'
 import Accordion from '@material-ui/core/Accordion'
 import AccordionSummary from '@material-ui/core/AccordionSummary'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
@@ -139,6 +140,28 @@ function HighPriority({ withAnnotation }) {
   )
 }
 
+const RespondButton = styled(Button).attrs(({ store, announcement }) => ({
+  variant: 'outlined',
+  size: 'small',
+  onClick: () => {
+    store.view.openChatPage()
+    if (announcement.status === 'unread') announcement.toggle()
+  },
+  children: 'Respond'
+}))``
+
+const ConfirmButton = styled(Button).attrs(({ announcement }) => ({
+  variant: 'outlined',
+  size: 'small',
+  color: 'primary',
+  onClick: () => announcement.toggle(),
+  children: 'Confirm'
+}))`
+  && {
+    font-weight: 400;
+  }
+`
+
 function Announcement({ announcement }) {
   const { id, summary, details, timestamp, status, priority } = announcement
   const [expanded, setExpanded] = React.useState(status === 'unread')
@@ -169,26 +192,8 @@ function Announcement({ announcement }) {
         <Typography>{details}</Typography>
       </StyledAccordionDetails>
       <AccordionActions>
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={() => {
-            store.view.openChatPage()
-            if (announcement.status === 'unread') announcement.toggle()
-          }}
-        >
-          Respond
-        </Button>
-        {status === 'unread' && (
-          <Button
-            variant="outlined"
-            size="small"
-            color="primary"
-            onClick={() => announcement.toggle()}
-          >
-            Confirm
-          </Button>
-        )}
+        <RespondButton announcement={announcement} store={store} />
+        {status === 'unread' && <ConfirmButton announcement={announcement} />}
       </AccordionActions>
     </Accordion>
   )
@@ -201,9 +206,13 @@ const getAnnouncementComponent = announcement => (
 const NoAnnouncementsTitle = styled(Typography)`
   && {
     text-align: center;
-    margin-top: 5rem;
     ${({ theme }) => theme.palette.type === 'dark' && `color:  #fff`};
   }
+`
+
+const EmptyPagePaper = styled(Paper)`
+  margin-top: 5%;
+  padding: 3rem;
 `
 
 function AnnouncementsPage() {
@@ -213,10 +222,12 @@ function AnnouncementsPage() {
     <ScrollablePageContentWrapper role="article">
       {!announcements.all.length && (
         <Section $type="no">
-          <NoAnnouncementsTitle>
-            There are no posted announcements at the moment. We'll let you know
-            when something important comes up.
-          </NoAnnouncementsTitle>
+          <EmptyPagePaper>
+            <NoAnnouncementsTitle>
+              There are no posted announcements at the moment. We'll let you
+              know when something important comes up.
+            </NoAnnouncementsTitle>
+          </EmptyPagePaper>
         </Section>
       )}
       <Section $type="unread">

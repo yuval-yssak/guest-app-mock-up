@@ -25,7 +25,6 @@ export default function onStart(store) {
     () => store.view.page,
     _page => {
       document.querySelector('main').focus()
-      console.log('focused')
     }
   )
 }
