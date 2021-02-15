@@ -13,6 +13,9 @@ const ActionableSnackbar = styled(Snackbar)`
 
 function AnnouncementSnackbar() {
   const store = useMst()
+  const importantUnread = store.announcements.unread.filter(
+    a => a.priority === 'high'
+  ).length
 
   return (
     <ActionableSnackbar
@@ -21,7 +24,9 @@ function AnnouncementSnackbar() {
       onClick={() => {
         store.view.openAnnouncementsPage()
       }}
-      message="A new important announcement"
+      message={`${importantUnread} new important announcement${
+        importantUnread > 1 ? 's' : ''
+      }`}
       key={uuidv4()}
       action={
         <Button size="small" variant="contained">
