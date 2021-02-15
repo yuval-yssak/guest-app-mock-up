@@ -19,6 +19,12 @@ export const Article = styled(PageContentWrapper).attrs({
   }
 `
 
+export const Heading1 = styled(Typography).attrs({ variant: 'h1' })`
+  && {
+    margin: 1rem 0 0.6rem;
+  }
+`
+
 export const Heading2 = styled(Typography).attrs({ variant: 'h2' })`
   && {
     margin: 1rem 0 0.6rem;
@@ -37,19 +43,30 @@ export const Heading3 = styled(Typography).attrs({ variant: 'h3' })`
   }
 `
 
-export const Paragraph = styled(Typography).attrs({ variant: 'body1' })`
-  &:not(&:first-of-type) {
-    margin-top: 0.5rem;
+export const Heading4 = styled(Typography).attrs({ variant: 'h4' })`
+  && {
+    &:not(&:first-of-type) {
+      margin: 0.8rem 0 0.15rem;
+    }
   }
 
+  & + p {
+    margin-top: 0;
+  }
+`
+
+export const Paragraph = styled(Typography).attrs({ variant: 'body1' })`
   && {
     line-height: 1.3;
-    font-size: 1.1rem;
 
     &&& + h2,
     &&& + h3 {
       margin-top: 1rem;
     }
+  }
+
+  &:not(&:first-of-type) {
+    margin-top: 0.5rem;
   }
 `
 
