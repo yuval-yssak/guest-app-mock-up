@@ -41,6 +41,8 @@ const messageScrollableGridGap = '2rem'
 const MessagesScrollable = styled.div.attrs({
   className: 'messages-scrollable'
 })`
+  word-break: break-all;
+
   && {
     display: grid;
     height: 100%;
@@ -70,10 +72,6 @@ const MessagesScrollable = styled.div.attrs({
         8,
         calc((100% - ${messageScrollableGridGap} * 7) / 8)
       );
-    }
-
-    & > section:last-child {
-      padding-bottom: ${messageScrollableGridGap};
     }
   }
 `

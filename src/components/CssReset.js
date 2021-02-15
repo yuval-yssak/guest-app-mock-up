@@ -97,6 +97,5 @@ export default createGlobalStyle`
     font-family: 'Gotham Rounded SSm A', 'Gotham Rounded SSm B', 'Open Sans',
       Helvetica, Arial, sans-serif;
     font-weight: 300;
-    word-break: break-all;
   }
 `

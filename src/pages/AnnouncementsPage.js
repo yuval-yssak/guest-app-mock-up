@@ -26,6 +26,8 @@ const StyledAccordionDetails = styled(AccordionDetails)`
 const ScrollablePageContentWrapper = styled(PageContentWrapper).attrs({
   className: 'scrollable'
 })`
+  word-break: break-all;
+
   && {
     overflow-y: scroll;
     grid-template-rows: min-content 1fr;
@@ -106,7 +108,7 @@ const AnnouncementHead = styled.div.attrs({
   @media (max-width: 45em) {
     grid-template-columns: ${({ $priority }) =>
       `${
-        $priority === 'high' && 'min-content'
+        $priority === 'high' && 'max-content'
       } minmax(min-content, max-content)`};
     justify-content: start;
 

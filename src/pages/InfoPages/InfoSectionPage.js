@@ -24,7 +24,8 @@ const StyledPageContentWrapper = styled(PageContentWrapper).attrs({
     grid-template-rows: unset;
     align-content: safe center;
     align-items: stretch;
-    padding: 0 calc((100% - 69rem) / 2);
+    padding: 2rem calc((100% - 69rem) / 2);
+    margin-bottom: 2rem;
 
     @media (max-width: 69em) {
       padding: 0 5%;
