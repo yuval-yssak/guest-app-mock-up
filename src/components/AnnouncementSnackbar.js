@@ -13,19 +13,28 @@ const ActionableSnackbar = styled(Snackbar)`
 
 function AnnouncementSnackbar() {
   const store = useMst()
-  const importantUnread = store.announcements.unread.filter(
+  const [initialDelay, setInitialDelay] = React.useState(true)
+
+  React.useEffect(() => {
+    const timeoutObject = setTimeout(() => {
+      setInitialDelay(false)
+    }, 3000)
+    return () => clearTimeout(timeoutObject)
+  }, [])
+
+  const importantUnreadCount = store.announcements.unread.filter(
     a => a.priority === 'high'
   ).length
 
   return (
     <ActionableSnackbar
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      open={!!store.announcements.snackbar}
+      open={!!store.announcements.snackbar && !initialDelay}
       onClick={() => {
         store.view.openAnnouncementsPage()
       }}
-      message={`${importantUnread} new important announcement${
-        importantUnread > 1 ? 's' : ''
+      message={`${importantUnreadCount} new important announcement${
+        importantUnreadCount > 1 ? 's' : ''
       }`}
       key={uuidv4()}
       action={
