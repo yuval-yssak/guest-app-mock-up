@@ -109,7 +109,7 @@ const AnnouncementHead = styled.div.attrs({
     grid-template-columns: ${({ $priority }) =>
       `${
         $priority === 'high' && 'max-content'
-      } minmax(min-content, max-content)`};
+      } max-content`};
     justify-content: start;
 
     & .announcement-summary {
