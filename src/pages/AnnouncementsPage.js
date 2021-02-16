@@ -157,7 +157,7 @@ const ConfirmButton = styled(Button).attrs(({ announcement }) => ({
   size: 'small',
   color: 'primary',
   onClick: () => announcement.toggle(),
-  children: 'Confirm'
+  children: 'Confirm as read'
 }))`
   && {
     font-weight: 400;

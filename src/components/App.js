@@ -98,7 +98,7 @@ function App() {
   function getPageTitle() {
     switch (store.view.page) {
       case '/':
-        return 'Root'
+        return 'Main Page'
       case '/announcements':
         return 'Announcements'
       case '/chat':
