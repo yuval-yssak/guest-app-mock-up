@@ -162,7 +162,6 @@ function App() {
       <CssReset />
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
-          <AnnouncementSnackbar />
           <AppWrapper square>
             <AppBar toggleDrawer={toggleDrawer} pageTitle={getPageTitle()} />
             <Background>
@@ -190,6 +189,7 @@ function App() {
                 )}
               </Main>
             </Background>
+            <AnnouncementSnackbar />
             <AnimatedBottomNavigation />
           </AppWrapper>
           <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />

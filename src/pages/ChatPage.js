@@ -483,7 +483,12 @@ function ChatPage() {
 
   // once user input is changed, focus back on the text area.
   React.useEffect(() => {
-    userInputRef.current?.querySelector('textarea')?.focus()
+    const userInputElement = userInputRef.current?.querySelector('textarea')
+
+    // focus on user input without popping up the virtual keyboard on mobile
+    userInputElement.readOnly = true
+    userInputElement.focus()
+    userInputElement.readOnly = false
   }, [userInput, userInputRef])
 
   function submitMessage() {

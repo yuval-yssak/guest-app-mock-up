@@ -16,6 +16,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useMst } from '../models/reactHook'
 import dayjs from 'dayjs'
 
+const breakpointSplitHead = '(max-width: 45em)'
+
 const StyledAccordionDetails = styled(AccordionDetails)`
   && {
     display: grid;
@@ -105,17 +107,13 @@ const AnnouncementHead = styled.div.attrs({
   align-items: start;
   grid-gap: 0.5rem;
 
-  @media (max-width: 45em) {
-    grid-template-columns: ${({ $priority }) =>
-      `${
-        $priority === 'high' && 'max-content'
-      } max-content`};
-    justify-content: start;
-
-    & .announcement-summary {
-      grid-area: 1 / 1 / 2 / -1;
-    }
+  @media ${breakpointSplitHead} {
+    grid-template-columns: 1fr;
   }
+`
+
+const AnnouncementInfo = styled.div.attrs({ className: 'announcement-info' })`
+  display: flex;
 `
 
 const Important = styled(Typography).attrs({
@@ -168,6 +166,7 @@ function Announcement({ announcement }) {
   const { id, summary, details, timestamp, status, priority } = announcement
   const [expanded, setExpanded] = React.useState(status === 'unread')
   const smallScreen = useMediaQuery('(max-width: 23.125em)')
+  const mediumScreen = useMediaQuery(breakpointSplitHead)
   const store = useMst()
   return (
     <Accordion
@@ -182,12 +181,13 @@ function Announcement({ announcement }) {
       >
         <AnnouncementHead $priority={priority}>
           <Typography className="announcement-summary">{summary}</Typography>
-          {priority === 'high' && (
-            <HighPriority
-              withAnnotation={status === 'unread' && !smallScreen}
-            />
+          {mediumScreen ? (
+            <AnnouncementInfo>
+              {renderInfo(priority, status, smallScreen, timestamp)}
+            </AnnouncementInfo>
+          ) : (
+            renderInfo(priority, status, smallScreen, timestamp)
           )}
-          <Typography>{dayjs(timestamp).format('MMM D, YYYY')}</Typography>
         </AnnouncementHead>
       </StyledAccordionSummary>
       <StyledAccordionDetails>
@@ -216,6 +216,17 @@ const EmptyPagePaper = styled(Paper)`
   margin-top: 5%;
   padding: 3rem;
 `
+
+function renderInfo(priority, status, smallScreen, timestamp) {
+  return (
+    <>
+      {priority === 'high' && (
+        <HighPriority withAnnotation={status === 'unread' && !smallScreen} />
+      )}
+      <Typography>{dayjs(timestamp).format('MMM D, YYYY')}</Typography>
+    </>
+  )
+}
 
 function AnnouncementsPage() {
   const { announcements } = useMst()

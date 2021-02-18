@@ -9,6 +9,16 @@ import { v4 as uuidv4 } from 'uuid'
 const ActionableSnackbar = styled(Snackbar)`
   cursor: pointer;
   font-family: ${({ theme }) => theme.typography.fontFamily};
+
+  // Material UI has the snakbar taking all with available width
+  // below 600px, using flex-grow: initial. In this case,
+  // we want the snackbar to take part of the layout and not to
+  // block any other element.
+  @media (max-width: 599px) {
+    && {
+      position: static;
+    }
+  }
 `
 
 function AnnouncementSnackbar() {
