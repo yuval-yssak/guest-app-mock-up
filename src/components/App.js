@@ -16,6 +16,7 @@ import AnnouncementsPage from '../pages/AnnouncementsPage'
 import SettingsPage from '../pages/SettingsPage'
 import ChatPage from '../pages/ChatPage'
 import LoginPage from '../pages/LoginPage'
+import ManualSignUpPage from '../pages/ManualSignUpPage'
 import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
 import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirport'
 import AnnouncementSnackbar from './AnnouncementSnackbar'
@@ -170,35 +171,47 @@ function App() {
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
           <AppWrapper square>
-            <AppBar toggleDrawer={toggleDrawer} pageTitle={getPageTitle()} />
-            <Background>
-              <Main ref={mainRef} tabIndex={-1}>
-                {store.view.page === '/root' && <h1>Dashboard</h1>}
-                {store.view.page === '/announcements' && <AnnouncementsPage />}
-                {store.view.page === '/chat' && <ChatPage />}
-                {store.view.page === '/login' && <LoginPage />}
-                {store.view.page === '/info-section' && (
-                  <InfoSectionPage page={store.view.id} />
-                )}
-                {store.view.page === '/info-section/abc/123' && (
-                  <div>Specific page inside two levels of navigation</div>
-                )}
-                {store.view.page ===
-                  '/info-section/arriving-at-the-airport' && (
-                  <InfoArrivingAtTheAirport />
-                )}
-                {store.view.page === '/map' && <div>Map</div>}
-                {store.view.page === '/my-bookings' && (
-                  <div>Account Details Page</div>
-                )}
-                {store.view.page === '/settings' && <SettingsPage />}
-                {store.view.page === '/activities' && (
-                  <div>Activities Page</div>
-                )}
-              </Main>
-            </Background>
-            <AnnouncementSnackbar />
-            <AnimatedBottomNavigation />
+            {store.view.page === '/login' ? (
+              <LoginPage />
+            ) : store.view.page === '/manualSignup' ? (
+              <ManualSignUpPage />
+            ) : (
+              <>
+                <AppBar
+                  toggleDrawer={toggleDrawer}
+                  pageTitle={getPageTitle()}
+                />
+                <Background>
+                  <Main ref={mainRef} tabIndex={-1}>
+                    {store.view.page === '/root' && <h1>Dashboard</h1>}
+                    {store.view.page === '/announcements' && (
+                      <AnnouncementsPage />
+                    )}
+                    {store.view.page === '/chat' && <ChatPage />}
+                    {store.view.page === '/info-section' && (
+                      <InfoSectionPage page={store.view.id} />
+                    )}
+                    {store.view.page === '/info-section/abc/123' && (
+                      <div>Specific page inside two levels of navigation</div>
+                    )}
+                    {store.view.page ===
+                      '/info-section/arriving-at-the-airport' && (
+                      <InfoArrivingAtTheAirport />
+                    )}
+                    {store.view.page === '/map' && <div>Map</div>}
+                    {store.view.page === '/my-bookings' && (
+                      <div>Account Details Page</div>
+                    )}
+                    {store.view.page === '/settings' && <SettingsPage />}
+                    {store.view.page === '/activities' && (
+                      <div>Activities Page</div>
+                    )}
+                  </Main>
+                </Background>
+                <AnnouncementSnackbar />
+                <AnimatedBottomNavigation />
+              </>
+            )}
           </AppWrapper>
           <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
         </ThemeProvider>

@@ -43,7 +43,7 @@ export default function onStart(store) {
   reaction(
     () => store.view.page,
     _page => {
-      document.querySelector('main').focus()
+      document.querySelector('main')?.focus()
     }
   )
 }

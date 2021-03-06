@@ -15,6 +15,7 @@
     "mobx-react-lite": "^3.2.0",
     "mobx-state-tree": "^5.0.1",
     "mobx-utils": "^6.0.3",
+    "password-meter": "^3.7.0",
     "path-to-regexp": "^6.2.0",
     "polished": "^4.1.0",
     "react": "^17.0.1",

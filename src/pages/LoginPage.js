@@ -94,7 +94,7 @@ function ManualSignIn() {
           <Link
             component="button"
             onClick={() => {
-              store.view.openManuualSignupPage()
+              store.view.openManualSignupPage()
             }}
           >
             {"Don't have an account? Sign Up"}

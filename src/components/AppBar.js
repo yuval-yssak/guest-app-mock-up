@@ -233,7 +233,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
             handleMoreClose()
           }}
         >
-          Load first time user
+          Load logged out state
         </MenuItem>
       </Menu>
     </div>
