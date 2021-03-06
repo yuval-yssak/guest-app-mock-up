@@ -33,8 +33,7 @@ const StyledBottomNavigation = styled(BottomNavigation)`
       }
     }
     & button:hover {
-      background-color: ${({ theme }) => theme.palette.primary.main};
-      color: ${({ theme }) => theme.palette.primary.contrastText};
+      color: ${({ theme }) => theme.palette.primary.main};
     }
   }
 `
