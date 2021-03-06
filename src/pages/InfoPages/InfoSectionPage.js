@@ -13,18 +13,36 @@ import InfoPracticeGuide from './InfoPracticeGuide'
 import styled from 'styled-components'
 import { useMst } from '../../models/reactHook'
 
+const minTeaserWidth = '21.25rem'
+const maxTeasersInRow = 3
+const gridGap = '2rem'
+
 const StyledPageContentWrapper = styled(PageContentWrapper).attrs({
   className: 'info-section-container'
 })`
   && {
     overflow-y: scroll;
-    grid-template-columns: repeat(auto-fit, minmax(min-content, 21.25rem));
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(min-content, ${minTeaserWidth})
+    );
     justify-content: center;
-    grid-gap: 2rem;
+    grid-gap: ${gridGap};
     grid-template-rows: unset;
     align-content: safe center;
     align-items: stretch;
-    padding: 2rem calc((100% - 69rem) / 2);
+    padding: 2rem
+      calc(
+        (
+            100% -
+              calc(
+                ${minTeaserWidth} * ${maxTeasersInRow} + ${gridGap} *
+                  ${maxTeasersInRow - 1}
+              )
+          ) / 2
+      ); // set padding to limit the number of items in a row, while maintaining the vertical scroller on the far right.
+    // the calculation of the padding is the whole width, subtracting the items and the gaps, dividing by 2 (for the left and right paddings)
+    // if this would be done in grid-template-columns, the vertical scroller would be misplaced.
     margin-bottom: 2rem;
 
     @media (max-width: 69em) {
