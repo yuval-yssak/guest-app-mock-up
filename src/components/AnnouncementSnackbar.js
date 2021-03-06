@@ -28,7 +28,7 @@ function AnnouncementSnackbar() {
   React.useEffect(() => {
     const timeoutObject = setTimeout(() => {
       setInitialDelay(false)
-    }, 3000)
+    }, 15_000)
     return () => clearTimeout(timeoutObject)
   }, [])
 

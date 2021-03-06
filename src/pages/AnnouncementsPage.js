@@ -72,7 +72,7 @@ const MessageTypeHeading = styled(Typography)`
 const SectionHeading = styled.div`
   color: ${({ theme }) => theme.palette.primary.contrastText};
   padding: 0.5rem 1rem;
-  & h6 {
+  & h2 {
     font-size: 1rem;
     line-height: 1;
   }
@@ -81,7 +81,11 @@ const SectionHeading = styled.div`
 const UnreadSectionHeading = styled(SectionHeading).attrs({
   className: 'unread-message-heading',
   'aria-label': 'unread messages',
-  children: <MessageTypeHeading variant="h6">Unread</MessageTypeHeading>
+  children: (
+    <MessageTypeHeading component="h2" variant="h6">
+      Unread
+    </MessageTypeHeading>
+  )
 })`
   background-color: ${({ theme }) => theme.palette.primary.light};
 `
@@ -89,7 +93,11 @@ const UnreadSectionHeading = styled(SectionHeading).attrs({
 const ReadSectionHeading = styled(SectionHeading).attrs({
   className: 'read-message-heading',
   'aria-label': 'read messages',
-  children: <MessageTypeHeading variant="h6">Read</MessageTypeHeading>
+  children: (
+    <MessageTypeHeading component="h2" variant="h6">
+      Read
+    </MessageTypeHeading>
+  )
 })`
   background-color: ${({ theme }) =>
     theme.palette.grey[theme.palette.type === 'dark' ? '500' : '300']};
