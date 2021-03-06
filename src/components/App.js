@@ -64,6 +64,10 @@ const Main = styled.main`
   justify-items: center;
   position: relative;
   height: 100%;
+
+  &:focus {
+    outline: none;
+  }
 `
 
 const AppWrapper = styled.div`

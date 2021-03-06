@@ -59,6 +59,10 @@ const MessagesScrollable = styled.div.attrs({
     overflow-y: scroll;
     grid-gap: ${messageScrollableGridGap};
 
+    &&:focus {
+      outline: none;
+    }
+
     @media (max-width: 52em) {
       grid-template-columns: repeat(
         8,
