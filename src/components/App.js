@@ -15,6 +15,7 @@ import TemporaryDrawer from './Drawer'
 import AnnouncementsPage from '../pages/AnnouncementsPage'
 import SettingsPage from '../pages/SettingsPage'
 import ChatPage from '../pages/ChatPage'
+import LoginPage from '../pages/LoginPage'
 import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
 import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirport'
 import AnnouncementSnackbar from './AnnouncementSnackbar'
@@ -115,6 +116,8 @@ function App() {
         return 'Trip Logistics'
       case '/info-section/practice-guide':
         return 'Practice Guide'
+      case '/login':
+        return 'Login'
       case '/map':
         return 'Ashram Map'
       case '/my-bookings':
@@ -173,6 +176,7 @@ function App() {
                 {store.view.page === '/root' && <h1>Dashboard</h1>}
                 {store.view.page === '/announcements' && <AnnouncementsPage />}
                 {store.view.page === '/chat' && <ChatPage />}
+                {store.view.page === '/login' && <LoginPage />}
                 {store.view.page === '/info-section' && (
                   <InfoSectionPage page={store.view.id} />
                 )}

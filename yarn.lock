@@ -4491,6 +4491,11 @@ elliptic@^6.5.3:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
+email-validator@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/email-validator/-/email-validator-2.0.4.tgz#b8dfaa5d0dae28f1b03c95881d904d4e40bfe7ed"
+  integrity sha512-gYCwo7kh5S3IDyZPLZf6hSS0MnZT8QmJFqYvbqlDZSbwdZlY6QZWxJ4i/6UhITOJ4XzyI647Bm2MXKCLqnJ4nQ==
+
 emittery@^0.7.1:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/emittery/-/emittery-0.7.2.tgz#25595908e13af0f5674ab419396e2fb394cdfa82"
@@ -9366,6 +9371,11 @@ react-error-overlay@^6.0.8:
   version "6.0.8"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.8.tgz#474ed11d04fc6bda3af643447d85e9127ed6b5de"
   integrity sha512-HvPuUQnLp5H7TouGq3kzBeioJmXms1wHy9EGjz2OURWBp4qZO6AfGEcnxts1D/CbwPLRAgTMPCEgYhA3sEM4vw==
+
+react-hook-form@^6.15.4:
+  version "6.15.4"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-6.15.4.tgz#328003e1ccc096cd158899ffe7e3b33735a9b024"
+  integrity sha512-K+Sw33DtTMengs8OdqFJI3glzNl1wBzSefD/ksQw/hJf9CnOHQAU6qy82eOrh0IRNt2G53sjr7qnnw1JDjvx1w==
 
 react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"

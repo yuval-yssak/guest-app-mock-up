@@ -1,4 +1,5 @@
-import { reaction } from 'mobx'
+import { reaction, autorun } from 'mobx'
+import { getSnapshot, applySnapshot } from 'mobx-state-tree'
 
 export default function onStart(store) {
   // whenever the view changes - push to browser history
@@ -19,6 +20,24 @@ export default function onStart(store) {
   window.onpopstate = function historyChange(ev) {
     if (ev.type === 'popstate') store.view.setFromURL()
   }
+
+  // direct user to "login" page if not logged in
+  let prevViewSnapshot
+  autorun(() => {
+    if (
+      !store.loggedInUser &&
+      ['/login', '/manualSignup'].every(
+        allowedPagesWhenLoggedOut =>
+          store.view.page !== allowedPagesWhenLoggedOut
+      )
+    ) {
+      prevViewSnapshot = getSnapshot(store.view)
+      store.view.openLoginPage()
+    } else if (store.loggedInUser && prevViewSnapshot) {
+      applySnapshot(store.view, prevViewSnapshot)
+      prevViewSnapshot = null
+    }
+  })
 
   // restore focus to main contents whenever page changes
   reaction(

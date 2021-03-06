@@ -227,6 +227,14 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
         >
           Load empty preset
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            applySnapshot(store, {})
+            handleMoreClose()
+          }}
+        >
+          Load first time user
+        </MenuItem>
       </Menu>
     </div>
   )
