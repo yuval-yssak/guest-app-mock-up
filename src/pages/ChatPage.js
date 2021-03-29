@@ -41,42 +41,50 @@ const messageScrollableGridGap = '2rem'
 const MessagesScrollable = styled.div.attrs({
   className: 'messages-scrollable'
 })`
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+
+  &:focus {
+    outline: none;
+  }
+`
+
+const DateMessages = styled.div.attrs({
+  className: 'date-messages'
+})`
   word-break: break-all;
 
-  && {
-    display: grid;
-    height: 100%;
-    grid-template-rows: 1fr;
-    background-color: transparent;
+  display: grid;
+  background-color: transparent;
 
-    width: 100%;
+  width: 100%;
+  grid-template-rows: 1fr;
+  grid-template-columns: repeat(
+    8,
+    calc((min(60rem, 80%) - ${messageScrollableGridGap} * 7) / 8)
+  );
+  justify-content: center;
+  align-items: end;
+  grid-gap: ${messageScrollableGridGap};
+
+  @media (max-width: 52em) {
     grid-template-columns: repeat(
       8,
-      calc((min(60rem, 80%) - ${messageScrollableGridGap} * 7) / 8)
+      calc((90% - ${messageScrollableGridGap} * 7) / 8)
     );
-    justify-content: center;
-    align-items: end;
-    overflow-y: scroll;
-    grid-gap: ${messageScrollableGridGap};
+    padding: 0 0.3rem;
+  }
 
-    &&:focus {
-      outline: none;
-    }
+  @media (max-width: 32.5em) {
+    grid-template-columns: repeat(
+      8,
+      calc((100% - ${messageScrollableGridGap} * 7) / 8)
+    );
+  }
 
-    @media (max-width: 52em) {
-      grid-template-columns: repeat(
-        8,
-        calc((90% - ${messageScrollableGridGap} * 7) / 8)
-      );
-      padding: 0 0.3rem;
-    }
-
-    @media (max-width: 32.5em) {
-      grid-template-columns: repeat(
-        8,
-        calc((100% - ${messageScrollableGridGap} * 7) / 8)
-      );
-    }
+  & + & {
+    margin-top: 3rem;
   }
 `
 
@@ -252,19 +260,12 @@ const StyledStaffAvatar = styled(StyledAvatar).attrs({
   }
 `
 
-function getInitials(name) {
-  return name
-    .split(/\s/)
-    .map(word => word[0])
-    .join('')
-}
-
 const GuestAvatar = ({ src, name }) => {
   if (src) return <StyledGuestAvatar alt="user avatar" src={src} />
   else
     return (
       <StyledGuestAvatar alt="user avatar">
-        {getInitials(name)}
+        {getNameInitials(name)}
       </StyledGuestAvatar>
     )
 }
@@ -274,9 +275,16 @@ const StaffAvatar = ({ src, name }) => {
   else
     return (
       <StyledStaffAvatar alt={`${name} photo`}>
-        {getInitials(name)}
+        {getNameInitials(name)}
       </StyledStaffAvatar>
     )
+}
+
+function getNameInitials(name) {
+  return name
+    .split(/\s/)
+    .map(word => word[0])
+    .join('')
 }
 
 // top row of the message frame. Includes sender name and message date
@@ -408,70 +416,76 @@ function ChatPage() {
   const userInputRef = React.useRef()
 
   // build message react components
-  const messages = store.chat.orderedMessages
+  const messagesInDays = store.chat.orderedMessages
     .reduce((allComponents, message) => {
-      const shortDate = dayjs(message.timestamp)
-        .startOf('day')
-        .isSame(dayjs().startOf('day'))
-        ? 'Today'
-        : dayjs(message.timestamp)
-            .startOf('day')
-            .isSame(dayjs().subtract(1, 'days').startOf('day'))
-        ? 'Yesterday'
-        : dayjs(message.timestamp)
-            .startOf('week')
-            .isSame(dayjs().startOf('week'))
-        ? dayjs(message.timestamp).format('dddd')
-        : dayjs(message.timestamp)
-            .startOf('year')
-            .isSame(dayjs().startOf('year'))
-        ? dayjs(message.timestamp).format('MMM D')
-        : dayjs(message.timestamp).format('MMM D, YYYY')
+      const shortDate = getUserFriendlyDate(message)
 
+      // first iteration - return short only date and first message
       if (allComponents.length === 0)
-        return [...allComponents, { shortDate }, message]
+        return [{ date: shortDate, messages: [message] }]
 
+      // if current message's date is the same as previous message, add the message
       if (
         dayjs(message.timestamp)
           .startOf('day')
           .isSame(
-            dayjs(allComponents[allComponents.length - 1]?.timestamp).startOf(
-              'day'
-            )
+            dayjs(
+              allComponents[allComponents.length - 1].messages[0].timestamp
+            ).startOf('day')
           )
       )
-        return [...allComponents, message]
-      else return [...allComponents, { shortDate }, message]
+        return [
+          ...allComponents.slice(0, -1),
+          {
+            date: shortDate,
+            messages: allComponents.slice(-1)[0].messages.concat(message)
+          }
+        ]
+      // if current message starts a new date - add the new date label
+      else return allComponents.concat({ date: shortDate, messages: [message] })
     }, [])
 
-    .map(message => {
-      if (message.shortDate)
-        return (
-          <StickyDayLabel day={message.shortDate} key={message.shortDate} />
-        )
+    .map(date => {
+      const messages = date.messages.map(message => {
+        const props = {
+          key: message.timestamp,
+          src: message.person.imageSrc,
+          name: message.person.personName,
+          timeSignature: message.timeSignature,
+          children: message.content
+        }
 
-      const props = {
-        key: message.timestamp,
-        src: message.person.imageSrc,
-        name: message.person.personName,
-        timeSignature: message.timeSignature,
-        children: message.content
+        return message.messageSide === 'staff' ? (
+          <StaffMessage {...props} />
+        ) : (
+          <GuestMessage {...props} />
+        )
+      })
+
+      // add "New" messages divider
+      if (store.chat.unreadCount) {
+        // find last read message and stick the unread divider under it.
+        const lastReadMessage = date.messages.findIndex(
+          message =>
+            message.timestamp.getTime() ===
+            store.chat.lastReadTimestamp.getTime()
+        )
+        if (~lastReadMessage) {
+          messages.splice(
+            lastReadMessage,
+            0,
+            <UnreadMessagesDivider key="unread-divider" ref={dividerRef} />
+          )
+        }
       }
 
-      return message.messageSide === 'staff' ? (
-        <StaffMessage {...props} />
-      ) : (
-        <GuestMessage {...props} />
+      return (
+        <DateMessages key={date.date}>
+          <StickyDayLabel day={date.date} />
+          {messages}
+        </DateMessages>
       )
     })
-
-  // add "New" messages divider
-  if (store.chat.unreadCount)
-    messages.splice(
-      store.chat.unreadCount * -1,
-      0,
-      <UnreadMessagesDivider key="unread-divider" ref={dividerRef} />
-    )
 
   // scroll last read message or first unread messages on any update
   React.useEffect(() => {
@@ -483,7 +497,7 @@ function ChatPage() {
           ?.scrollIntoView({ behavior: 'smooth' })
       }
     }, 0)
-  }, [store.chat.unreadCount, messages.length])
+  }, [store.chat.unreadCount, messagesInDays.length])
 
   // once user input is changed, focus back on the text area.
   React.useEffect(() => {
@@ -501,7 +515,7 @@ function ChatPage() {
     store.chat.insertGuestMessage({
       messageSide: 'guest',
       person: getSnapshot(store.loggedInUser),
-      timestamp: new Date(),
+      timestamp: new DateMessages(),
       content: userInput
     })
 
@@ -514,7 +528,7 @@ function ChatPage() {
   return (
     <ChatContainer>
       <MessagesScrollable tabIndex="0" ref={messagesParentRef}>
-        {messages}
+        {messagesInDays}
       </MessagesScrollable>
       <UserInputSection>
         <TextField
@@ -535,6 +549,20 @@ function ChatPage() {
       </UserInputSection>
     </ChatContainer>
   )
+}
+
+function getUserFriendlyDate(message) {
+  return dayjs(message.timestamp).startOf('day').isSame(dayjs().startOf('day'))
+    ? 'Today'
+    : dayjs(message.timestamp)
+        .startOf('day')
+        .isSame(dayjs().subtract(1, 'days').startOf('day'))
+    ? 'Yesterday'
+    : dayjs(message.timestamp).startOf('week').isSame(dayjs().startOf('week'))
+    ? dayjs(message.timestamp).format('dddd')
+    : dayjs(message.timestamp).startOf('year').isSame(dayjs().startOf('year'))
+    ? dayjs(message.timestamp).format('MMM D')
+    : dayjs(message.timestamp).format('MMM D, YYYY')
 }
 
 export default observer(ChatPage)

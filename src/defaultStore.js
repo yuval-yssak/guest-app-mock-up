@@ -205,7 +205,11 @@ const defaultStore = {
           'Necessitatibus iste officia nostrum ipsa amet vitae natus debitis sapiente in, incidunt illum reiciendis adipisci at consequuntur fugit nulla iure a ratione! Earum consequuntur molestias asperiores iusto voluptatibus rerum in.'
       }
     ],
-    lastReadTimestamp: dayjs().subtract(9, 'hours').toDate()
+    lastReadTimestamp: dayjs()
+      .subtract(8, 'hours')
+      .minute(5)
+      .second(30)
+      .toDate()
   }
 }
 
