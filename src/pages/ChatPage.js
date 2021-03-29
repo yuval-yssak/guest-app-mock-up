@@ -500,6 +500,8 @@ function ChatPage() {
   }, [store.chat.unreadCount, store.chat.messages.length])
 
   function submitMessage() {
+    if (!userInput.trim()) return
+
     store.chat.insertGuestMessage({
       messageSide: 'guest',
       person: getSnapshot(store.loggedInUser),
