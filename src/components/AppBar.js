@@ -14,6 +14,7 @@ import { useMst } from '../models/reactHook'
 import { LoremIpsum } from 'lorem-ipsum'
 import { v4 as uuidv4 } from 'uuid'
 import { applySnapshot } from 'mobx-state-tree'
+import defaultStore from '../defaultStore'
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -217,15 +218,39 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
         <MenuItem
           onClick={() => {
             applySnapshot(store, {
+              ...defaultStore,
               loggedInUser: {
                 personName: 'Richard Barrett',
-                imageSrc: '/images/32.jpg'
+                imageSrc: '/images/32.jpg',
+                type: 'guest'
               }
             })
             handleMoreClose()
           }}
         >
-          Load empty preset
+          Reload Initial State with guest logged in
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            applySnapshot(store, defaultStore)
+            handleMoreClose()
+          }}
+        >
+          Reload Initial State with staff logged in
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            applySnapshot(store, {
+              loggedInUser: {
+                personName: 'Richard Barrett',
+                imageSrc: '/images/32.jpg',
+                type: 'guest'
+              }
+            })
+            handleMoreClose()
+          }}
+        >
+          Load empty state with guest logged in
         </MenuItem>
         <MenuItem
           onClick={() => {

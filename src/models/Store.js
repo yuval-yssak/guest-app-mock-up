@@ -10,5 +10,5 @@ export const Store = types.model('rootStore', {
   preferences: Preferences,
   announcements: Announcements,
   chat: Chat,
-  loggedInUser: LoggedInUser
+  loggedInUser: types.maybeNull(LoggedInUser)
 })

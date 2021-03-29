@@ -62,7 +62,7 @@ export default function TemporaryDrawer({ open, toggleDrawer }) {
               <ListItemText primary={store.loggedInUser?.personName} />
             </ListItem>
             <Divider />
-            {store.loggedInUser.type === 'staff' && (
+            {store.loggedInUser?.type === 'staff' && (
               <ListItem button onClick={() => store.view.openPeoplePage()}>
                 <StyledListItemIcon>
                   <PeopleIcon />
