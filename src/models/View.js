@@ -16,6 +16,7 @@ const viewModel = types
       types.literal('/info-section/abc/123'),
       types.literal('/login'),
       types.literal('/manualSignup'),
+      types.literal('/people'),
       types.literal('/settings')
     ),
     id: types.maybe(types.string)
@@ -63,9 +64,10 @@ const viewModel = types
     openInfoSectionArriving() {
       self.page = '/info-section/arriving-at-the-airport'
     },
-    openSettingsPage: () => (self.page = '/settings'),
-    openLoginPage: () => (self.page = '/login'),
     openManualSignupPage: () => (self.page = '/manualSignup'),
+    openLoginPage: () => (self.page = '/login'),
+    openPeoplePage: () => (self.page = '/people'),
+    openSettingsPage: () => (self.page = '/settings'),
     setFromURL() {
       const newView = getViewFromURL()
       self.page = newView.page
@@ -107,6 +109,7 @@ function getViewFromURL() {
       case '/info-section/abc/123':
       case '/login':
       case '/manualSignup':
+      case '/people':
       case '/settings':
         return { page: matchedGeneral.path || matchedInfoSection.path }
       default:

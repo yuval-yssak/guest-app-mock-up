@@ -22,7 +22,7 @@ export default function onStart(store) {
   }
 
   // direct user to "login" page if not logged in
-  let prevViewSnapshot
+  let prevViewSnapshotForLogin
   autorun(() => {
     if (
       !store.loggedInUser &&
@@ -31,11 +31,26 @@ export default function onStart(store) {
           store.view.page !== allowedPagesWhenLoggedOut
       )
     ) {
-      prevViewSnapshot = getSnapshot(store.view)
+      prevViewSnapshotForLogin = getSnapshot(store.view)
       store.view.openLoginPage()
-    } else if (store.loggedInUser && prevViewSnapshot) {
-      applySnapshot(store.view, prevViewSnapshot)
-      prevViewSnapshot = null
+    } else if (store.loggedInUser && prevViewSnapshotForLogin) {
+      applySnapshot(store.view, prevViewSnapshotForLogin)
+      prevViewSnapshotForLogin = null
+    }
+  })
+
+  // prevent unauthorized access to "people" page
+  let prevViewSnapshotForPeople
+  autorun(() => {
+    if (store.view.page === '/people' && store.loggedInUser.type !== 'staff') {
+      if (prevViewSnapshotForPeople)
+        // restore view to previous page
+        applySnapshot(store.view, prevViewSnapshotForPeople)
+      // or to homepage
+      else store.view.openHomePage()
+    } else {
+      // store previous page
+      prevViewSnapshotForPeople = getSnapshot(store.view)
     }
   })
 

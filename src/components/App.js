@@ -16,6 +16,7 @@ import AnnouncementsPage from '../pages/AnnouncementsPage'
 import SettingsPage from '../pages/SettingsPage'
 import ChatPage from '../pages/ChatPage'
 import LoginPage from '../pages/LoginPage'
+import PeoplePage from '../pages/PeoplePage'
 import ManualSignUpPage from '../pages/ManualSignUpPage'
 import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
 import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirport'
@@ -123,6 +124,8 @@ function App() {
         return 'Ashram Map'
       case '/my-bookings':
         return 'My Bookings'
+      case '/people':
+        return 'People & Registrations'
       case '/settings':
         return 'Settings'
       case '/activities':
@@ -202,6 +205,7 @@ function App() {
                     {store.view.page === '/my-bookings' && (
                       <div>Account Details Page</div>
                     )}
+                    {store.view.page === '/people' && <PeoplePage />}
                     {store.view.page === '/settings' && <SettingsPage />}
                     {store.view.page === '/activities' && (
                       <div>Activities Page</div>

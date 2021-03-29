@@ -1,19 +1,18 @@
 import dayjs from 'dayjs'
 
 const staff1 = {
+  type: 'staff',
   personName: 'Pranava Chaitanya',
   imageSrc: '/images/pranava-chaitanya.jpg'
 }
 
 const staff2 = {
+  type: 'staff',
   personName: 'Iswara Chaitanya',
   imageSrc: '/images/iswara-chaitanya.jpg'
 }
 
-const loggedInUser = {
-  personName: 'Richard Barrett',
-  imageSrc: '/images/32.jpg'
-}
+const loggedInUser = staff1
 
 const defaultStore = {
   view: { page: '/' },

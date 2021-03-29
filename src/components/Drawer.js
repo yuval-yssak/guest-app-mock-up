@@ -8,6 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import AnnouncementIcon from '@material-ui/icons/Announcement'
+import PeopleIcon from '@material-ui/icons/People'
 import ChatIcon from '@material-ui/icons/Chat'
 import EventIcon from '@material-ui/icons/Event'
 import InfoIcon from '@material-ui/icons/Info'
@@ -61,6 +62,14 @@ export default function TemporaryDrawer({ open, toggleDrawer }) {
               <ListItemText primary={store.loggedInUser?.personName} />
             </ListItem>
             <Divider />
+            {store.loggedInUser.type === 'staff' && (
+              <ListItem button onClick={() => store.view.openPeoplePage()}>
+                <StyledListItemIcon>
+                  <PeopleIcon />
+                </StyledListItemIcon>
+                <Typography>People</Typography>
+              </ListItem>
+            )}
             <ListItem button onClick={() => store.view.openAnnouncementsPage()}>
               <StyledListItemIcon>
                 <Badge
