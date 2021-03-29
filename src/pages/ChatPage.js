@@ -490,37 +490,34 @@ function ChatPage() {
   // scroll last read message or first unread messages on any update
   React.useEffect(() => {
     setTimeout(() => {
-      if (store.chat.unreadCount) dividerRef.current?.scrollIntoView()
+      if (store.chat.unreadCount) dividerRef.current?.scrollIntoView(true)
       else {
         messagesParentRef.current
-          ?.querySelector('section:last-child')
+          ?.querySelector('.date-messages:last-of-type section:last-child')
           ?.scrollIntoView({ behavior: 'smooth' })
       }
     }, 0)
-  }, [store.chat.unreadCount, messagesInDays.length])
+  }, [store.chat.unreadCount, store.chat.messages.length])
 
-  // once user input is changed, focus back on the text area.
-  React.useEffect(() => {
+  function submitMessage() {
+    store.chat.insertGuestMessage({
+      messageSide: 'guest',
+      person: getSnapshot(store.loggedInUser),
+      timestamp: new Date(),
+      content: userInput
+    })
+
+    // clear the text area for new input.
+    setUserInput('')
+
+    //  focus back on the text area.
     const userInputElement = userInputRef.current?.querySelector('textarea')
-
     if (userInputElement) {
       // focus on user input without popping up the virtual keyboard on mobile
       userInputElement.readOnly = true
       userInputElement.focus()
       userInputElement.readOnly = false
     }
-  }, [userInput, userInputRef])
-
-  function submitMessage() {
-    store.chat.insertGuestMessage({
-      messageSide: 'guest',
-      person: getSnapshot(store.loggedInUser),
-      timestamp: new DateMessages(),
-      content: userInput
-    })
-
-    // clear the text area for new input.
-    setUserInput('')
   }
 
   if (!store.loggedInUser) return <h1>Not Logged In</h1>
