@@ -223,7 +223,8 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
                 personName: 'Richard Barrett',
                 imageSrc: '/images/32.jpg',
                 type: 'guest'
-              }
+              },
+              view: store.view
             })
             handleMoreClose()
           }}
@@ -232,7 +233,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            applySnapshot(store, defaultStore)
+            applySnapshot(store, { ...defaultStore, view: store.view })
             handleMoreClose()
           }}
         >
@@ -245,7 +246,8 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
                 personName: 'Richard Barrett',
                 imageSrc: '/images/32.jpg',
                 type: 'guest'
-              }
+              },
+              view: store.view
             })
             handleMoreClose()
           }}
@@ -254,7 +256,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            applySnapshot(store, {})
+            applySnapshot(store, { view: store.view })
             handleMoreClose()
           }}
         >

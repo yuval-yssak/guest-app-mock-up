@@ -42,15 +42,17 @@ export default function onStart(store) {
   // prevent unauthorized access to "people" page
   let prevViewSnapshotForPeople
   autorun(() => {
-    if (store.view.page === '/people' && store.loggedInUser.type !== 'staff') {
+    if (store.view.page !== '/people') {
+      // store previous page
+      prevViewSnapshotForPeople = getSnapshot(store.view)
+    } else if (store.loggedInUser?.type !== 'staff') {
+      // this is an unauthorized state.
+
       if (prevViewSnapshotForPeople)
         // restore view to previous page
         applySnapshot(store.view, prevViewSnapshotForPeople)
       // or to homepage
       else store.view.openHomePage()
-    } else {
-      // store previous page
-      prevViewSnapshotForPeople = getSnapshot(store.view)
     }
   })
 
