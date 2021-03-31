@@ -17,6 +17,14 @@ const viewModel = types
       types.literal('/login'),
       types.literal('/manualSignup'),
       types.literal('/people'),
+      types.literal('/people/in-house'),
+      types.literal('/people/arriving-today'),
+      types.literal('/people/arriving-tomorrow'),
+      types.literal('/people/arriving-soon'),
+      types.literal('/people/departing-today'),
+      types.literal('/people/departing-tomorrow'),
+      types.literal('/people/search'),
+      types.refinement(types.string, value => value.match(/^\/people\/\d+$/)),
       types.literal('/settings')
     ),
     id: types.maybe(types.string)
@@ -35,6 +43,9 @@ const viewModel = types
             const infoSectionToPath = compile('/info-section/:id')
             return infoSectionToPath({ id: self.id })
           }
+          return self.page
+        case '/people':
+          if (self.id) return `${self.page}/${self.id}`
           return self.page
         default:
           return self.page
@@ -66,7 +77,16 @@ const viewModel = types
     },
     openManualSignupPage: () => (self.page = '/manualSignup'),
     openLoginPage: () => (self.page = '/login'),
-    openPeoplePage: () => (self.page = '/people'),
+    openPeoplePage: subPage => {
+      console.log('in function people page', subPage)
+      if (subPage?.match(/^\d+$/)) {
+        console.log('hi')
+        self.page = '/people'
+        self.id = subPage
+      } else self.page = subPage ? `/people/${subPage}` : '/people'
+    },
+
+    // (self.page = subPage ? `/people/${subPage}` : '/people'),
     openSettingsPage: () => (self.page = '/settings'),
     setFromURL() {
       const newView = getViewFromURL()
@@ -82,7 +102,7 @@ function getViewFromURL() {
   const matchCustom = match('/custom/:id')
   const matchedCustom = matchCustom(pathname)
 
-  if (matchedCustom) return { page: 'custom', id: matchedCustom.params.id }
+  if (matchedCustom) return { page: '/custom', id: matchedCustom.params.id }
 
   const matchInfoSection = match([
     '/info-section/:id1/:id2',
@@ -90,13 +110,26 @@ function getViewFromURL() {
   ])
   const matchedInfoSection = matchInfoSection(pathname)
 
+  const matchPeople = match('/people/:subpage')
+  const matchedPeople = matchPeople(pathname)
+
+  if (matchedPeople) {
+    if (matchedPeople.params.subpage?.match(/^\d+$/)) {
+      return { page: '/people', id: matchedPeople.params.subpage }
+    }
+  }
+
   const matchGeneral = match('/:page')
   const matchedGeneral = matchGeneral(pathname)
   console.log(matchedInfoSection)
   console.log(matchedInfoSection.path)
   console.log('path is', matchedGeneral.path || matchedInfoSection.path)
-  if (matchedGeneral || matchedInfoSection)
-    switch (matchedGeneral.path || matchedInfoSection.path) {
+  if (matchedGeneral || matchedInfoSection || matchedPeople)
+    switch (
+      matchedGeneral.path ||
+      matchedInfoSection.path ||
+      matchedPeople.path
+    ) {
       case '':
       case '/':
         return { page: '/' }
@@ -110,8 +143,22 @@ function getViewFromURL() {
       case '/login':
       case '/manualSignup':
       case '/people':
-      case '/settings':
-        return { page: matchedGeneral.path || matchedInfoSection.path }
+      case '/people/in-house':
+      case '/people/arriving-today':
+      case '/people/arriving-tomorrow':
+      case '/people/arriving-soon':
+      case '/people/departing-today':
+      case '/people/departing-tomorrow':
+      case '/people/search':
+      case '/settings': {
+        console.log('path is', matchedPeople.path)
+        return {
+          page:
+            matchedGeneral.path || matchedInfoSection.path || matchedPeople.path
+        }
+      }
+      case '/people/':
+        return { page: '/people' }
       default:
         return { page: '/' }
     }

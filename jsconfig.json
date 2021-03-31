@@ -5,6 +5,26 @@
         "name": "typescript-styled-plugin",
         "validate": false
       }
-    ]
-  }
+    ],
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "noImplicitAny": true,
+    "outDir": "./build/",
+    "removeComments": true,
+    "sourceMap": true,
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": ["src/"],
+  "exclude": ["node_modules"]
 }
