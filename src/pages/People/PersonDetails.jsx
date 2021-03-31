@@ -244,6 +244,31 @@ function SvgComponent(props) {
           </text>
         </a>
       </Registration>
+      <Registration>
+        <a href={window.location.href}>
+          <rect
+            width="135"
+            height="34"
+            x="420"
+            y="145"
+            rx="6"
+            ry="6"
+            fill="#45b"
+          />
+          <text x="430" y="158">
+            Program:
+            <tspan className="data" x="472">
+              Yoga 1 course
+            </tspan>
+          </text>
+          <text x="430" y="170">
+            Start:
+            <tspan className="data" x="472">
+              Jan 8, 2018
+            </tspan>
+          </text>
+        </a>
+      </Registration>
     </Svg>
   )
 }
