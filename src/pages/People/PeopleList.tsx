@@ -108,7 +108,7 @@ function PeopleList({ filter }: { filter?: string }) {
 
   function rowClick(param: GridRowParams, event: React.MouseEvent) {
     console.log('people page', param.id.toString())
-    store.view.openPeoplePage(param.id.toString())
+    store.view.openRegistrationPage(param.id.toString())
   }
 
   return (

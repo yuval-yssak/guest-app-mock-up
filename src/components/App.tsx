@@ -22,6 +22,9 @@ import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
 import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirport'
 import AnnouncementSnackbar from './AnnouncementSnackbar'
 import { useMst } from '../models/reactHook'
+import RegistrationDetails from '../pages/People/RegistrationDetails'
+import { MuiPickersUtilsProvider } from '@material-ui/pickers'
+import dayjsUtils from '@date-io/dayjs'
 
 const scaleFrom0 = keyframes`
 0% {
@@ -124,7 +127,8 @@ function App() {
         return 'Ashram Map'
       case '/my-bookings':
         return 'My Bookings'
-      case (store.view.page.match(/^\/people(\/|$)/) || {}).input:
+      case (store.view.page.match(/^\/(people|registration)(\/|$)/) || {})
+        .input:
         return 'People & Registrations'
       case '/settings':
         return 'Settings'
@@ -171,51 +175,58 @@ function App() {
       <CssReset />
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
-          <AppWrapper>
-            {store.view.page === '/login' ? (
-              <LoginPage />
-            ) : store.view.page === '/manualSignup' ? (
-              <ManualSignUpPage />
-            ) : (
-              <>
-                <AppBar
-                  toggleDrawer={toggleDrawer}
-                  pageTitle={getPageTitle()}
-                />
-                <Background>
-                  <Main ref={mainRef} tabIndex={-1}>
-                    {store.view.page === '/root' && <h1>Dashboard</h1>}
-                    {store.view.page === '/announcements' && (
-                      <AnnouncementsPage />
-                    )}
-                    {store.view.page === '/chat' && <ChatPage />}
-                    {store.view.page === '/info-section' && (
-                      <InfoSectionPage page={store.view.id || ''} />
-                    )}
-                    {store.view.page === '/info-section/abc/123' && (
-                      <div>Specific page inside two levels of navigation</div>
-                    )}
-                    {store.view.page ===
-                      '/info-section/arriving-at-the-airport' && (
-                      <InfoArrivingAtTheAirport />
-                    )}
-                    {store.view.page === '/map' && <div>Map</div>}
-                    {store.view.page === '/my-bookings' && (
-                      <div>Account Details Page</div>
-                    )}
-                    {store.view.page.match(/\/people(\/|$)/) && <PeoplePage />}
-                    {store.view.page === '/settings' && <SettingsPage />}
-                    {store.view.page === '/activities' && (
-                      <div>Activities Page</div>
-                    )}
-                  </Main>
-                </Background>
-                <AnnouncementSnackbar />
-                <AnimatedBottomNavigation />
-              </>
-            )}
-          </AppWrapper>
-          <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
+          <MuiPickersUtilsProvider utils={dayjsUtils}>
+            <AppWrapper>
+              {store.view.page === '/login' ? (
+                <LoginPage />
+              ) : store.view.page === '/manualSignup' ? (
+                <ManualSignUpPage />
+              ) : (
+                <>
+                  <AppBar
+                    toggleDrawer={toggleDrawer}
+                    pageTitle={getPageTitle()}
+                  />
+                  <Background>
+                    <Main ref={mainRef} tabIndex={-1}>
+                      {store.view.page === '/root' && <h1>Dashboard</h1>}
+                      {store.view.page === '/announcements' && (
+                        <AnnouncementsPage />
+                      )}
+                      {store.view.page === '/chat' && <ChatPage />}
+                      {store.view.page === '/info-section' && (
+                        <InfoSectionPage page={store.view.id || ''} />
+                      )}
+                      {store.view.page === '/info-section/abc/123' && (
+                        <div>Specific page inside two levels of navigation</div>
+                      )}
+                      {store.view.page ===
+                        '/info-section/arriving-at-the-airport' && (
+                        <InfoArrivingAtTheAirport />
+                      )}
+                      {store.view.page === '/map' && <div>Map</div>}
+                      {store.view.page === '/my-bookings' && (
+                        <div>Account Details Page</div>
+                      )}
+                      {store.view.page.match(/\/people(\/|$)/) && (
+                        <PeoplePage />
+                      )}
+                      {store.view.page === '/settings' && <SettingsPage />}
+                      {store.view.page === '/activities' && (
+                        <div>Activities Page</div>
+                      )}
+                      {store.view.page === '/registration' && (
+                        <RegistrationDetails id={+store.view.id!} /> // todo: check assumption that every registration page has id
+                      )}
+                    </Main>
+                  </Background>
+                  <AnnouncementSnackbar />
+                  <AnimatedBottomNavigation />
+                </>
+              )}
+            </AppWrapper>
+            <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
+          </MuiPickersUtilsProvider>
         </ThemeProvider>
       </MuiThemeProvider>
     </>
