@@ -30,11 +30,6 @@ const ChatContainer = styled(PageContentWrapper).attrs({ className: 'chat' })`
   @media (max-width: 52em) {
     padding: 0 0.3rem;
   }
-
-  * p {
-    // prevent very long words or URLs from breaking the design
-    overflow-wrap: anywhere;
-  }
 `
 
 const messageScrollableRowGridGap = '2rem'
@@ -54,7 +49,7 @@ const MessagesScrollable = styled.div.attrs({
 const DateMessages = styled.div.attrs({
   className: 'date-messages'
 })`
-  word-break: break-all;
+  word-break: break-word;
 
   display: grid;
   background-color: transparent;
