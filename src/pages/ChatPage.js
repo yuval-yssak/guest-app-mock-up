@@ -37,7 +37,8 @@ const ChatContainer = styled(PageContentWrapper).attrs({ className: 'chat' })`
   }
 `
 
-const messageScrollableGridGap = '2rem'
+const messageScrollableRowGridGap = '2rem'
+const messageScrollableColumnGridGap = '0.5rem'
 const MessagesScrollable = styled.div.attrs({
   className: 'messages-scrollable'
 })`
@@ -61,25 +62,26 @@ const DateMessages = styled.div.attrs({
   width: 100%;
   grid-template-rows: 1fr;
   grid-template-columns: repeat(
-    8,
-    calc((min(60rem, 80%) - ${messageScrollableGridGap} * 7) / 8)
+    20,
+    calc((min(60rem, 80%) - ${messageScrollableColumnGridGap} * 19) / 20)
   );
   justify-content: center;
   align-items: end;
-  grid-gap: ${messageScrollableGridGap};
+  grid-column-gap: ${messageScrollableColumnGridGap};
+  grid-row-gap: ${messageScrollableRowGridGap};
 
   @media (max-width: 52em) {
     grid-template-columns: repeat(
-      8,
-      calc((90% - ${messageScrollableGridGap} * 7) / 8)
+      20,
+      calc((90% - ${messageScrollableColumnGridGap} * 19) / 20)
     );
     padding: 0 0.3rem;
   }
 
   @media (max-width: 32.5em) {
     grid-template-columns: repeat(
-      8,
-      calc((100% - ${messageScrollableGridGap} * 7) / 8)
+      20,
+      calc((100% - ${messageScrollableColumnGridGap} * 19) / 20)
     );
   }
 
@@ -119,7 +121,7 @@ const UnreadMessagesDivider = styled.div.attrs({
 })`
   display: grid;
   grid-template-columns: max-content 1fr;
-  grid-column: 1 / 8;
+  grid-column: 1 / 16;
   position: relative;
   align-items: center;
   grid-gap: 0.5rem;
@@ -198,7 +200,7 @@ const StaffMessageContainer = styled(MessageContainer).attrs({
   className: 'staff-message-section'
 })`
   justify-self: start;
-  grid-column: 1 / 8;
+  grid-column: 1 / 16;
   grid-template-columns: min-content 1fr;
 `
 
@@ -208,7 +210,7 @@ const GuestMessageContainer = styled(MessageContainer).attrs({
   className: 'guest-message-section'
 })`
   justify-self: end;
-  grid-column: 2 / 9;
+  grid-column: 6 / 21;
   grid-template-columns: 1fr min-content;
 `
 
