@@ -140,6 +140,15 @@ const defaultStore = {
     ]
   },
   chat: {
+    usersMessages: [
+      {
+        person: {
+          personName: 'Jenny',
+          imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg'
+        },
+        messages: []
+      }
+    ],
     messages: [
       {
         messageSide: 'staff',

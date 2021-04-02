@@ -18,7 +18,16 @@ const ChatModel = types
   .model('Chat', {
     messages: types.array(Message),
     // default date to Unix epoch, so everything is "unread" by default
-    lastReadTimestamp: types.optional(types.Date, new Date(null))
+    lastReadTimestamp: types.optional(types.Date, new Date(null)),
+    usersMessages: types.maybeNull(
+      types.array(
+        types.model('User Messages', {
+          person: MessagePerson,
+          messages: types.array(Message),
+          lastReadTimestamp: types.optional(types.Date, new Date(null))
+        })
+      )
+    )
   })
   .views(self => ({
     get displayMessages() {

@@ -12,6 +12,7 @@ import { useMst } from '../models/reactHook'
 import PageContentWrapper from '../components/PageContentWrapper'
 import dayjs from 'dayjs'
 
+const pagePadding = '15rem'
 // below this breakpoint the avatar enters the message frame
 const breakpointFullLine = '(max-width: 37.5em)'
 
@@ -23,16 +24,30 @@ const StyledIconButton = styled(IconButton)`
 
 const ChatContainer = styled(PageContentWrapper).attrs({ className: 'chat' })`
   grid-template-rows: 1fr max-content; // keep the user input at the bottom
-  grid-gap: 0.5rem;
   overflow: hidden; // scrolling is only in the inner messages container
-  grid-template-columns: 100%;
+  grid-template-columns: ${({ staffView }) =>
+    staffView ? `calc(${pagePadding} + 20rem) 1fr` : '1fr'};
 
   @media (max-width: 52em) {
     padding: 0 0.3rem;
   }
 `
 
-const messageScrollableRowGridGap = '2rem'
+const UsersPaneContaner = styled.div`
+  background-color: red;
+  height: 100%;
+  overflow: scroll;
+  padding-left: ${pagePadding};
+`
+
+function UsersPane() {
+  return (
+    <UsersPaneContaner>
+      <div style={{ height: '1500px', fontSize: '5rem' }}>Users Pane</div>
+    </UsersPaneContaner>
+  )
+}
+
 const messageScrollableColumnGridGap = '0.5rem'
 const MessagesScrollable = styled.div.attrs({
   className: 'messages-scrollable'
@@ -40,6 +55,10 @@ const MessagesScrollable = styled.div.attrs({
   height: 100%;
   width: 100%;
   overflow-y: scroll;
+  display: grid;
+  grid-row-gap: 2rem;
+  background-color: grey;
+  padding-right: ${pagePadding};
 
   &:focus {
     outline: none;
@@ -56,14 +75,12 @@ const DateMessages = styled.div.attrs({
 
   width: 100%;
   grid-template-rows: 1fr;
-  grid-template-columns: repeat(
-    20,
-    calc((min(60rem, 80%) - ${messageScrollableColumnGridGap} * 19) / 20)
-  );
+  grid-template-columns: repeat(20, 1fr);
   justify-content: center;
   align-items: end;
   grid-column-gap: ${messageScrollableColumnGridGap};
-  grid-row-gap: ${messageScrollableRowGridGap};
+  grid-row-gap: 2rem;
+  padding-left: 2.5rem;
 
   @media (max-width: 52em) {
     grid-template-columns: repeat(
@@ -185,7 +202,7 @@ const MessageContainer = styled.section`
 
   & .MuiAvatar-root:hover {
     // todo: put this selector in its rightfulplace
-    transform: scale(2);
+    transform: scale(1.6);
   }
 `
 
@@ -235,7 +252,7 @@ const StaffMessageFrame = styled(MessageFrame).attrs({
 
 const StyledAvatar = styled(Avatar)`
   margin-top: 0.45rem;
-  transition: all 0.2s;
+  transition: all 0.4s ease;
 `
 
 const StyledGuestAvatar = styled(StyledAvatar).attrs({
@@ -522,7 +539,8 @@ function ChatPage() {
   if (!store.loggedInUser) return <h1>Not Logged In</h1>
 
   return (
-    <ChatContainer>
+    <ChatContainer staffView={!!store.chat.usersMessages}>
+      {store.chat.usersMessages && <UsersPane />}
       <MessagesScrollable tabIndex="0" ref={messagesParentRef}>
         {messagesInDays}
       </MessagesScrollable>

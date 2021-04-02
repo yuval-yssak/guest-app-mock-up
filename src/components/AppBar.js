@@ -224,7 +224,8 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
                 imageSrc: '/images/32.jpg',
                 type: 'guest'
               },
-              view: store.view
+              view: store.view,
+              chat: { ...defaultStore.chat, ['usersMessages']: null }
             })
             handleMoreClose()
           }}
