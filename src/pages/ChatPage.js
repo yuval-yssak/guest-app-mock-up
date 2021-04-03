@@ -24,7 +24,6 @@ const lorem = new LoremIpsum({
   }
 })
 
-const pagePadding = '15rem'
 // below this breakpoint the avatar enters the message frame
 const breakpointFullLine = '(max-width: 37.5em)'
 
@@ -35,29 +34,49 @@ const StyledIconButton = styled(IconButton)`
 `
 
 const usersPaneWidth = '20rem'
-const ChatContainer = styled(PageContentWrapper).attrs({ className: 'chat' })`
-  grid-template-rows: 1fr max-content; // keep the user input at the bottom
+const ChatPageContainer = styled(PageContentWrapper).attrs({
+  className: 'chat-page-container'
+})`
   overflow: hidden; // scrolling is only in the inner messages container
   grid-template-columns: ${({ staffView }) =>
     staffView
       ? `calc((100vw - min(calc(60rem + ${usersPaneWidth}), 80vw)) / 2 + ${usersPaneWidth}) 1fr`
       : '1fr'};
+  align-items: start;
 
   @media (max-width: 52em) {
     padding: 0 0.3rem;
   }
 `
 
+const ChatContainer = styled.div.attrs({ className: 'chat-container' })`
+  display: grid;
+  grid-template-rows: 1fr max-content; // keep the user input at the bottom
+
+  // scrolling is only in the inner messages container
+  overflow: hidden;
+  height: 100%;
+
+  & > * {
+    ${({ staffView }) =>
+      !staffView
+        ? `
+    padding: 0 calc((100vw - min(60rem, 80vw)) / 2) ;
+    `
+        : `
+    padding-right: calc((100vw - min(calc(60rem + ${usersPaneWidth}), 80vw)) / 2);
+`}
+  }
+`
+
 const UsersPaneContaner = styled.div`
   /* background-color: red; */
   height: 100%;
-  overflow: scroll;
+  overflow-y: auto;
   padding-top: 4rem;
   padding-bottom: 4rem;
   padding-left: calc((100vw - min(calc(60rem + ${usersPaneWidth}), 80vw)) / 2);
-  padding-right: 1rem;
-  display: flex;
-  flex-direction: column;
+  padding-right: 0.5rem;
 
   & > div {
     padding: 1.6rem;
@@ -99,11 +118,10 @@ const MessagesScrollable = styled.div.attrs({
 })`
   height: 100%;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   display: grid;
   grid-row-gap: 2rem;
   /* background-color: grey; */
-  padding-right: calc((100vw - min(calc(60rem + ${usersPaneWidth}), 80vw)) / 2);
 
   &:focus {
     outline: none;
@@ -154,7 +172,9 @@ const UserInputSection = styled.section.attrs({
   grid-template-columns: 1fr max-content;
   grid-gap: 1rem;
   grid-column: 1 / -1;
-  width: min(60rem, 80vw);
+  width: 100%;
+
+  margin-top: 0.5rem;
   justify-self: center;
   margin-bottom: 0.3rem;
 
@@ -521,7 +541,7 @@ function ChatPage() {
         )
       })
 
-      // add "New" messages divider
+      // add "New messages" divider
       if (store.chat.unreadCount) {
         // find last read message and stick the unread divider under it.
         const lastReadMessage = date.messages.findIndex(
@@ -584,29 +604,31 @@ function ChatPage() {
   if (!store.loggedInUser) return <h1>Not Logged In</h1>
 
   return (
-    <ChatContainer staffView={!!store.chat.usersMessages}>
+    <ChatPageContainer staffView={!!store.chat.usersMessages}>
       {store.chat.usersMessages && <UsersPane />}
-      <MessagesScrollable tabIndex="0" ref={messagesParentRef}>
-        {messagesInDays}
-      </MessagesScrollable>
-      <UserInputSection>
-        <TextField
-          id="user-input"
-          label="Chat with us"
-          placeholder="Hi, I would like to"
-          multiline
-          rowsMax={5}
-          margin="dense"
-          variant="outlined"
-          value={userInput}
-          onChange={e => setUserInput(e.target.value)}
-          ref={userInputRef}
-        />
-        <StyledIconButton aria-label="send" onClick={() => submitMessage()}>
-          <SendIcon />
-        </StyledIconButton>
-      </UserInputSection>
-    </ChatContainer>
+      <ChatContainer staffView={!!store.chat.usersMessages}>
+        <MessagesScrollable tabIndex="0" ref={messagesParentRef}>
+          {messagesInDays}
+        </MessagesScrollable>
+        <UserInputSection>
+          <TextField
+            id="user-input"
+            label="Chat with us"
+            placeholder="Hi, I would like to"
+            multiline
+            rowsMax={5}
+            margin="dense"
+            variant="outlined"
+            value={userInput}
+            onChange={e => setUserInput(e.target.value)}
+            ref={userInputRef}
+          />
+          <StyledIconButton aria-label="send" onClick={() => submitMessage()}>
+            <SendIcon />
+          </StyledIconButton>
+        </UserInputSection>
+      </ChatContainer>
+    </ChatPageContainer>
   )
 }
 

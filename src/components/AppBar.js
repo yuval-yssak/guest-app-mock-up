@@ -225,7 +225,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
                 type: 'guest'
               },
               view: store.view,
-              chat: { ...defaultStore.chat, ['usersMessages']: null }
+              chat: { ...defaultStore.chat, usersMessages: null }
             })
             handleMoreClose()
           }}
