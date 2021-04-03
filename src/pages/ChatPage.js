@@ -11,6 +11,18 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useMst } from '../models/reactHook'
 import PageContentWrapper from '../components/PageContentWrapper'
 import dayjs from 'dayjs'
+import { LoremIpsum } from 'lorem-ipsum'
+
+const lorem = new LoremIpsum({
+  sentencesPerParagraph: {
+    max: 8,
+    min: 4
+  },
+  wordsPerSentence: {
+    max: 8,
+    min: 3
+  }
+})
 
 const pagePadding = '15rem'
 // below this breakpoint the avatar enters the message frame
@@ -22,11 +34,14 @@ const StyledIconButton = styled(IconButton)`
   }
 `
 
+const usersPaneWidth = '20rem'
 const ChatContainer = styled(PageContentWrapper).attrs({ className: 'chat' })`
   grid-template-rows: 1fr max-content; // keep the user input at the bottom
   overflow: hidden; // scrolling is only in the inner messages container
   grid-template-columns: ${({ staffView }) =>
-    staffView ? `calc(${pagePadding} + 20rem) 1fr` : '1fr'};
+    staffView
+      ? `calc((100vw - min(calc(60rem + ${usersPaneWidth}), 80vw)) / 2 + ${usersPaneWidth}) 1fr`
+      : '1fr'};
 
   @media (max-width: 52em) {
     padding: 0 0.3rem;
@@ -34,19 +49,49 @@ const ChatContainer = styled(PageContentWrapper).attrs({ className: 'chat' })`
 `
 
 const UsersPaneContaner = styled.div`
-  background-color: red;
+  /* background-color: red; */
   height: 100%;
   overflow: scroll;
-  padding-left: ${pagePadding};
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  padding-left: calc((100vw - min(calc(60rem + ${usersPaneWidth}), 80vw)) / 2);
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+
+  & > div {
+    padding: 1.6rem;
+    background-color: #eee;
+    border-top: 1px solid #444;
+    border-left: 1px solid #444;
+    border-right: 1px solid #444;
+  }
+
+  & > div:last-child {
+    border-bottom: 1px solid #444;
+  }
+
+  & > div:hover {
+    background-color: #ddd;
+    font-weight: 400;
+  }
 `
 
-function UsersPane() {
+const UsersPane = React.memo(function () {
   return (
     <UsersPaneContaner>
-      <div style={{ height: '1500px', fontSize: '5rem' }}>Users Pane</div>
+      {new Array(20).fill(null).map((_, i) => (
+        <div key={i}>
+          {lorem
+            .generateWords(2)
+            .split(/\s/)
+            .map(n => n[0].toUpperCase() + n.slice(1))
+            .join(' ')}
+        </div>
+      ))}
     </UsersPaneContaner>
   )
-}
+})
 
 const messageScrollableColumnGridGap = '0.5rem'
 const MessagesScrollable = styled.div.attrs({
@@ -57,8 +102,8 @@ const MessagesScrollable = styled.div.attrs({
   overflow-y: scroll;
   display: grid;
   grid-row-gap: 2rem;
-  background-color: grey;
-  padding-right: ${pagePadding};
+  /* background-color: grey; */
+  padding-right: calc((100vw - min(calc(60rem + ${usersPaneWidth}), 80vw)) / 2);
 
   &:focus {
     outline: none;
@@ -109,7 +154,7 @@ const UserInputSection = styled.section.attrs({
   grid-template-columns: 1fr max-content;
   grid-gap: 1rem;
   grid-column: 1 / -1;
-  width: min(60rem, 80%);
+  width: min(60rem, 80vw);
   justify-self: center;
   margin-bottom: 0.3rem;
 
