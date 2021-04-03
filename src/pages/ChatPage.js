@@ -34,13 +34,25 @@ const StyledIconButton = styled(IconButton)`
 `
 
 const usersPaneWidth = '20rem'
+const minimumChatMessageWidth = '40rem'
+const inBetweenChatMessageWidth = '90vw'
+const maximumChatMessageWidth = '60rem'
+
 const ChatPageContainer = styled(PageContentWrapper).attrs({
   className: 'chat-page-container'
 })`
   overflow: hidden; // scrolling is only in the inner messages container
   grid-template-columns: ${({ staffView }) =>
     staffView
-      ? `calc((100vw - min(calc(60rem + ${usersPaneWidth}), 80vw)) / 2 + ${usersPaneWidth}) 1fr`
+      ? `calc(
+          (
+            100vw - clamp(
+              calc(${minimumChatMessageWidth} + ${usersPaneWidth}), 
+              ${inBetweenChatMessageWidth}, 
+              calc(${maximumChatMessageWidth} + ${usersPaneWidth})
+            )
+          ) / 2 + ${usersPaneWidth})
+        1fr`
       : '1fr'};
   align-items: start;
 
@@ -61,10 +73,24 @@ const ChatContainer = styled.div.attrs({ className: 'chat-container' })`
     ${({ staffView }) =>
       !staffView
         ? `
-    padding: 0 calc((100vw - min(60rem, 80vw)) / 2) ;
+    padding: 0 calc(
+      (
+        100vw - clamp(
+          ${minimumChatMessageWidth}, 
+          ${inBetweenChatMessageWidth}, 
+          ${maximumChatMessageWidth})
+        ) / 2);
     `
         : `
-    padding-right: calc((100vw - min(calc(60rem + ${usersPaneWidth}), 80vw)) / 2);
+    padding-right: calc(
+      (
+        100vw - clamp(
+          calc(${minimumChatMessageWidth} + ${usersPaneWidth}),
+          ${inBetweenChatMessageWidth},
+          calc(${maximumChatMessageWidth} + ${usersPaneWidth})
+        )
+      ) / 2
+    );
 `}
   }
 `
@@ -75,7 +101,16 @@ const UsersPaneContaner = styled.div`
   overflow-y: auto;
   padding-top: 4rem;
   padding-bottom: 4rem;
-  padding-left: calc((100vw - min(calc(60rem + ${usersPaneWidth}), 80vw)) / 2);
+  padding-left: calc(
+    (
+        100vw -
+          clamp(
+            calc(${minimumChatMessageWidth} + ${usersPaneWidth}),
+            ${inBetweenChatMessageWidth},
+            calc(${maximumChatMessageWidth} + ${usersPaneWidth})
+          )
+      ) / 2
+  );
   padding-right: 0.5rem;
 
   & > div {
