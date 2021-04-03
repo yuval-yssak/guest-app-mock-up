@@ -96,10 +96,9 @@ const ChatContainer = styled.div.attrs({ className: 'chat-container' })`
 `
 
 const UsersPaneContaner = styled.div`
-  /* background-color: red; */
   height: 100%;
   overflow-y: auto;
-  padding-top: 4rem;
+  padding-top: 0.4rem;
   padding-bottom: 4rem;
   padding-left: calc(
     (
@@ -114,15 +113,17 @@ const UsersPaneContaner = styled.div`
   padding-right: 0.5rem;
 
   & > div {
-    padding: 1.6rem;
-    background-color: #eee;
-    border-top: 1px solid #444;
-    border-left: 1px solid #444;
-    border-right: 1px solid #444;
+    height: 4.5rem;
+    background-color: ${({ theme: { palette } }) =>
+      palette.type === 'dark' ? palette.grey['700'] : palette.grey['50']};
+    border-top: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    display: grid;
   }
 
   & > div:last-child {
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #ddd;
   }
 
   & > div:hover {
@@ -156,7 +157,6 @@ const MessagesScrollable = styled.div.attrs({
   overflow-y: auto;
   display: grid;
   grid-row-gap: 2rem;
-  /* background-color: grey; */
 
   &:focus {
     outline: none;

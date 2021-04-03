@@ -126,7 +126,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
 
   return (
     <div>
-      <AppBar position="static">
+      <AppBar position="relative" /* set stacking context for shadow*/>
         <StyledToolbar>
           <IconButton
             onClick={toggleDrawer(true)}
