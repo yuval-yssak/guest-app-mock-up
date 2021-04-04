@@ -1,7 +1,7 @@
 import * as React from 'react'
-const MSTContext = React.createContext(null)
+import { RootStoreType } from './RootStore'
+const MSTContext = React.createContext<RootStoreType>(null as any)
 
-// eslint-disable-next-line prefer-destructuring
 export const Provider = MSTContext.Provider
 
 export function useMst() {

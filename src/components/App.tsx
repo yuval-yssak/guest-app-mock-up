@@ -93,7 +93,7 @@ function setGlobalVhProperty() {
 
 function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false)
-  const mainRef = React.createRef()
+  const mainRef = React.createRef<HTMLElement>()
   const store = useMst()
 
   React.useEffect(() => {
@@ -142,14 +142,8 @@ function App() {
       secondary: { main: '#ffcf00' }
     },
     typography: {
-      fontFamily: [
-        'Gotham Rounded SSm A',
-        'Gotham Rounded SSm B',
-        'Open Sans',
-        'Helvetica',
-        'Arial',
-        'sans-serif'
-      ],
+      fontFamily:
+        'Gotham Rounded SSm A, Gotham Rounded SSm B, Open Sans, Helvetica, Arial, sans-serif',
       allVariants: { fontWeight: 300 },
       h1: { fontSize: '2.2rem' },
       h2: { fontSize: '2rem' },
@@ -158,10 +152,14 @@ function App() {
     }
   })
 
-  const toggleDrawer = open => event => {
+  const toggleDrawer = (open: boolean) => (
+    event: React.KeyboardEvent | React.MouseEvent
+  ) => {
     if (
       event.type === 'keydown' &&
-      ['Tab', 'Shift', 'Space', 'Enter'].some(k => k === event.key)
+      ['Tab', 'Shift', 'Space', 'Enter'].some(
+        k => k === (event as React.KeyboardEvent).key
+      )
     ) {
       return
     }
@@ -173,7 +171,7 @@ function App() {
       <CssReset />
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
-          <AppWrapper square>
+          <AppWrapper>
             {store.view.page === '/login' ? (
               <LoginPage />
             ) : store.view.page === '/manualSignup' ? (
@@ -192,7 +190,7 @@ function App() {
                     )}
                     {store.view.page === '/chat' && <ChatPage />}
                     {store.view.page === '/info-section' && (
-                      <InfoSectionPage page={store.view.id} />
+                      <InfoSectionPage page={store.view.id || ''} />
                     )}
                     {store.view.page === '/info-section/abc/123' && (
                       <div>Specific page inside two levels of navigation</div>

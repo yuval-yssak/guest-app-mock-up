@@ -9,7 +9,7 @@ import amber from '@material-ui/core/colors/amber'
 import green from '@material-ui/core/colors/green'
 import Typography from '@material-ui/core/Typography'
 
-const StyledPasswordMeterDiv = styled.div`
+const StyledPasswordMeterDiv = styled.div<{ value: number }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -25,7 +25,7 @@ const StyledPasswordMeterDiv = styled.div`
       props.value < 30 ? red[600] : props.value < 80 ? amber[900] : green[800]};
   }
 `
-const LinearProgressWithStages = styled(LinearProgress)`
+const LinearProgressWithStages = styled(LinearProgress)<{ value: number }>`
   width: 80%;
 
   & div {
@@ -34,7 +34,7 @@ const LinearProgressWithStages = styled(LinearProgress)`
   }
 `
 
-function PasswordStrengthMeter({ password }) {
+function PasswordStrengthMeter({ password }: { password: string }) {
   const result = new PasswordMeter().getResult(password)
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactEventHandler } from 'react'
 import PageContentWrapper from '../../components/PageContentWrapper'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea'
@@ -90,7 +90,17 @@ const SVGCardMedia = styled(StyledCardMedia).attrs(({ className }) => ({
   }
 `
 
-function MediaCard({ topic, description, action, children }) {
+function MediaCard({
+  topic,
+  description,
+  action,
+  children
+}: {
+  topic: string
+  description: string
+  action?: ReactEventHandler
+  children: React.ReactNode
+}) {
   return (
     <StyledCard>
       <CardActionArea onClick={action}>
@@ -113,7 +123,7 @@ function MediaCard({ topic, description, action, children }) {
   )
 }
 
-export default function InfoSetingsPage({ page }) {
+export default function InfoSetingsPage({ page }: { page: string }) {
   const store = useMst()
 
   if (page === 'covid-19-guidelines') return <InfoCovid19GuidelinesPage />

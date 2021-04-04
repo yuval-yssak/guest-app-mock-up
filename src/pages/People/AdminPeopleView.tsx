@@ -35,7 +35,15 @@ const StyledTeaser = styled.div`
   }
 `
 
-function Teaser({ label, subLabel, link }) {
+function Teaser({
+  label,
+  subLabel,
+  link
+}: {
+  label: string
+  subLabel: string
+  link: string
+}) {
   const store = useMst()
   return (
     <StyledTeaser onClick={() => store.view.openPeoplePage(link)}>
@@ -70,10 +78,10 @@ function AdminPeopleView() {
       </MainTeasers>
       <br />
       <SubTeasers>
-        <Teaser subLabel="Search" link="search" />
-        <Teaser label="Arriving Tomorrow" subLabel="5" />
-        <Teaser label="Arriving in next 7 days" subLabel="39" />
-        <Teaser label="Departing tomorrow" subLabel="2" />
+        <Teaser label="Search" subLabel="Search" link="search" />
+        <Teaser label="Arriving Tomorrow" subLabel="5" link="" />
+        <Teaser label="Arriving in next 7 days" subLabel="39" link="" />
+        <Teaser label="Departing tomorrow" subLabel="2" link="" />
       </SubTeasers>
     </>
   )

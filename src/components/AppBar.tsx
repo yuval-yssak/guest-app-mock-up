@@ -7,7 +7,7 @@ import Divider from '@material-ui/core/Divider'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Menu'
 import MoreIcon from '@material-ui/icons/MoreVert'
-import Typography from '@material-ui/core/Typography'
+import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import styled from 'styled-components'
 import DarkModeSwitch from '../components/DarkModeSwitch'
 import { useMst } from '../models/reactHook'
@@ -50,13 +50,14 @@ const StyledToolbar = styled(Toolbar).attrs({ className: 'toolbar' })`
   }
 `
 
-const PageTitle = styled(Typography)`
+const PageTitle = styled(Typography)<
+  TypographyProps<'h1', { component: 'h1' }>
+>`
   && {
     text-align: center;
     font-size: 1.4rem;
     justify-self: start;
     margin-left: 0.5rem;
-
     @media screen and (max-width: 37.5em), screen and (max-height: 25em) {
       font-size: 1.1rem;
       padding: 0;
@@ -107,16 +108,22 @@ const SwitchContainer = styled.div.attrs({
 function ShrinkableDarkModeSwitch() {
   return (
     <SwitchContainer>
-      <OneLineDarkModeSwitch />
+      <OneLineDarkModeSwitch className="" />
     </SwitchContainer>
   )
 }
 
-export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
+export default function ProminentAppBar({
+  toggleDrawer,
+  pageTitle
+}: {
+  toggleDrawer: (open: boolean) => React.ReactEventHandler
+  pageTitle: string
+}) {
   const store = useMst()
-  const [moreEl, setMoreEl] = React.useState(null)
+  const [moreEl, setMoreEl] = React.useState<HTMLElement | null>(null)
 
-  const handleMoreClick = event => {
+  const handleMoreClick: React.MouseEventHandler<HTMLButtonElement> = event => {
     setMoreEl(event.currentTarget)
   }
 
@@ -201,6 +208,7 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
             store.chat.insertStaffMessage({
               messageSide: 'staff',
               person: {
+                id: '1',
                 personName: 'Pranava Chaitanya',
                 imageSrc: '/images/pranava-chaitanya.jpg'
               },
@@ -222,7 +230,8 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
               loggedInUser: {
                 personName: 'Richard Barrett',
                 imageSrc: '/images/32.jpg',
-                type: 'guest'
+                type: 'guest',
+                id: '-1'
               },
               view: store.view,
               chat: { ...defaultStore.chat, usersMessages: null }
@@ -246,7 +255,8 @@ export default function ProminentAppBar({ toggleDrawer, pageTitle }) {
               loggedInUser: {
                 personName: 'Richard Barrett',
                 imageSrc: '/images/32.jpg',
-                type: 'guest'
+                type: 'guest',
+                id: '-1'
               },
               view: store.view
             })

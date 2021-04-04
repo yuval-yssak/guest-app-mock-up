@@ -1,24 +1,25 @@
 import dayjs from 'dayjs'
+import { RootStoreSnapshotIn } from './models/RootStore'
 
-const staff1 = {
+const staff1: RootStoreSnapshotIn['loggedInUser'] = {
+  id: '1',
   type: 'staff',
-  id: '3',
   personName: 'Pranava Chaitanya',
   imageSrc: '/images/pranava-chaitanya.jpg'
 }
 
 const staff2 = {
+  id: '2',
   type: 'staff',
-  id: '4',
   personName: 'Iswara Chaitanya',
   imageSrc: '/images/iswara-chaitanya.jpg'
 }
 
 const loggedInUser = staff1
 
-const defaultStore = {
-  view: { page: '/' },
-  loggedInUser,
+const defaultStore: RootStoreSnapshotIn = {
+  // view: { page: '/', id: undefined },
+  loggedInUser: staff1,
   announcements: {
     all: [
       {
@@ -155,7 +156,11 @@ const defaultStore = {
     messages: [
       {
         messageSide: 'staff',
-        person: staff1,
+        person: {
+          id: '1',
+          imageSrc: staff1.imageSrc,
+          personName: staff1.personName
+        },
         timestamp: dayjs()
           .subtract(2, 'years')
           .add(8, 'months')
@@ -222,7 +227,8 @@ const defaultStore = {
       .minute(5)
       .second(30)
       .toDate()
-  }
+  },
+  preferences: { darkMode: false }
 }
 
 export default defaultStore

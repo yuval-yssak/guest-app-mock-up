@@ -1,38 +1,35 @@
-import { types } from 'mobx-state-tree'
+import { Instance, types } from 'mobx-state-tree'
 import dayjs from 'dayjs'
 import { now } from 'mobx-utils'
+import { PersonModel } from './PersonModel'
 
-const MessagePerson = types.model('MessagePerson', {
-  id: types.identifier,
-  personName: types.string,
-  imageSrc: types.string
-})
+export interface MessageType extends Instance<typeof Message> {}
 
 const Message = types.model('Message', {
   messageSide: types.union(types.literal('guest'), types.literal('staff')),
-  person: MessagePerson, // todo: should be a reference to person model
+  person: PersonModel,
   timestamp: types.Date,
   content: types.string
 })
 
+export interface UserMessagesType extends Instance<typeof UserMessagesModel> {}
+const UserMessagesModel = types.model('User Messages', {
+  person: PersonModel,
+  messages: types.array(Message),
+  lastReadTimestamp: types.optional(types.Date, new Date(0))
+})
+
+export interface ChatType extends Instance<typeof ChatModel> {}
 const ChatModel = types
   .model('Chat', {
     messages: types.array(Message),
     // default date to Unix epoch, so everything is "unread" by default
-    lastReadTimestamp: types.optional(types.Date, new Date(null)),
-    usersMessages: types.maybeNull(
-      types.array(
-        types.model('User Messages', {
-          person: MessagePerson,
-          messages: types.array(Message),
-          lastReadTimestamp: types.optional(types.Date, new Date(null))
-        })
-      )
-    )
+    lastReadTimestamp: types.optional(types.Date, new Date(0)),
+    usersMessages: types.maybeNull(types.array(UserMessagesModel))
   })
   .views(self => ({
     get displayMessages() {
-      function displayTime(timestamp) {
+      function displayTime(timestamp: Date) {
         // triggers a rerender of the entire chat page once a minute
         if (dayjs(timestamp).year() !== dayjs(now(60000)).year())
           return dayjs(timestamp).format('MMM D, YYYY HH:mm')
@@ -64,11 +61,11 @@ const ChatModel = types
     }
   }))
   .actions(self => ({
-    insertGuestMessage(message) {
+    insertGuestMessage(message: MessageType) {
       self.messages.push(message)
       self.lastReadTimestamp = new Date()
     },
-    insertStaffMessage(message) {
+    insertStaffMessage(message: MessageType) {
       self.messages.push(message)
     }
   }))

@@ -20,7 +20,11 @@ import PasswordStrengthMeter from '../components/Signup/PasswordStrengthMeter'
 import { observer } from 'mobx-react-lite'
 
 // IconButton which enables showing the password for improved accessibility
-function ShowPasswordIcon({ callback }) {
+function ShowPasswordIcon({
+  callback
+}: {
+  callback: React.Dispatch<React.SetStateAction<boolean>>
+}) {
   return (
     <IconButton
       aria-label="show password"
@@ -53,7 +57,7 @@ function ShowPasswordIcon({ callback }) {
   )
 }
 
-function isPasswordStrong(password) {
+function isPasswordStrong(password: string) {
   return new PasswordMeter().getResult(password).percent > 80
 }
 
@@ -85,7 +89,7 @@ const StyledEmailTextField = styled(TextField)`
   width: calc(100% - 48px);
 `
 
-function SignupEmailField({ inputRef }) {
+function SignupEmailField({ inputRef }: { inputRef: React.Ref<any> }) {
   return (
     <StyledEmailTextField
       variant="outlined"
@@ -105,7 +109,13 @@ const StyledPasswordTextField = styled(TextField)`
   flex: 1;
 `
 
-function SignupPasswordField({ passwordHidden, inputRef }) {
+function SignupPasswordField({
+  passwordHidden,
+  inputRef
+}: {
+  passwordHidden: boolean
+  inputRef: React.Ref<any>
+}) {
   return (
     <StyledPasswordTextField
       variant="outlined"
@@ -121,7 +131,13 @@ function SignupPasswordField({ passwordHidden, inputRef }) {
   )
 }
 
-function SignupRepeatPasswordField({ passwordHidden, inputRef }) {
+function SignupRepeatPasswordField({
+  passwordHidden,
+  inputRef
+}: {
+  passwordHidden: boolean
+  inputRef: React.Ref<any>
+}) {
   return (
     <StyledPasswordTextField
       variant="outlined"

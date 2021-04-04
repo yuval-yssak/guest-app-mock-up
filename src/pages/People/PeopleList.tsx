@@ -1,7 +1,7 @@
 // @ts-check
 import React from 'react'
 import styled from 'styled-components'
-import { XGrid } from '@material-ui/x-grid'
+import { XGrid, GridRowParams } from '@material-ui/x-grid'
 import { useMst } from '../../models/reactHook'
 
 const Heading = styled.h2`
@@ -103,19 +103,10 @@ const StyledXGrid = styled(XGrid)`
   }
 `
 
-/**
- *
- * @param {{filter: string}} props
- */
-function PeopleList({ filter }) {
+function PeopleList({ filter }: { filter?: string }) {
   const store = useMst()
 
-  /**
-   *
-   * @param {import('@material-ui/x-grid').GridRowParams} param
-   * @param {React.MouseEvent} event
-   */
-  function rowClick(param, event) {
+  function rowClick(param: GridRowParams, event: React.MouseEvent) {
     console.log('people page', param.id.toString())
     store.view.openPeoplePage(param.id.toString())
   }

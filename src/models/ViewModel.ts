@@ -1,7 +1,9 @@
-import { types } from 'mobx-state-tree'
-import { match, compile } from 'path-to-regexp'
+import { types, Instance, SnapshotOut } from 'mobx-state-tree'
+import { match, compile, MatchResult } from 'path-to-regexp'
 
-const viewModel = types
+export interface ViewType extends Instance<typeof ViewModel> {}
+export interface ViewSnapshotType extends SnapshotOut<typeof ViewModel> {}
+const ViewModel = types
   .model('View', {
     page: types.union(
       types.literal(''),
@@ -24,7 +26,7 @@ const viewModel = types
       types.literal('/people/departing-today'),
       types.literal('/people/departing-tomorrow'),
       types.literal('/people/search'),
-      types.refinement(types.string, value => value.match(/^\/people\/\d+$/)),
+      types.refinement(types.string, value => !!value.match(/^\/people\/\d+$/)),
       types.literal('/settings')
     ),
     id: types.maybe(types.string)
@@ -57,7 +59,7 @@ const viewModel = types
     openActivitiesPage: () => (self.page = '/activities'),
     openAnnouncementsPage: () => (self.page = '/announcements'),
     openChatPage: () => (self.page = '/chat'),
-    openCustomPage(id) {
+    openCustomPage(id: string) {
       self.page = '/custom'
       self.id = id
     },
@@ -65,7 +67,7 @@ const viewModel = types
       self.page = '/'
       self.id = undefined
     },
-    openInfoSectionPage: id => {
+    openInfoSectionPage: (id?: string) => {
       self.page = '/info-section'
       self.id = id
     },
@@ -77,7 +79,7 @@ const viewModel = types
     },
     openManualSignupPage: () => (self.page = '/manualSignup'),
     openLoginPage: () => (self.page = '/login'),
-    openPeoplePage: subPage => {
+    openPeoplePage: (subPage?: string) => {
       console.log('in function people page', subPage)
       if (subPage?.match(/^\d+$/)) {
         console.log('hi')
@@ -95,11 +97,11 @@ const viewModel = types
     }
   }))
 
-export const View = types.optional(viewModel, getViewFromURL())
+export const CurrentViewModel = types.optional(ViewModel, getViewFromURL())
 
 function getViewFromURL() {
   const { pathname } = window.location
-  const matchCustom = match('/custom/:id')
+  const matchCustom = match<{ id: string }>('/custom/:id')
   const matchedCustom = matchCustom(pathname)
 
   if (matchedCustom) return { page: '/custom', id: matchedCustom.params.id }
@@ -108,10 +110,12 @@ function getViewFromURL() {
     '/info-section/:id1/:id2',
     '/info-section/:id1'
   ])
-  const matchedInfoSection = matchInfoSection(pathname)
+  const matchedInfoSection = matchInfoSection(pathname) as MatchResult
 
   const matchPeople = match('/people/:subpage')
-  const matchedPeople = matchPeople(pathname)
+  const matchedPeople = matchPeople(pathname) as MatchResult<{
+    subpage: string
+  }>
 
   if (matchedPeople) {
     if (matchedPeople.params.subpage?.match(/^\d+$/)) {
@@ -119,8 +123,8 @@ function getViewFromURL() {
     }
   }
 
-  const matchGeneral = match('/:page')
-  const matchedGeneral = matchGeneral(pathname)
+  const matchGeneral = match<{ page: string }>('/:page')
+  const matchedGeneral = matchGeneral(pathname) as MatchResult
   console.log(matchedInfoSection)
   console.log(matchedInfoSection.path)
   console.log('path is', matchedGeneral.path || matchedInfoSection.path)

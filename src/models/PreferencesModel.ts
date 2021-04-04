@@ -5,7 +5,7 @@ const PreferencesModel = types
     darkMode: types.boolean
   })
   .actions(self => ({
-    toggleDarkMode(dark) {
+    toggleDarkMode() {
       self.darkMode = !self.darkMode
     }
   }))

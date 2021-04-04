@@ -5,7 +5,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 import { useMst } from '../models/reactHook'
 
-function DarkModeSwitch({ className }) {
+function DarkModeSwitch({ className }: { className?: string }) {
   const { preferences } = useMst()
 
   return (

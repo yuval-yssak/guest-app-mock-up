@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MouseEventHandler } from 'react'
 import Drawer from '@material-ui/core/Drawer'
 import List from '@material-ui/core/List'
 import Badge from '@material-ui/core/Badge'
@@ -45,7 +45,13 @@ const StyledListItemIcon = styled(ListItemIcon).attrs({
   }
 `
 
-export default function TemporaryDrawer({ open, toggleDrawer }) {
+export default function TemporaryDrawer({
+  open,
+  toggleDrawer
+}: {
+  open: boolean
+  toggleDrawer: (open: boolean) => MouseEventHandler<HTMLElement>
+}) {
   const store = useMst()
   return (
     <div>

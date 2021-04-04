@@ -29,7 +29,7 @@ function ManualSignIn() {
   })
 
   const classes = useStyles()
-  function onSubmit(data) {
+  function onSubmit(data: { email: string; password: string }) {
     console.log('submitting', data)
   }
 

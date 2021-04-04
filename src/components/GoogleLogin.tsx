@@ -61,9 +61,9 @@ const TextContainer = styled.span`
   text-align: center;
   width: 180px;
 `
-function GoogleLogin({ onClick }: { onClick: () => void }) {
+function GoogleLogin({ onClick }: { onClick: React.MouseEventHandler }) {
   return (
-    <GSignInButton onClick={() => onClick()} href="#">
+    <GSignInButton onClick={onClick} href="#">
       <ContentWrapper>
         <LogoWrapper>
           <Img

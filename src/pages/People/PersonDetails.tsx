@@ -30,7 +30,7 @@ const Input = styled.input`
  *
  * @param {{id: number}} param0
  */
-function PersonDetails({ id }) {
+function PersonDetails({ id }: { id: number }) {
   const firstName = 'John'
   const lastName = 'Doe'
   const spiritualName = 'Narayan'
@@ -56,7 +56,7 @@ function PersonDetails({ id }) {
         <Input value={email} id="email" disabled></Input>
       </SectionContainer>
       <h2>Registrations</h2>
-      <SvgComponent focusable={true} />
+      <SvgComponent />
     </Container>
   )
 }
@@ -105,7 +105,7 @@ const Registration = styled.g`
   }
 `
 
-function SvgComponent(props) {
+function SvgComponent() {
   return (
     <Svg width="800" height="200" viewBox="0 0 800 200">
       <StyledG id="timeline">

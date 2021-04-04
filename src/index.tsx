@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { getSnapshot } from 'mobx-state-tree'
-import { Store } from './models/Store'
+import { RootStore } from './models/RootStore'
 import { Provider } from './models/reactHook'
 import App from './components/App'
 import onStart from './onStart'
@@ -9,9 +9,9 @@ import defaultStore from './defaultStore'
 
 const rootElement = document.getElementById('root')
 
-let rootStore = Store.create(defaultStore)
+let rootStore = RootStore.create(defaultStore as any)
 
-window.store = rootStore
+;(window as any).store = rootStore
 
 function render() {
   ReactDOM.render(
@@ -28,9 +28,11 @@ try {
   render()
 
   if (module.hot) {
-    module.hot.accept(['./models/Store'], () => {
+    module.hot.accept(['./models/RootStore'], () => {
       // Store definition changed, recreate a new one from old state
-      window.store = rootStore = Store.create(getSnapshot(rootStore))
+      ;(window as any).store = rootStore = RootStore.create(
+        getSnapshot(rootStore)
+      )
     })
 
     module.hot.accept(['./components/App'], () => {

@@ -1,11 +1,19 @@
-import { types, getRoot } from 'mobx-state-tree'
+import { types, getRoot, SnapshotIn, Instance } from 'mobx-state-tree'
 
-function compareByTimestamp(a, b) {
-  return b.timestamp - a.timestamp
+function compareByTimestamp(
+  a: AnnouncementInstanceType,
+  b: AnnouncementInstanceType
+) {
+  return b.timestamp.getTime() - a.timestamp.getTime()
 }
 
+export interface AnnouncementCreateType
+  extends SnapshotIn<typeof AnnouncementModel> {}
+export interface AnnouncementInstanceType
+  extends Instance<typeof AnnouncementModel> {}
+
 const AnnouncementModel = types
-  .model('Announcement', {
+  .model('BasicAnnouncementModel', {
     id: types.identifier,
     summary: types.string,
     details: types.string,
@@ -18,12 +26,12 @@ const AnnouncementModel = types
       self.status = self.status === 'read' ? 'unread' : 'read'
     }
   }))
-const AnnouncementsModel = types
-  .model('Announcements', {
+const AnnouncementsProps = types
+  .model({
     all: types.array(AnnouncementModel)
   })
   .views(self => ({
-    announcementById(id) {
+    announcementById(id: string) {
       return self.all.find(a => a.id === id)
     },
     get unread() {
@@ -33,25 +41,28 @@ const AnnouncementsModel = types
     },
     get read() {
       return self.all.filter(a => a.status === 'read').sort(compareByTimestamp)
-    },
+    }
+  }))
+
+  .views(self => ({
     get snackbar() {
       const importantUnread = self.unread.find(a => a.priority === 'high')
+      // @ts-ignore
       return importantUnread && getRoot(self).view.page !== '/announcements'
         ? importantUnread.summary
         : ''
     }
   }))
-  .actions(self => ({
-    add(announcement) {
-      self.all.push(announcement)
-    },
-    remove(id) {
-      const index = self.all.findIndex(a => a.id === id)
-      if (index > -1) self.all.splice(index, 1)
-    },
-    clearAll() {
-      self.all = []
-    }
-  }))
 
-export const Announcements = types.optional(AnnouncementsModel, {})
+export const AnnouncementsModel = AnnouncementsProps.actions(self => ({
+  add(announcement: AnnouncementCreateType) {
+    self.all.push(announcement)
+  },
+  remove(id: string) {
+    const index = self.all.findIndex(a => a.id === id)
+    if (index > -1) self.all.splice(index, 1)
+  },
+  clearAll() {
+    while (self.all.length) self.all.pop()
+  }
+}))

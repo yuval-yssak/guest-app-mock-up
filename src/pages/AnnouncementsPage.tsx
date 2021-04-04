@@ -5,7 +5,7 @@ import Accordion from '@material-ui/core/Accordion'
 import AccordionSummary from '@material-ui/core/AccordionSummary'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
 import AccordionActions from '@material-ui/core/AccordionActions'
-import Typography from '@material-ui/core/Typography'
+import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Button from '@material-ui/core/Button'
 import FlagIcon from '@material-ui/icons/Flag'
@@ -15,6 +15,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import { useMst } from '../models/reactHook'
 import dayjs from 'dayjs'
+import { RootStoreType } from '../models/RootStore'
+import { AnnouncementInstanceType } from '../models/AnnouncementsModel'
 
 const breakpointSplitHead = '(max-width: 45em)'
 
@@ -37,9 +39,9 @@ const ScrollablePageContentWrapper = styled(PageContentWrapper).attrs({
   }
 `
 
-const Section = styled.section.attrs(({ $type }) => ({
+const Section = styled.section.attrs(({ $type }: { $type: string }) => ({
   className: `${$type}-announcements`
-}))`
+}))<{ $type: string }>`
   padding: 1rem;
 
   && .unread-message-heading + .MuiAccordion-root,
@@ -56,13 +58,15 @@ const Section = styled.section.attrs(({ $type }) => ({
   }`}
 `
 
-const StyledAccordionSummary = styled(AccordionSummary)`
+const StyledAccordionSummary = styled(AccordionSummary)<{ $expanded: boolean }>`
   & .announcement-summary {
     ${({ $expanded }) => $expanded && `font-weight:500;`}
   }
 `
 
-const MessageTypeHeading = styled(Typography)`
+const MessageTypeHeading = styled(Typography)<
+  TypographyProps<'h2', { component: 'h2' }>
+>`
   && {
     line-height: 1;
     font-weight: 500;
@@ -105,7 +109,7 @@ const ReadSectionHeading = styled(SectionHeading).attrs({
 
 const AnnouncementHead = styled.div.attrs({
   className: 'announcement-head'
-})`
+})<{ $priority: 'high' | 'low' }>`
   display: grid;
   grid-template-columns: minmax(min-content, 1fr) max-content ${({
       $priority
@@ -139,7 +143,7 @@ const HighPriorityContainer = styled.div`
   display: flex;
 `
 
-function HighPriority({ withAnnotation }) {
+function HighPriority({ withAnnotation }: { withAnnotation: boolean }) {
   return (
     <HighPriorityContainer>
       <FlagIcon color="primary" />
@@ -148,29 +152,43 @@ function HighPriority({ withAnnotation }) {
   )
 }
 
-const RespondButton = styled(Button).attrs(({ store, announcement }) => ({
-  variant: 'outlined',
-  size: 'small',
-  onClick: () => {
-    store.view.openChatPage()
-    if (announcement.status === 'unread') announcement.toggle()
-  },
-  children: 'Respond'
-}))``
+const RespondButton = styled(Button).attrs(
+  ({
+    store,
+    announcement
+  }: {
+    store: RootStoreType
+    announcement: AnnouncementInstanceType
+  }) => ({
+    variant: 'outlined',
+    size: 'small',
+    onClick: () => {
+      store.view.openChatPage()
+      if (announcement.status === 'unread') announcement.toggle()
+    },
+    children: 'Respond'
+  })
+)<{ announcement: AnnouncementInstanceType; store: RootStoreType }>``
 
-const ConfirmButton = styled(Button).attrs(({ announcement }) => ({
-  variant: 'outlined',
-  size: 'small',
-  color: 'primary',
-  onClick: () => announcement.toggle(),
-  children: 'Confirm as read'
-}))`
+const ConfirmButton = styled(Button).attrs(
+  ({ announcement }: { announcement: AnnouncementInstanceType }) => ({
+    variant: 'outlined',
+    size: 'small',
+    color: 'primary',
+    onClick: () => announcement.toggle(),
+    children: 'Confirm as read'
+  })
+)<{ announcement: AnnouncementInstanceType }>`
   && {
     font-weight: 400;
   }
 `
 
-function Announcement({ announcement }) {
+function Announcement({
+  announcement
+}: {
+  announcement: AnnouncementInstanceType
+}) {
   const { id, summary, details, timestamp, status, priority } = announcement
   const [expanded, setExpanded] = React.useState(status === 'unread')
   const smallScreen = useMediaQuery('(max-width: 23.125em)')
@@ -209,7 +227,7 @@ function Announcement({ announcement }) {
   )
 }
 
-const getAnnouncementComponent = announcement => (
+const getAnnouncementComponent = (announcement: AnnouncementInstanceType) => (
   <Announcement announcement={announcement} key={announcement.id} />
 )
 
@@ -225,7 +243,12 @@ const EmptyPagePaper = styled(Paper)`
   padding: 3rem;
 `
 
-function renderInfo(priority, status, smallScreen, timestamp) {
+function renderInfo(
+  priority: AnnouncementInstanceType['priority'],
+  status: AnnouncementInstanceType['status'],
+  smallScreen: boolean,
+  timestamp: AnnouncementInstanceType['timestamp']
+) {
   return (
     <>
       {priority === 'high' && (

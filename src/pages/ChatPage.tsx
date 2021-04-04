@@ -11,6 +11,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useMst } from '../models/reactHook'
 import PageContentWrapper from '../components/PageContentWrapper'
 import dayjs from 'dayjs'
+import { ChatType, UserMessagesType } from '../models/ChatModel'
 
 // below this breakpoint the avatar enters the message frame
 const breakpointFullLine = '(max-width: 37.5em)'
@@ -28,10 +29,10 @@ const maximumChatMessageWidth = '60rem'
 
 const ChatPageContainer = styled(PageContentWrapper).attrs({
   className: 'chat-page-container'
-})`
+})<{ staffView: boolean }>`
   overflow: hidden; // scrolling is only in the inner messages container
-  grid-template-columns: ${({ staffView }) =>
-    staffView
+  grid-template-columns: ${props =>
+    props.staffView
       ? `calc(
           (
             100vw - clamp(
@@ -49,10 +50,12 @@ const ChatPageContainer = styled(PageContentWrapper).attrs({
   }
 `
 
-const ChatContainer = styled.div.attrs({ className: 'chat-container' })`
+const ChatContainer = styled.div.attrs({ className: 'chat-container' })<{
+  staffView: boolean
+}>`
   display: grid;
   grid-template-rows: 1fr max-content; // keep the user input at the bottom
-  ${({ staffView }) => staffView && `padding-left: 2.5rem;`}
+  ${props => props.staffView && `padding-left: 2.5rem;`}
 
   // scrolling is only in the inner messages container
   overflow: hidden;
@@ -144,7 +147,7 @@ const StyledUserName = styled(Typography)`
   }
 `
 
-function User({ user }) {
+function User({ user }: { user: UserMessagesType }) {
   return (
     <StyledUser>
       <StyledUserAvatar src={user.person.imageSrc} aria-hidden />
@@ -169,7 +172,7 @@ function UsersPane() {
   const store = useMst()
   return (
     <UsersPaneContaner>
-      {store.chat.usersMessages.map(user => (
+      {store.chat.usersMessages?.map(user => (
         <User key={user.person.id} user={user} />
       ))}
     </UsersPaneContaner>
@@ -289,10 +292,10 @@ const DayLabelText = styled(Typography).attrs({ variant: 'h6' })`
   }
 `
 
-const StickyDayLabel = styled.div.attrs(({ day }) => ({
+const StickyDayLabel = styled.div.attrs(({ day }: { day: string }) => ({
   className: 'day-label',
   children: <DayLabelText>{day}</DayLabelText>
-}))`
+}))<{ day: string }>`
   justify-self: center;
   padding: 0.1rem;
   border-radius: 1.1rem;
@@ -401,7 +404,7 @@ const StyledStaffAvatar = styled(StyledAvatar).attrs({
   }
 `
 
-const GuestAvatar = ({ src, name }) => {
+const GuestAvatar = ({ src, name }: { src: string; name: string }) => {
   if (src) return <StyledGuestAvatar alt="user avatar" src={src} />
   else
     return (
@@ -411,7 +414,7 @@ const GuestAvatar = ({ src, name }) => {
     )
 }
 
-const StaffAvatar = ({ src, name }) => {
+const StaffAvatar = ({ src, name }: { src: string; name: string }) => {
   if (src) return <StyledStaffAvatar alt={`${name} photo`} src={src} />
   else
     return (
@@ -421,7 +424,7 @@ const StaffAvatar = ({ src, name }) => {
     )
 }
 
-function getNameInitials(name) {
+function getNameInitials(name: string) {
   return name
     .split(/\s/)
     .map(word => word[0])
@@ -476,14 +479,24 @@ const StaffMessageHead = styled(MessageHead)`
   }
 `
 
-const GuestMessage = ({ children, className, name, src, timeSignature }) => {
+const GuestMessage = ({
+  children,
+  name,
+  src,
+  timeSignature
+}: {
+  children: React.ReactNode
+  name: string
+  src: string
+  timeSignature: string
+}) => {
   const avatarInFrame = useMediaQuery(`${breakpointFullLine}`)
 
   return (
     <GuestMessageContainer>
       {avatarInFrame ? (
         <>
-          <GuestMessageFrame className={className}>
+          <GuestMessageFrame>
             <GuestMessageHead>
               <GuestAvatar src={src} name={name} />
               <Typography className="message-name"></Typography>
@@ -496,7 +509,7 @@ const GuestMessage = ({ children, className, name, src, timeSignature }) => {
         </>
       ) : (
         <>
-          <GuestMessageFrame className={className}>
+          <GuestMessageFrame>
             <GuestMessageHead>
               <Typography className="message-name"></Typography>
               <Typography className="message-time" variant="body2">
@@ -512,14 +525,24 @@ const GuestMessage = ({ children, className, name, src, timeSignature }) => {
   )
 }
 
-const StaffMessage = ({ children, className, name, src, timeSignature }) => {
+const StaffMessage = ({
+  children,
+  name,
+  src,
+  timeSignature
+}: {
+  children: React.ReactNode
+  name: string
+  src: string
+  timeSignature: string
+}) => {
   const showAvatarInFrame = useMediaQuery(`${breakpointFullLine}`)
 
   return (
     <StaffMessageContainer>
       {showAvatarInFrame ? (
         <>
-          <StaffMessageFrame className={className}>
+          <StaffMessageFrame>
             <StaffMessageHead>
               <StaffAvatar name={name} src={src} />
               <Typography className="message-name">{name}</Typography>
@@ -533,7 +556,7 @@ const StaffMessage = ({ children, className, name, src, timeSignature }) => {
       ) : (
         <>
           <StaffAvatar name={name} src={src} />
-          <StaffMessageFrame className={className}>
+          <StaffMessageFrame>
             <GuestMessageHead>
               <Typography className="message-name">{name}</Typography>
               <Typography className="message-time" variant="body2">
@@ -552,13 +575,15 @@ function ChatPage() {
   const store = useMst()
   const [userInput, setUserInput] = React.useState('')
 
-  const dividerRef = React.useRef()
-  const messagesParentRef = React.useRef()
-  const userInputRef = React.useRef()
+  const dividerRef = React.createRef<HTMLDivElement>()
+  const messagesParentRef = React.createRef<HTMLDivElement>()
+  const userInputRef = React.createRef<HTMLDivElement>()
 
   // build message react components
   const messagesInDays = store.chat.orderedMessages
-    .reduce((allComponents, message) => {
+    .reduce<
+      { date: string; messages: typeof store.chat.orderedMessages[number][] }[]
+    >((allComponents, message) => {
       const shortDate = getUserFriendlyDate(message)
 
       // first iteration - return short only date and first message
@@ -589,11 +614,11 @@ function ChatPage() {
     .map(date => {
       const messages = date.messages.map(message => {
         const props = {
-          key: message.timestamp,
+          key: message.timestamp.toString(),
           src: message.person.imageSrc,
           name: message.person.personName,
           timeSignature: message.timeSignature,
-          children: message.content
+          children: <>{message.content}</>
         }
 
         return message.messageSide === 'staff' ? (
@@ -638,14 +663,19 @@ function ChatPage() {
           ?.scrollIntoView({ behavior: 'smooth' })
       }
     }, 0)
-  }, [store.chat.unreadCount, store.chat.messages.length])
+  }, [
+    store.chat.unreadCount,
+    store.chat.messages.length,
+    dividerRef,
+    messagesParentRef
+  ])
 
   function submitMessage() {
     if (!userInput.trim()) return
 
     store.chat.insertGuestMessage({
       messageSide: 'guest',
-      person: getSnapshot(store.loggedInUser),
+      person: getSnapshot(store.loggedInUser!)!, // loggedInUser can't be null on Chat page.
       timestamp: new Date(),
       content: userInput
     })
@@ -669,7 +699,7 @@ function ChatPage() {
     <ChatPageContainer staffView={!!store.chat.usersMessages}>
       {store.chat.usersMessages && <UsersPane />}
       <ChatContainer staffView={!!store.chat.usersMessages}>
-        <MessagesScrollable tabIndex="0" ref={messagesParentRef}>
+        <MessagesScrollable tabIndex={0} ref={messagesParentRef}>
           {messagesInDays}
         </MessagesScrollable>
         <UserInputSection>
@@ -694,7 +724,7 @@ function ChatPage() {
   )
 }
 
-function getUserFriendlyDate(message) {
+function getUserFriendlyDate(message: ChatType['orderedMessages'][number]) {
   return dayjs(message.timestamp).startOf('day').isSame(dayjs().startOf('day'))
     ? 'Today'
     : dayjs(message.timestamp)

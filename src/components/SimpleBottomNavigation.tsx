@@ -38,7 +38,7 @@ const StyledBottomNavigation = styled(BottomNavigation)`
   }
 `
 
-function getNavigationIndexBasedOnPage(page) {
+function getNavigationIndexBasedOnPage(page: string) {
   switch (page) {
     case '/announcements':
       return 0
@@ -51,7 +51,7 @@ function getNavigationIndexBasedOnPage(page) {
   }
 }
 
-function MainBottomNavigation({ className }) {
+function MainBottomNavigation({ className }: { className?: string }) {
   const store = useMst()
   const smallDeviceHeight = useMediaQuery(breakpointSmallHeight)
 
