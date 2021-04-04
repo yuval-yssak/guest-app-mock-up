@@ -11,18 +11,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useMst } from '../models/reactHook'
 import PageContentWrapper from '../components/PageContentWrapper'
 import dayjs from 'dayjs'
-import { LoremIpsum } from 'lorem-ipsum'
-
-const lorem = new LoremIpsum({
-  sentencesPerParagraph: {
-    max: 8,
-    min: 4
-  },
-  wordsPerSentence: {
-    max: 8,
-    min: 3
-  }
-})
 
 // below this breakpoint the avatar enters the message frame
 const breakpointFullLine = '(max-width: 37.5em)'
@@ -64,11 +52,13 @@ const ChatPageContainer = styled(PageContentWrapper).attrs({
 const ChatContainer = styled.div.attrs({ className: 'chat-container' })`
   display: grid;
   grid-template-rows: 1fr max-content; // keep the user input at the bottom
+  ${({ staffView }) => staffView && `padding-left: 2.5rem;`}
 
   // scrolling is only in the inner messages container
   overflow: hidden;
   height: 100%;
 
+  // set widths for children
   & > * {
     ${({ staffView }) =>
       !staffView
@@ -111,42 +101,80 @@ const UsersPaneContaner = styled.div`
       ) / 2
   );
   padding-right: 0.5rem;
+`
 
-  & > div {
-    height: 4.5rem;
-    background-color: ${({ theme: { palette } }) =>
-      palette.type === 'dark' ? palette.grey['700'] : palette.grey['50']};
-    border-top: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    display: grid;
-  }
+const StyledUser = styled.div`
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 1rem;
+  align-items: center;
+  padding-left: 0.5rem;
+  cursor: pointer;
 
-  & > div:last-child {
+  height: 4.5rem;
+  background-color: ${({ theme: { palette } }) =>
+    palette.type === 'dark' ? palette.grey['700'] : palette.grey['50']};
+  color: ${({ theme: { palette } }) =>
+    palette.type === 'dark' ? '#fff' : palette.primary.contrastText};
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  display: grid;
+
+  &:last-child {
     border-bottom: 1px solid #ddd;
   }
 
-  & > div:hover {
+  &:hover {
     background-color: #ddd;
-    font-weight: 400;
   }
 `
 
-const UsersPane = React.memo(function () {
+const StyledUserAvatar = styled.img`
+  height: 4rem;
+  width: 4rem;
+  border-radius: 50%;
+  grid-row: 1/-1;
+`
+
+const StyledUserName = styled(Typography)`
+  && {
+    font-weight: 500;
+  }
+`
+
+function User({ user }) {
+  return (
+    <StyledUser>
+      <StyledUserAvatar src={user.person.imageSrc} aria-hidden />
+      <StyledUserName>{user.person.personName}</StyledUserName>
+      {user.messages.length ? (
+        <>
+          <Typography>
+            {user.messages[user.messages.length - 1].person.personName}:{' '}
+          </Typography>
+          <Typography>
+            {user.messages[user.messages.length - 1].content.slice(0, 10)}
+          </Typography>
+        </>
+      ) : (
+        <></>
+      )}
+    </StyledUser>
+  )
+}
+
+function UsersPane() {
+  const store = useMst()
   return (
     <UsersPaneContaner>
-      {new Array(20).fill(null).map((_, i) => (
-        <div key={i}>
-          {lorem
-            .generateWords(2)
-            .split(/\s/)
-            .map(n => n[0].toUpperCase() + n.slice(1))
-            .join(' ')}
-        </div>
+      {store.chat.usersMessages.map(user => (
+        <User key={user.person.id} user={user} />
       ))}
     </UsersPaneContaner>
   )
-})
+}
 
 const messageScrollableColumnGridGap = '0.5rem'
 const MessagesScrollable = styled.div.attrs({
@@ -178,7 +206,6 @@ const DateMessages = styled.div.attrs({
   align-items: end;
   grid-column-gap: ${messageScrollableColumnGridGap};
   grid-row-gap: 2rem;
-  padding-left: 2.5rem;
 
   @media (max-width: 52em) {
     grid-template-columns: repeat(

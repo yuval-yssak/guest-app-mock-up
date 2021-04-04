@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { now } from 'mobx-utils'
 
 const MessagePerson = types.model('MessagePerson', {
+  id: types.identifier,
   personName: types.string,
   imageSrc: types.string
 })
@@ -32,9 +33,12 @@ const ChatModel = types
   .views(self => ({
     get displayMessages() {
       function displayTime(timestamp) {
-        if (dayjs(timestamp).year() !== dayjs(now()).year())
+        // triggers a rerender of the entire chat page once a minute
+        if (dayjs(timestamp).year() !== dayjs(now(60000)).year())
           return dayjs(timestamp).format('MMM D, YYYY HH:mm')
-        if (dayjs(now()).subtract(1, 'day').startOf('day').isAfter(timestamp))
+        if (
+          dayjs(now(60000)).subtract(1, 'day').startOf('day').isAfter(timestamp)
+        )
           return dayjs(timestamp).format('MMM D HH:mm')
         return dayjs(timestamp).format('HH:mm')
       }

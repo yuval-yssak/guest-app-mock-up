@@ -2,12 +2,14 @@ import dayjs from 'dayjs'
 
 const staff1 = {
   type: 'staff',
+  id: '3',
   personName: 'Pranava Chaitanya',
   imageSrc: '/images/pranava-chaitanya.jpg'
 }
 
 const staff2 = {
   type: 'staff',
+  id: '4',
   personName: 'Iswara Chaitanya',
   imageSrc: '/images/iswara-chaitanya.jpg'
 }
@@ -143,6 +145,7 @@ const defaultStore = {
     usersMessages: [
       {
         person: {
+          id: '1',
           personName: 'Jenny',
           imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg'
         },
@@ -208,7 +211,7 @@ const defaultStore = {
       },
       {
         messageSide: 'staff',
-        person: { personName: 'Bhargavi', imageSrc: '' },
+        person: { id: '2', personName: 'Bhargavi', imageSrc: '' },
         timestamp: dayjs().subtract(44, 'minutes').toDate(),
         content:
           'Necessitatibus iste officia nostrum ipsa amet vitae natus debitis sapiente in, incidunt illum reiciendis adipisci at consequuntur fugit nulla iure a ratione! Earum consequuntur molestias asperiores iusto voluptatibus rerum in.'
