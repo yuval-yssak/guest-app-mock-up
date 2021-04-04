@@ -35,7 +35,11 @@ const scaleFrom0 = keyframes`
 const Background = styled.div.attrs({ className: 'background' })`
   height: 100%;
   position: relative;
-  overflow-y: hidden;
+
+  // limit app structure to one page on screens
+  @media only screen {
+    overflow-y: hidden;
+  }
 
   &::before {
     content: '';
