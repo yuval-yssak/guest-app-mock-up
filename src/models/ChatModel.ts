@@ -1,20 +1,20 @@
 import { Instance, types } from 'mobx-state-tree'
 import dayjs from 'dayjs'
 import { now } from 'mobx-utils'
-import { PersonModel } from './PersonModel'
+import { UserModel } from './UserModel'
 
 export interface MessageType extends Instance<typeof Message> {}
 
 const Message = types.model('Message', {
   messageSide: types.union(types.literal('guest'), types.literal('staff')),
-  person: PersonModel,
+  user: UserModel,
   timestamp: types.Date,
   content: types.string
 })
 
 export interface UserMessagesType extends Instance<typeof UserMessagesModel> {}
 const UserMessagesModel = types.model('User Messages', {
-  person: PersonModel,
+  user: UserModel,
   messages: types.array(Message),
   lastReadTimestamp: types.optional(types.Date, new Date(0))
 })
@@ -22,10 +22,10 @@ const UserMessagesModel = types.model('User Messages', {
 export interface ChatType extends Instance<typeof ChatModel> {}
 const ChatModel = types
   .model('Chat', {
-    messages: types.array(Message),
+    withSelfMessages: types.array(Message),
     // default date to Unix epoch, so everything is "unread" by default
     lastReadTimestamp: types.optional(types.Date, new Date(0)),
-    usersMessages: types.maybeNull(types.array(UserMessagesModel))
+    withUsers: types.maybeNull(types.array(UserMessagesModel))
   })
   .views(self => ({
     get displayMessages() {
@@ -40,7 +40,7 @@ const ChatModel = types
         return dayjs(timestamp).format('HH:mm')
       }
 
-      return self.messages.map(message => ({
+      return self.withSelfMessages.map(message => ({
         ...message,
         timeSignature: displayTime(message.timestamp)
       }))
@@ -53,7 +53,7 @@ const ChatModel = types
         .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
     },
     get unreadCount() {
-      return self.messages.reduce(
+      return self.withSelfMessages.reduce(
         (count, message) =>
           count + (message.timestamp > self.lastReadTimestamp ? 1 : 0),
         0
@@ -62,12 +62,12 @@ const ChatModel = types
   }))
   .actions(self => ({
     insertGuestMessage(message: MessageType) {
-      self.messages.push(message)
+      self.withSelfMessages.push(message)
       self.lastReadTimestamp = new Date()
     },
     insertStaffMessage(message: MessageType) {
-      self.messages.push(message)
+      self.withSelfMessages.push(message)
     }
   }))
 
-export const Chat = types.optional(ChatModel, { messages: [] })
+export const Chat = types.optional(ChatModel, { withSelfMessages: [] })

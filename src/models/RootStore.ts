@@ -3,7 +3,7 @@ import { CurrentViewModel } from './ViewModel'
 import { Preferences } from './PreferencesModel'
 import { AnnouncementsModel } from './AnnouncementsModel'
 import { Chat } from './ChatModel'
-import { LoggedInUserModel } from './LoggedInUserModel'
+import { UserModel } from './UserModel'
 
 export interface RootStoreType extends Instance<typeof RootStore> {}
 export interface RootStoreSnapshotIn extends SnapshotIn<typeof RootStore> {}
@@ -12,5 +12,6 @@ export const RootStore = types.model('rootStore', {
   preferences: Preferences,
   announcements: types.optional(AnnouncementsModel, {}),
   chat: Chat,
-  loggedInUser: types.maybeNull(LoggedInUserModel)
+  loggedInUser: types.maybeNull(UserModel),
+  users: types.array(UserModel)
 })

@@ -1,25 +1,38 @@
 import dayjs from 'dayjs'
+import { UserType } from './models/UserModel'
 import { RootStoreSnapshotIn } from './models/RootStore'
 
-const staff1: RootStoreSnapshotIn['loggedInUser'] = {
-  id: '1',
-  type: 'staff',
-  personName: 'Pranava Chaitanya',
-  imageSrc: '/images/pranava-chaitanya.jpg'
-}
-
-const staff2 = {
-  id: '2',
-  type: 'staff',
-  personName: 'Iswara Chaitanya',
-  imageSrc: '/images/iswara-chaitanya.jpg'
-}
-
-const loggedInUser = staff1
+const users: UserType[] = [
+  {
+    id: '1',
+    type: 'staff',
+    personName: 'Pranava Chaitanya',
+    imageSrc: '/images/pranava-chaitanya.jpg'
+  },
+  {
+    id: '2',
+    type: 'staff',
+    personName: 'Iswara Chaitanya',
+    imageSrc: '/images/iswara-chaitanya.jpg'
+  },
+  {
+    id: '3',
+    personName: 'Jenny',
+    imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg',
+    type: 'guest'
+  },
+  {
+    id: '2',
+    personName: 'Bhargavi',
+    imageSrc: '',
+    type: 'staff'
+  }
+]
+const loggedInUser = users.find(({ id }) => id === '2')!
 
 const defaultStore: RootStoreSnapshotIn = {
-  // view: { page: '/', id: undefined },
-  loggedInUser: staff1,
+  users,
+  loggedInUser,
   announcements: {
     all: [
       {
@@ -143,24 +156,36 @@ const defaultStore: RootStoreSnapshotIn = {
     ]
   },
   chat: {
-    usersMessages: [
+    withUsers: [
       {
-        person: {
-          id: '1',
-          personName: 'Jenny',
-          imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg'
-        },
-        messages: []
+        user: users[2],
+        messages: [
+          {
+            timestamp: dayjs().subtract(2, 'hours').add(12, 'minutes').toDate(),
+            content:
+              'Mollitia non quia earum praesentium numquam quasi maxime debitis?',
+            messageSide: 'guest',
+            user: users[0]
+          }
+        ]
+      },
+      {
+        user: users[3],
+        messages: [
+          {
+            timestamp: dayjs().subtract(2, 'hours').add(12, 'minutes').toDate(),
+            content:
+              'Mollitia non quia earum praesentium numquam quasi maxime debitis?',
+            messageSide: 'guest',
+            user: users[1]
+          }
+        ]
       }
     ],
-    messages: [
+    withSelfMessages: [
       {
         messageSide: 'staff',
-        person: {
-          id: '1',
-          imageSrc: staff1.imageSrc,
-          personName: staff1.personName
-        },
+        user: users[0],
         timestamp: dayjs()
           .subtract(2, 'years')
           .add(8, 'months')
@@ -170,53 +195,53 @@ const defaultStore: RootStoreSnapshotIn = {
       },
       {
         messageSide: 'staff',
-        person: staff2,
+        user: users[1],
         timestamp: dayjs().subtract(2, 'weeks').toDate(),
         content:
           'Perspiciatis ipsa repellendus, numquam temporibus vitae amet dolorum! A cupiditate voluptas quasi laboriosam!'
       },
       {
         messageSide: 'guest',
-        person: loggedInUser,
+        user: loggedInUser,
         timestamp: dayjs().subtract(3, 'days').toDate(),
         content:
           'Aut fugiat voluptate alias porro dolor sunt placeat! Incidunt hic odit quo'
       },
       {
         messageSide: 'staff',
-        person: staff1,
+        user: users[0],
         timestamp: dayjs().subtract(2, 'days').toDate(),
         content: 'Optio accusantium quisquam omnis, assumenda esse'
       },
       {
         messageSide: 'guest',
-        person: loggedInUser,
+        user: loggedInUser,
         timestamp: dayjs().subtract(1, 'day').toDate(),
         content: 'Veritatis, aut corporis.'
       },
       {
         messageSide: 'staff',
-        person: staff1,
+        user: users[0],
         timestamp: dayjs().subtract(10, 'hours').minute(5).second(30).toDate(),
         content: 'Lorem ipsum dolor sit'
       },
       {
         messageSide: 'guest',
-        person: loggedInUser,
+        user: loggedInUser,
         timestamp: dayjs().subtract(10, 'hours').minute(6).second(3).toDate(),
         content:
           'Inventore vitae doloremque consectetur incidunt fugiat dolore nemo pariatur ut harum dolorem eveniet non officiis voluptatum qui, temporibus quaerat accusamus blanditiis expedita perferendis eum tempora dolor animi labore! Ad reiciendis voluptas similique quo magnam nostrum quis corporis eius facere est debitis mollitia alias, ex reprehenderit dicta vitae, amet numquam repellendus iste. Rem minima itaque non, autem necessitatibus veniam recusandae deserunt fugit, excepturi est debitis quas omnis accusantium tenetur amet illum maxime quaerat consequatur? Similique esse natus eligendi dolorem id! Harum!'
       },
       {
         messageSide: 'staff',
-        person: staff1,
+        user: users[0],
         timestamp: dayjs().subtract(8, 'hours').minute(5).second(30).toDate(),
         content:
           'Ratione, officia voluptates adipisci quis vero debitis! Illo, temporibus facere saepe officia voluptatum soluta dolor enim nesciunt aliquam exercitationem. Eum saepe adipisci nemo vero ipsum totam minima deleniti exercitationem, nam eveniet debitis voluptates corporis officia. Amet at dolorum sapiente, nostrum doloribus sint tempore quisquam molestiae.'
       },
       {
         messageSide: 'staff',
-        person: { id: '2', personName: 'Bhargavi', imageSrc: '' },
+        user: users[3],
         timestamp: dayjs().subtract(44, 'minutes').toDate(),
         content:
           'Necessitatibus iste officia nostrum ipsa amet vitae natus debitis sapiente in, incidunt illum reiciendis adipisci at consequuntur fugit nulla iure a ratione! Earum consequuntur molestias asperiores iusto voluptatibus rerum in.'

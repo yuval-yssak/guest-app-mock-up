@@ -207,10 +207,11 @@ export default function ProminentAppBar({
           onClick={() => {
             store.chat.insertStaffMessage({
               messageSide: 'staff',
-              person: {
+              user: {
                 id: '1',
                 personName: 'Pranava Chaitanya',
-                imageSrc: '/images/pranava-chaitanya.jpg'
+                imageSrc: '/images/pranava-chaitanya.jpg',
+                type: 'staff'
               },
               timestamp: new Date(),
               content: lorem.generateSentences(
@@ -234,7 +235,7 @@ export default function ProminentAppBar({
                 id: '-1'
               },
               view: store.view,
-              chat: { ...defaultStore.chat, usersMessages: null }
+              chat: { ...defaultStore.chat, withUsers: null }
             })
             handleMoreClose()
           }}

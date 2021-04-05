@@ -150,12 +150,12 @@ const StyledUserName = styled(Typography)`
 function User({ user }: { user: UserMessagesType }) {
   return (
     <StyledUser>
-      <StyledUserAvatar src={user.person.imageSrc} aria-hidden />
-      <StyledUserName>{user.person.personName}</StyledUserName>
+      <StyledUserAvatar src={user.user.imageSrc} aria-hidden />
+      <StyledUserName>{user.user.personName}</StyledUserName>
       {user.messages.length ? (
         <>
           <Typography>
-            {user.messages[user.messages.length - 1].person.personName}:{' '}
+            {user.messages[user.messages.length - 1].user.personName}:{' '}
           </Typography>
           <Typography>
             {user.messages[user.messages.length - 1].content.slice(0, 10)}
@@ -172,8 +172,8 @@ function UsersPane() {
   const store = useMst()
   return (
     <UsersPaneContaner>
-      {store.chat.usersMessages?.map(user => (
-        <User key={user.person.id} user={user} />
+      {store.chat.withUsers?.map(user => (
+        <User key={user.user.id} user={user} />
       ))}
     </UsersPaneContaner>
   )
@@ -615,8 +615,8 @@ function ChatPage() {
       const messages = date.messages.map(message => {
         const props = {
           key: message.timestamp.toString(),
-          src: message.person.imageSrc,
-          name: message.person.personName,
+          src: message.user.imageSrc,
+          name: message.user.personName,
           timeSignature: message.timeSignature,
           children: <>{message.content}</>
         }
@@ -665,7 +665,7 @@ function ChatPage() {
     }, 0)
   }, [
     store.chat.unreadCount,
-    store.chat.messages.length,
+    store.chat.withSelfMessages.length,
     dividerRef,
     messagesParentRef
   ])
@@ -675,7 +675,7 @@ function ChatPage() {
 
     store.chat.insertGuestMessage({
       messageSide: 'guest',
-      person: getSnapshot(store.loggedInUser!)!, // loggedInUser can't be null on Chat page.
+      user: getSnapshot(store.loggedInUser!)!, // loggedInUser can't be null on Chat page.
       timestamp: new Date(),
       content: userInput
     })
@@ -696,9 +696,9 @@ function ChatPage() {
   if (!store.loggedInUser) return <h1>Not Logged In</h1>
 
   return (
-    <ChatPageContainer staffView={!!store.chat.usersMessages}>
-      {store.chat.usersMessages && <UsersPane />}
-      <ChatContainer staffView={!!store.chat.usersMessages}>
+    <ChatPageContainer staffView={!!store.chat.withUsers}>
+      {store.chat.withUsers && <UsersPane />}
+      <ChatContainer staffView={!!store.chat.withUsers}>
         <MessagesScrollable tabIndex={0} ref={messagesParentRef}>
           {messagesInDays}
         </MessagesScrollable>
