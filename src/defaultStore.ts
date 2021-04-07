@@ -1,34 +1,54 @@
 import dayjs from 'dayjs'
 import { UserType } from './models/UserModel'
 import { RootStoreSnapshotIn } from './models/RootStore'
+import { LoremIpsum } from 'lorem-ipsum'
+import { MessageCreationType } from './models/ChatModel'
 
-const users: UserType[] = [
+const lorem = new LoremIpsum({
+  sentencesPerParagraph: {
+    max: 8,
+    min: 4
+  },
+  wordsPerSentence: {
+    max: 8,
+    min: 3
+  }
+})
+
+export const users: UserType[] = [
   {
-    id: '1',
+    id: 1,
     type: 'staff',
     personName: 'Pranava Chaitanya',
     imageSrc: '/images/pranava-chaitanya.jpg'
   },
   {
-    id: '2',
+    id: 2,
     type: 'staff',
     personName: 'Iswara Chaitanya',
     imageSrc: '/images/iswara-chaitanya.jpg'
   },
   {
-    id: '3',
+    id: 3,
     personName: 'Jenny',
     imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg',
     type: 'guest'
   },
   {
-    id: '2',
+    id: 4,
     personName: 'Bhargavi',
     imageSrc: '',
     type: 'staff'
+  },
+  {
+    id: 5,
+    personName: 'Richard Barrett',
+    imageSrc: '/images/32.jpg',
+    type: 'guest'
   }
 ]
-const loggedInUser = users.find(({ id }) => id === '2')!
+
+const loggedInUser = users.find(({ id }) => id === 1)!
 
 const defaultStore: RootStoreSnapshotIn = {
   users,
@@ -155,105 +175,47 @@ const defaultStore: RootStoreSnapshotIn = {
       }
     ]
   },
-  chat: {
-    withUsers: [
-      {
-        user: users[2],
-        messages: [
-          {
-            timestamp: dayjs().subtract(2, 'hours').add(12, 'minutes').toDate(),
-            content:
-              'Mollitia non quia earum praesentium numquam quasi maxime debitis?',
-            messageSide: 'guest',
-            user: users[0]
+  chats: {
+    withUsers: users
+      .filter(user => user !== loggedInUser)
+      .map(user => {
+        const messages = generateRandomMessages()
+
+        return {
+          user,
+          chat: {
+            messages,
+            lastReadTimestamp: randomlyChooseLastReadMessageTime(messages)
           }
-        ]
-      },
-      {
-        user: users[3],
-        messages: [
-          {
-            timestamp: dayjs().subtract(2, 'hours').add(12, 'minutes').toDate(),
-            content:
-              'Mollitia non quia earum praesentium numquam quasi maxime debitis?',
-            messageSide: 'guest',
-            user: users[1]
-          }
-        ]
+        }
+      }),
+
+    withSelf: (() => {
+      const messages = generateRandomMessages()
+
+      return {
+        messages,
+        lastReadTimestamp: randomlyChooseLastReadMessageTime(messages)
       }
-    ],
-    withSelfMessages: [
-      {
-        messageSide: 'staff',
-        user: users[0],
-        timestamp: dayjs()
-          .subtract(2, 'years')
-          .add(8, 'months')
-          .add(3, 'days')
-          .toDate(),
-        content: 'Impedit aperiam labore aspernatur!'
-      },
-      {
-        messageSide: 'staff',
-        user: users[1],
-        timestamp: dayjs().subtract(2, 'weeks').toDate(),
-        content:
-          'Perspiciatis ipsa repellendus, numquam temporibus vitae amet dolorum! A cupiditate voluptas quasi laboriosam!'
-      },
-      {
-        messageSide: 'guest',
-        user: loggedInUser,
-        timestamp: dayjs().subtract(3, 'days').toDate(),
-        content:
-          'Aut fugiat voluptate alias porro dolor sunt placeat! Incidunt hic odit quo'
-      },
-      {
-        messageSide: 'staff',
-        user: users[0],
-        timestamp: dayjs().subtract(2, 'days').toDate(),
-        content: 'Optio accusantium quisquam omnis, assumenda esse'
-      },
-      {
-        messageSide: 'guest',
-        user: loggedInUser,
-        timestamp: dayjs().subtract(1, 'day').toDate(),
-        content: 'Veritatis, aut corporis.'
-      },
-      {
-        messageSide: 'staff',
-        user: users[0],
-        timestamp: dayjs().subtract(10, 'hours').minute(5).second(30).toDate(),
-        content: 'Lorem ipsum dolor sit'
-      },
-      {
-        messageSide: 'guest',
-        user: loggedInUser,
-        timestamp: dayjs().subtract(10, 'hours').minute(6).second(3).toDate(),
-        content:
-          'Inventore vitae doloremque consectetur incidunt fugiat dolore nemo pariatur ut harum dolorem eveniet non officiis voluptatum qui, temporibus quaerat accusamus blanditiis expedita perferendis eum tempora dolor animi labore! Ad reiciendis voluptas similique quo magnam nostrum quis corporis eius facere est debitis mollitia alias, ex reprehenderit dicta vitae, amet numquam repellendus iste. Rem minima itaque non, autem necessitatibus veniam recusandae deserunt fugit, excepturi est debitis quas omnis accusantium tenetur amet illum maxime quaerat consequatur? Similique esse natus eligendi dolorem id! Harum!'
-      },
-      {
-        messageSide: 'staff',
-        user: users[0],
-        timestamp: dayjs().subtract(8, 'hours').minute(5).second(30).toDate(),
-        content:
-          'Ratione, officia voluptates adipisci quis vero debitis! Illo, temporibus facere saepe officia voluptatum soluta dolor enim nesciunt aliquam exercitationem. Eum saepe adipisci nemo vero ipsum totam minima deleniti exercitationem, nam eveniet debitis voluptates corporis officia. Amet at dolorum sapiente, nostrum doloribus sint tempore quisquam molestiae.'
-      },
-      {
-        messageSide: 'staff',
-        user: users[3],
-        timestamp: dayjs().subtract(44, 'minutes').toDate(),
-        content:
-          'Necessitatibus iste officia nostrum ipsa amet vitae natus debitis sapiente in, incidunt illum reiciendis adipisci at consequuntur fugit nulla iure a ratione! Earum consequuntur molestias asperiores iusto voluptatibus rerum in.'
-      }
-    ],
-    lastReadTimestamp: dayjs()
-      .subtract(8, 'hours')
-      .minute(5)
-      .second(30)
-      .toDate()
+    })()
   },
   preferences: { darkMode: false }
+}
+
+function randomlyChooseLastReadMessageTime(messages: MessageCreationType[]) {
+  return Math.random() > 0.5
+    ? messages[Math.floor(Math.random() * messages.length)].timestamp
+    : undefined
+}
+
+function generateRandomMessages(): MessageCreationType[] {
+  return new Array(Math.floor(Math.random() * 25)).fill(null).map(() => ({
+    content: lorem.generateWords(Math.floor(Math.random() * 50)),
+    timestamp: new Date(
+      Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 100)
+    ),
+    user: users[Math.floor(Math.random() * users.length)]
+  }))
 }
 
 export default defaultStore

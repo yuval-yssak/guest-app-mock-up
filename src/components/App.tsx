@@ -188,7 +188,9 @@ function App() {
                     {store.view.page === '/announcements' && (
                       <AnnouncementsPage />
                     )}
-                    {store.view.page === '/chat' && <ChatPage />}
+                    {store.view.page === '/chat' && (
+                      <ChatPage withPerson={store.view.id} />
+                    )}
                     {store.view.page === '/info-section' && (
                       <InfoSectionPage page={store.view.id || ''} />
                     )}

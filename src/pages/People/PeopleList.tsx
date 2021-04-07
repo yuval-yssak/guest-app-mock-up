@@ -107,7 +107,6 @@ function PeopleList({ filter }: { filter?: string }) {
   const store = useMst()
 
   function rowClick(param: GridRowParams, event: React.MouseEvent) {
-    console.log('people page', param.id.toString())
     store.view.openPeoplePage(param.id.toString())
   }
 

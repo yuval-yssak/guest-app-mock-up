@@ -14,7 +14,7 @@ import { useMst } from '../models/reactHook'
 import { LoremIpsum } from 'lorem-ipsum'
 import { v4 as uuidv4 } from 'uuid'
 import { applySnapshot } from 'mobx-state-tree'
-import defaultStore from '../defaultStore'
+import defaultStore, { users } from '../defaultStore'
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -205,14 +205,8 @@ export default function ProminentAppBar({
         <Divider />
         <MenuItem
           onClick={() => {
-            store.chat.insertStaffMessage({
-              messageSide: 'staff',
-              user: {
-                id: '1',
-                personName: 'Pranava Chaitanya',
-                imageSrc: '/images/pranava-chaitanya.jpg',
-                type: 'staff'
-              },
+            store.chats.withSelf.insertStaffMessage({
+              user: users.find(({ id }) => id === 2)!,
               timestamp: new Date(),
               content: lorem.generateSentences(
                 Math.floor(Math.random() * 10 + 1)
@@ -228,14 +222,9 @@ export default function ProminentAppBar({
           onClick={() => {
             applySnapshot(store, {
               ...defaultStore,
-              loggedInUser: {
-                personName: 'Richard Barrett',
-                imageSrc: '/images/32.jpg',
-                type: 'guest',
-                id: '-1'
-              },
+              loggedInUser: users.find(({ id }) => id === 3)!,
               view: store.view,
-              chat: { ...defaultStore.chat, withUsers: null }
+              chats: { withSelf: defaultStore.chats?.withSelf || {} }
             })
             handleMoreClose()
           }}
@@ -253,12 +242,7 @@ export default function ProminentAppBar({
         <MenuItem
           onClick={() => {
             applySnapshot(store, {
-              loggedInUser: {
-                personName: 'Richard Barrett',
-                imageSrc: '/images/32.jpg',
-                type: 'guest',
-                id: '-1'
-              },
+              loggedInUser: users.find(({ id }) => id === 3)!,
               view: store.view
             })
             handleMoreClose()

@@ -11,7 +11,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import { useMst } from '../models/reactHook'
 import PageContentWrapper from '../components/PageContentWrapper'
 import dayjs from 'dayjs'
-import { ChatType, UserMessagesType } from '../models/ChatModel'
+import { UserChatType, ChatType } from '../models/ChatModel'
 
 // below this breakpoint the avatar enters the message frame
 const breakpointFullLine = '(max-width: 37.5em)'
@@ -54,7 +54,7 @@ const ChatContainer = styled.div.attrs({ className: 'chat-container' })<{
   staffView: boolean
 }>`
   display: grid;
-  grid-template-rows: 1fr max-content; // keep the user input at the bottom
+  align-content: end; // keep the user input at the bottom
   ${props => props.staffView && `padding-left: 2.5rem;`}
 
   // scrolling is only in the inner messages container
@@ -147,18 +147,33 @@ const StyledUserName = styled(Typography)`
   }
 `
 
-function User({ user }: { user: UserMessagesType }) {
+function User({ userChat }: { userChat: UserChatType }) {
+  const store = useMst()
   return (
-    <StyledUser>
-      <StyledUserAvatar src={user.user.imageSrc} aria-hidden />
-      <StyledUserName>{user.user.personName}</StyledUserName>
-      {user.messages.length ? (
+    <StyledUser
+      onClick={() =>
+        store.view.openChatPage(
+          userChat.user === store.loggedInUser
+            ? undefined
+            : userChat.user.id.toString()
+        )
+      }
+    >
+      <StyledUserAvatar src={userChat.user.imageSrc} aria-hidden />
+      <StyledUserName>{userChat.user.personName}</StyledUserName>
+      {userChat.chat.messages.length ? (
         <>
           <Typography>
-            {user.messages[user.messages.length - 1].user.personName}:{' '}
+            {
+              userChat.chat.messages[userChat.chat.messages.length - 1].user
+                .personName
+            }
+            :{' '}
           </Typography>
           <Typography>
-            {user.messages[user.messages.length - 1].content.slice(0, 10)}
+            {userChat.chat.messages[
+              userChat.chat.messages.length - 1
+            ].content.slice(0, 10)}
           </Typography>
         </>
       ) : (
@@ -172,9 +187,16 @@ function UsersPane() {
   const store = useMst()
   return (
     <UsersPaneContaner>
-      {store.chat.withUsers?.map(user => (
-        <User key={user.user.id} user={user} />
-      ))}
+      <>
+        {store.chats.withUsers?.map(userChat => (
+          <User key={userChat.user.id} userChat={userChat} />
+        ))}
+
+        <User
+          key={store.loggedInUser!.id}
+          userChat={{ user: store.loggedInUser!, chat: store.chats.withSelf }}
+        />
+      </>
     </UsersPaneContaner>
   )
 }
@@ -571,7 +593,7 @@ const StaffMessage = ({
   )
 }
 
-function ChatPage() {
+function ChatPage({ withPerson }: { withPerson?: string }) {
   const store = useMst()
   const [userInput, setUserInput] = React.useState('')
 
@@ -580,36 +602,42 @@ function ChatPage() {
   const userInputRef = React.createRef<HTMLDivElement>()
 
   // build message react components
-  const messagesInDays = store.chat.orderedMessages
-    .reduce<
-      { date: string; messages: typeof store.chat.orderedMessages[number][] }[]
-    >((allComponents, message) => {
-      const shortDate = getUserFriendlyDate(message)
 
-      // first iteration - return short only date and first message
-      if (allComponents.length === 0)
-        return [{ date: shortDate, messages: [message] }]
+  const chat = withPerson
+    ? store.chats.withUsers?.find(chatUser => chatUser.user.id === +withPerson)
+        ?.chat
+    : store.chats.withSelf
+  const messagesInDays = chat?.orderedMessages
+    ?.reduce<{ date: string; messages: ChatType['orderedMessages'] }[]>(
+      (allComponents, message) => {
+        const shortDate = getUserFriendlyDate(message)
+        // first iteration - return short only date and first message
+        if (allComponents.length === 0)
+          return [{ date: shortDate, messages: [message] }]
 
-      // if current message's date is the same as previous message, add the message
-      if (
-        dayjs(message.timestamp)
-          .startOf('day')
-          .isSame(
-            dayjs(
-              allComponents[allComponents.length - 1].messages[0].timestamp
-            ).startOf('day')
-          )
-      )
-        return [
-          ...allComponents.slice(0, -1),
-          {
-            date: shortDate,
-            messages: allComponents.slice(-1)[0].messages.concat(message)
-          }
-        ]
-      // if current message starts a new date - add the new date label
-      else return allComponents.concat({ date: shortDate, messages: [message] })
-    }, [])
+        // if current message's date is the same as previous message, add the message
+        if (
+          dayjs(message.timestamp)
+            .startOf('day')
+            .isSame(
+              dayjs(
+                allComponents[allComponents.length - 1].messages[0].timestamp
+              ).startOf('day')
+            )
+        )
+          return [
+            ...allComponents.slice(0, -1),
+            {
+              date: shortDate,
+              messages: allComponents.slice(-1)[0].messages.concat(message)
+            }
+          ]
+        // if current message starts a new date - add the new date label
+        else
+          return allComponents.concat({ date: shortDate, messages: [message] })
+      },
+      []
+    )
 
     .map(date => {
       const messages = date.messages.map(message => {
@@ -621,7 +649,8 @@ function ChatPage() {
           children: <>{message.content}</>
         }
 
-        return message.messageSide === 'staff' ? (
+        console.log('side', message)
+        return message.messageSide === 'other' ? (
           <StaffMessage {...props} />
         ) : (
           <GuestMessage {...props} />
@@ -629,12 +658,11 @@ function ChatPage() {
       })
 
       // add "New messages" divider
-      if (store.chat.unreadCount) {
+      if (chat?.unreadCount) {
         // find last read message and stick the unread divider under it.
         const lastReadMessage = date.messages.findIndex(
           message =>
-            message.timestamp.getTime() ===
-            store.chat.lastReadTimestamp.getTime()
+            message.timestamp.getTime() === chat?.lastReadTimestamp.getTime()
         )
         if (~lastReadMessage) {
           messages.splice(
@@ -656,25 +684,19 @@ function ChatPage() {
   // scroll last read message or first unread messages on any update
   React.useEffect(() => {
     setTimeout(() => {
-      if (store.chat.unreadCount) dividerRef.current?.scrollIntoView(true)
+      if (chat?.unreadCount) dividerRef.current?.scrollIntoView(true)
       else {
         messagesParentRef.current
           ?.querySelector('.date-messages:last-of-type section:last-child')
           ?.scrollIntoView({ behavior: 'smooth' })
       }
     }, 0)
-  }, [
-    store.chat.unreadCount,
-    store.chat.withSelfMessages.length,
-    dividerRef,
-    messagesParentRef
-  ])
+  }, [chat?.unreadCount, chat?.messages.length, dividerRef, messagesParentRef])
 
   function submitMessage() {
     if (!userInput.trim()) return
 
-    store.chat.insertGuestMessage({
-      messageSide: 'guest',
+    chat?.insertGuestMessage({
       user: getSnapshot(store.loggedInUser!)!, // loggedInUser can't be null on Chat page.
       timestamp: new Date(),
       content: userInput
@@ -696,9 +718,9 @@ function ChatPage() {
   if (!store.loggedInUser) return <h1>Not Logged In</h1>
 
   return (
-    <ChatPageContainer staffView={!!store.chat.withUsers}>
-      {store.chat.withUsers && <UsersPane />}
-      <ChatContainer staffView={!!store.chat.withUsers}>
+    <ChatPageContainer staffView={!!store.chats.withUsers}>
+      {store.chats.withUsers && <UsersPane />}
+      <ChatContainer staffView={!!store.chats.withUsers}>
         <MessagesScrollable tabIndex={0} ref={messagesParentRef}>
           {messagesInDays}
         </MessagesScrollable>

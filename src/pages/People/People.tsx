@@ -21,7 +21,6 @@ const ScrollablePageContentWrapper = styled(PageContentWrapper).attrs({
 
 function PeopleEntry() {
   const store = useMst()
-  console.log('rendering,', store.view.page, store.view.id)
   return (
     <ScrollablePageContentWrapper role="article">
       {store.view.page === '/people' && store.view.id && (

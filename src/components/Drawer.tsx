@@ -89,7 +89,10 @@ export default function TemporaryDrawer({
             </ListItem>
             <ListItem button onClick={() => store.view.openChatPage()}>
               <StyledListItemIcon>
-                <Badge badgeContent={store.chat.unreadCount} color="secondary">
+                <Badge
+                  badgeContent={store.chats.withSelf.unreadCount}
+                  color="secondary"
+                >
                   <ChatIcon />
                 </Badge>
               </StyledListItemIcon>

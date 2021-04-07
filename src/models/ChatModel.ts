@@ -1,34 +1,26 @@
-import { Instance, types } from 'mobx-state-tree'
+import { Instance, types, getRoot, SnapshotIn } from 'mobx-state-tree'
 import dayjs from 'dayjs'
 import { now } from 'mobx-utils'
 import { UserModel } from './UserModel'
 
-export interface MessageType extends Instance<typeof Message> {}
-
-const Message = types.model('Message', {
-  messageSide: types.union(types.literal('guest'), types.literal('staff')),
-  user: UserModel,
-  timestamp: types.Date,
-  content: types.string
-})
-
-export interface UserMessagesType extends Instance<typeof UserMessagesModel> {}
-const UserMessagesModel = types.model('User Messages', {
-  user: UserModel,
-  messages: types.array(Message),
-  lastReadTimestamp: types.optional(types.Date, new Date(0))
-})
-
-export interface ChatType extends Instance<typeof ChatModel> {}
-const ChatModel = types
-  .model('Chat', {
-    withSelfMessages: types.array(Message),
-    // default date to Unix epoch, so everything is "unread" by default
-    lastReadTimestamp: types.optional(types.Date, new Date(0)),
-    withUsers: types.maybeNull(types.array(UserMessagesModel))
+const MessageModel = types
+  .model('MessageModel', {
+    user: UserModel,
+    timestamp: types.Date,
+    content: types.string
   })
   .views(self => ({
-    get displayMessages() {
+    get messageSide() {
+      console.log(
+        'determining sides',
+        self.user.id,
+        (getRoot(self) as any).loggedInUser.id
+      )
+      return (getRoot(self) as any).loggedInUser.id === self.user.id
+        ? 'self'
+        : 'other'
+    },
+    get timeSignature() {
       function displayTime(timestamp: Date) {
         // triggers a rerender of the entire chat page once a minute
         if (dayjs(timestamp).year() !== dayjs(now(60000)).year())
@@ -40,20 +32,24 @@ const ChatModel = types
         return dayjs(timestamp).format('HH:mm')
       }
 
-      return self.withSelfMessages.map(message => ({
-        ...message,
-        timeSignature: displayTime(message.timestamp)
-      }))
+      return displayTime(self.timestamp)
     }
   }))
+
+const ChatModel = types
+  .model('ChatModel', {
+    // default date to Unix epoch, so everything is "unread" by default
+    lastReadTimestamp: types.optional(types.Date, new Date(0)),
+    messages: types.array(MessageModel)
+  })
   .views(self => ({
     get orderedMessages() {
-      return self.displayMessages
+      return self.messages
         .slice()
         .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
     },
     get unreadCount() {
-      return self.withSelfMessages.reduce(
+      return self.messages.reduce(
         (count, message) =>
           count + (message.timestamp > self.lastReadTimestamp ? 1 : 0),
         0
@@ -61,13 +57,27 @@ const ChatModel = types
     }
   }))
   .actions(self => ({
-    insertGuestMessage(message: MessageType) {
-      self.withSelfMessages.push(message)
+    insertGuestMessage(message: MessageCreationType) {
+      self.messages.push(message)
       self.lastReadTimestamp = new Date()
     },
-    insertStaffMessage(message: MessageType) {
-      self.withSelfMessages.push(message)
+    insertStaffMessage(message: MessageCreationType) {
+      self.messages.push(message)
     }
   }))
 
-export const Chat = types.optional(ChatModel, { withSelfMessages: [] })
+const UserChatModel = types.model('UserChatModel', {
+  user: UserModel,
+  chat: ChatModel
+})
+
+export const ChatsModel = types.model('ChatsModel', {
+  withSelf: ChatModel,
+  withUsers: types.maybeNull(types.array(UserChatModel))
+})
+
+export interface UserChatType extends Instance<typeof UserChatModel> {}
+export interface ChatType extends Instance<typeof ChatModel> {}
+export interface MessageType extends Instance<typeof MessageModel> {}
+export interface MessageCreationType extends SnapshotIn<typeof MessageModel> {}
+export interface ChatsType extends Instance<typeof ChatsModel> {}

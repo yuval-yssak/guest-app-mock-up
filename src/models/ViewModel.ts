@@ -47,6 +47,7 @@ const ViewModel = types
           }
           return self.page
         case '/people':
+        case '/chat':
           if (self.id) return `${self.page}/${self.id}`
           return self.page
         default:
@@ -58,7 +59,10 @@ const ViewModel = types
   .actions(self => ({
     openActivitiesPage: () => (self.page = '/activities'),
     openAnnouncementsPage: () => (self.page = '/announcements'),
-    openChatPage: () => (self.page = '/chat'),
+    openChatPage: (id?: string) => {
+      self.page = '/chat'
+      self.id = id
+    },
     openCustomPage(id: string) {
       self.page = '/custom'
       self.id = id
@@ -80,9 +84,7 @@ const ViewModel = types
     openManualSignupPage: () => (self.page = '/manualSignup'),
     openLoginPage: () => (self.page = '/login'),
     openPeoplePage: (subPage?: string) => {
-      console.log('in function people page', subPage)
       if (subPage?.match(/^\d+$/)) {
-        console.log('hi')
         self.page = '/people'
         self.id = subPage
       } else self.page = subPage ? `/people/${subPage}` : '/people'
@@ -123,11 +125,20 @@ function getViewFromURL() {
     }
   }
 
+  const matchChat = match('/chat/:subpage')
+  const matchedChat = matchChat(pathname) as MatchResult<{
+    subpage: string
+  }>
+
+  if (matchedChat) {
+    if (matchedChat.params.subpage?.match(/^\d+$/)) {
+      return { page: '/chat', id: matchedChat.params.subpage }
+    }
+  }
+
   const matchGeneral = match<{ page: string }>('/:page')
   const matchedGeneral = matchGeneral(pathname) as MatchResult
-  console.log(matchedInfoSection)
-  console.log(matchedInfoSection.path)
-  console.log('path is', matchedGeneral.path || matchedInfoSection.path)
+
   if (matchedGeneral || matchedInfoSection || matchedPeople)
     switch (
       matchedGeneral.path ||
@@ -155,7 +166,6 @@ function getViewFromURL() {
       case '/people/departing-tomorrow':
       case '/people/search':
       case '/settings': {
-        console.log('path is', matchedPeople.path)
         return {
           page:
             matchedGeneral.path || matchedInfoSection.path || matchedPeople.path

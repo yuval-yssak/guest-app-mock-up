@@ -19,7 +19,8 @@ const AnnouncementModel = types
     details: types.string,
     timestamp: types.Date,
     status: types.union(types.literal('read'), types.literal('unread')),
-    priority: types.union(types.literal('low'), types.literal('high'))
+    priority: types.union(types.literal('low'), types.literal('high')),
+    expiresOn: types.maybe(types.Date)
   })
   .actions(self => ({
     toggle() {
