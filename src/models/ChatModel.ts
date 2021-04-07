@@ -61,11 +61,11 @@ const ChatModel = types
     }
   }))
   .actions(self => ({
-    insertGuestMessage(message: MessageCreationType) {
+    insertSelfMessage(message: MessageCreationType) {
       self.messages.push(message)
       self.lastReadTimestamp = new Date()
     },
-    insertStaffMessage(message: MessageCreationType) {
+    insertOtherMessage(message: MessageCreationType) {
       self.messages.push(message)
     }
   }))

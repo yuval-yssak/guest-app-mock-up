@@ -207,7 +207,7 @@ export default function ProminentAppBar({
           onClick={() => {
             const staffUsers = users.filter(({ type }) => type === 'staff')
 
-            store.chats.withSelf.insertStaffMessage({
+            store.chats.withSelf.insertOtherMessage({
               user: staffUsers[Math.floor(Math.random() * staffUsers.length)],
               timestamp: new Date(),
               content: lorem.generateSentences(
