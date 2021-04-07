@@ -2,7 +2,7 @@ import { Instance, types, getRoot, SnapshotIn } from 'mobx-state-tree'
 import dayjs from 'dayjs'
 import { now } from 'mobx-utils'
 import { UserModel } from './UserModel'
-
+import { ViewType } from './ViewModel'
 const MessageModel = types
   .model('MessageModel', {
     user: UserModel,
@@ -11,15 +11,19 @@ const MessageModel = types
   })
   .views(self => ({
     get messageSide() {
-      console.log(
-        'determining sides',
-        self.user.id,
-        (getRoot(self) as any).loggedInUser.id
-      )
-      return (getRoot(self) as any).loggedInUser.id === self.user.id
-        ? 'self'
-        : 'other'
+      let selfSide: boolean
+
+      // determine message side according to the current view or current logged in user
+
+      const view = (getRoot(self) as any)?.view as ViewType | undefined
+
+      if (view?.page === '/chat' && view.id)
+        selfSide = self.user.id !== +view.id
+      else selfSide = (getRoot(self) as any).loggedInUser.id === self.user.id
+
+      return selfSide ? 'self' : 'other'
     },
+
     get timeSignature() {
       function displayTime(timestamp: Date) {
         // triggers a rerender of the entire chat page once a minute

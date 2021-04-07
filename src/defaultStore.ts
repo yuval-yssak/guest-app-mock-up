@@ -3,6 +3,7 @@ import { UserType } from './models/UserModel'
 import { RootStoreSnapshotIn } from './models/RootStore'
 import { LoremIpsum } from 'lorem-ipsum'
 import { MessageCreationType } from './models/ChatModel'
+import faker from 'faker'
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -15,7 +16,9 @@ const lorem = new LoremIpsum({
   }
 })
 
-export const users: UserType[] = [
+console.log(faker.name.firstName(), faker.image.avatar())
+
+export const users: UserType[] = ([
   {
     id: 1,
     type: 'staff',
@@ -30,23 +33,24 @@ export const users: UserType[] = [
   },
   {
     id: 3,
-    personName: 'Jenny',
-    imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg',
-    type: 'guest'
-  },
-  {
-    id: 4,
     personName: 'Bhargavi',
     imageSrc: '',
     type: 'staff'
   },
   {
-    id: 5,
-    personName: 'Richard Barrett',
-    imageSrc: '/images/32.jpg',
+    id: 4,
+    personName: 'Jenny',
+    imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg',
     type: 'guest'
   }
-]
+] as UserType[]).concat(
+  Array.from({ length: 46 }).map<UserType>((_, i) => ({
+    id: i + 5,
+    personName: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    imageSrc: Math.random() > 0.8 ? '' : faker.image.avatar(),
+    type: 'guest'
+  }))
+)
 
 const loggedInUser = users.find(({ id }) => id === 1)!
 
@@ -179,7 +183,7 @@ const defaultStore: RootStoreSnapshotIn = {
     withUsers: users
       .filter(user => user !== loggedInUser)
       .map(user => {
-        const messages = generateRandomMessages()
+        const messages = generateRandomMessages(user)
 
         return {
           user,
@@ -191,7 +195,7 @@ const defaultStore: RootStoreSnapshotIn = {
       }),
 
     withSelf: (() => {
-      const messages = generateRandomMessages()
+      const messages = generateRandomMessages(loggedInUser)
 
       return {
         messages,
@@ -204,17 +208,20 @@ const defaultStore: RootStoreSnapshotIn = {
 
 function randomlyChooseLastReadMessageTime(messages: MessageCreationType[]) {
   return Math.random() > 0.5
-    ? messages[Math.floor(Math.random() * messages.length)].timestamp
+    ? messages[Math.floor(Math.random() * messages.length)]?.timestamp
     : undefined
 }
 
-function generateRandomMessages(): MessageCreationType[] {
+function generateRandomMessages(selfUser: UserType): MessageCreationType[] {
+  const allowedUsers = users.filter(
+    user => user === selfUser || user.type === 'staff'
+  )
   return new Array(Math.floor(Math.random() * 25)).fill(null).map(() => ({
     content: lorem.generateWords(Math.floor(Math.random() * 50)),
     timestamp: new Date(
       Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 100)
     ),
-    user: users[Math.floor(Math.random() * users.length)]
+    user: allowedUsers[Math.floor(Math.random() * allowedUsers.length)]
   }))
 }
 

@@ -136,7 +136,7 @@ const StyledUser = styled.div`
 
 const StyledUserAvatar = styled.img`
   height: 4rem;
-  width: 4rem;
+  width: auto;
   border-radius: 50%;
   grid-row: 1/-1;
 `
@@ -188,14 +188,13 @@ function UsersPane() {
   return (
     <UsersPaneContaner>
       <>
-        {store.chats.withUsers?.map(userChat => (
-          <User key={userChat.user.id} userChat={userChat} />
-        ))}
-
         <User
           key={store.loggedInUser!.id}
           userChat={{ user: store.loggedInUser!, chat: store.chats.withSelf }}
         />
+        {store.chats.withUsers?.map(userChat => (
+          <User key={userChat.user.id} userChat={userChat} />
+        ))}
       </>
     </UsersPaneContaner>
   )
@@ -649,7 +648,6 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
           children: <>{message.content}</>
         }
 
-        console.log('side', message)
         return message.messageSide === 'other' ? (
           <StaffMessage {...props} />
         ) : (
