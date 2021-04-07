@@ -128,7 +128,7 @@ const OtherAvatar = ({ src, name }: { src: string; name: string }) => {
   if (src) return <StyledOtherAvatar alt={`${name} photo`} src={src} />
   else
     return (
-      <StyledOtherAvatar alt={`${name} photo`}>
+      <StyledOtherAvatar alt={`${name}`}>
         {getNameInitials(name)}
       </StyledOtherAvatar>
     )
@@ -209,7 +209,7 @@ export const SelfMessage = ({
           <SelfMessageFrame>
             <SelfMessageHead>
               <SelfAvatar src={src} name={name} />
-              <Typography className="message-name"></Typography>
+              <Typography className="message-name">{name}</Typography>
               <Typography className="message-time" variant="body2">
                 {timeSignature}
               </Typography>
@@ -221,7 +221,7 @@ export const SelfMessage = ({
         <>
           <SelfMessageFrame>
             <SelfMessageHead>
-              <Typography className="message-name"></Typography>
+              <Typography className="message-name">{name}</Typography>
               <Typography className="message-time" variant="body2">
                 {timeSignature}
               </Typography>
