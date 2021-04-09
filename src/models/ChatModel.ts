@@ -28,11 +28,11 @@ const MessageModel = types
       function displayTime(timestamp: Date) {
         // triggers a rerender of the entire chat page once a minute
         if (dayjs(timestamp).year() !== dayjs(now(60000)).year())
-          return dayjs(timestamp).format('MMM D, YYYY HH:mm')
+          return dayjs(timestamp).format('MMM D, YYYY, HH:mm')
         if (
           dayjs(now(60000)).subtract(1, 'day').startOf('day').isAfter(timestamp)
         )
-          return dayjs(timestamp).format('MMM D HH:mm')
+          return dayjs(timestamp).format('MMM D, HH:mm')
         return dayjs(timestamp).format('HH:mm')
       }
 
@@ -75,11 +75,20 @@ const UserChatModel = types.model('UserChatModel', {
   chat: ChatModel
 })
 
-export const ChatsModel = types.model('ChatsModel', {
-  withSelf: ChatModel,
-  withUsers: types.maybeNull(types.array(UserChatModel))
-})
+export const ChatsModel = types
+  .model('ChatsModel', {
+    withSelf: ChatModel,
+    withUsers: types.array(UserChatModel)
+  })
+  .actions(self => ({
+    addUserChat(userChat: UserChatCreationType) {
+      // if (!self.withUsers) self.withUsers = UserChatModel.create({}))
+      self.withUsers.push(userChat)
+    }
+  }))
 
+export interface UserChatCreationType
+  extends SnapshotIn<typeof UserChatModel> {}
 export interface UserChatType extends Instance<typeof UserChatModel> {}
 export interface ChatType extends Instance<typeof ChatModel> {}
 export interface MessageType extends Instance<typeof MessageModel> {}

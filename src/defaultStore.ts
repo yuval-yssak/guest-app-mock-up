@@ -43,14 +43,7 @@ export const users: UserType[] = ([
     imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg',
     type: 'guest'
   }
-] as UserType[]).concat(
-  Array.from({ length: 46 }).map<UserType>((_, i) => ({
-    id: i + 5,
-    personName: `${faker.name.firstName()} ${faker.name.lastName()}`,
-    imageSrc: Math.random() > 0.8 ? '' : faker.image.avatar(),
-    type: 'guest'
-  }))
-)
+] as UserType[]).concat(generateUsers(46))
 
 const loggedInUser = users.find(({ id }) => id === 1)!
 
@@ -183,7 +176,7 @@ const defaultStore: RootStoreSnapshotIn = {
     withUsers: users
       .filter(user => user !== loggedInUser)
       .map(user => {
-        const messages = generateRandomMessages(user)
+        const messages = generateRandomMessages(users, user)
 
         return {
           user,
@@ -195,7 +188,7 @@ const defaultStore: RootStoreSnapshotIn = {
       }),
 
     withSelf: (() => {
-      const messages = generateRandomMessages(loggedInUser)
+      const messages = generateRandomMessages(users, loggedInUser)
 
       return {
         messages,
@@ -206,13 +199,25 @@ const defaultStore: RootStoreSnapshotIn = {
   preferences: { darkMode: false }
 }
 
+export function generateUsers(number: number): UserType[] {
+  return Array.from({ length: number }).map<UserType>((_, i) => ({
+    id: i + 5,
+    personName: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    imageSrc: Math.random() > 0.8 ? '' : faker.image.avatar(),
+    type: 'guest'
+  }))
+}
+
 function randomlyChooseLastReadMessageTime(messages: MessageCreationType[]) {
   return Math.random() > 0.5
     ? messages[Math.floor(Math.random() * messages.length)]?.timestamp
     : undefined
 }
 
-function generateRandomMessages(selfUser: UserType): MessageCreationType[] {
+export function generateRandomMessages(
+  users: UserType[],
+  selfUser: UserType
+): MessageCreationType[] {
   const allowedUsers = users.filter(
     user => user === selfUser || user.type === 'staff'
   )
