@@ -13,7 +13,7 @@ export const RootStore = types
     preferences: Preferences,
     announcements: types.optional(AnnouncementsModel, {}),
     chats: types.optional(ChatsModel, { withSelf: { messages: [] } }),
-    loggedInUser: types.maybeNull(UserModel),
+    loggedInUser: types.maybeNull(types.reference(UserModel)),
     users: types.array(UserModel)
   })
   .actions(self => ({

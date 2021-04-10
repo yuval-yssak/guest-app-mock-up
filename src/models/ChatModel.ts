@@ -8,11 +8,11 @@ import {
 } from 'mobx-state-tree'
 import dayjs from 'dayjs'
 import { now } from 'mobx-utils'
-import { UserModel } from './UserModel'
+import { UserModel, UserType } from './UserModel'
 import { ViewType } from './ViewModel'
 const MessageModel = types
   .model('MessageModel', {
-    user: UserModel,
+    user: types.reference(UserModel),
     timestamp: types.Date,
     content: types.string
   })
@@ -77,9 +77,14 @@ const ChatModel = types
       self.messages.push(message)
     }
   }))
+  .actions(self => ({
+    insertMessages(messages: MessageCreationType[]) {
+      self.messages.push(...messages)
+    }
+  }))
 
 const UserChatModel = types.model('UserChatModel', {
-  user: UserModel,
+  user: types.reference(UserModel),
   chat: ChatModel
 })
 
@@ -88,6 +93,15 @@ export const ChatsModel = types
     withSelf: ChatModel,
     withUsers: types.maybe(types.array(UserChatModel))
   })
+  .views(self => ({
+    findChat(userId: number): ChatType | undefined {
+      // userId === 0 means no user ID.
+      if (!userId) return self.withSelf
+      else
+        return self.withUsers?.find(chatUser => chatUser.user.id === userId)
+          ?.chat
+    }
+  }))
   .actions(self => ({
     addUserChats(userChats: UserChatCreationType[]) {
       if (!self.withUsers) self.withUsers = cast([])

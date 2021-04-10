@@ -34,11 +34,12 @@ export const ChatContainer = styled.div.attrs({ className: 'chat-container' })<{
   staffView: boolean
 }>`
   display: grid;
-  align-content: end; // keep the user input at the bottom
-  ${props => props.staffView && `padding-left: 2.5rem;`}
+  grid-template-rows: 1fr max-content;
+
+  ${props => props.staffView && `padding-left: 2.5rem;`};
 
   // scrolling is only in the inner messages container
-    overflow: hidden;
+  overflow: hidden;
   height: 100%;
 
   // set widths for children

@@ -208,7 +208,8 @@ export default function ProminentAppBar({
             const staffUsers = users.filter(({ type }) => type === 'staff')
 
             store.chats.withSelf.insertOtherMessage({
-              user: staffUsers[Math.floor(Math.random() * staffUsers.length)],
+              user:
+                staffUsers[Math.floor(Math.random() * staffUsers.length)].id,
               timestamp: new Date(),
               content: lorem.generateSentences(
                 Math.floor(Math.random() * 10 + 1)
@@ -223,13 +224,13 @@ export default function ProminentAppBar({
         <MenuItem
           onClick={() => {
             const withSelf = defaultStore.chats!.withUsers!.find(
-              chatUser => chatUser.user.id === 4
+              chatUser => chatUser.user === 4
             )!.chat
             const view = getSnapshot(store.view)
 
             applySnapshot(store, {
               ...defaultStore,
-              loggedInUser: users.find(({ id }) => id === 4)!,
+              loggedInUser: 4,
               view: view.page === '/chat' ? { page: '/chat' } : view,
               chats: { withSelf }
             })
@@ -249,7 +250,7 @@ export default function ProminentAppBar({
         <MenuItem
           onClick={() => {
             applySnapshot(store, {
-              loggedInUser: users.find(({ id }) => id === 4)!,
+              loggedInUser: 4,
               view: store.view
             })
             handleMoreClose()

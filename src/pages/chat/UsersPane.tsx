@@ -219,17 +219,17 @@ function UsersPaneComponent() {
         observer.disconnect()
       }
     }
-  }, [containerDomRef])
+  }, [containerDomRef, containerHeight])
 
   function loadNext() {
     setTimeout(() => {
       const newUsers = generateUsers(25, store.users.length + 1)
       const chats = newUsers.map<UserChatSnapshotType>(user => ({
-        user,
+        user: user.id,
         chat: {
           messages: generateRandomMessages(
             newUsers,
-            user
+            user.id
           ) as UserChatSnapshotType['chat']['messages'],
           lastReadTimestamp: 0
         }

@@ -45,7 +45,7 @@ export const users: UserType[] = ([
   }
 ] as UserType[]).concat(generateUsers(46, 5))
 
-const loggedInUser = users.find(({ id }) => id === 1)!
+const loggedInUser = 1
 
 const defaultStore: RootStoreSnapshotIn = {
   users,
@@ -174,12 +174,17 @@ const defaultStore: RootStoreSnapshotIn = {
   },
   chats: {
     withUsers: users
-      .filter(user => user !== loggedInUser)
+      .filter(user => user.id !== loggedInUser)
       .map(user => {
-        const messages = generateRandomMessages(users, user)
+        const messages = generateRandomMessages(
+          users,
+          user.id,
+          20,
+          dayjs().subtract(14, 'days').toDate()
+        )
 
         return {
-          user,
+          user: user.id,
           chat: {
             messages,
             lastReadTimestamp: randomlyChooseLastReadMessageTime(messages)
@@ -188,7 +193,12 @@ const defaultStore: RootStoreSnapshotIn = {
       }),
 
     withSelf: (() => {
-      const messages = generateRandomMessages(users, loggedInUser)
+      const messages = generateRandomMessages(
+        users,
+        loggedInUser,
+        20,
+        dayjs().subtract(14, 'days').toDate()
+      )
 
       return {
         messages,
@@ -216,18 +226,22 @@ function randomlyChooseLastReadMessageTime(messages: MessageCreationType[]) {
 
 export function generateRandomMessages(
   users: UserType[],
-  selfUser: UserType
+  selfUser: number,
+  count: number = 25,
+  before: Date = new Date()
 ): MessageCreationType[] {
   const allowedUsers = users.filter(
-    user => user === selfUser || user.type === 'staff'
+    user => user.id === selfUser || user.type === 'staff'
   )
-  return new Array(Math.floor(Math.random() * 25)).fill(null).map(() => ({
-    content: lorem.generateWords(Math.floor(Math.random() * 50)),
-    timestamp: new Date(
-      Date.now() - Math.floor(Math.random() * 1000 * 60 * 60 * 100)
-    ),
-    user: allowedUsers[Math.floor(Math.random() * allowedUsers.length)]
-  }))
+  return new Array(Math.max(1, Math.floor(Math.random() * count)))
+    .fill(null)
+    .map(() => ({
+      content: lorem.generateWords(Math.floor(Math.random() * 50)),
+      timestamp: new Date(
+        before.getTime() - Math.floor(Math.random() * 1000 * 60 * 60 * 100)
+      ),
+      user: allowedUsers[Math.floor(Math.random() * allowedUsers.length)].id
+    }))
 }
 
 export default defaultStore
