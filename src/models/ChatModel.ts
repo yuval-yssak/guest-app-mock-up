@@ -60,6 +60,7 @@ const ChatModel = types
         .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
     },
     get unreadCount() {
+      if (self.lastReadTimestamp.getTime() === 0) return 0
       return self.messages.reduce(
         (count, message) =>
           count + (message.timestamp > self.lastReadTimestamp ? 1 : 0),

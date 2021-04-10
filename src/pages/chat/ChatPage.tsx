@@ -1,13 +1,15 @@
 import React from 'react'
+import dayjs from 'dayjs'
 import { observer } from 'mobx-react-lite'
 import { getSnapshot } from 'mobx-state-tree'
-import Typography from '@material-ui/core/Typography'
-import TextField from '@material-ui/core/TextField'
-import styled from 'styled-components'
-import SendIcon from '@material-ui/icons/Send'
 import IconButton from '@material-ui/core/IconButton'
+import TextField from '@material-ui/core/TextField'
+import Typography from '@material-ui/core/Typography'
+import SendIcon from '@material-ui/icons/Send'
+import styled from 'styled-components'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
 import { useMst } from '../../models/reactHook'
-import dayjs from 'dayjs'
 import { ChatType } from '../../models/ChatModel'
 import DateMessages from './DateMessages'
 import { OtherMessage, SelfMessage, UnreadMessagesDivider } from './Message'
@@ -97,7 +99,7 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
       else {
         messagesParentRef.current
           ?.querySelector('.date-messages:last-of-type section:last-child')
-          ?.scrollIntoView({ behavior: 'smooth' })
+          ?.scrollIntoView()
       }
     }, 0)
   }, [chat?.unreadCount, chat?.messages.length, dividerRef, messagesParentRef])
