@@ -1,21 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
-import { UserChatType } from '../../models/ChatModel'
+import { UserChatSnapshotType, UserChatType } from '../../models/ChatModel'
 import Avatar from '@material-ui/core/Avatar'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import Typography from '@material-ui/core/Typography'
-
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { generateRandomMessages, generateUsers } from '../../defaultStore'
 import { useMst } from '../../models/reactHook'
-
+import { observer } from 'mobx-react-lite'
 export const usersPaneWidth = '30rem'
 export const minimumChatMessageWidth = '40rem'
 export const inBetweenChatMessageWidth = '90vw'
 export const maximumChatMessageWidth = '60rem'
-
 const UsersPaneContaner = styled.div.attrs({
   className: 'users-pane-container'
 })`
   height: 100%;
-  overflow-y: auto;
+  overflow-y: hidden;
   padding-top: 0.4rem;
   padding-bottom: 4rem;
   padding-left: calc(
@@ -130,7 +131,7 @@ const MiddleSection = styled.div.attrs({ className: 'user__middle-section' })`
   flex-grow: 1;
 `
 
-function User({ userChat }: { userChat: UserChatType }) {
+const User = observer(({ userChat }: { userChat: UserChatType }) => {
   const store = useMst()
   return (
     <StyledUser
@@ -143,8 +144,8 @@ function User({ userChat }: { userChat: UserChatType }) {
       }
       selected={
         userChat.user.id === +store.view.id! ||
-        (userChat.user.id === store.loggedInUser!.id &&
-          store.view.id === undefined)
+        (store.view.id === undefined &&
+          userChat.user.id === store.loggedInUser!.id)
       }
     >
       <UserAvatar
@@ -167,7 +168,7 @@ function User({ userChat }: { userChat: UserChatType }) {
               <Typography variant="body2">
                 {userChat.chat.orderedMessages[
                   userChat.chat.orderedMessages.length - 1
-                ].content.slice(0, 80)}
+                ].content.slice(0, 20)}
               </Typography>
             </LastMessageContent>
           </>
@@ -188,21 +189,69 @@ function User({ userChat }: { userChat: UserChatType }) {
       )}
     </StyledUser>
   )
-}
+})
 
-export function UsersPane() {
+function UsersPaneComponent() {
   const store = useMst()
+  const myRef = React.createRef<HTMLDivElement>()
+
+  const [divHeight, setDivHeight] = React.useState(0)
+  React.useEffect(() => {
+    function setHeight() {
+      if (myRef.current) {
+        if (myRef.current.clientHeight !== divHeight)
+          setDivHeight(myRef.current.clientHeight)
+      }
+    }
+    setHeight()
+    window.addEventListener('resize', setHeight)
+    return () => window.removeEventListener('resize', setHeight)
+  }, [myRef, divHeight])
+
+  function loadNext() {
+    setTimeout(() => {
+      const newUsers = generateUsers(25, store.users.length + 1)
+      const chats = newUsers.map<UserChatSnapshotType>(user => ({
+        user,
+        chat: {
+          messages: generateRandomMessages(
+            newUsers,
+            user
+          ) as UserChatSnapshotType['chat']['messages'],
+          lastReadTimestamp: 0
+        }
+      }))
+      store.addUsers(newUsers)
+      store.chats.addUserChats(chats)
+    }, 3000)
+  }
+
   return (
-    <UsersPaneContaner>
-      <>
-        <User
-          key={store.loggedInUser!.id}
-          userChat={{ user: store.loggedInUser!, chat: store.chats.withSelf }}
-        />
-        {store.chats.withUsers?.map(userChat => (
-          <User key={userChat.user.id} userChat={userChat} />
-        ))}
-      </>
+    <UsersPaneContaner ref={myRef}>
+      <InfiniteScroll
+        dataLength={store.chats.withUsers?.length || 0}
+        hasMore={
+          (store.chats.withUsers && store.chats.withUsers.length < 100) || false
+        }
+        loader={<LinearProgress />}
+        next={loadNext}
+        height={divHeight - 1 - 4 /* 4px is the height of the Progress bar */}
+      >
+        <>
+          <User
+            key={store.loggedInUser!.id}
+            userChat={{
+              user: store.loggedInUser!,
+              chat: store.chats.withSelf
+            }}
+          />
+          {store.chats.withUsers?.map(userChat => (
+            <User key={userChat.user.id} userChat={userChat} />
+          ))}
+        </>
+      </InfiniteScroll>
     </UsersPaneContaner>
   )
 }
+
+export const UsersPane = observer(UsersPaneComponent)

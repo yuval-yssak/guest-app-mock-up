@@ -1,4 +1,11 @@
-import { Instance, types, getRoot, SnapshotIn } from 'mobx-state-tree'
+import {
+  Instance,
+  types,
+  getRoot,
+  SnapshotIn,
+  SnapshotOut,
+  cast
+} from 'mobx-state-tree'
 import dayjs from 'dayjs'
 import { now } from 'mobx-utils'
 import { UserModel } from './UserModel'
@@ -78,15 +85,17 @@ const UserChatModel = types.model('UserChatModel', {
 export const ChatsModel = types
   .model('ChatsModel', {
     withSelf: ChatModel,
-    withUsers: types.array(UserChatModel)
+    withUsers: types.maybe(types.array(UserChatModel))
   })
   .actions(self => ({
-    addUserChat(userChat: UserChatCreationType) {
-      // if (!self.withUsers) self.withUsers = UserChatModel.create({}))
-      self.withUsers.push(userChat)
+    addUserChats(userChats: UserChatCreationType[]) {
+      if (!self.withUsers) self.withUsers = cast([])
+      self.withUsers!.push(...userChats)
     }
   }))
 
+export interface UserChatSnapshotType
+  extends SnapshotOut<typeof UserChatModel> {}
 export interface UserChatCreationType
   extends SnapshotIn<typeof UserChatModel> {}
 export interface UserChatType extends Instance<typeof UserChatModel> {}

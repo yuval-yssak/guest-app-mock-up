@@ -43,7 +43,7 @@ export const users: UserType[] = ([
     imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg',
     type: 'guest'
   }
-] as UserType[]).concat(generateUsers(46))
+] as UserType[]).concat(generateUsers(46, 5))
 
 const loggedInUser = users.find(({ id }) => id === 1)!
 
@@ -199,9 +199,9 @@ const defaultStore: RootStoreSnapshotIn = {
   preferences: { darkMode: false }
 }
 
-export function generateUsers(number: number): UserType[] {
-  return Array.from({ length: number }).map<UserType>((_, i) => ({
-    id: i + 5,
+export function generateUsers(count: number, idOffset: number): UserType[] {
+  return Array.from({ length: count }).map<UserType>((_, i) => ({
+    id: i + idOffset,
     personName: `${faker.name.firstName()} ${faker.name.lastName()}`,
     imageSrc: Math.random() > 0.8 ? '' : faker.image.avatar(),
     type: 'guest'
