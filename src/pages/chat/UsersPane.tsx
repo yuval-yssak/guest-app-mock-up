@@ -8,11 +8,13 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { generateRandomMessages, generateUsers } from '../../defaultStore'
 import { useMst } from '../../models/reactHook'
 import { observer } from 'mobx-react-lite'
+
 export const usersPaneWidth = '30rem'
 export const minimumChatMessageWidth = '40rem'
 export const inBetweenChatMessageWidth = '90vw'
 export const maximumChatMessageWidth = '60rem'
-const UsersPaneContaner = styled.div.attrs({
+
+const UsersPaneContainer = styled.div.attrs({
   className: 'users-pane-container'
 })`
   height: 100%;
@@ -193,20 +195,31 @@ const User = observer(({ userChat }: { userChat: UserChatType }) => {
 
 function UsersPaneComponent() {
   const store = useMst()
-  const myRef = React.createRef<HTMLDivElement>()
 
-  const [divHeight, setDivHeight] = React.useState(0)
+  const containerDomRef = React.createRef<HTMLDivElement>()
+  const [containerHeight, setContainerHeight] = React.useState(0)
+
+  // track divHeight whenever DOM element changes
   React.useEffect(() => {
     function setHeight() {
-      if (myRef.current) {
-        if (myRef.current.clientHeight !== divHeight)
-          setDivHeight(myRef.current.clientHeight)
+      if (containerDomRef.current) {
+        if (containerDomRef.current.clientHeight !== containerHeight)
+          setContainerHeight(containerDomRef.current.clientHeight)
       }
     }
+
+    // get initial container height
     setHeight()
-    window.addEventListener('resize', setHeight)
-    return () => window.removeEventListener('resize', setHeight)
-  }, [myRef, divHeight])
+
+    // track DOM changes to container height
+    if (containerDomRef.current) {
+      const observer = new ResizeObserver(setHeight)
+      observer.observe(containerDomRef.current)
+      return () => {
+        observer.disconnect()
+      }
+    }
+  }, [containerDomRef])
 
   function loadNext() {
     setTimeout(() => {
@@ -227,7 +240,7 @@ function UsersPaneComponent() {
   }
 
   return (
-    <UsersPaneContaner ref={myRef}>
+    <UsersPaneContainer ref={containerDomRef}>
       <InfiniteScroll
         dataLength={store.chats.withUsers?.length || 0}
         hasMore={
@@ -235,7 +248,9 @@ function UsersPaneComponent() {
         }
         loader={<LinearProgress />}
         next={loadNext}
-        height={divHeight - 1 - 4 /* 4px is the height of the Progress bar */}
+        height={
+          containerHeight - 1 - 4 /* 4px is the height of the Progress bar */
+        }
       >
         <>
           <User
@@ -250,7 +265,7 @@ function UsersPaneComponent() {
           ))}
         </>
       </InfiniteScroll>
-    </UsersPaneContaner>
+    </UsersPaneContainer>
   )
 }
 
