@@ -45,8 +45,8 @@ export const ChatContainer = styled.div.attrs({ className: 'chat-container' })<{
   // set widths for children
   & > * {
     ${({ staffView }) =>
-      !staffView
-        ? `
+      !staffView &&
+      `
       padding: 0 calc(
         (
           100vw - clamp(
@@ -54,8 +54,27 @@ export const ChatContainer = styled.div.attrs({ className: 'chat-container' })<{
             ${inBetweenChatMessageWidth}, 
             ${maximumChatMessageWidth})
           ) / 2);
+      `}
+  }
+`
+
+export const MessagesScrollable = styled.div.attrs({
+  className: 'messages-scrollable'
+})<{ staffView: boolean }>`
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  display: grid;
+  grid-row-gap: 2rem;
+
+  &:focus {
+    outline: none;
+  }
+
+  & .infinite-scroll-component {
+    ${({ staffView }) =>
+      staffView &&
       `
-        : `
       padding-right: calc(
         (
           100vw - clamp(
@@ -66,19 +85,5 @@ export const ChatContainer = styled.div.attrs({ className: 'chat-container' })<{
         ) / 2
       );
   `}
-  }
-`
-
-export const MessagesScrollable = styled.div.attrs({
-  className: 'messages-scrollable'
-})`
-  height: 100%;
-  width: 100%;
-  overflow-y: auto;
-  display: grid;
-  grid-row-gap: 2rem;
-
-  &:focus {
-    outline: none;
   }
 `

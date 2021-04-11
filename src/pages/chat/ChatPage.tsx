@@ -13,7 +13,13 @@ import { useMst } from '../../models/reactHook'
 import { ChatType } from '../../models/ChatModel'
 import DateMessages from './DateMessages'
 import { OtherMessage, SelfMessage, UnreadMessagesDivider } from './Message'
-import { UsersPane } from './UsersPane'
+import {
+  UsersPane,
+  minimumChatMessageWidth,
+  inBetweenChatMessageWidth,
+  maximumChatMessageWidth,
+  usersPaneWidth
+} from './UsersPane'
 import {
   ChatContainer,
   ChatPageContainer,
@@ -29,7 +35,7 @@ const StyledIconButton = styled(IconButton)`
 
 const UserInputSection = styled.section.attrs({
   className: 'user-input-section'
-})`
+})<{ staffView: boolean }>`
   display: grid;
   grid-template-columns: 1fr max-content;
   grid-gap: 1rem;
@@ -39,6 +45,20 @@ const UserInputSection = styled.section.attrs({
   margin-top: 0.5rem;
   justify-self: center;
   margin-bottom: 0.3rem;
+
+  ${({ staffView }) =>
+    staffView &&
+    `
+      padding-right: calc(
+        (
+          100vw - clamp(
+            calc(${minimumChatMessageWidth} + ${usersPaneWidth}),
+            ${inBetweenChatMessageWidth},
+            calc(${maximumChatMessageWidth} + ${usersPaneWidth})
+          )
+        ) / 2
+      );
+  `}
 
   @media (max-width: 54em) {
     width: 90%;
@@ -90,7 +110,7 @@ const StyledLinearProgress = styled(LinearProgress)`
   && {
     flex: 1 0 4px;
     margin-bottom: 0;
-    margin-top: 2px;
+    margin-top: 0.5rem;
   }
 `
 
@@ -203,7 +223,11 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
     <ChatPageContainer staffView={!!store.chats.withUsers}>
       {store.chats.withUsers && <UsersPane />}
       <ChatContainer staffView={!!store.chats.withUsers}>
-        <MessagesScrollable tabIndex={0} ref={containerDomRef}>
+        <MessagesScrollable
+          tabIndex={0}
+          ref={containerDomRef}
+          staffView={!!store.chats.withUsers}
+        >
           <StyledInfiniteScroll
             dataLength={chat.orderedMessages.length}
             hasMore={true}
@@ -215,7 +239,7 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
             {messagesInDays}
           </StyledInfiniteScroll>
         </MessagesScrollable>
-        <UserInputSection>
+        <UserInputSection staffView={!!store.chats.withUsers}>
           <TextField
             id="user-input"
             label={

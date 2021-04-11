@@ -1,5 +1,4 @@
 import React, { ReactNode, CSSProperties } from 'react'
-import { throttle } from 'throttle-debounce'
 import { usePrevious } from '../../../hooks/usePrevious'
 import { ThresholdUnits, parseThreshold } from './threshold'
 
@@ -33,11 +32,6 @@ export default function InfiniteScroll(props: Props) {
     pullToRefreshThresholdBreached,
     setPullToRefreshThresholdBreached
   ] = React.useState(false)
-
-  const throttledOnScrollListener: (e: MouseEvent) => void = throttle(
-    150,
-    onScrollListener
-  )
 
   const el = React.useRef<
     HTMLElement | undefined | (Window & typeof globalThis)
@@ -80,7 +74,7 @@ export default function InfiniteScroll(props: Props) {
     if (el.current) {
       el.current.addEventListener(
         'scroll',
-        throttledOnScrollListener as EventListenerOrEventListenerObject
+        onScrollListener as EventListenerOrEventListenerObject
       )
     }
   }, [])
@@ -131,7 +125,7 @@ export default function InfiniteScroll(props: Props) {
       if (el.current) {
         el.current.removeEventListener(
           'scroll',
-          throttledOnScrollListener as EventListenerOrEventListenerObject
+          onScrollListener as EventListenerOrEventListenerObject
         )
 
         if (props.pullDownToRefresh) {
@@ -288,42 +282,42 @@ export default function InfiniteScroll(props: Props) {
     )
   }
 
-  function onScrollListener(event: MouseEvent) {
+  function onScrollListener(evt: MouseEvent) {
     if (typeof props.onScroll === 'function') {
       // Execute this callback in next tick so that it does not affect the
       // functionality of the library.
-      setTimeout(() => props.onScroll && props.onScroll(event), 0)
+      setTimeout(() => props.onScroll && props.onScroll(evt), 0)
     }
 
     const target =
       props.height || _scrollableNode.current
-        ? (event.target as HTMLElement)
+        ? (evt.target as HTMLElement)
         : document.documentElement.scrollTop
         ? document.documentElement
         : document.body
 
     // return immediately if the action has already been triggered,
     // prevents multiple triggers.
-    if (actionTriggered) return
+    if (!actionTriggered) {
+      const atBottom = props.inverse
+        ? isElementAtTop(target, props.scrollThreshold)
+        : isElementAtBottom(target, props.scrollThreshold)
 
-    const atBottom = props.inverse
-      ? isElementAtTop(target, props.scrollThreshold)
-      : isElementAtBottom(target, props.scrollThreshold)
+      // call the `next` function in the props to trigger the next data fetch
+      if (atBottom && props.hasMore) {
+        setActionTriggered(true)
+        setShowLoader(true)
+        if (el.current instanceof HTMLElement)
+          setEdgeElementBeforeScroll(
+            (props.inverse
+              ? el.current.firstElementChild?.nextElementSibling
+              : el.current.lastElementChild?.previousElementSibling) || null
+          )
+        props?.next()
+      }
 
-    // call the `next` function in the props to trigger the next data fetch
-    if (atBottom && props.hasMore) {
-      setActionTriggered(true)
-      setShowLoader(true)
-      if (el.current instanceof HTMLElement)
-        setEdgeElementBeforeScroll(
-          (props.inverse
-            ? el.current.firstElementChild?.nextElementSibling
-            : el.current.lastElementChild?.previousElementSibling) || null
-        )
-      props?.next()
+      lastScrollTop = target.scrollTop
     }
-
-    lastScrollTop = target.scrollTop
   }
 
   const style = {
