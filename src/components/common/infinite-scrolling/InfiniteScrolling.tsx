@@ -1,5 +1,3 @@
-// adapted from https://github.com/ankeetmaini/react-infinite-scroll-component
-
 import React, { Component, ReactNode, CSSProperties } from 'react'
 import { throttle } from 'throttle-debounce'
 import { ThresholdUnits, parseThreshold } from './threshold'
@@ -242,7 +240,7 @@ export default class InfiniteScroll extends Component<Props, State> {
     })
   }
 
-  isElementAtTop(target: HTMLElement, scrollThreshold: string | number = 0.8) {
+  isElementAtTop(target: HTMLElement, scrollThreshold: string | number = 0.9) {
     const clientHeight =
       target === document.body || target === document.documentElement
         ? window.screen.availHeight
@@ -251,21 +249,15 @@ export default class InfiniteScroll extends Component<Props, State> {
     const threshold = parseThreshold(scrollThreshold)
 
     if (threshold.unit === ThresholdUnits.Pixel) {
-      return (
-        target.scrollTop <=
-        threshold.value + clientHeight - target.scrollHeight + 1
-      )
+      return target.scrollTop <= threshold.value + 1
     }
 
-    return (
-      target.scrollTop <=
-      threshold.value / 100 + clientHeight - target.scrollHeight + 1
-    )
+    return target.scrollTop <= threshold.value / 100 + 1
   }
 
   isElementAtBottom(
     target: HTMLElement,
-    scrollThreshold: string | number = 0.8
+    scrollThreshold: string | number = 0.95
   ) {
     const clientHeight =
       target === document.body || target === document.documentElement
@@ -349,6 +341,16 @@ export default class InfiniteScroll extends Component<Props, State> {
           ref={(infScroll: HTMLDivElement) => (this._infScroll = infScroll)}
           style={style}
         >
+          {this.props.inverse &&
+            !this.state.showLoader &&
+            !hasChildren &&
+            this.props.hasMore &&
+            this.props.loader}
+          {this.props.inverse &&
+            this.state.showLoader &&
+            this.props.hasMore &&
+            this.props.loader}
+
           {this.props.pullDownToRefresh && (
             <div
               style={{ position: 'relative' }}
@@ -369,11 +371,15 @@ export default class InfiniteScroll extends Component<Props, State> {
             </div>
           )}
           {this.props.children}
-          {!this.state.showLoader &&
+          {!this.props.inverse &&
+            !this.state.showLoader &&
             !hasChildren &&
             this.props.hasMore &&
             this.props.loader}
-          {this.state.showLoader && this.props.hasMore && this.props.loader}
+          {!this.props.inverse &&
+            this.state.showLoader &&
+            this.props.hasMore &&
+            this.props.loader}
           {!this.props.hasMore && this.props.endMessage}
         </div>
       </div>
