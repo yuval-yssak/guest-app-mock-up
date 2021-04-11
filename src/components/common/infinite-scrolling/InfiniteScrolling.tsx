@@ -46,6 +46,10 @@ export default function InfiniteScroll(props: Props) {
   const _infScroll = React.useRef<HTMLDivElement | undefined>()
   let lastScrollTop = 0
   const [actionTriggered, setActionTriggered] = React.useState(false)
+  const [
+    edgeElementBeforeScroll,
+    setEdgeElementBeforeScroll
+  ] = React.useState<Element | null>()
   const _pullDown = React.useRef<HTMLDivElement | undefined>()
 
   // variables to keep track of pull down behaviour
@@ -65,7 +69,9 @@ export default function InfiniteScroll(props: Props) {
           ` when loading more content. Check README.md for usage`
       )
     }
+  }, [])
 
+  React.useEffect(() => {
     _scrollableNode.current = getScrollableTarget()
     el.current = props.height
       ? _infScroll.current
@@ -77,7 +83,9 @@ export default function InfiniteScroll(props: Props) {
         throttledOnScrollListener as EventListenerOrEventListenerObject
       )
     }
+  }, [])
 
+  React.useEffect(() => {
     if (
       typeof props.initialScrollY === 'number' &&
       el.current &&
@@ -86,8 +94,18 @@ export default function InfiniteScroll(props: Props) {
     ) {
       el.current.scrollTo(0, props.initialScrollY)
     }
+  }, [])
 
+  React.useEffect(() => {
     if (props.pullDownToRefresh && el.current) {
+      if (typeof props.refreshFunction !== 'function') {
+        throw new Error(
+          `Mandatory prop "refreshFunction" missing.
+        Pull Down To Refresh functionality will not work
+        as expected. Check README.md for usage'`
+        )
+      }
+
       el.current.addEventListener('touchstart', onStart)
       el.current.addEventListener('touchmove', onMove)
       el.current.addEventListener('touchend', onEnd)
@@ -104,17 +122,11 @@ export default function InfiniteScroll(props: Props) {
             .firstChild as HTMLDivElement).getBoundingClientRect().height) ||
         0
 
+      // not sure this is needed...
       forceUpdate()
-
-      if (typeof props.refreshFunction !== 'function') {
-        throw new Error(
-          `Mandatory prop "refreshFunction" missing.
-          Pull Down To Refresh functionality will not work
-          as expected. Check README.md for usage'`
-        )
-      }
     }
 
+    // teardown logic
     return function () {
       if (el.current) {
         el.current.removeEventListener(
@@ -139,6 +151,20 @@ export default function InfiniteScroll(props: Props) {
   React.useLayoutEffect(() => {
     if (props.dataLength !== previousDataLength) {
       setActionTriggered(false)
+      if (edgeElementBeforeScroll) {
+        setImmediate(() => {
+          console.log('scroll to ', edgeElementBeforeScroll)
+          edgeElementBeforeScroll.scrollIntoView(
+            props.inverse
+              ? true
+              : {
+                  behavior: 'smooth',
+                  block: 'start',
+                  inline: 'nearest'
+                }
+          )
+        })
+      }
       setShowLoader(false)
     } else {
       console.warn("checkout - data length changed but didn't change really...")
@@ -288,6 +314,12 @@ export default function InfiniteScroll(props: Props) {
     if (atBottom && props.hasMore) {
       setActionTriggered(true)
       setShowLoader(true)
+      if (el.current instanceof HTMLElement)
+        setEdgeElementBeforeScroll(
+          (props.inverse
+            ? el.current.firstElementChild?.nextElementSibling
+            : el.current.lastElementChild?.previousElementSibling) || null
+        )
       props?.next()
     }
 

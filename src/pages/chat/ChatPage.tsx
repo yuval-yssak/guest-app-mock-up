@@ -102,6 +102,11 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
 
   const containerDomRef = React.createRef<HTMLDivElement>()
   const [containerHeight, setContainerHeight] = React.useState(0)
+  const [beforeAnyScroll, setBeforeAnyScroll] = React.useState(true)
+
+  React.useEffect(() => {
+    setBeforeAnyScroll(true)
+  }, [store.view.id])
 
   // track divHeight whenever DOM element changes
   React.useEffect(() => {
@@ -137,7 +142,8 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
       )
       console.log(newMessages)
       store.chats.findChat(+(store.view.id || ''))?.insertMessages(newMessages)
-    }, 4000)
+      setBeforeAnyScroll(false)
+    }, 1000)
   }
 
   // build message react components
@@ -152,15 +158,22 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
 
   // scroll last read message or first unread messages on any update
   React.useEffect(() => {
-    setTimeout(() => {
-      if (chat?.unreadCount) dividerRef.current?.scrollIntoView(true)
-      else {
-        containerDomRef.current
-          ?.querySelector('.date-messages:last-of-type section:last-child')
-          ?.scrollIntoView()
-      }
-    }, 3000)
-  }, [chat?.unreadCount, chat?.messages.length, dividerRef, containerDomRef])
+    if (beforeAnyScroll)
+      setImmediate(() => {
+        if (chat?.unreadCount) dividerRef.current?.scrollIntoView(true)
+        else {
+          containerDomRef.current
+            ?.querySelector('.date-messages:last-of-type section:last-child')
+            ?.scrollIntoView()
+        }
+      })
+  }, [
+    chat?.unreadCount,
+    chat?.messages.length,
+    dividerRef,
+    containerDomRef,
+    beforeAnyScroll
+  ])
 
   function submitMessage() {
     if (!userInput.trim()) return

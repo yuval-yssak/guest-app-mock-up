@@ -209,7 +209,7 @@ export function generateUsers(count: number, idOffset: number): UserType[] {
 }
 
 function randomlyChooseLastReadMessageTime(messages: MessageCreationType[]) {
-  return Math.random() > 0.5
+  return Math.random() > 0.6
     ? messages[Math.floor(Math.random() * messages.length)]?.timestamp
     : undefined
 }
