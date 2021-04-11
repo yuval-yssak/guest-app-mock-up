@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import SendIcon from '@material-ui/icons/Send'
 import styled from 'styled-components'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import InfiniteScroll from '../../components/common/infinite-scrolling/InfiniteScrolling'
 
 import { useMst } from '../../models/reactHook'
 import { ChatType } from '../../models/ChatModel'
@@ -78,14 +78,11 @@ const StickyDayLabel = styled.div.attrs(({ day }: { day: string }) => ({
 `
 
 const StyledInfiniteScroll = styled(InfiniteScroll)`
-  display: flex;
-  flex-direction: column-reverse;
+  display: grid;
+  grid-row-gap: 2rem;
+
   &:focus {
     outline: none;
-  }
-
-  & > *:not(:first-child) {
-    margin-bottom: 2rem;
   }
 `
 
@@ -135,7 +132,8 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
       const newMessages = generateRandomMessages(
         store.users,
         +(store.view.id || '')!,
-        3
+        3,
+        dayjs().subtract(10, 'days').toDate()
       )
       console.log(newMessages)
       store.chats.findChat(+(store.view.id || ''))?.insertMessages(newMessages)

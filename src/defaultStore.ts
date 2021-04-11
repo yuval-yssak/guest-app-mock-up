@@ -176,12 +176,7 @@ const defaultStore: RootStoreSnapshotIn = {
     withUsers: users
       .filter(user => user.id !== loggedInUser)
       .map(user => {
-        const messages = generateRandomMessages(
-          users,
-          user.id,
-          20,
-          dayjs().subtract(14, 'days').toDate()
-        )
+        const messages = generateRandomMessages(users, user.id, 20)
 
         return {
           user: user.id,
@@ -193,12 +188,7 @@ const defaultStore: RootStoreSnapshotIn = {
       }),
 
     withSelf: (() => {
-      const messages = generateRandomMessages(
-        users,
-        loggedInUser,
-        20,
-        dayjs().subtract(14, 'days').toDate()
-      )
+      const messages = generateRandomMessages(users, loggedInUser, 20)
 
       return {
         messages,
