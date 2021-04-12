@@ -10,9 +10,10 @@ import PageContentWrapper from '../../components/PageContentWrapper'
 export const ChatPageContainer = styled(PageContentWrapper).attrs({
   className: 'chat-page-container'
 })<{ staffView: boolean }>`
-  overflow: hidden; // scrolling is only in the inner messages container
-  grid-template-columns: ${props =>
-    props.staffView
+  /* display: none; */
+  /* overflow: hidden; // scrolling is only in the inner messages container */
+  grid-template-columns: ${({ staffView }) =>
+    staffView
       ? `calc(
             (
               100vw - clamp(
@@ -23,8 +24,8 @@ export const ChatPageContainer = styled(PageContentWrapper).attrs({
             ) / 2 + ${usersPaneWidth})
           1fr`
       : '1fr'};
-  align-items: start;
-
+  align-items: stretch;
+  /* height: 50%; */
   @media (max-width: 52em) {
     padding: 0 0.3rem;
   }
@@ -40,7 +41,7 @@ export const ChatContainer = styled.div.attrs({ className: 'chat-container' })<{
 
   // scrolling is only in the inner messages container
   overflow: hidden;
-  height: 100%;
+  max-height: 100%;
 
   // set widths for children
   & > * {

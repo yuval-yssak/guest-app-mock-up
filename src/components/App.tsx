@@ -33,9 +33,9 @@ const scaleFrom0 = keyframes`
 }`
 
 const Background = styled.div.attrs({ className: 'background' })`
-  height: 100%;
+  max-height: 100%;
   position: relative;
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
 
   &::before {
     content: '';
