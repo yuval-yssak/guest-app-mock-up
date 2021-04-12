@@ -1,4 +1,5 @@
 import { types, getRoot, SnapshotIn, Instance } from 'mobx-state-tree'
+import { ViewType } from './ViewModel'
 
 function compareByTimestamp(
   a: AnnouncementInstanceType,
@@ -48,8 +49,8 @@ const AnnouncementsProps = types
   .views(self => ({
     get snackbar() {
       const importantUnread = self.unread.find(a => a.priority === 'high')
-      // @ts-ignore
-      return importantUnread && getRoot(self).view.page !== '/announcements'
+      return importantUnread &&
+        ((getRoot(self) as any).view as ViewType).page !== '/announcements'
         ? importantUnread.summary
         : ''
     }

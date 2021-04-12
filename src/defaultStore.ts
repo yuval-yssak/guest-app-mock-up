@@ -217,7 +217,7 @@ function randomlyChooseLastReadMessageTime(messages: MessageCreationType[]) {
 export function generateRandomMessages(
   users: UserType[],
   selfUser: number,
-  count: number = 25,
+  count = 25,
   before: Date = new Date()
 ): MessageCreationType[] {
   const allowedUsers = users.filter(

@@ -2,7 +2,7 @@ import React, { ReactNode, CSSProperties } from 'react'
 import { usePrevious } from '../../../hooks/usePrevious'
 import { ThresholdUnits, parseThreshold } from './threshold'
 
-type Fn = () => any
+type Fn = () => void
 export interface Props {
   next: Fn
   hasMore: boolean
@@ -20,7 +20,7 @@ export interface Props {
   releaseToRefreshContent?: ReactNode
   pullDownToRefreshThreshold?: number
   refreshFunction?: Fn
-  onScroll?: (e: MouseEvent) => any
+  onScroll?: (e: MouseEvent) => void
   dataLength: number
   initialScrollY?: number
   className?: string
@@ -38,18 +38,13 @@ export default function InfiniteScroll(props: Props) {
   >()
   const _scrollableNode = React.useRef<HTMLElement | undefined | null>()
   const _infScroll = React.useRef<HTMLDivElement | undefined>()
-  let lastScrollTop = 0
+  const lastScrollTop = React.useRef(0)
   const [actionTriggered, setActionTriggered] = React.useState(false)
   const [
     edgeElementBeforeScroll,
     setEdgeElementBeforeScroll
   ] = React.useState<Element | null>()
   const _pullDown = React.useRef<HTMLDivElement | undefined>()
-
-  // variables to keep track of pull down behaviour
-  let startY = 0
-  let currentY = 0
-  let dragging = false
 
   // will be populated in componentDidMount
   // based on the height of the pull down element
@@ -65,16 +60,17 @@ export default function InfiniteScroll(props: Props) {
     }
   }, [props.dataLength])
 
+  const { height, scrollThreshold, onScroll, inverse, hasMore, next } = props
   const onScrollListener = React.useCallback(
     function (evt: MouseEvent) {
-      if (typeof props.onScroll === 'function') {
+      if (typeof onScroll === 'function') {
         // Execute this callback in next tick so that it does not affect the
         // functionality of the library.
-        setTimeout(() => props.onScroll && props.onScroll(evt), 0)
+        setTimeout(() => onScroll && onScroll(evt), 0)
       }
 
       const target =
-        props.height || _scrollableNode.current
+        height || _scrollableNode.current
           ? (evt.target as HTMLElement)
           : document.documentElement.scrollTop
           ? document.documentElement
@@ -83,27 +79,27 @@ export default function InfiniteScroll(props: Props) {
       // return immediately if the action has already been triggered,
       // prevents multiple triggers.
       if (!actionTriggered) {
-        const atBottom = props.inverse
-          ? isElementAtTop(target, props.scrollThreshold)
-          : isElementAtBottom(target, props.scrollThreshold)
+        const atBottom = inverse
+          ? isElementAtTop(target, scrollThreshold)
+          : isElementAtBottom(target, scrollThreshold)
 
         // call the `next` function in the props to trigger the next data fetch
-        if (atBottom && props.hasMore) {
+        if (atBottom && hasMore) {
           setActionTriggered(true)
           setShowLoader(true)
           if (el.current instanceof HTMLElement)
             setEdgeElementBeforeScroll(
-              (props.inverse
+              (inverse
                 ? el.current.firstElementChild?.nextElementSibling
                 : el.current.lastElementChild?.previousElementSibling) || null
             )
-          props?.next()
+          next()
         }
 
-        lastScrollTop = target.scrollTop
+        lastScrollTop.current = target.scrollTop
       }
     },
-    [props.height, props.scrollThreshold]
+    [height, scrollThreshold, actionTriggered, hasMore, inverse, onScroll, next]
   )
 
   React.useEffect(() => {
@@ -146,9 +142,20 @@ export default function InfiniteScroll(props: Props) {
     }
   }, [props.initialScrollY])
 
+  const {
+    pullDownToRefresh,
+    pullDownToRefreshThreshold,
+    refreshFunction
+  } = props
+
   React.useEffect(() => {
+    // variables to keep track of pull down behaviour
+    let startY = 0
+    let currentY = 0
+    let dragging = false
+
     function onStart(evt: Event) {
-      if (lastScrollTop) return
+      if (lastScrollTop.current) return
 
       dragging = true
 
@@ -177,7 +184,7 @@ export default function InfiniteScroll(props: Props) {
       // user is scrolling down to up
       if (currentY < startY) return
 
-      if (currentY - startY >= Number(props.pullDownToRefreshThreshold)) {
+      if (currentY - startY >= Number(pullDownToRefreshThreshold)) {
         setPullToRefreshThresholdBreached(true)
       }
 
@@ -199,7 +206,7 @@ export default function InfiniteScroll(props: Props) {
       dragging = false
 
       if (pullToRefreshThresholdBreached) {
-        props.refreshFunction?.()
+        refreshFunction?.()
         setPullToRefreshThresholdBreached(false)
       }
 
@@ -213,8 +220,8 @@ export default function InfiniteScroll(props: Props) {
       })
     }
 
-    if (props.pullDownToRefresh && el.current) {
-      if (typeof props.refreshFunction !== 'function') {
+    if (pullDownToRefresh && el.current) {
+      if (typeof refreshFunction !== 'function') {
         throw new Error(
           `Mandatory prop "refreshFunction" missing.
         Pull Down To Refresh functionality will not work
@@ -250,7 +257,7 @@ export default function InfiniteScroll(props: Props) {
           onScrollListener as EventListenerOrEventListenerObject
         )
 
-        if (props.pullDownToRefresh) {
+        if (pullDownToRefresh) {
           el.current.removeEventListener('touchstart', onStart)
           el.current.removeEventListener('touchmove', onMove)
           el.current.removeEventListener('touchend', onEnd)
@@ -261,7 +268,13 @@ export default function InfiniteScroll(props: Props) {
         }
       }
     }
-  }, [onScrollListener, props.pullDownToRefresh, props.refreshFunction])
+  }, [
+    onScrollListener,
+    pullDownToRefresh,
+    refreshFunction,
+    pullToRefreshThresholdBreached,
+    pullDownToRefreshThreshold
+  ])
 
   const previousDataLength = usePrevious(props.dataLength)
   React.useLayoutEffect(() => {
