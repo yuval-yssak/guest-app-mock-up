@@ -20,8 +20,9 @@ import PeoplePage from '../pages/People/People'
 import ManualSignUpPage from '../pages/ManualSignUpPage'
 import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
 import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirport'
-import AnnouncementSnackbar from './AnnouncementSnackbar'
 import { useMst } from '../models/reactHook'
+import { SnackbarProvider } from 'notistack'
+import WarningsNotifier from './WarningsNotifier'
 
 const scaleFrom0 = keyframes`
 0% {
@@ -74,7 +75,7 @@ const Main = styled.main`
   }
 `
 
-const AppWrapper = styled.div`
+const AppWrapper = styled.div<{ online: boolean }>`
   width: 100%;
   height: 100vh; /* Fallback for browsers that do not support Custom Properties */
   height: calc(
@@ -82,7 +83,8 @@ const AppWrapper = styled.div`
   ); // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
   display: grid;
   grid-template-rows: min-content 1fr min-content;
-  background-color: ${({ theme }) => theme.palette.background.paper};
+  background-color: ${({ theme, online }) =>
+    online ? theme.palette.background.paper : theme.palette.grey['300']};
 `
 
 function setGlobalVhProperty() {
@@ -94,6 +96,7 @@ function setGlobalVhProperty() {
 
 function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false)
+  const [online, setOnline] = React.useState(true)
   const mainRef = React.createRef<HTMLElement>()
   const store = useMst()
 
@@ -101,6 +104,22 @@ function App() {
     setGlobalVhProperty()
     window.addEventListener('resize', setGlobalVhProperty)
     return () => window.removeEventListener('resize', setGlobalVhProperty)
+  }, [])
+
+  React.useEffect(() => {
+    function setOnlineTrue() {
+      setOnline(true)
+    }
+    window.addEventListener('online', setOnlineTrue)
+    return () => window.removeEventListener('online', setOnlineTrue)
+  }, [])
+
+  React.useEffect(() => {
+    function setOnlineFalse() {
+      setOnline(false)
+    }
+    window.addEventListener('offline', setOnlineFalse)
+    return () => window.removeEventListener('offline', setOnlineFalse)
   }, [])
 
   function getPageTitle() {
@@ -172,53 +191,58 @@ function App() {
       <CssReset />
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
-          <AppWrapper>
-            {store.view.page === '/login' ? (
-              <LoginPage />
-            ) : store.view.page === '/manualSignup' ? (
-              <ManualSignUpPage />
-            ) : (
-              <>
-                <AppBar
-                  toggleDrawer={toggleDrawer}
-                  pageTitle={getPageTitle()}
-                />
-                <Background>
-                  <Main ref={mainRef} tabIndex={-1}>
-                    {store.view.page === '/root' && <h1>Dashboard</h1>}
-                    {store.view.page === '/announcements' && (
-                      <AnnouncementsPage />
-                    )}
-                    {store.view.page === '/chat' && (
-                      <ChatPage withPerson={store.view.id} />
-                    )}
-                    {store.view.page === '/info-section' && (
-                      <InfoSectionPage page={store.view.id || ''} />
-                    )}
-                    {store.view.page === '/info-section/abc/123' && (
-                      <div>Specific page inside two levels of navigation</div>
-                    )}
-                    {store.view.page ===
-                      '/info-section/arriving-at-the-airport' && (
-                      <InfoArrivingAtTheAirport />
-                    )}
-                    {store.view.page === '/map' && <div>Map</div>}
-                    {store.view.page === '/my-bookings' && (
-                      <div>Account Details Page</div>
-                    )}
-                    {store.view.page.match(/\/people(\/|$)/) && <PeoplePage />}
-                    {store.view.page === '/settings' && <SettingsPage />}
-                    {store.view.page === '/activities' && (
-                      <div>Activities Page</div>
-                    )}
-                  </Main>
-                </Background>
-                <AnnouncementSnackbar />
-                <AnimatedBottomNavigation />
-              </>
-            )}
-          </AppWrapper>
-          <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
+          <SnackbarProvider>
+            <WarningsNotifier />
+            <AppWrapper online={online}>
+              {store.view.page === '/login' ? (
+                <LoginPage />
+              ) : store.view.page === '/manualSignup' ? (
+                <ManualSignUpPage />
+              ) : (
+                <>
+                  <AppBar
+                    toggleDrawer={toggleDrawer}
+                    pageTitle={getPageTitle()}
+                  />
+                  <Background>
+                    <Main ref={mainRef} tabIndex={-1}>
+                      {store.view.page === '/root' && <h1>Dashboard</h1>}
+                      {store.view.page === '/announcements' && (
+                        <AnnouncementsPage />
+                      )}
+                      {store.view.page === '/chat' && (
+                        <ChatPage withPerson={store.view.id} />
+                      )}
+                      {store.view.page === '/info-section' && (
+                        <InfoSectionPage page={store.view.id || ''} />
+                      )}
+                      {store.view.page === '/info-section/abc/123' && (
+                        <div>Specific page inside two levels of navigation</div>
+                      )}
+                      {store.view.page ===
+                        '/info-section/arriving-at-the-airport' && (
+                        <InfoArrivingAtTheAirport />
+                      )}
+                      {store.view.page === '/map' && <div>Map</div>}
+                      {store.view.page === '/my-bookings' && (
+                        <div>Account Details Page</div>
+                      )}
+                      {store.view.page.match(/\/people(\/|$)/) && (
+                        <PeoplePage />
+                      )}
+                      {store.view.page === '/settings' && <SettingsPage />}
+                      {store.view.page === '/activities' && (
+                        <div>Activities Page</div>
+                      )}
+                    </Main>
+                  </Background>
+                  {/* <AnnouncementSnackbar /> */}
+                  <AnimatedBottomNavigation />
+                </>
+              )}
+            </AppWrapper>
+            <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
+          </SnackbarProvider>{' '}
         </ThemeProvider>
       </MuiThemeProvider>
     </>

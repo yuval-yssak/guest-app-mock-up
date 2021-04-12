@@ -56,6 +56,9 @@ const AnnouncementsProps = types
     }
   }))
 
+export interface AnnouncementsInstanceType
+  extends Instance<typeof AnnouncementsModel> {}
+
 export const AnnouncementsModel = AnnouncementsProps.actions(self => ({
   add(announcement: AnnouncementCreateType) {
     self.all.push(announcement)

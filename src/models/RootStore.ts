@@ -4,6 +4,7 @@ import { Preferences } from './PreferencesModel'
 import { AnnouncementsModel } from './AnnouncementsModel'
 import { ChatsModel } from './ChatModel'
 import { UserModel, UserType } from './UserModel'
+import { WarningsModel } from './WarningModel'
 
 export interface RootStoreType extends Instance<typeof RootStore> {}
 export interface RootStoreSnapshotIn extends SnapshotIn<typeof RootStore> {}
@@ -14,7 +15,8 @@ export const RootStore = types
     announcements: types.optional(AnnouncementsModel, {}),
     chats: types.optional(ChatsModel, { withSelf: { messages: [] } }),
     loggedInUser: types.maybeNull(types.reference(UserModel)),
-    users: types.array(UserModel)
+    users: types.array(UserModel),
+    warnings: types.optional(WarningsModel, {})
   })
   .actions(self => ({
     addUsers(newUsers: UserType[]) {

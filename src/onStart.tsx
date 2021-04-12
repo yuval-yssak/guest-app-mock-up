@@ -64,4 +64,38 @@ export default function onStart(rootStore: RootStoreType) {
       document.querySelector('main')?.focus()
     }
   )
+
+  // add a warning for unread announcements
+  rootStore.warnings.add({
+    message: ``,
+    key: 'announcements',
+    allowDismiss: false,
+    autoHideDuration: null,
+    action: {
+      onClick: 'open announcements page',
+      actionText: 'See Details'
+    },
+    dismissed: true
+  })
+
+  const updateUnreadAnnouncementsWarning = (snackbar: string) => {
+    const importantUnreadCount = rootStore.announcements.unread.filter(
+      a => a.priority === 'high'
+    ).length
+
+    rootStore.warnings.list
+      .get('announcements')!
+      .updateMessageAndStatus(
+        `${importantUnreadCount} new important announcements`,
+        !snackbar
+      )
+  }
+  reaction(
+    () => rootStore.announcements.snackbar,
+    updateUnreadAnnouncementsWarning
+  )
+  setTimeout(
+    () => updateUnreadAnnouncementsWarning(rootStore.announcements.snackbar),
+    15000
+  )
 }
