@@ -65,7 +65,63 @@ export default function InfiniteScroll(props: Props) {
     }
   }, [props.dataLength])
 
+  const onScrollListener = React.useCallback(
+    function (evt: MouseEvent) {
+      if (typeof props.onScroll === 'function') {
+        // Execute this callback in next tick so that it does not affect the
+        // functionality of the library.
+        setTimeout(() => props.onScroll && props.onScroll(evt), 0)
+      }
+
+      const target =
+        props.height || _scrollableNode.current
+          ? (evt.target as HTMLElement)
+          : document.documentElement.scrollTop
+          ? document.documentElement
+          : document.body
+
+      // return immediately if the action has already been triggered,
+      // prevents multiple triggers.
+      if (!actionTriggered) {
+        const atBottom = props.inverse
+          ? isElementAtTop(target, props.scrollThreshold)
+          : isElementAtBottom(target, props.scrollThreshold)
+
+        // call the `next` function in the props to trigger the next data fetch
+        if (atBottom && props.hasMore) {
+          setActionTriggered(true)
+          setShowLoader(true)
+          if (el.current instanceof HTMLElement)
+            setEdgeElementBeforeScroll(
+              (props.inverse
+                ? el.current.firstElementChild?.nextElementSibling
+                : el.current.lastElementChild?.previousElementSibling) || null
+            )
+          props?.next()
+        }
+
+        lastScrollTop = target.scrollTop
+      }
+    },
+    [props.height, props.scrollThreshold]
+  )
+
   React.useEffect(() => {
+    function getScrollableTarget() {
+      if (props.scrollableTarget instanceof HTMLElement)
+        return props.scrollableTarget
+      if (typeof props.scrollableTarget === 'string') {
+        return document.getElementById(props.scrollableTarget)
+      }
+      if (props.scrollableTarget === null) {
+        console.warn(`You are trying to pass scrollableTarget but it is null. This might
+          happen because the element may not have been added to DOM yet.
+          See https://github.com/ankeetmaini/react-infinite-scroll-component/issues/59 for more info.
+        `)
+      }
+      return null
+    }
+
     _scrollableNode.current = getScrollableTarget()
     el.current = props.height
       ? _infScroll.current
@@ -77,7 +133,7 @@ export default function InfiniteScroll(props: Props) {
         onScrollListener as EventListenerOrEventListenerObject
       )
     }
-  }, [getScrollableTarget, onScrollListener, props.height])
+  }, [props.height, onScrollListener, props.scrollableTarget])
 
   React.useEffect(() => {
     if (
@@ -91,6 +147,72 @@ export default function InfiniteScroll(props: Props) {
   }, [props.initialScrollY])
 
   React.useEffect(() => {
+    function onStart(evt: Event) {
+      if (lastScrollTop) return
+
+      dragging = true
+
+      if (evt instanceof MouseEvent) {
+        startY = evt.pageY
+      } else if (evt instanceof TouchEvent) {
+        startY = evt.touches[0].pageY
+      }
+      currentY = startY
+
+      if (_infScroll.current) {
+        _infScroll.current.style.willChange = 'transform'
+        _infScroll.current.style.transition = `transform 0.2s cubic-bezier(0,0,0.31,1)`
+      }
+    }
+
+    function onMove(evt: Event) {
+      if (!dragging) return
+
+      if (evt instanceof MouseEvent) {
+        currentY = evt.pageY
+      } else if (evt instanceof TouchEvent) {
+        currentY = evt.touches[0].pageY
+      }
+
+      // user is scrolling down to up
+      if (currentY < startY) return
+
+      if (currentY - startY >= Number(props.pullDownToRefreshThreshold)) {
+        setPullToRefreshThresholdBreached(true)
+      }
+
+      // so you can drag upto 1.5 times of the maxPullDownDistance
+      if (currentY - startY > maxPullDownDistance.current * 1.5) return
+
+      if (_infScroll.current) {
+        _infScroll.current.style.overflow = 'visible'
+        _infScroll.current.style.transform = `translate3d(0px, ${
+          currentY - startY
+        }px, 0px)`
+      }
+    }
+
+    function onEnd() {
+      startY = 0
+      currentY = 0
+
+      dragging = false
+
+      if (pullToRefreshThresholdBreached) {
+        props.refreshFunction?.()
+        setPullToRefreshThresholdBreached(false)
+      }
+
+      requestAnimationFrame(() => {
+        // _infScroll.current
+        if (_infScroll.current) {
+          _infScroll.current.style.overflow = 'auto'
+          _infScroll.current.style.transform = 'none'
+          _infScroll.current.style.willChange = 'unset'
+        }
+      })
+    }
+
     if (props.pullDownToRefresh && el.current) {
       if (typeof props.refreshFunction !== 'function') {
         throw new Error(
@@ -139,7 +261,7 @@ export default function InfiniteScroll(props: Props) {
         }
       }
     }
-  }, [])
+  }, [onScrollListener, props.pullDownToRefresh, props.refreshFunction])
 
   const previousDataLength = usePrevious(props.dataLength)
   React.useLayoutEffect(() => {
@@ -169,87 +291,6 @@ export default function InfiniteScroll(props: Props) {
     edgeElementBeforeScroll,
     props.inverse
   ])
-
-  function getScrollableTarget() {
-    if (props.scrollableTarget instanceof HTMLElement)
-      return props.scrollableTarget
-    if (typeof props.scrollableTarget === 'string') {
-      return document.getElementById(props.scrollableTarget)
-    }
-    if (props.scrollableTarget === null) {
-      console.warn(`You are trying to pass scrollableTarget but it is null. This might
-        happen because the element may not have been added to DOM yet.
-        See https://github.com/ankeetmaini/react-infinite-scroll-component/issues/59 for more info.
-      `)
-    }
-    return null
-  }
-
-  const onStart: EventListener = (evt: Event) => {
-    if (lastScrollTop) return
-
-    dragging = true
-
-    if (evt instanceof MouseEvent) {
-      startY = evt.pageY
-    } else if (evt instanceof TouchEvent) {
-      startY = evt.touches[0].pageY
-    }
-    currentY = startY
-
-    if (_infScroll.current) {
-      _infScroll.current.style.willChange = 'transform'
-      _infScroll.current.style.transition = `transform 0.2s cubic-bezier(0,0,0.31,1)`
-    }
-  }
-
-  const onMove: EventListener = (evt: Event) => {
-    if (!dragging) return
-
-    if (evt instanceof MouseEvent) {
-      currentY = evt.pageY
-    } else if (evt instanceof TouchEvent) {
-      currentY = evt.touches[0].pageY
-    }
-
-    // user is scrolling down to up
-    if (currentY < startY) return
-
-    if (currentY - startY >= Number(props.pullDownToRefreshThreshold)) {
-      setPullToRefreshThresholdBreached(true)
-    }
-
-    // so you can drag upto 1.5 times of the maxPullDownDistance
-    if (currentY - startY > maxPullDownDistance.current * 1.5) return
-
-    if (_infScroll.current) {
-      _infScroll.current.style.overflow = 'visible'
-      _infScroll.current.style.transform = `translate3d(0px, ${
-        currentY - startY
-      }px, 0px)`
-    }
-  }
-
-  const onEnd: EventListener = () => {
-    startY = 0
-    currentY = 0
-
-    dragging = false
-
-    if (pullToRefreshThresholdBreached) {
-      props.refreshFunction?.()
-      setPullToRefreshThresholdBreached(false)
-    }
-
-    requestAnimationFrame(() => {
-      // _infScroll.current
-      if (_infScroll.current) {
-        _infScroll.current.style.overflow = 'auto'
-        _infScroll.current.style.transform = 'none'
-        _infScroll.current.style.willChange = 'unset'
-      }
-    })
-  }
 
   function isElementAtTop(
     target: HTMLElement,
@@ -285,44 +326,6 @@ export default function InfiniteScroll(props: Props) {
       target.scrollTop + clientHeight >=
       (threshold.value / 100) * target.scrollHeight
     )
-  }
-
-  function onScrollListener(evt: MouseEvent) {
-    if (typeof props.onScroll === 'function') {
-      // Execute this callback in next tick so that it does not affect the
-      // functionality of the library.
-      setTimeout(() => props.onScroll && props.onScroll(evt), 0)
-    }
-
-    const target =
-      props.height || _scrollableNode.current
-        ? (evt.target as HTMLElement)
-        : document.documentElement.scrollTop
-        ? document.documentElement
-        : document.body
-
-    // return immediately if the action has already been triggered,
-    // prevents multiple triggers.
-    if (!actionTriggered) {
-      const atBottom = props.inverse
-        ? isElementAtTop(target, props.scrollThreshold)
-        : isElementAtBottom(target, props.scrollThreshold)
-
-      // call the `next` function in the props to trigger the next data fetch
-      if (atBottom && props.hasMore) {
-        setActionTriggered(true)
-        setShowLoader(true)
-        if (el.current instanceof HTMLElement)
-          setEdgeElementBeforeScroll(
-            (props.inverse
-              ? el.current.firstElementChild?.nextElementSibling
-              : el.current.lastElementChild?.previousElementSibling) || null
-          )
-        props?.next()
-      }
-
-      lastScrollTop = target.scrollTop
-    }
   }
 
   const style = {

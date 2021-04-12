@@ -8,7 +8,7 @@ import {
 } from 'mobx-state-tree'
 import dayjs from 'dayjs'
 import { now } from 'mobx-utils'
-import { UserModel, UserType } from './UserModel'
+import { UserModel } from './UserModel'
 import { ViewType } from './ViewModel'
 const MessageModel = types
   .model('MessageModel', {
@@ -110,11 +110,11 @@ export const ChatsModel = types
   }))
 
 export interface UserChatSnapshotType
-  extends SnapshotOut<typeof UserChatModel> {}
+  extends SnapshotOut<typeof UserChatModel> { }
 export interface UserChatCreationType
-  extends SnapshotIn<typeof UserChatModel> {}
-export interface UserChatType extends Instance<typeof UserChatModel> {}
-export interface ChatType extends Instance<typeof ChatModel> {}
-export interface MessageType extends Instance<typeof MessageModel> {}
-export interface MessageCreationType extends SnapshotIn<typeof MessageModel> {}
-export interface ChatsType extends Instance<typeof ChatsModel> {}
+  extends SnapshotIn<typeof UserChatModel> { }
+export interface UserChatType extends Instance<typeof UserChatModel> { }
+export interface ChatType extends Instance<typeof ChatModel> { }
+export interface MessageType extends Instance<typeof MessageModel> { }
+export interface MessageCreationType extends SnapshotIn<typeof MessageModel> { }
+export interface ChatsType extends Instance<typeof ChatsModel> { }
