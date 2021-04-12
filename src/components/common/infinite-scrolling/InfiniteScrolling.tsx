@@ -53,8 +53,8 @@ export default function InfiniteScroll(props: Props) {
 
   // will be populated in componentDidMount
   // based on the height of the pull down element
-  let maxPullDownDistance = 0
-  const [_, forceUpdate] = React.useReducer(x => x + 1, 0)
+  const maxPullDownDistance = React.useRef(0)
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
 
   React.useEffect(() => {
     if (typeof props.dataLength === 'undefined') {
@@ -63,7 +63,7 @@ export default function InfiniteScroll(props: Props) {
           ` when loading more content. Check README.md for usage`
       )
     }
-  }, [])
+  }, [props.dataLength])
 
   React.useEffect(() => {
     _scrollableNode.current = getScrollableTarget()
@@ -77,7 +77,7 @@ export default function InfiniteScroll(props: Props) {
         onScrollListener as EventListenerOrEventListenerObject
       )
     }
-  }, [])
+  }, [getScrollableTarget, onScrollListener, props.height])
 
   React.useEffect(() => {
     if (
@@ -88,7 +88,7 @@ export default function InfiniteScroll(props: Props) {
     ) {
       el.current.scrollTo(0, props.initialScrollY)
     }
-  }, [])
+  }, [props.initialScrollY])
 
   React.useEffect(() => {
     if (props.pullDownToRefresh && el.current) {
@@ -109,7 +109,7 @@ export default function InfiniteScroll(props: Props) {
       el.current.addEventListener('mouseup', onEnd)
 
       // get BCR of pullDown element to position it above
-      maxPullDownDistance =
+      maxPullDownDistance.current =
         (_pullDown.current &&
           _pullDown.current.firstChild &&
           (_pullDown.current
@@ -163,9 +163,14 @@ export default function InfiniteScroll(props: Props) {
     } else {
       console.warn("checkout - data length changed but didn't change really...")
     }
-  }, [props.dataLength, previousDataLength])
+  }, [
+    props.dataLength,
+    previousDataLength,
+    edgeElementBeforeScroll,
+    props.inverse
+  ])
 
-  const getScrollableTarget = () => {
+  function getScrollableTarget() {
     if (props.scrollableTarget instanceof HTMLElement)
       return props.scrollableTarget
     if (typeof props.scrollableTarget === 'string') {
@@ -215,7 +220,7 @@ export default function InfiniteScroll(props: Props) {
     }
 
     // so you can drag upto 1.5 times of the maxPullDownDistance
-    if (currentY - startY > maxPullDownDistance * 1.5) return
+    if (currentY - startY > maxPullDownDistance.current * 1.5) return
 
     if (_infScroll.current) {
       _infScroll.current.style.overflow = 'visible'
@@ -362,7 +367,7 @@ export default function InfiniteScroll(props: Props) {
                 position: 'absolute',
                 left: 0,
                 right: 0,
-                top: -1 * maxPullDownDistance
+                top: -1 * maxPullDownDistance.current
               }}
             >
               {pullToRefreshThresholdBreached
