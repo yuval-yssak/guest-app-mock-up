@@ -17,9 +17,8 @@ export const maximumChatMessageWidth = '60rem'
 const UsersPaneContainer = styled.div.attrs({
   className: 'users-pane-container'
 })`
-  /* display: none; */
   height: 100%;
-  overflow-y: auto;
+  overflow-y: hidden;
   padding-top: 0.4rem;
   padding-left: calc(
     (

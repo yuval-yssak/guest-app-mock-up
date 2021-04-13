@@ -40,6 +40,10 @@ export default function InfiniteScroll(props: Props) {
   const _infScroll = React.useRef<HTMLDivElement | undefined>()
   const lastScrollTop = React.useRef(0)
   const [actionTriggered, setActionTriggered] = React.useState(false)
+  const [lastElementScrollTop, setLastElementScrollTop] = React.useState<
+    number | undefined
+  >()
+  const [lastScrollHeight, setLastScrollHeight] = React.useState(0)
   const _pullDown = React.useRef<HTMLDivElement | undefined>()
 
   // will be populated in componentDidMount
@@ -83,6 +87,13 @@ export default function InfiniteScroll(props: Props) {
         if (atBottom && hasMore) {
           setActionTriggered(true)
           setShowLoader(true)
+          if (el.current instanceof HTMLElement)
+            setLastElementScrollTop(
+              inverse
+                ? el.current.firstElementChild?.nextElementSibling?.scrollTop
+                : el.current.lastElementChild?.previousElementSibling?.scrollTop
+            )
+          setLastScrollHeight((el.current as Element).scrollHeight)
           next()
         }
 
@@ -270,16 +281,22 @@ export default function InfiniteScroll(props: Props) {
   React.useLayoutEffect(() => {
     if (props.dataLength !== previousDataLength) {
       setActionTriggered(false)
-      setImmediate(() => {
-        console.log('scroll to ', lastScrollTop.current)
-        if (_scrollableNode.current)
-          _scrollableNode.current.scrollTop = lastScrollTop.current
-      })
+      if (props.inverse && el.current) {
+        ;(el.current as Element).scrollTop =
+          (el.current as Element).scrollHeight -
+          lastScrollHeight +
+          (lastElementScrollTop || 0)
+      }
+
       setShowLoader(false)
-    } else {
-      console.warn("checkout - data length changed but didn't change really...")
     }
-  }, [props.dataLength, previousDataLength, props.inverse])
+  }, [
+    props.dataLength,
+    previousDataLength,
+    lastElementScrollTop,
+    props.inverse,
+    lastScrollHeight
+  ])
 
   function isElementAtTop(
     target: HTMLElement,
@@ -319,7 +336,7 @@ export default function InfiniteScroll(props: Props) {
 
   const style = {
     height: props.height || 'auto',
-    overflow-y: 'auto',
+    overflow: 'auto',
     WebkitOverflowScrolling: 'touch',
     ...props.style
   } as CSSProperties

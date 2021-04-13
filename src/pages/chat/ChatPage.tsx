@@ -111,7 +111,7 @@ const StyledLinearProgress = styled(LinearProgress)`
   && {
     flex: 1 0 4px;
     margin-bottom: 0;
-    margin-top: 0.5rem;
+    margin-top: 0.18rem;
   }
 `
 
@@ -152,18 +152,21 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
   }, [containerDomRef, containerHeight])
 
   const userInputRef = React.createRef<HTMLDivElement>()
-  function loadNext() {
-    setTimeout(() => {
-      const newMessages = generateRandomMessages(
-        store.users,
-        +(store.view.id || '')!,
-        3,
-        dayjs().subtract(10, 'days').toDate()
-      )
-      console.log(newMessages)
-      store.chats.findChat(+(store.view.id || ''))?.insertMessages(newMessages)
-      setBeforeAnyScroll(false)
-    }, 1000)
+  function loadNext(lastTimestamp: Date) {
+    return function () {
+      setTimeout(() => {
+        const newMessages = generateRandomMessages(
+          store.users,
+          +(store.view.id || '')!,
+          30,
+          lastTimestamp
+        )
+        store.chats
+          .findChat(+(store.view.id || ''))
+          ?.insertMessages(newMessages)
+        setBeforeAnyScroll(false)
+      }, 1000)
+    }
   }
 
   // build message react components
@@ -232,7 +235,7 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
             dataLength={chat.orderedMessages.length}
             hasMore={true}
             loader={<StyledLinearProgress />}
-            next={loadNext}
+            next={loadNext(chat.orderedMessages[0].timestamp)}
             height={containerHeight - 1 - 4 - 1}
             inverse
           >
