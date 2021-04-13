@@ -96,7 +96,6 @@ function setGlobalVhProperty() {
 
 function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false)
-  const [online, setOnline] = React.useState(true)
   const mainRef = React.createRef<HTMLElement>()
   const store = useMst()
 
@@ -104,22 +103,6 @@ function App() {
     setGlobalVhProperty()
     window.addEventListener('resize', setGlobalVhProperty)
     return () => window.removeEventListener('resize', setGlobalVhProperty)
-  }, [])
-
-  React.useEffect(() => {
-    function setOnlineTrue() {
-      setOnline(true)
-    }
-    window.addEventListener('online', setOnlineTrue)
-    return () => window.removeEventListener('online', setOnlineTrue)
-  }, [])
-
-  React.useEffect(() => {
-    function setOnlineFalse() {
-      setOnline(false)
-    }
-    window.addEventListener('offline', setOnlineFalse)
-    return () => window.removeEventListener('offline', setOnlineFalse)
   }, [])
 
   function getPageTitle() {
@@ -193,7 +176,7 @@ function App() {
         <ThemeProvider theme={customTheme}>
           <SnackbarProvider>
             <WarningsNotifier />
-            <AppWrapper online={online}>
+            <AppWrapper online={store.status.online}>
               {store.view.page === '/login' ? (
                 <LoginPage />
               ) : store.view.page === '/manualSignup' ? (

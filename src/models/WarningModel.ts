@@ -1,3 +1,4 @@
+import { values } from 'mobx'
 import {
   Instance,
   types,
@@ -63,10 +64,25 @@ export const WarningsModel = types
       }
     },
     dismissOne(key: string) {
+      if (
+        ((values(self.list) as unknown) as WarningType[]).find(
+          warning => warning.key === key
+        )
+      ) {
+        console.log('now getting after if')
+        const warning = self.list.get(key)
+
+        if (warning && warning.allowDismiss) {
+          warning.dismissed = true
+          self.warningUpdateCounter++
+        }
+      }
+    },
+    removeOne(key: string) {
       const warning = self.list.get(key)
 
       if (warning) {
-        warning.dismissed = true
+        self.list.delete(key)
         self.warningUpdateCounter++
       }
     },

@@ -47,7 +47,7 @@ const AnnouncementsProps = types
   }))
 
   .views(self => ({
-    get snackbar() {
+    snackbar() {
       const importantUnreadCount = self.unread.filter(
         a => a.priority === 'high'
       ).length

@@ -68,7 +68,7 @@ export default function onStart(rootStore: RootStoreType) {
   // add a warning for unread announcements
   rootStore.warnings.add({
     message: ``,
-    key: 'announcements',
+    key: `announcements`,
     allowDismiss: false,
     autoHideDuration: null,
     action: {
@@ -79,16 +79,37 @@ export default function onStart(rootStore: RootStoreType) {
   })
 
   const updateUnreadAnnouncementsWarning = (snackbar: string) => {
+    console.log('updating snackbar')
     rootStore.warnings.list
-      .get('announcements')!
-      .updateMessageAndStatus(snackbar, !snackbar)
+      .get('announcements')
+      ?.updateMessageAndStatus(snackbar, !snackbar)
   }
   reaction(
-    () => rootStore.announcements.snackbar,
+    () => rootStore.announcements.snackbar(),
     updateUnreadAnnouncementsWarning
   )
   setTimeout(
-    () => updateUnreadAnnouncementsWarning(rootStore.announcements.snackbar),
+    () => updateUnreadAnnouncementsWarning(rootStore.announcements.snackbar()),
     15000
+  )
+
+  // add an "online/offline" status
+  window.addEventListener('online', () => rootStore.status.setOnline())
+  window.addEventListener('offline', () => rootStore.status.setOffline())
+
+  reaction(
+    () => rootStore.status.online,
+    online => {
+      if (online) {
+        rootStore.warnings.removeOne('offline')
+      } else {
+        rootStore.warnings.add({
+          key: 'offline',
+          message: 'You are offline',
+          action: { onClick: 'dismiss', actionText: 'dismiss' },
+          autoHideDuration: null
+        })
+      }
+    }
   )
 }
