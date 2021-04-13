@@ -1,94 +1,115 @@
-/* The logic here is overly complex. Can be simplified if turns out to be buggy */
+/**
+ * Synchronizes the warnings in the store with the enqueued snackbars.
+ *
+ * Relies on store.warnings.warningUpdateCounter being updated whenever any
+ * chnage to the warnings is made within the store.
+ *
+ * A warning can change its message while still keeping the same key.
+ * When it does - it gets closed and enqueued again.
+ * This is handled by design implicitly. See comments below.
+ */
 
-import React from 'react'
 import { observer } from 'mobx-react-lite'
 import Button from '@material-ui/core/Button'
 import { useMst } from '../models/reactHook'
-import { useSnackbar } from 'notistack'
-import { values } from 'mobx'
+import { useSnackbar, ProviderContext } from 'notistack'
+import { values, reaction } from 'mobx'
 import { WarningType } from '../models/WarningModel'
+import { RootStoreType } from '../models/RootStore'
+import { v4 as uuidv4 } from 'uuid'
+
+const queuedWarnings: {
+  storeKey: string
+  enqueuedKey: string
+  message: string
+}[] = []
+
+function syncWarningsWithStore(
+  { enqueueSnackbar, closeSnackbar }: ProviderContext,
+  store: RootStoreType
+) {
+  const storeWarnings = (values(
+    store.warnings.list
+  ) as unknown) as WarningType[]
+
+  // handle removed warnings
+  const removedWarnings = queuedWarnings.filter(
+    queuedWarning =>
+      !storeWarnings
+        .filter(w => !w.dismissed)
+        .some(
+          storeWarning =>
+            storeWarning.key === queuedWarning.storeKey &&
+            // compare message content alongside the key.
+            // If any changes - the current snackbar will be closed.
+            storeWarning.message === queuedWarning.message
+        )
+  )
+  removedWarnings.forEach(removedWarning => {
+    closeSnackbar(removedWarning.enqueuedKey)
+    queuedWarnings.splice(
+      queuedWarnings.findIndex(
+        queuedWarning =>
+          queuedWarning.enqueuedKey === removedWarning.enqueuedKey
+      ),
+      1
+    )
+  })
+
+  // handle added warnings
+
+  // in case a message was altered, the previous snackbar has been closed,
+  // so it will reappear as an unqueued warning here:
+  const unqueuedWarnings = storeWarnings
+    .filter(w => !w.dismissed)
+    .filter(
+      storeWarning =>
+        !queuedWarnings.some(
+          queuedWarning => storeWarning.key === queuedWarning.storeKey
+        )
+    )
+  unqueuedWarnings.forEach(unqueuedWarning => {
+    const action = unqueuedWarning.action ? (
+      <Button
+        onClick={() => unqueuedWarning.performAction()}
+        size="small"
+        variant="contained"
+      >
+        {unqueuedWarning.action.actionText}
+      </Button>
+    ) : undefined
+
+    const enqueuedKey = uuidv4()
+
+    // keep a unique key separate from the one in the store to allow multiple
+    // warnings to issued in parallel.
+    // This is needed since after closing a snackbar in notistack, there is an
+    // approximately one second delay before being allowed to enqueue another
+    // snackbar with the same key.
+    queuedWarnings.push({
+      storeKey: unqueuedWarning.key,
+      enqueuedKey,
+      message: unqueuedWarning.message
+    })
+
+    enqueueSnackbar(unqueuedWarning.message, {
+      variant: 'default',
+      autoHideDuration: unqueuedWarning.autoHideDuration,
+      action,
+      key: enqueuedKey
+    })
+  })
+}
 
 function WarningsNotifier() {
-  const displayedKeys = React.useRef<{ key: string; message: string }[]>([])
   const store = useMst()
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
-  React.useEffect(() => {
-    const synchronizeSnackbars = (warning: WarningType) => {
-      // close any displayed warning which is not in the store.
-      const onListButNotInStore = displayedKeys.current.filter(
-        displayed =>
-          !((values(store.warnings.list) as unknown) as WarningType[]).some(
-            warning => warning.key === displayed.key
-          )
-      )
-
-      onListButNotInStore.forEach(displayed => closeSnackbar(displayed.key))
-
-      displayedKeys.current = displayedKeys.current.filter(
-        ({ key }) => !onListButNotInStore.some(oldie => oldie.key === key)
-      )
-
-      // notice what has changed and update accordingly.
-      if (warning.dismissed) {
-        closeSnackbar(warning.key)
-      } else if (
-        displayedKeys.current.find(
-          displayed =>
-            displayed.key === warning.key &&
-            displayed.message !== warning.message
-        )
-      ) {
-        // replace the warning
-        displayedKeys.current = displayedKeys.current.filter(
-          displayed => displayed.key !== warning.key
-        )
-        closeSnackbar(warning.key)
-        // wait for the previous snackbar to close
-        setTimeout(() => synchronizeSnackbars(warning), 1000)
-      } else if (
-        displayedKeys.current.find(
-          displayed =>
-            displayed.key === warning.key &&
-            displayed.message === warning.message
-        )
-      ) {
-      } else {
-        // new warning
-        const action = warning.action ? (
-          <Button
-            onClick={() => warning.performAction()}
-            size="small"
-            variant="contained"
-          >
-            {warning.action.actionText}
-          </Button>
-        ) : undefined
-
-        enqueueSnackbar(warning.message, {
-          variant: 'default',
-          autoHideDuration: warning.autoHideDuration,
-          action,
-          key: warning.key
-        })
-
-        displayedKeys.current = displayedKeys.current.concat({
-          key: warning.key,
-          message: warning.message
-        })
-      }
-    }
-
-    // unresolved typescript problem https://github.com/mobxjs/mobx/issues/2422
-    ;((values(store.warnings.list) as unknown) as WarningType[]).forEach(
-      synchronizeSnackbars
-    )
-  }, [
-    store,
-    store.warnings.warningUpdateCounter,
-    enqueueSnackbar,
-    closeSnackbar
-  ])
+  reaction(
+    () => store.warnings.warningUpdateCounter,
+    () => syncWarningsWithStore({ enqueueSnackbar, closeSnackbar }, store)
+  )
 
   return null
 }
