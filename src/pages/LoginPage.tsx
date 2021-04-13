@@ -24,7 +24,11 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function ManualSignIn() {
-  const { register, handleSubmit, errors } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
     mode: 'onChange'
   })
 
@@ -48,11 +52,10 @@ function ManualSignIn() {
           fullWidth
           id="email"
           label="Email Address"
-          name="email"
           type="email"
           autoComplete="email"
           autoFocus
-          inputRef={register({
+          {...register('email', {
             required: true,
             validate: value => EmailValidator.validate(value)
           })}
@@ -63,13 +66,12 @@ function ManualSignIn() {
           margin="normal"
           required
           fullWidth
-          name="password"
           label="Password"
           type="password"
           id="password"
           autoComplete="current-password"
           style={{ marginBottom: '0' }}
-          inputRef={register({ required: true })}
+          {...register('password', { required: true })}
         />
         {errors.password && <p>error: {errors.password.message}</p>}
         <Typography align="left" style={{ marginLeft: '5px' }}>

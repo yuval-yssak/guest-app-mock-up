@@ -79,16 +79,9 @@ export default function onStart(rootStore: RootStoreType) {
   })
 
   const updateUnreadAnnouncementsWarning = (snackbar: string) => {
-    const importantUnreadCount = rootStore.announcements.unread.filter(
-      a => a.priority === 'high'
-    ).length
-
     rootStore.warnings.list
       .get('announcements')!
-      .updateMessageAndStatus(
-        `${importantUnreadCount} new important announcements`,
-        !snackbar
-      )
+      .updateMessageAndStatus(snackbar, !snackbar)
   }
   reaction(
     () => rootStore.announcements.snackbar,

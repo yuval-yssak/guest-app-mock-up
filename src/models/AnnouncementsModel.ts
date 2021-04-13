@@ -48,10 +48,13 @@ const AnnouncementsProps = types
 
   .views(self => ({
     get snackbar() {
-      const importantUnread = self.unread.find(a => a.priority === 'high')
-      return importantUnread &&
+      const importantUnreadCount = self.unread.filter(
+        a => a.priority === 'high'
+      ).length
+
+      return importantUnreadCount &&
         ((getRoot(self) as any).view as ViewType).page !== '/announcements'
-        ? importantUnread.summary
+        ? `${importantUnreadCount} new important announcements`
         : ''
     }
   }))

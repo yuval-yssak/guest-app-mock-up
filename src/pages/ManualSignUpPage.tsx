@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import * as EmailValidator from 'email-validator'
 import { PasswordMeter } from 'password-meter'
 import Grid from '@material-ui/core/Grid'
@@ -89,33 +89,26 @@ const StyledEmailTextField = styled(TextField)`
   width: calc(100% - 48px);
 `
 
-function SignupEmailField({ inputRef }: { inputRef: React.Ref<any> }) {
-  return (
-    <StyledEmailTextField
-      variant="outlined"
-      margin="normal"
-      id="signup-email"
-      label="Email Address"
-      name="signupEmail"
-      type="email"
-      autoComplete="email"
-      autoFocus
-      inputRef={inputRef}
-    />
-  )
-}
+// function SignupEmailField() {
+//   return (
+//     <StyledEmailTextField
+//       variant="outlined"
+//       margin="normal"
+//       id="signup-email"
+//       label="Email Address"
+//       name="signupEmail"
+//       type="email"
+//       autoComplete="email"
+//       autoFocus
+//     />
+//   )
+// }
 
 const StyledPasswordTextField = styled(TextField)`
   flex: 1;
 `
 
-function SignupPasswordField({
-  passwordHidden,
-  inputRef
-}: {
-  passwordHidden: boolean
-  inputRef: React.Ref<any>
-}) {
+function SignupPasswordField({ passwordHidden }: { passwordHidden: boolean }) {
   return (
     <StyledPasswordTextField
       variant="outlined"
@@ -126,17 +119,14 @@ function SignupPasswordField({
       type={passwordHidden ? 'password' : 'text'}
       id="signup-password"
       autoComplete="current-password"
-      inputRef={inputRef}
     />
   )
 }
 
 function SignupRepeatPasswordField({
-  passwordHidden,
-  inputRef
+  passwordHidden
 }: {
   passwordHidden: boolean
-  inputRef: React.Ref<any>
 }) {
   return (
     <StyledPasswordTextField
@@ -147,24 +137,18 @@ function SignupRepeatPasswordField({
       type={passwordHidden ? 'password' : 'text'}
       id="signup-repeat-password"
       autoComplete="current-password"
-      inputRef={inputRef}
     />
   )
 }
-
-const StyledFieldGrid = styled(Grid)`
-  width: 100%;
-  position: relative;
-  margin-bottom: 1.5rem;
-`
 
 function ManualSignup() {
   //   const store = useMst()
 
   const {
     register,
+    control,
     handleSubmit,
-    errors,
+    formState: { errors },
     watch,
     formState: { dirtyFields }
   } = useForm({
@@ -196,39 +180,39 @@ function ManualSignup() {
                 justify="space-between"
                 spacing={2}
               >
-                <StyledFieldGrid item container>
-                  <SignupEmailField
-                    inputRef={register({
-                      required: true,
-                      validate: value => EmailValidator.validate(value)
-                    })}
-                  />
-                  {errors.signupEmail && <InvalidEmailWarning />}
-                </StyledFieldGrid>
-                <StyledFieldGrid item container>
-                  <SignupPasswordField
-                    passwordHidden={passwordHidden}
-                    inputRef={register({
-                      required: true,
-                      validate: () => isPasswordStrong(passwordWatch)
-                    })}
-                  />
-                  <ShowPasswordIcon callback={setPasswordHidden} />
-                  {dirtyFields.signupPassword && (
-                    <PasswordStrengthMeter password={passwordWatch} />
+                <Controller
+                  name="signupEmail"
+                  control={control}
+                  defaultValue=""
+                  rules={{
+                    required: true,
+                    validate: value => EmailValidator.validate(value)
+                  }}
+                  render={({ field }) => (
+                    <StyledEmailTextField {...field} autoComplete="email" />
                   )}
-                </StyledFieldGrid>
-                <StyledFieldGrid item container>
-                  <SignupRepeatPasswordField
-                    passwordHidden={repeatPasswordHidden}
-                    inputRef={register({
-                      required: true,
-                      validate: value => value === passwordWatch
-                    })}
-                  />
-                  <ShowPasswordIcon callback={setRepeatPasswordHidden} />
-                  {errors.repeatPassword && <PasswordsMismatchWarning />}
-                </StyledFieldGrid>
+                />
+                {errors.signupEmail && <InvalidEmailWarning />}
+                <SignupPasswordField
+                  passwordHidden={passwordHidden}
+                  {...register('signupPassword', {
+                    required: true,
+                    validate: () => isPasswordStrong(passwordWatch)
+                  })}
+                />
+                <ShowPasswordIcon callback={setPasswordHidden} />
+                {dirtyFields.signupPassword && (
+                  <PasswordStrengthMeter password={passwordWatch} />
+                )}
+                <SignupRepeatPasswordField
+                  passwordHidden={repeatPasswordHidden}
+                  {...register('repeatPassword', {
+                    required: true,
+                    validate: value => value === passwordWatch
+                  })}
+                />
+                <ShowPasswordIcon callback={setRepeatPasswordHidden} />
+                {errors.repeatPassword && <PasswordsMismatchWarning />}
 
                 <Button
                   type="submit"
