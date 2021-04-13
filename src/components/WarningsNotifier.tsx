@@ -13,17 +13,21 @@ function WarningsNotifier() {
   const store = useMst()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
-  const synchronizeSnackbars = React.useCallback(
-    (warning: WarningType) => {
+  React.useEffect(() => {
+    const synchronizeSnackbars = (warning: WarningType) => {
       // close any displayed warning which is not in the store.
-      displayedKeys.current
-        .filter(
-          displayed =>
-            !((values(store.warnings.list) as unknown) as WarningType[]).some(
-              warning => warning.key === displayed.key
-            )
-        )
-        .forEach(displayed => closeSnackbar(displayed.key))
+      const onListButNotInStore = displayedKeys.current.filter(
+        displayed =>
+          !((values(store.warnings.list) as unknown) as WarningType[]).some(
+            warning => warning.key === displayed.key
+          )
+      )
+
+      onListButNotInStore.forEach(displayed => closeSnackbar(displayed.key))
+
+      displayedKeys.current = displayedKeys.current.filter(
+        ({ key }) => !onListButNotInStore.some(oldie => oldie.key === key)
+      )
 
       // notice what has changed and update accordingly.
       if (warning.dismissed) {
@@ -60,28 +64,21 @@ function WarningsNotifier() {
             {warning.action.actionText}
           </Button>
         ) : undefined
+
         enqueueSnackbar(warning.message, {
           variant: 'default',
-          onExited: () => {
-            store.warnings.dismissOne(warning.key)
-            displayedKeys.current = displayedKeys.current.filter(
-              displayedKey => displayedKey.key !== warning.key
-            )
-          },
           autoHideDuration: warning.autoHideDuration,
           action,
           key: warning.key
         })
+
         displayedKeys.current = displayedKeys.current.concat({
           key: warning.key,
           message: warning.message
         })
       }
-    },
-    [closeSnackbar, enqueueSnackbar, store.warnings, displayedKeys]
-  )
+    }
 
-  React.useEffect(() => {
     // unresolved typescript problem https://github.com/mobxjs/mobx/issues/2422
     ;((values(store.warnings.list) as unknown) as WarningType[]).forEach(
       synchronizeSnackbars
@@ -90,8 +87,7 @@ function WarningsNotifier() {
     store,
     store.warnings.warningUpdateCounter,
     enqueueSnackbar,
-    closeSnackbar,
-    synchronizeSnackbars
+    closeSnackbar
   ])
 
   return null
