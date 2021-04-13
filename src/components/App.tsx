@@ -33,9 +33,9 @@ const scaleFrom0 = keyframes`
 }`
 
 const Background = styled.div.attrs({ className: 'background' })`
-  max-height: 100%;
+  height: 100%;
   position: relative;
-  /* overflow-y: hidden; */
+  overflow-y: auto;
 
   &::before {
     content: '';
@@ -67,6 +67,7 @@ const Main = styled.main`
   justify-items: center;
   position: relative;
   height: 100%;
+  overflow-y: auto;
 
   &:focus {
     outline: none;

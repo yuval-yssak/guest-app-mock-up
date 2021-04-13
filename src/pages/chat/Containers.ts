@@ -10,8 +10,7 @@ import PageContentWrapper from '../../components/PageContentWrapper'
 export const ChatPageContainer = styled(PageContentWrapper).attrs({
   className: 'chat-page-container'
 })<{ staffView: boolean }>`
-  /* display: none; */
-  /* overflow: hidden; // scrolling is only in the inner messages container */
+  overflow-y: auto;
   grid-template-columns: ${({ staffView }) =>
     staffView
       ? `calc(
@@ -40,8 +39,8 @@ export const ChatContainer = styled.div.attrs({ className: 'chat-container' })<{
   ${props => props.staffView && `padding-left: 2.5rem;`};
 
   // scrolling is only in the inner messages container
-  overflow: hidden;
-  max-height: 100%;
+  overflow-y: auto;
+  height: 100%;
 
   // set widths for children
   & > * {

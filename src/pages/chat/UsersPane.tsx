@@ -19,9 +19,8 @@ const UsersPaneContainer = styled.div.attrs({
 })`
   /* display: none; */
   height: 100%;
-  overflow-y: hidden;
+  overflow-y: auto;
   padding-top: 0.4rem;
-  padding-bottom: 4rem;
   padding-left: calc(
     (
         100vw -
@@ -198,29 +197,29 @@ function UsersPaneComponent() {
   const store = useMst()
 
   const containerDomRef = React.createRef<HTMLDivElement>()
-  // const [containerHeight, setContainerHeight] = React.useState(0)
+  const [containerHeight, setContainerHeight] = React.useState(0)
 
   // track divHeight whenever DOM element changes
-  // React.useEffect(() => {
-  //   function setHeight() {
-  //     if (containerDomRef.current) {
-  //       if (containerDomRef.current.clientHeight !== containerHeight)
-  //         setContainerHeight(containerDomRef.current.clientHeight)
-  //     }
-  //   }
+  React.useEffect(() => {
+    function setHeight() {
+      if (containerDomRef.current) {
+        if (containerDomRef.current.clientHeight !== containerHeight)
+          setContainerHeight(containerDomRef.current.clientHeight)
+      }
+    }
 
-  //   // get initial container height
-  //   setHeight()
+    // get initial container height
+    setHeight()
 
-  //   // track DOM changes to container height
-  //   if (containerDomRef.current) {
-  //     const observer = new ResizeObserver(setHeight)
-  //     observer.observe(containerDomRef.current)
-  //     return () => {
-  //       observer.disconnect()
-  //     }
-  //   }
-  // }, [containerDomRef, containerHeight])
+    // track DOM changes to container height
+    if (containerDomRef.current) {
+      const observer = new ResizeObserver(setHeight)
+      observer.observe(containerDomRef.current)
+      return () => {
+        observer.disconnect()
+      }
+    }
+  }, [containerDomRef, containerHeight])
 
   function loadNext() {
     setTimeout(() => {
@@ -235,8 +234,8 @@ function UsersPaneComponent() {
           lastReadTimestamp: 0
         }
       }))
-      // store.addUsers(newUsers)
-      // store.chats.addUserChats(chats)
+      store.addUsers(newUsers)
+      store.chats.addUserChats(chats)
     }, 3000)
   }
 
@@ -249,9 +248,9 @@ function UsersPaneComponent() {
         }
         loader={<LinearProgress />}
         next={loadNext}
-        // height={
-        //   containerHeight - 1 - 4 /* 4px is the height of the Progress bar */
-        // }
+        height={
+          containerHeight - 1 - 4 /* 4px is the height of the Progress bar */
+        }
       >
         <>
           <User

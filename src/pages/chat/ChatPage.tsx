@@ -41,6 +41,7 @@ const UserInputSection = styled.section.attrs({
   grid-gap: 1rem;
   grid-column: 1 / -1;
   width: 100%;
+  overflow: hidden; // overflows at the bottom. Wihout hiding overflow - the chat container slides under the app bar.
 
   margin-top: 0.5rem;
   justify-self: center;
@@ -121,39 +122,38 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
   const dividerRef = React.createRef<HTMLDivElement>()
 
   const containerDomRef = React.createRef<HTMLDivElement>()
-  // const [containerHeight, setContainerHeight] = React.useState(0)
+  const [containerHeight, setContainerHeight] = React.useState(0)
   const [beforeAnyScroll, setBeforeAnyScroll] = React.useState(true)
 
   React.useEffect(() => {
     setBeforeAnyScroll(true)
   }, [store.view.id])
 
-  // // track divHeight whenever DOM element changes
-  // React.useEffect(() => {
-  //   function setHeight() {
-  //     if (containerDomRef.current) {
-  //       if (containerDomRef.current.clientHeight !== containerHeight)
-  //         setContainerHeight(containerDomRef.current.clientHeight)
-  //     }
-  //   }
+  // track divHeight whenever DOM element changes
+  React.useEffect(() => {
+    function setHeight() {
+      if (containerDomRef.current) {
+        if (containerDomRef.current.clientHeight !== containerHeight)
+          setContainerHeight(containerDomRef.current.clientHeight)
+      }
+    }
 
-  //   // get initial container height
-  //   setHeight()
+    // get initial container height
+    setHeight()
 
-  //   // track DOM changes to container height
-  //   if (containerDomRef.current) {
-  //     const observer = new ResizeObserver(setHeight)
-  //     observer.observe(containerDomRef.current)
-  //     return () => {
-  //       observer.disconnect()
-  //     }
-  //   }
-  // }, [containerDomRef, containerHeight])
+    // track DOM changes to container height
+    if (containerDomRef.current) {
+      const observer = new ResizeObserver(setHeight)
+      observer.observe(containerDomRef.current)
+      return () => {
+        observer.disconnect()
+      }
+    }
+  }, [containerDomRef, containerHeight])
 
   const userInputRef = React.createRef<HTMLDivElement>()
   function loadNext() {
     setTimeout(() => {
-      console.log('loading next')
       const newMessages = generateRandomMessages(
         store.users,
         +(store.view.id || '')!,
@@ -161,7 +161,7 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
         dayjs().subtract(10, 'days').toDate()
       )
       console.log(newMessages)
-      // store.chats.findChat(+(store.view.id || ''))?.insertMessages(newMessages)
+      store.chats.findChat(+(store.view.id || ''))?.insertMessages(newMessages)
       setBeforeAnyScroll(false)
     }, 1000)
   }
@@ -233,7 +233,7 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
             hasMore={true}
             loader={<StyledLinearProgress />}
             next={loadNext}
-            // height={containerHeight - 1 - 4 - 1}
+            height={containerHeight - 1 - 4 - 1}
             inverse
           >
             {messagesInDays}
