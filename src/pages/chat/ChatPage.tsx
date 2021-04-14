@@ -337,7 +337,7 @@ function buildMessagesJSX(
       )
       if (~lastReadMessage) {
         messages.splice(
-          lastReadMessage,
+          lastReadMessage + 1,
           0,
           <UnreadMessagesDivider key="unread-divider" ref={dividerRef} />
         )

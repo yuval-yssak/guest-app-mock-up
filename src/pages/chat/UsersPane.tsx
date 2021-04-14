@@ -134,6 +134,23 @@ const MiddleSection = styled.div.attrs({ className: 'user__middle-section' })`
 
 const User = observer(({ userChat }: { userChat: UserChatType }) => {
   const store = useMst()
+
+  const lastUserName = userChat.chat.unreadCount
+    ? userChat.chat.orderedMessages
+        .find(m => m.timestamp > userChat.chat.lastReadTimestamp)
+        ?.user.personName.split(/\s/)[0]
+    : userChat.chat.orderedMessages[
+        userChat.chat.orderedMessages.length - 1
+      ].user.personName.split(/\s/)[0]
+
+  const lastMessageContent = userChat.chat.unreadCount
+    ? userChat.chat.orderedMessages
+        .find(m => m.timestamp > userChat.chat.lastReadTimestamp)
+        ?.content.slice(0, 80)
+    : userChat.chat.orderedMessages[
+        userChat.chat.orderedMessages.length - 1
+      ].content.slice(0, 80)
+
   return (
     <StyledUser
       onClick={() =>
@@ -158,18 +175,21 @@ const User = observer(({ userChat }: { userChat: UserChatType }) => {
         {userChat.chat.orderedMessages.length ? (
           <>
             <LastMessageContent>
-              <Typography variant="body1">
-                {
-                  userChat.chat.orderedMessages[
-                    userChat.chat.orderedMessages.length - 1
-                  ].user.personName.split(/\s/)[0]
-                }
-                :
+              <Typography
+                variant="body1"
+                {...(userChat.chat.unreadCount && {
+                  style: { fontWeight: 700 }
+                })}
+              >
+                {lastUserName}:
               </Typography>
-              <Typography variant="body2">
-                {userChat.chat.orderedMessages[
-                  userChat.chat.orderedMessages.length - 1
-                ].content.slice(0, 20)}
+              <Typography
+                variant="body2"
+                {...(userChat.chat.unreadCount && {
+                  style: { fontWeight: 700 }
+                })}
+              >
+                {lastMessageContent}
               </Typography>
             </LastMessageContent>
           </>

@@ -43,7 +43,7 @@ export const ChatContainer = styled.div.attrs({ className: 'chat-container' })<{
   height: 100%;
 
   // set widths for children
-  & > * {
+  & .infinite-scroll-component {
     ${({ staffView }) =>
       !staffView &&
       `
