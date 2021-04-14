@@ -13,8 +13,7 @@ import { observer } from 'mobx-react-lite'
 import Button from '@material-ui/core/Button'
 import { useMst } from '../models/reactHook'
 import { useSnackbar, ProviderContext } from 'notistack'
-import { values, reaction } from 'mobx'
-import { WarningType } from '../models/WarningModel'
+import { reaction } from 'mobx'
 import { RootStoreType } from '../models/RootStore'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -28,9 +27,7 @@ function syncWarningsWithStore(
   { enqueueSnackbar, closeSnackbar }: ProviderContext,
   store: RootStoreType
 ) {
-  const storeWarnings = (values(
-    store.warnings.list
-  ) as unknown) as WarningType[]
+  const storeWarnings = store.warnings.list()
 
   // handle removed warnings
   const removedWarnings = queuedWarnings.filter(
@@ -71,7 +68,7 @@ function syncWarningsWithStore(
   unqueuedWarnings.forEach(unqueuedWarning => {
     const action = unqueuedWarning.action ? (
       <Button
-        onClick={() => unqueuedWarning.performAction()}
+        onClick={() => unqueuedWarning.performAction(store)}
         size="small"
         variant="contained"
       >
@@ -107,8 +104,10 @@ function WarningsNotifier() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   reaction(
-    () => store.warnings.warningUpdateCounter,
-    () => syncWarningsWithStore({ enqueueSnackbar, closeSnackbar }, store)
+    () => store.warnings.list(),
+    () => {
+      syncWarningsWithStore({ enqueueSnackbar, closeSnackbar }, store)
+    }
   )
 
   return null

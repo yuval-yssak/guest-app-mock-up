@@ -1,4 +1,4 @@
-import { values } from 'mobx'
+import { values, entries } from 'mobx'
 import {
   Instance,
   types,
@@ -6,6 +6,7 @@ import {
   getParent,
   SnapshotIn
 } from 'mobx-state-tree'
+import { RootStoreType } from './RootStore'
 import { ViewType } from './ViewModel'
 
 export interface WarningType extends Instance<typeof WarningModel> {}
@@ -38,10 +39,10 @@ export const WarningModel = types
     }
   }))
   .actions(self => ({
-    performAction() {
+    performAction(store: RootStoreType) {
       switch (self.action?.onClick) {
         case 'open announcements page': {
-          ;((getRoot(self) as any).view as ViewType).openAnnouncementsPage()
+          ;(store.view as ViewType).openAnnouncementsPage()
           return
         }
         case 'dismiss': {
@@ -53,24 +54,54 @@ export const WarningModel = types
 
 export const WarningsModel = types
   .model('WarningsModel', {
-    list: types.map(WarningModel),
+    internalList: types.map(WarningModel),
     warningUpdateCounter: types.optional(types.number, 1)
   })
+  .views(self => ({
+    // the list of all warnings
+    list(): WarningType[] {
+      const internalList = (entries(self.internalList) as unknown) as [
+        string,
+        WarningType
+      ][]
+
+      const list = Array.from(internalList).map(a => a[1])
+
+      const announcementsSnackbar = (getRoot(
+        self
+      ) as RootStoreType).announcements.snackbar()
+
+      if (announcementsSnackbar)
+        list.push(
+          WarningModel.create({
+            message: announcementsSnackbar,
+            key: `announcements`,
+            allowDismiss: false,
+            autoHideDuration: null,
+            action: {
+              onClick: 'open announcements page',
+              actionText: 'See Details'
+            },
+            dismissed: false
+          })
+        )
+      return list
+    }
+  }))
   .actions(self => ({
     add(warning: WarningCreationType) {
-      if (!self.list.get(warning.key)) {
-        self.list.put(WarningModel.create(warning))
+      if (!self.internalList.get(warning.key)) {
+        self.internalList.put(WarningModel.create(warning))
         self.warningUpdateCounter++
       }
     },
     dismissOne(key: string) {
       if (
-        ((values(self.list) as unknown) as WarningType[]).find(
+        ((values(self.internalList) as unknown) as WarningType[]).find(
           warning => warning.key === key
         )
       ) {
-        console.log('now getting after if')
-        const warning = self.list.get(key)
+        const warning = self.internalList.get(key)
 
         if (warning && warning.allowDismiss) {
           warning.dismissed = true
@@ -79,14 +110,18 @@ export const WarningsModel = types
       }
     },
     removeOne(key: string) {
-      const warning = self.list.get(key)
+      const warning = self.internalList.get(key)
 
       if (warning) {
-        self.list.delete(key)
+        self.internalList.delete(key)
         self.warningUpdateCounter++
       }
     },
     updateWarningsCounter() {
+      self.warningUpdateCounter++
+    },
+    clearAll() {
+      self.internalList.clear()
       self.warningUpdateCounter++
     }
   }))

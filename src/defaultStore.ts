@@ -16,8 +16,6 @@ const lorem = new LoremIpsum({
   }
 })
 
-console.log(faker.name.firstName(), faker.image.avatar())
-
 export const users: UserType[] = ([
   {
     id: 1,

@@ -65,33 +65,14 @@ export default function onStart(rootStore: RootStoreType) {
     }
   )
 
-  // add a warning for unread announcements
-  rootStore.warnings.add({
-    message: ``,
-    key: `announcements`,
-    allowDismiss: false,
-    autoHideDuration: null,
-    action: {
-      onClick: 'open announcements page',
-      actionText: 'See Details'
-    },
-    dismissed: true
-  })
+  reaction(() => rootStore.loggedInUser, resetWarnings)
+  resetWarnings()
 
-  const updateUnreadAnnouncementsWarning = (snackbar: string) => {
-    console.log('updating snackbar')
-    rootStore.warnings.list
-      .get('announcements')
-      ?.updateMessageAndStatus(snackbar, !snackbar)
+  setTimeout(() => rootStore.announcements.endSnackbarInitialDelay(), 15000)
+
+  function resetWarnings() {
+    rootStore.warnings.clearAll()
   }
-  reaction(
-    () => rootStore.announcements.snackbar(),
-    updateUnreadAnnouncementsWarning
-  )
-  setTimeout(
-    () => updateUnreadAnnouncementsWarning(rootStore.announcements.snackbar()),
-    15000
-  )
 
   // add an "online/offline" status
   window.addEventListener('online', () => rootStore.status.setOnline())

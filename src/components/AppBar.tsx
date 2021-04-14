@@ -232,7 +232,8 @@ export default function ProminentAppBar({
               ...defaultStore,
               loggedInUser: 4,
               view: view.page === '/chat' ? { page: '/chat' } : view,
-              chats: { withSelf }
+              chats: { withSelf },
+              status: store.status
             })
             handleMoreClose()
           }}
@@ -241,7 +242,11 @@ export default function ProminentAppBar({
         </MenuItem>
         <MenuItem
           onClick={() => {
-            applySnapshot(store, { ...defaultStore, view: store.view })
+            applySnapshot(store, {
+              ...defaultStore,
+              view: store.view,
+              status: store.status
+            })
             handleMoreClose()
           }}
         >
@@ -251,7 +256,8 @@ export default function ProminentAppBar({
           onClick={() => {
             applySnapshot(store, {
               loggedInUser: 4,
-              view: store.view
+              view: store.view,
+              status: store.status
             })
             handleMoreClose()
           }}
@@ -260,7 +266,7 @@ export default function ProminentAppBar({
         </MenuItem>
         <MenuItem
           onClick={() => {
-            applySnapshot(store, { view: store.view })
+            applySnapshot(store, { view: store.view, status: store.status })
             handleMoreClose()
           }}
         >

@@ -45,17 +45,23 @@ const AnnouncementsProps = types
       return self.all.filter(a => a.status === 'read').sort(compareByTimestamp)
     }
   }))
-
+  .volatile(_self => ({ initialDelay: true }))
   .views(self => ({
     snackbar() {
       const importantUnreadCount = self.unread.filter(
         a => a.priority === 'high'
       ).length
 
-      return importantUnreadCount &&
+      return !self.initialDelay &&
+        importantUnreadCount &&
         ((getRoot(self) as any).view as ViewType).page !== '/announcements'
         ? `${importantUnreadCount} new important announcements`
         : ''
+    }
+  }))
+  .actions(self => ({
+    endSnackbarInitialDelay() {
+      self.initialDelay = false
     }
   }))
 
