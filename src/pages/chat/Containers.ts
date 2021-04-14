@@ -42,20 +42,22 @@ export const ChatContainer = styled.div.attrs({ className: 'chat-container' })<{
   overflow-y: auto;
   height: 100%;
 
-  // set widths for children
-  & .infinite-scroll-component {
-    ${({ staffView }) =>
-      !staffView &&
-      `
-      padding: 0 calc(
-        (
-          100vw - clamp(
-            ${minimumChatMessageWidth}, 
-            ${inBetweenChatMessageWidth}, 
-            ${maximumChatMessageWidth})
-          ) / 2);
-      `}
+  // set widths for children on guest view
+  ${({ staffView }) =>
+    !staffView &&
+    `
+  & :is(.user-input-section, .infinite-scroll-component) {
+    padding: 0 calc(
+      (
+        100vw - clamp(
+          ${minimumChatMessageWidth}, 
+          ${inBetweenChatMessageWidth}, 
+          ${maximumChatMessageWidth}
+        )
+      ) / 2
+    );
   }
+  `}
 `
 
 export const MessagesScrollable = styled.div.attrs({
