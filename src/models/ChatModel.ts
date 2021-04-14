@@ -100,6 +100,15 @@ export const ChatsModel = types
       else
         return self.withUsers?.find(chatUser => chatUser.user.id === userId)
           ?.chat
+    },
+    get overallUnreadCount() {
+      return (
+        self.withSelf.unreadCount +
+        (self.withUsers?.reduce(
+          (count, userChat) => count + userChat.chat.unreadCount,
+          0
+        ) || 0)
+      )
     }
   }))
   .actions(self => ({
@@ -110,11 +119,11 @@ export const ChatsModel = types
   }))
 
 export interface UserChatSnapshotType
-  extends SnapshotOut<typeof UserChatModel> { }
+  extends SnapshotOut<typeof UserChatModel> {}
 export interface UserChatCreationType
-  extends SnapshotIn<typeof UserChatModel> { }
-export interface UserChatType extends Instance<typeof UserChatModel> { }
-export interface ChatType extends Instance<typeof ChatModel> { }
-export interface MessageType extends Instance<typeof MessageModel> { }
-export interface MessageCreationType extends SnapshotIn<typeof MessageModel> { }
-export interface ChatsType extends Instance<typeof ChatsModel> { }
+  extends SnapshotIn<typeof UserChatModel> {}
+export interface UserChatType extends Instance<typeof UserChatModel> {}
+export interface ChatType extends Instance<typeof ChatModel> {}
+export interface MessageType extends Instance<typeof MessageModel> {}
+export interface MessageCreationType extends SnapshotIn<typeof MessageModel> {}
+export interface ChatsType extends Instance<typeof ChatsModel> {}
