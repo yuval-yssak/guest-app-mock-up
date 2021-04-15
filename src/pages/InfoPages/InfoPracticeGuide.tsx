@@ -359,15 +359,189 @@ export default function InfoPracticeGuide() {
             minimum of delay
           </li>
           <li>
-            The most effective times are ealy dawn and dusk, when the atmosphere
-            is charged with special spiritual force. If it is not feasible to
-            sit for meditation at these times, choose an hour when you are not
-            involved with daily activities, and a time when the mind is apt to
-            be calm.
+            The most effective times are early dawn and dusk, when the
+            atmosphere is charged with special spiritual force. If it is not
+            feasible to sit for meditation at these times, choose an hour when
+            you are not involved with daily activities, and a time the mind is
+            apt to be calm.
           </li>
-          <li>...</li>
+          <li>
+            Try to have a separate room for meditation. As meditation is
+            repeated, the powerful vibrations set up will be lodged in the area;
+            an atmosphere of peace and purity will be felt.
+          </li>
+          <li>
+            When sitting, face North or East in order to take advantage of
+            favorable magnetic vibrations. Sit in a steady, cross-legged
+            position with spine and neck erect but not tense.
+          </li>
+          <li>
+            Before beginning, command the mind to be quiet for a specific length
+            of time. Forget the past, present and future.
+          </li>
+          <li>
+            Consciously regulate the breath. Begin with five minutes of deep
+            abdominal breathing to bring oxygen to the brain. Then slow it down
+            to an imperceptible rate.
+          </li>
+          <li>
+            Keep the breathing rhythmic. Inhale for three seconds and exhale for
+            three seconds. Regulation of breath also regulates the flow of
+            Prana, the vital energy.
+          </li>
+          <li>
+            Allow the mind to wander at first. It will jump around, but will
+            eventually become concentrated, along with the concentration of
+            Prana.
+          </li>
+          <li>
+            Do not force the mind to be still, as this will set in motion
+            additional brain waves, hindering meditation.
+          </li>
+          <li>
+            Select a focal point on which the mind may rest. For people who are
+            intellectual by nature, this may be the Ajna Chakra, the point
+            between the eyebrows. For more emotional people, use the Anahata or
+            Heart Chakra. Never change this focal point.
+          </li>
+          <li>
+            Focus on a neutral or uplifting object, holding the image in place
+            of concentration. If using a Mantra, repeat it mentally, and
+            co-ordinate repetition with the breath. If you do not have a
+            personalized Mantra, use OM. although mental repetition is stronger,
+            the Mantra may be repeated aloud if one becomes drowsy. Never change
+            the Mantra.
+          </li>
+          <li>
+            Repetition will lead to pure thought, in which sound vibration
+            merges with thought vibration, without awareness of meaning. Vocal
+            repetition progresses through mental repetition to telepathic
+            language, and from there to pure thought.
+          </li>
+          <li>
+            With practice, duality disappears and Samadhi, or the superconscious
+            state, is reached. Do not become impatient, as this takes a long
+            time.
+          </li>
+          <li>
+            In Samadhi one rests in the state of Bliss in which the Knower, the
+            Knowledge, and the Known become One. This is the superconscious
+            state reached by mystics of all faiths and persuasions.
+          </li>
         </ol>
+        <br />
+        <Paragraph>
+          If you meditate for half an hour daily, you will be able to face life
+          with peace and spiritual strength. Meditation is the most powerful
+          mental and nerve tonic. Divine energy freely flows to the adept during
+          meditation, and exerts a benign influence on the mind, nerves, sense
+          organs and body. It opens the door to intuitive knowledge and realms
+          of eternal bliss. The mind becomes calm and steady.
+        </Paragraph>
         <Heading1>Breathing Techniques</Heading1>
+        <Heading2>1 Kapalabhati</Heading2>
+        <Heading2>Cleansing Breathing Exercise</Heading2>
+        <Paragraph>
+          In Sanskrit “Kapala” means skull; “Bhati” means shining. Kapalabhati
+          is considered to be so cleansing to the entire system that, when
+          practised on a regular basis, the skull (and the face) shine with good
+          health and inner radiance. Although a breathing exercise, Kapalabhati
+          is technically considered to be one of the “Shad Kriyas” (6 cleansing
+          exercises - see “Complete Illustrated Book of Yoga” for further
+          information).
+        </Paragraph>
+        <Heading2>How to do Kapalabhati</Heading2>
+        <Paragraph>
+          Sit in a cross-legged position with back straight:
+        </Paragraph>
+        <Paragraph>
+          Quickly contract the abdominal muscles pulling the abdomen in sharply,
+          exhaling through the nose. The diaphragm is contracted and pulled up
+          into the chest cavity, pushing the air out of the lungs.
+        </Paragraph>
+        <Paragraph>
+          Relax the abdominal muscles, allowing the diaphragm to descend to the
+          abdominal cavity. The lungs will automatically expand and inflate with
+          air.
+        </Paragraph>
+        <Paragraph>
+          If Kapalabhati is done properly, exhalation takes one-fourth of the
+          time of inhalation. Passive inhalation and sudden expulsion of breath
+          follow each other continuously until a round is completed.
+        </Paragraph>
+        <Paragraph>
+          Beginners may undertake 3 rounds of 20-30 pumpings each. This may
+          gradually be increased to 5 rounds of 50-100 pumpings. Make sure that
+          the face is kept relaxed. Back and shoulders do not move.
+        </Paragraph>
+        <Heading1>Benefits of Kapalabhati</Heading1>
+        <Heading2>Physical benefits </Heading2>
+        <ul>
+          <li>
+            Kapalabhati cleanses the nasal passages, lungs and entire
+            Respiratory System.
+          </li>
+          <li>
+            It strengthens and increases the capacity of the lungs and
+            intercostal (ribcage) muscles.
+          </li>
+          <li>
+            Kapalabhati helps to drain the sinuses and eliminate accumulated
+            mucus.
+          </li>
+          <li>
+            Bronchial congestion is removed, as is spasm of the bronchial tubes.
+            Consequently, asthma is relieved and cured over a period of time.
+          </li>
+          <li>
+            NOTE: Kapalabhati should not be practiced when an asthmatic attack
+            is in progress.
+          </li>
+          <li>
+            As the lungs are cleansed, excess carbon dioxide is eliminated. This
+            permits the red-blood cells to suck in more oxygen, increasing the
+            richness of blood.
+          </li>
+          <li>
+            The blood is purified and toned; the body gets an increased supply
+            of oxygen to all cells.
+          </li>
+          <li>
+            The abdominal contractions of Kapalabhati massage the liver, spleen,
+            pancreas, stomach and heart, thus invigorating them.
+          </li>
+          <li>Abdominal muscles are strengthened; digestion is improved.</li>
+          <li>
+            The regular practitioner of Kapalabhati enjoys blooming vigour and
+            health.
+          </li>
+        </ul>
+        <Heading2>Mental / Psychic Benefits</Heading2>
+        <ul>
+          <li>Kapalabhati refreshes and invigorates the mind. </li>
+          <li>
+            It brings an increase in alertness as a result of the increase of
+            oxygen to the brain.
+          </li>
+          <li>It creates a feeling of exhilaration.</li>
+          <li>Kapalabhati activates pranic energy.</li>
+          <li>
+            It increases the supply of stored-up prana in the solar-plexus
+            region.
+          </li>
+        </ul>
+        <Heading2>Common Mistakes</Heading2>
+        <ul>
+          <li>
+            Moving the diaphragm in the opposite direction. Many people will
+            contract the abdominal muscles while inhaling.
+          </li>
+          <li>Contracting the shoulders to push the air out when exhaling.</li>
+          <li>
+            Contracting the facial muscles to force the air out of the nose.
+          </li>
+        </ul>
+
         <Heading1>
           The Sun Salutation <em>sūrya namaskāra</em>
         </Heading1>
