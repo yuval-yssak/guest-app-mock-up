@@ -542,6 +542,108 @@ export default function InfoPracticeGuide() {
           </li>
         </ul>
 
+        <Heading1>Anuloma Viloma</Heading1>
+        <Heading1>Alternate Nostril Breathing</Heading1>
+        <Paragraph>
+          “Pranayama is the link between the mental and physical disciplines.
+          While the action is physical, the effect is to make the mind calm,
+          lucid and steady.” ~ Swami Vishnudevananda
+        </Paragraph>
+        <Heading2>Preparing for Anuloma Viloma </Heading2>
+        <Paragraph>
+          Raise the right hand. Make the Vishnu Mudra by folding down the index
+          and middle fingers.{' '}
+        </Paragraph>
+        <Paragraph>
+          Close the right nostril with the thumb and exhale completely through
+          the left nostril
+        </Paragraph>
+        <Heading2>How to do Anuloma Viloma</Heading2>
+        <Paragraph>
+          Inhale completely through the left nostril, keeping the right nostril
+          closed. This should be done to a count of “4”.
+        </Paragraph>
+        <Paragraph>
+          Close the left nostril with the two end fingers so that both nostrils
+          are closed. Retain the breath to a count of “16”.
+        </Paragraph>
+        <Paragraph>
+          Release the right nostril and exhale completely to a count of “8”.
+        </Paragraph>
+        <Paragraph>
+          Inhale fully through the right nostril to a count of “4”.
+        </Paragraph>
+        <Paragraph>
+          Pinch nostrils closed and retain the breath to a count of “16”.
+        </Paragraph>
+        <Paragraph>
+          Release the left nostril and exhale completely to a count of “8”.
+        </Paragraph>
+        <Paragraph>
+          This is one round. At least 10 rounds should be practised daily.{' '}
+        </Paragraph>
+        <Paragraph>
+          As you become more advanced, the “count” of the exercise may be
+          increased, but always in a ratio of 1 - 4 - 2. This means that for
+          every second that you inhale, you retain the breath 4 seconds and
+          exhale for 2 seconds. Never change this ratio.
+        </Paragraph>
+        <Paragraph>
+          You may also increase the number of rounds of Anuloma Viloma which is
+          practised.
+        </Paragraph>
+        <Heading2>Benefits of Anuloma Viloma </Heading2>
+        <Heading3>Physical Benefits</Heading3>
+        <ul>
+          <li>
+            Anuloma Viloma cleanses and strengthens the lungs and entire
+            Respiratory System.
+          </li>
+          <li>It harmonizes the entire system.</li>
+          <li>
+            During retention, there is the highest rate of gaseous exchange in
+            the lungs. Because of the increase in the pressure, more Oxygen goes
+            from the lungs into the blood and more CO2 (and other waste
+            products) pass from the blood into the lungs for elimination during
+            exhalation.
+          </li>
+          <li>
+            As exhalation is twice the time of inhalation, stale air and waste
+            products are drained from the lungs.
+          </li>
+          <li>
+            The anabolic and catabolic processes of the body are brought into
+            equilibrium.
+          </li>
+        </ul>
+        <Heading3>Mental / Psychic Benefits</Heading3>
+        <Paragraph>
+          “When the breath wanders, i.e. is irregular, the mind is also
+          unsteady. But when the breath is still, so is the Mind.” ~ Hatha Yoga
+          Pradipika
+        </Paragraph>
+        <ul>
+          <li>
+            Anuloma Viloma helps to calm the mind, making it lucid and steady.
+          </li>
+          <li>
+            Practice of Anuloma Viloma purifies the nadis. It should be mastered
+            and practised on a regular basis before going on to more advanced
+            pranayamas.
+          </li>
+          <li>Prana, the vital energy, is stored and controlled.</li>
+          <li>The nadis (psychic meridians) are purified. </li>
+          <li>It makes the body light and the eyes shiny.</li>
+          <li>The psychic system is balanced.</li>
+        </ul>
+        <Heading2>Common Mistakes</Heading2>
+        <ul>
+          <li>The wrong fingers are used.</li>
+          <li>Back is not straight, head drops.</li>
+          <li>The chest is dropped with exhalation.</li>
+          <li>The breath is not smooth.</li>
+        </ul>
+
         <Heading1>
           The Sun Salutation <em>sūrya namaskāra</em>
         </Heading1>
