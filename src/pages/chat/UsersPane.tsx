@@ -8,6 +8,7 @@ import InfiniteScroll from '../../components/common/infinite-scrolling/InfiniteS
 import { generateRandomMessages, generateUsers } from '../../defaultStore'
 import { useMst } from '../../models/reactHook'
 import { observer } from 'mobx-react-lite'
+import TextField from '@material-ui/core/TextField'
 
 export const usersPaneWidth = '30rem'
 export const minimumChatMessageWidth = '40rem'
@@ -18,7 +19,10 @@ const UsersPaneContainer = styled.div.attrs({
   className: 'users-pane-container'
 })`
   height: 100%;
-  overflow-y: hidden;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: max-content 1fr;
+  grid-gap: 0.8rem;
   padding-top: 0.4rem;
   padding-left: calc(
     (
@@ -30,6 +34,11 @@ const UsersPaneContainer = styled.div.attrs({
           )
       ) / 2
   );
+
+  & > .infinite-scroll-component__outerdiv {
+    width: 100%;
+    overflow: hidden;
+  }
 `
 
 const StyledUser = styled.div.attrs({ className: 'user' })<{
@@ -132,24 +141,39 @@ const MiddleSection = styled.div.attrs({ className: 'user__middle-section' })`
   flex-grow: 1;
 `
 
+const StyledSearchbar = styled(TextField).attrs({ type: 'search' })`
+  border: 0.02rem solid ${({ theme }) => theme.palette.grey['300']};
+  padding: 0.3rem 1.5rem;
+  border-radius: 1rem;
+`
+
+const UsersScrollable = styled.div.attrs({ className: 'users-scrollable' })`
+  width: 100%;
+  overflow: hidden;
+`
+
 const User = observer(({ userChat }: { userChat: UserChatType }) => {
   const store = useMst()
 
   const lastUserName = userChat.chat.unreadCount
-    ? userChat.chat.orderedMessages
-        .find(m => m.timestamp > userChat.chat.lastReadTimestamp)
-        ?.user.personName.split(/\s/)[0]
-    : userChat.chat.orderedMessages[
-        userChat.chat.orderedMessages.length - 1
-      ].user.personName.split(/\s/)[0]
+    ? getLastReadMessage()?.user.personName.split(/\s/)[0]
+    : getLastMessage().user.personName.split(/\s/)[0]
 
   const lastMessageContent = userChat.chat.unreadCount
-    ? userChat.chat.orderedMessages
-        .find(m => m.timestamp > userChat.chat.lastReadTimestamp)
-        ?.content.slice(0, 80)
-    : userChat.chat.orderedMessages[
-        userChat.chat.orderedMessages.length - 1
-      ].content.slice(0, 80)
+    ? getLastReadMessage()?.content.slice(0, 80)
+    : getLastMessage().content.slice(0, 80)
+
+  function getLastReadMessage() {
+    return userChat.chat.orderedMessages.find(
+      m => m.timestamp > userChat.chat.lastReadTimestamp
+    )
+  }
+
+  function getLastMessage() {
+    return userChat.chat.orderedMessages[
+      userChat.chat.orderedMessages.length - 1
+    ]
+  }
 
   return (
     <StyledUser
@@ -217,6 +241,7 @@ function UsersPaneComponent() {
 
   const containerDomRef = React.createRef<HTMLDivElement>()
   const [containerHeight, setContainerHeight] = React.useState(0)
+  const [searchTerm, setSearchTerm] = React.useState('')
 
   // track divHeight whenever DOM element changes
   React.useEffect(() => {
@@ -259,31 +284,52 @@ function UsersPaneComponent() {
   }
 
   return (
-    <UsersPaneContainer ref={containerDomRef}>
-      <InfiniteScroll
-        dataLength={store.chats.withUsers?.length || 0}
-        hasMore={
-          (store.chats.withUsers && store.chats.withUsers.length < 100) || false
-        }
-        loader={<LinearProgress />}
-        next={loadNext}
-        height={
-          containerHeight - 1 - 4 /* 4px is the height of the Progress bar */
-        }
+    <UsersPaneContainer>
+      <StyledSearchbar
+        placeholder="Search users"
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === 'Escape') {
+            e.preventDefault()
+            setSearchTerm('')
+          }
+        }}
       >
-        <>
-          <User
-            key={store.loggedInUser!.id}
-            userChat={{
-              user: store.loggedInUser!,
-              chat: store.chats.withSelf
-            }}
-          />
-          {store.chats.withUsers?.map(userChat => (
-            <User key={userChat.user.id} userChat={userChat} />
-          ))}
-        </>
-      </InfiniteScroll>
+        Search bar
+      </StyledSearchbar>
+      <UsersScrollable ref={containerDomRef}>
+        <InfiniteScroll
+          dataLength={store.chats.withUsers?.length || 0}
+          hasMore={
+            (store.chats.withUsers && store.chats.withUsers.length < 100) ||
+            false
+          }
+          loader={<LinearProgress />}
+          next={loadNext}
+          height={containerHeight}
+        >
+          <>
+            <User
+              key={store.loggedInUser!.id}
+              userChat={{
+                user: store.loggedInUser!,
+                chat: store.chats.withSelf
+              }}
+            />
+            {store.chats.withUsers
+              ?.filter(userChat => {
+                if (!searchTerm.trim()) return true
+                return userChat.user.personName
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              })
+              .map(userChat => (
+                <User key={userChat.user.id} userChat={userChat} />
+              ))}
+          </>
+        </InfiniteScroll>
+      </UsersScrollable>
     </UsersPaneContainer>
   )
 }
