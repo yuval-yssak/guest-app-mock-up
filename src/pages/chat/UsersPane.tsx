@@ -20,10 +20,7 @@ const UsersPaneContainer = styled.div.attrs({
 })`
   height: 100%;
   overflow: hidden;
-  display: grid;
-  grid-template-rows: max-content 1fr;
-  grid-gap: 0.8rem;
-  padding-top: 0.4rem;
+  align-self: start;
   padding-left: calc(
     (
         100vw -
@@ -34,10 +31,15 @@ const UsersPaneContainer = styled.div.attrs({
           )
       ) / 2
   );
+`
 
-  & > .infinite-scroll-component__outerdiv {
-    width: 100%;
-    overflow: hidden;
+const StyledInfiniteScroll = styled(InfiniteScroll)`
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  & .infinite-scroll-component {
+    height: 100%;
   }
 `
 
@@ -141,15 +143,22 @@ const MiddleSection = styled.div.attrs({ className: 'user__middle-section' })`
   flex-grow: 1;
 `
 
-const StyledSearchbar = styled(TextField).attrs({ type: 'search' })`
-  border: 0.02rem solid ${({ theme }) => theme.palette.grey['300']};
-  padding: 0.3rem 1.5rem;
-  border-radius: 1rem;
-`
+const StyledSearchbar = styled(TextField).attrs({
+  className: 'user-searchbar',
+  type: 'search'
+})<{
+  value: unknown /* https://material-ui.com/guides/typescript/#handling-value-and-event-handlers */
+}>`
+  && {
+    width: 100%;
+    ${({ value }) => value === '' && `text-align:center;`}
+  }
 
-const UsersScrollable = styled.div.attrs({ className: 'users-scrollable' })`
-  width: 100%;
-  overflow: hidden;
+  & input {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    text-align: inherit;
+  }
 `
 
 const User = observer(({ userChat }: { userChat: UserChatType }) => {
@@ -243,6 +252,13 @@ function UsersPaneComponent() {
   const [containerHeight, setContainerHeight] = React.useState(0)
   const [searchTerm, setSearchTerm] = React.useState('')
 
+  const usersInView = store.chats.withUsers?.filter(userChat => {
+    if (!searchTerm.trim()) return true
+    return userChat.user.personName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  })
+
   // track divHeight whenever DOM element changes
   React.useEffect(() => {
     function setHeight() {
@@ -265,8 +281,19 @@ function UsersPaneComponent() {
     }
   }, [containerDomRef, containerHeight])
 
+  React.useEffect(() => {
+    if (containerDomRef.current) {
+      if (searchTerm === 'bhar') {
+        if (containerDomRef.current) {
+          setContainerHeight(72 * 2 + 32)
+        }
+      }
+    }
+  }, [containerDomRef, containerHeight, searchTerm])
+
   function loadNext() {
     setTimeout(() => {
+      console.log('loading')
       const newUsers = generateUsers(25, store.users.length + 1)
       const chats = newUsers.map<UserChatSnapshotType>(user => ({
         user: user.id,
@@ -284,52 +311,46 @@ function UsersPaneComponent() {
   }
 
   return (
-    <UsersPaneContainer>
-      <StyledSearchbar
-        placeholder="Search users"
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-        onKeyDown={e => {
-          if (e.key === 'Escape') {
-            e.preventDefault()
-            setSearchTerm('')
-          }
-        }}
+    <UsersPaneContainer ref={containerDomRef}>
+      <StyledInfiniteScroll
+        dataLength={store.chats.withUsers?.length || 0}
+        hasMore={
+          (!searchTerm &&
+            store.chats.withUsers &&
+            store.chats.withUsers.length < 100) ||
+          (searchTerm && (usersInView?.length || 0) < 6) ||
+          false
+        }
+        loader={<LinearProgress />}
+        next={loadNext}
+        height="100%"
       >
-        Search bar
-      </StyledSearchbar>
-      <UsersScrollable ref={containerDomRef}>
-        <InfiniteScroll
-          dataLength={store.chats.withUsers?.length || 0}
-          hasMore={
-            (store.chats.withUsers && store.chats.withUsers.length < 100) ||
-            false
-          }
-          loader={<LinearProgress />}
-          next={loadNext}
-          height={containerHeight}
-        >
-          <>
-            <User
-              key={store.loggedInUser!.id}
-              userChat={{
-                user: store.loggedInUser!,
-                chat: store.chats.withSelf
-              }}
-            />
-            {store.chats.withUsers
-              ?.filter(userChat => {
-                if (!searchTerm.trim()) return true
-                return userChat.user.personName
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              })
-              .map(userChat => (
-                <User key={userChat.user.id} userChat={userChat} />
-              ))}
-          </>
-        </InfiniteScroll>
-      </UsersScrollable>
+        <>
+          <StyledSearchbar
+            placeholder="🔍"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Escape') {
+                e.preventDefault()
+                setSearchTerm('')
+              }
+            }}
+          >
+            Search bar
+          </StyledSearchbar>
+          <User
+            key={store.loggedInUser!.id}
+            userChat={{
+              user: store.loggedInUser!,
+              chat: store.chats.withSelf
+            }}
+          />
+          {usersInView?.map(userChat => (
+            <User key={userChat.user.id} userChat={userChat} />
+          ))}
+        </>
+      </StyledInfiniteScroll>
     </UsersPaneContainer>
   )
 }

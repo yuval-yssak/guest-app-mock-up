@@ -10,6 +10,7 @@ import PageContentWrapper from '../../components/PageContentWrapper'
 export const ChatPageContainer = styled(PageContentWrapper).attrs({
   className: 'chat-page-container'
 })<{ staffView: boolean }>`
+  height: 100%;
   overflow-y: auto;
   grid-template-columns: ${({ staffView }) =>
     staffView
