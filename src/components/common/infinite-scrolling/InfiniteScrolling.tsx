@@ -353,7 +353,10 @@ export default function InfiniteScroll(props: Props) {
   const outerDivStyle =
     props.pullDownToRefresh && props.height ? { overflow: 'auto' } : {}
   return (
-    <div style={outerDivStyle} className="infinite-scroll-component__outerdiv">
+    <div
+      style={outerDivStyle}
+      className={`infinite-scroll-component__outerdiv ${props.className}`}
+    >
       <div
         className={`infinite-scroll-component ${props.className || ''}`}
         ref={(infScroll: HTMLDivElement) => (_infScroll.current = infScroll)}
