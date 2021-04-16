@@ -15,7 +15,7 @@ export const minimumChatMessageWidth = '40rem'
 export const inBetweenChatMessageWidth = '90vw'
 export const maximumChatMessageWidth = '60rem'
 
-const UsersPaneContainer = styled.div.attrs({
+const UsersPaneContainer = styled.section.attrs({
   className: 'users-pane-container'
 })`
   height: 100%;
@@ -35,6 +35,10 @@ const UsersPaneContainer = styled.div.attrs({
     width: 100%;
     overflow: hidden;
   }
+`
+
+const List = styled.ul`
+  list-style-type: none;
 `
 
 const StyledUser = styled.div.attrs({ className: 'user' })<{
@@ -180,63 +184,65 @@ const User = observer(({ userChat }: { userChat: UserChatType }) => {
   }
 
   return (
-    <StyledUser
-      onClick={() =>
-        store.view.openChatPage(
-          userChat.user === store.loggedInUser
-            ? undefined
-            : userChat.user.id.toString()
-        )
-      }
-      selected={
-        userChat.user.id === +store.view.id! ||
-        (store.view.id === undefined &&
-          userChat.user.id === store.loggedInUser!.id)
-      }
-    >
-      <UserAvatar
-        src={userChat.user.imageSrc}
-        name={userChat.user.personName}
-      />
-      <MiddleSection>
-        <StyledUserName>{userChat.user.personName}</StyledUserName>
+    <li>
+      <StyledUser
+        onClick={() =>
+          store.view.openChatPage(
+            userChat.user === store.loggedInUser
+              ? undefined
+              : userChat.user.id.toString()
+          )
+        }
+        selected={
+          userChat.user.id === +store.view.id! ||
+          (store.view.id === undefined &&
+            userChat.user.id === store.loggedInUser!.id)
+        }
+      >
+        <UserAvatar
+          src={userChat.user.imageSrc}
+          name={userChat.user.personName}
+        />
+        <MiddleSection>
+          <StyledUserName>{userChat.user.personName}</StyledUserName>
+          {userChat.chat.orderedMessages.length ? (
+            <>
+              <LastMessageContent>
+                <Typography
+                  variant="body1"
+                  {...(userChat.chat.unreadCount && {
+                    style: { fontWeight: 700 }
+                  })}
+                >
+                  {lastUserName}:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  {...(userChat.chat.unreadCount && {
+                    style: { fontWeight: 700 }
+                  })}
+                >
+                  {lastMessageContent}
+                </Typography>
+              </LastMessageContent>
+            </>
+          ) : (
+            <></>
+          )}
+        </MiddleSection>
         {userChat.chat.orderedMessages.length ? (
-          <>
-            <LastMessageContent>
-              <Typography
-                variant="body1"
-                {...(userChat.chat.unreadCount && {
-                  style: { fontWeight: 700 }
-                })}
-              >
-                {lastUserName}:
-              </Typography>
-              <Typography
-                variant="body2"
-                {...(userChat.chat.unreadCount && {
-                  style: { fontWeight: 700 }
-                })}
-              >
-                {lastMessageContent}
-              </Typography>
-            </LastMessageContent>
-          </>
+          <TimeSignature>
+            {
+              userChat.chat.orderedMessages[
+                userChat.chat.orderedMessages.length - 1
+              ].timeSignature
+            }
+          </TimeSignature>
         ) : (
           <></>
         )}
-      </MiddleSection>
-      {userChat.chat.orderedMessages.length ? (
-        <TimeSignature>
-          {
-            userChat.chat.orderedMessages[
-              userChat.chat.orderedMessages.length - 1
-            ].timeSignature
-          }
-        </TimeSignature>
-      ) : (
-        <></>
-      )}
-    </StyledUser>
+      </StyledUser>
+    </li>
   )
 })
 
@@ -246,6 +252,13 @@ function UsersPaneComponent() {
   const containerDomRef = React.createRef<HTMLDivElement>()
   const [containerHeight, setContainerHeight] = React.useState(0)
   const [searchTerm, setSearchTerm] = React.useState('')
+
+  const displayedUsers = store.chats.withUsers?.filter(userChat => {
+    if (!searchTerm.trim()) return true
+    return userChat.user.personName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  })!
 
   // track divHeight whenever DOM element changes or number of items
   // changes so that they amount to less than the full height of the container.
@@ -300,8 +313,9 @@ function UsersPaneComponent() {
       store.chats.addUserChats(chats)
     }, 2000)
   }
+
   return (
-    <UsersPaneContainer ref={containerDomRef}>
+    <UsersPaneContainer ref={containerDomRef} role="navigation">
       <InfiniteScroll
         dataLength={store.chats.withUsers?.length || 0}
         hasMore={
@@ -311,20 +325,43 @@ function UsersPaneComponent() {
         next={loadNext}
         height={containerHeight}
       >
-        <>
-          <StyledSearchbar
-            placeholder="🔍"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Escape') {
-                e.preventDefault()
-                setSearchTerm('')
+        <StyledSearchbar
+          placeholder="🔍"
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Escape') {
+              e.preventDefault()
+              setSearchTerm('')
+            }
+          }}
+        >
+          Search bar
+        </StyledSearchbar>
+        <List
+          tabIndex={0}
+          onKeyDown={e => {
+            // navigate up & down via the arrow keys
+            const selectedUserIndex = displayedUsers.findIndex(
+              userChat => userChat.user.id === +store.view.id!
+            )
+
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+              e.preventDefault()
+
+              if (selectedUserIndex === 0 && e.key === 'ArrowUp')
+                return store.view.openChatPage()
+
+              const nextId =
+                displayedUsers[
+                  selectedUserIndex + 1 * (e.key === 'ArrowUp' ? -1 : 1)
+                ]?.user.id
+              if (nextId) {
+                store.view.openChatPage(nextId?.toString())
               }
-            }}
-          >
-            Search bar
-          </StyledSearchbar>
+            }
+          }}
+        >
           <User
             key={store.loggedInUser!.id}
             userChat={{
@@ -332,17 +369,10 @@ function UsersPaneComponent() {
               chat: store.chats.withSelf
             }}
           />
-          {store.chats.withUsers
-            ?.filter(userChat => {
-              if (!searchTerm.trim()) return true
-              return userChat.user.personName
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-            })
-            .map(userChat => (
-              <User key={userChat.user.id} userChat={userChat} />
-            ))}
-        </>
+          {displayedUsers.map(userChat => (
+            <User key={userChat.user.id} userChat={userChat} />
+          ))}
+        </List>
       </InfiniteScroll>
     </UsersPaneContainer>
   )
