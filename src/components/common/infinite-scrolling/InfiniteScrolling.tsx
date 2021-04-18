@@ -40,10 +40,7 @@ export default function InfiniteScroll(props: Props) {
   const _infScroll = React.useRef<HTMLDivElement | undefined>()
   const lastScrollTop = React.useRef(0)
   const [actionTriggered, setActionTriggered] = React.useState(false)
-  const [lastElementScrollTop, setLastElementScrollTop] = React.useState<
-    number | undefined
-  >()
-  const [lastScrollHeight, setLastScrollHeight] = React.useState(0)
+  const lastScrollHeight = React.useRef(0)
   const _pullDown = React.useRef<HTMLDivElement | undefined>()
 
   // will be populated in componentDidMount
@@ -87,18 +84,11 @@ export default function InfiniteScroll(props: Props) {
         if (atBottom && hasMore) {
           setActionTriggered(true)
           setShowLoader(true)
-          if (el.current instanceof HTMLElement)
-            setLastElementScrollTop(
-              inverse
-                ? el.current.firstElementChild?.nextElementSibling?.scrollTop
-                : el.current.lastElementChild?.previousElementSibling?.scrollTop
-            )
-          setLastScrollHeight((el.current as Element).scrollHeight)
+          lastScrollHeight.current = (el.current as Element).scrollHeight
           next()
         }
-
-        lastScrollTop.current = target.scrollTop
       }
+      lastScrollTop.current = target.scrollTop
     },
     [height, scrollThreshold, actionTriggered, hasMore, inverse, onScroll, next]
   )
@@ -129,6 +119,14 @@ export default function InfiniteScroll(props: Props) {
         'scroll',
         onScrollListener as EventListenerOrEventListenerObject
       )
+    }
+    return () => {
+      if (el.current) {
+        el.current.removeEventListener(
+          'scroll',
+          onScrollListener as EventListenerOrEventListenerObject
+        )
+      }
     }
   }, [props.height, onScrollListener, props.scrollableTarget])
 
@@ -253,11 +251,6 @@ export default function InfiniteScroll(props: Props) {
     // teardown logic
     return function () {
       if (el.current) {
-        el.current.removeEventListener(
-          'scroll',
-          onScrollListener as EventListenerOrEventListenerObject
-        )
-
         if (pullDownToRefresh) {
           el.current.removeEventListener('touchstart', onStart)
           el.current.removeEventListener('touchmove', onMove)
@@ -270,7 +263,6 @@ export default function InfiniteScroll(props: Props) {
       }
     }
   }, [
-    onScrollListener,
     pullDownToRefresh,
     refreshFunction,
     pullToRefreshThresholdBreached,
@@ -284,23 +276,17 @@ export default function InfiniteScroll(props: Props) {
       if (props.inverse && el.current) {
         ;(el.current as Element).scrollTop =
           (el.current as Element).scrollHeight -
-          lastScrollHeight +
-          (lastElementScrollTop || 0)
+          lastScrollHeight.current +
+          lastScrollTop.current
       }
 
       setShowLoader(false)
     }
-  }, [
-    props.dataLength,
-    previousDataLength,
-    lastElementScrollTop,
-    props.inverse,
-    lastScrollHeight
-  ])
+  }, [props.dataLength, previousDataLength, props.inverse, lastScrollHeight])
 
   function isElementAtTop(
     target: HTMLElement,
-    scrollThreshold: string | number = 0.9
+    scrollThreshold: string | number = 0.85
   ) {
     const threshold = parseThreshold(scrollThreshold)
 
@@ -308,12 +294,12 @@ export default function InfiniteScroll(props: Props) {
       return target.scrollTop <= threshold.value + 1
     }
 
-    return target.scrollTop <= threshold.value / 100 + 1
+    return target.scrollTop / target.clientHeight <= threshold.value / 100
   }
 
   function isElementAtBottom(
     target: HTMLElement,
-    scrollThreshold: string | number = 0.95
+    scrollThreshold: string | number = 0.85
   ) {
     const clientHeight =
       target === document.body || target === document.documentElement

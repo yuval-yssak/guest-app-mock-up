@@ -165,7 +165,7 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
           .findChat(+(store.view.id || ''))
           ?.insertMessages(newMessages)
         setBeforeAnyScroll(false)
-      }, 1000)
+      }, 3000)
     }
   }
 

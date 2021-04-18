@@ -323,7 +323,7 @@ function UsersPaneComponent() {
         }
         loader={<LinearProgress />}
         next={loadNext}
-        height={containerHeight}
+        height={containerHeight - 1}
       >
         <StyledSearchbar
           placeholder="🔍"
