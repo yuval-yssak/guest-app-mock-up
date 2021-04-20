@@ -18,6 +18,7 @@ export const maximumChatMessageWidth = '60rem'
 const UsersPaneContainer = styled.section.attrs({
   className: 'users-pane-container'
 })`
+  width: 100%;
   height: 100%;
   overflow: hidden;
   padding-left: calc(
@@ -160,93 +161,107 @@ const StyledSearchbar = styled(TextField).attrs({ type: 'search' })<{
   }
 `
 
-const User = observer(({ userChat }: { userChat: UserChatType }) => {
-  const store = useMst()
+const User = observer(
+  ({
+    userChat,
+    switchToChatView
+  }: {
+    userChat: UserChatType
+    switchToChatView?: () => void
+  }) => {
+    const store = useMst()
 
-  const lastUserName = userChat.chat.unreadCount
-    ? getLastReadMessage()?.user.personName.split(/\s/)[0]
-    : getLastMessage().user.personName.split(/\s/)[0]
+    const lastUserName = userChat.chat.unreadCount
+      ? getLastReadMessage()?.user.personName.split(/\s/)[0]
+      : getLastMessage().user.personName.split(/\s/)[0]
 
-  const lastMessageContent = userChat.chat.unreadCount
-    ? getLastReadMessage()?.content.slice(0, 80)
-    : getLastMessage().content.slice(0, 80)
+    const lastMessageContent = userChat.chat.unreadCount
+      ? getLastReadMessage()?.content.slice(0, 80)
+      : getLastMessage().content.slice(0, 80)
 
-  function getLastReadMessage() {
-    return userChat.chat.orderedMessages.find(
-      m => m.timestamp > userChat.chat.lastReadTimestamp
-    )
-  }
+    function getLastReadMessage() {
+      return userChat.chat.orderedMessages.find(
+        m => m.timestamp > userChat.chat.lastReadTimestamp
+      )
+    }
 
-  function getLastMessage() {
-    return userChat.chat.orderedMessages[
-      userChat.chat.orderedMessages.length - 1
-    ]
-  }
+    function getLastMessage() {
+      return userChat.chat.orderedMessages[
+        userChat.chat.orderedMessages.length - 1
+      ]
+    }
 
-  return (
-    <li>
-      <StyledUser
-        onClick={() =>
-          store.view.openChatPage(
-            userChat.user === store.loggedInUser
-              ? undefined
-              : userChat.user.id.toString()
-          )
-        }
-        selected={
-          userChat.user.id === +store.view.id! ||
-          (store.view.id === undefined &&
-            userChat.user.id === store.loggedInUser!.id)
-        }
-      >
-        <UserAvatar
-          src={userChat.user.imageSrc}
-          name={userChat.user.personName}
-        />
-        <MiddleSection>
-          <StyledUserName>{userChat.user.personName}</StyledUserName>
+    const selected =
+      userChat.user.id === +store.view.id! ||
+      (store.view.id === undefined &&
+        userChat.user.id === store.loggedInUser!.id)
+
+    return (
+      <li>
+        <StyledUser
+          onClick={() => {
+            switchToChatView?.()
+            store.view.openChatPage(
+              userChat.user === store.loggedInUser
+                ? undefined
+                : userChat.user.id.toString()
+            )
+          }}
+          selected={selected}
+        >
+          <UserAvatar
+            src={userChat.user.imageSrc}
+            name={userChat.user.personName}
+          />
+          <MiddleSection>
+            <StyledUserName>{userChat.user.personName}</StyledUserName>
+            {userChat.chat.orderedMessages.length ? (
+              <>
+                <LastMessageContent>
+                  <Typography
+                    variant="body1"
+                    {...(userChat.chat.unreadCount && {
+                      style: { fontWeight: 700 }
+                    })}
+                  >
+                    {lastUserName}:
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    {...(userChat.chat.unreadCount && {
+                      style: { fontWeight: 700 }
+                    })}
+                  >
+                    {lastMessageContent}
+                  </Typography>
+                </LastMessageContent>
+              </>
+            ) : (
+              <></>
+            )}
+          </MiddleSection>
           {userChat.chat.orderedMessages.length ? (
-            <>
-              <LastMessageContent>
-                <Typography
-                  variant="body1"
-                  {...(userChat.chat.unreadCount && {
-                    style: { fontWeight: 700 }
-                  })}
-                >
-                  {lastUserName}:
-                </Typography>
-                <Typography
-                  variant="body2"
-                  {...(userChat.chat.unreadCount && {
-                    style: { fontWeight: 700 }
-                  })}
-                >
-                  {lastMessageContent}
-                </Typography>
-              </LastMessageContent>
-            </>
+            <TimeSignature>
+              {
+                userChat.chat.orderedMessages[
+                  userChat.chat.orderedMessages.length - 1
+                ].timeSignature
+              }
+            </TimeSignature>
           ) : (
             <></>
           )}
-        </MiddleSection>
-        {userChat.chat.orderedMessages.length ? (
-          <TimeSignature>
-            {
-              userChat.chat.orderedMessages[
-                userChat.chat.orderedMessages.length - 1
-              ].timeSignature
-            }
-          </TimeSignature>
-        ) : (
-          <></>
-        )}
-      </StyledUser>
-    </li>
-  )
-})
+        </StyledUser>
+      </li>
+    )
+  }
+)
 
-function UsersPaneComponent() {
+function UsersPaneComponent({
+  switchToChatView
+}: {
+  switchToChatView?: () => void
+}) {
   const store = useMst()
 
   const containerDomRef = React.createRef<HTMLDivElement>()
@@ -348,16 +363,18 @@ function UsersPaneComponent() {
 
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
               e.preventDefault()
+              switchToChatView?.()
 
               if (selectedUserIndex === 0 && e.key === 'ArrowUp')
-                return store.view.openChatPage()
-
-              const nextId =
-                displayedUsers[
-                  selectedUserIndex + 1 * (e.key === 'ArrowUp' ? -1 : 1)
-                ]?.user.id
-              if (nextId) {
-                store.view.openChatPage(nextId?.toString())
+                store.view.openChatPage()
+              else {
+                const nextId =
+                  displayedUsers[
+                    selectedUserIndex + 1 * (e.key === 'ArrowUp' ? -1 : 1)
+                  ]?.user.id
+                if (nextId) {
+                  store.view.openChatPage(nextId?.toString())
+                }
               }
             }
           }}
@@ -368,9 +385,14 @@ function UsersPaneComponent() {
               user: store.loggedInUser!,
               chat: store.chats.withSelf
             }}
+            switchToChatView={switchToChatView}
           />
           {displayedUsers.map(userChat => (
-            <User key={userChat.user.id} userChat={userChat} />
+            <User
+              key={userChat.user.id}
+              userChat={userChat}
+              switchToChatView={switchToChatView}
+            />
           ))}
         </List>
       </InfiniteScroll>

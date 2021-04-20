@@ -69,6 +69,7 @@ const Main = styled.main`
   position: relative;
   height: 100%;
   overflow-y: auto;
+  position: relative;
 
   &:focus {
     outline: none;
@@ -193,11 +194,9 @@ function App() {
                       {store.view.page === '/announcements' && (
                         <AnnouncementsPage />
                       )}
-                      {store.view.page === '/chat' && (
-                        <ChatPage withPerson={store.view.id} />
-                      )}
+                      {store.view.page === '/chat' && <ChatPage />}
                       {store.view.page === '/info-section' && (
-                        <InfoSectionPage page={store.view.id || ''} />
+                        <InfoSectionPage />
                       )}
                       {store.view.page === '/info-section/abc/123' && (
                         <div>Specific page inside two levels of navigation</div>

@@ -1,12 +1,15 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import { observer } from 'mobx-react-lite'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import IconButton from '@material-ui/core/IconButton'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import SendIcon from '@material-ui/icons/Send'
 import styled from 'styled-components'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+
 import InfiniteScroll from '../../components/common/infinite-scrolling/InfiniteScrolling'
 
 import { useMst } from '../../models/reactHook'
@@ -32,6 +35,23 @@ const StyledIconButton = styled(IconButton)`
     align-self: end;
   }
 `
+
+const BackButton = styled(IconButton)`
+  && {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background-color: palegoldenrod;
+  }
+`
+
+function SwitchBack({ fn }: { fn: () => void }) {
+  return (
+    <BackButton onClick={fn}>
+      <ArrowBackIcon />
+    </BackButton>
+  )
+}
 
 const UserInputSection = styled.section.attrs({
   className: 'user-input-section'
@@ -115,8 +135,40 @@ const StyledLinearProgress = styled(LinearProgress)`
   }
 `
 
-function ChatPage({ withPerson }: { withPerson?: string }) {
+const ChatContainerPage = observer(function ChatContainerPage() {
   const store = useMst()
+  const smallScreen = useMediaQuery('(max-width:40em')
+  if (smallScreen && !!store.chats.withUsers) {
+    return <StaffChatSinglePane />
+  } else {
+    return (
+      <ChatPageContainer staffView={!!store.chats.withUsers}>
+        {!!store.chats.withUsers && <UsersPane />}
+        <ChatPage staffView={!!store.chats.withUsers} />
+      </ChatPageContainer>
+    )
+  }
+})
+
+function StaffChatSinglePane() {
+  const [visiblePane, setVisiblePane] = React.useState<'users' | 'chat'>(
+    'users'
+  )
+
+  if (visiblePane === 'users') {
+    return <UsersPane switchToChatView={() => setVisiblePane('chat')} />
+  } else return <ChatPage selectAnotherUser={() => setVisiblePane('users')} />
+}
+
+const ChatPage = observer(function ChatPage({
+  staffView = false,
+  selectAnotherUser
+}: {
+  staffView?: boolean
+  selectAnotherUser?: () => void
+}) {
+  const store = useMst()
+  const withPerson = store.view.id
   const [userInput, setUserInput] = React.useState('')
 
   const dividerRef = React.createRef<HTMLDivElement>()
@@ -223,13 +275,13 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
   if (!store.loggedInUser) return <h1>Not Logged In</h1>
 
   return (
-    <ChatPageContainer staffView={!!store.chats.withUsers}>
-      {store.chats.withUsers && <UsersPane />}
-      <ChatContainer staffView={!!store.chats.withUsers}>
+    <>
+      {selectAnotherUser && <SwitchBack fn={selectAnotherUser} />}
+      <ChatContainer staffView={staffView}>
         <MessagesScrollable
           tabIndex={0}
           ref={containerDomRef}
-          staffView={!!store.chats.withUsers}
+          staffView={staffView}
         >
           <StyledInfiniteScroll
             dataLength={chat.orderedMessages.length}
@@ -242,7 +294,7 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
             {messagesInDays}
           </StyledInfiniteScroll>
         </MessagesScrollable>
-        <UserInputSection staffView={!!store.chats.withUsers}>
+        <UserInputSection staffView={staffView}>
           <TextField
             id="user-input"
             label={
@@ -271,9 +323,9 @@ function ChatPage({ withPerson }: { withPerson?: string }) {
           </StyledIconButton>
         </UserInputSection>
       </ChatContainer>
-    </ChatPageContainer>
+    </>
   )
-}
+})
 
 function arrangeChatInDays(chat: ChatType) {
   return chat.orderedMessages?.reduce<
@@ -367,4 +419,4 @@ function getUserFriendlyDate(message: ChatType['orderedMessages'][number]) {
     : dayjs(message.timestamp).format('MMM D, YYYY')
 }
 
-export default observer(ChatPage)
+export default ChatContainerPage

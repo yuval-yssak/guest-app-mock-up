@@ -12,6 +12,7 @@ import InfoArrivingAtTheAirport from './InfoArrivingAtTheAirport'
 import InfoPracticeGuide from './InfoPracticeGuide'
 import styled from 'styled-components'
 import { useMst } from '../../models/reactHook'
+import { observer } from 'mobx-react-lite'
 
 const minTeaserWidth = '21.25rem'
 const maxTeasersInRow = 3
@@ -123,8 +124,9 @@ function MediaCard({
   )
 }
 
-export default function InfoSetingsPage({ page }: { page: string }) {
+export default observer(function InfoSetingsPage() {
   const store = useMst()
+  const page = store.view.id || ''
 
   if (page === 'covid-19-guidelines') return <InfoCovid19GuidelinesPage />
   if (page === 'arriving-at-the-airport') return <InfoArrivingAtTheAirport />
@@ -278,4 +280,4 @@ export default function InfoSetingsPage({ page }: { page: string }) {
       </MediaCard>
     </StyledPageContentWrapper>
   )
-}
+})
