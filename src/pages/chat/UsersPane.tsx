@@ -3,12 +3,13 @@ import styled from 'styled-components'
 import { UserChatSnapshotType, UserChatType } from '../../models/ChatModel'
 import Avatar from '@material-ui/core/Avatar'
 import LinearProgress from '@material-ui/core/LinearProgress'
+import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import InfiniteScroll from '../../components/common/infinite-scrolling/InfiniteScrolling'
 import { generateRandomMessages, generateUsers } from '../../defaultStore'
 import { useMst } from '../../models/reactHook'
 import { observer } from 'mobx-react-lite'
-import TextField from '@material-ui/core/TextField'
+import { isElementInViewport } from '../../components/common/isElementInViewport'
 
 export const usersPaneWidth = '30rem'
 export const minimumChatMessageWidth = '40rem'
@@ -164,12 +165,22 @@ const StyledSearchbar = styled(TextField).attrs({ type: 'search' })<{
 const User = observer(
   ({
     userChat,
-    switchToChatView
+    switchToChatView,
+    selected
   }: {
     userChat: UserChatType
     switchToChatView?: () => void
+    selected: boolean
   }) => {
     const store = useMst()
+    const domRef = React.createRef<HTMLDivElement>()
+
+    React.useEffect(() => {
+      setImmediate(() => {
+        if (domRef.current && selected && !isElementInViewport(domRef.current))
+          domRef.current.scrollIntoView({ block: 'center' })
+      })
+    }, [domRef, selected])
 
     const lastUserName = userChat.chat.unreadCount
       ? getLastReadMessage()?.user.personName.split(/\s/)[0]
@@ -191,11 +202,6 @@ const User = observer(
       ]
     }
 
-    const selected =
-      userChat.user.id === +store.view.id! ||
-      (store.view.id === undefined &&
-        userChat.user.id === store.loggedInUser!.id)
-
     return (
       <li>
         <StyledUser
@@ -208,6 +214,7 @@ const User = observer(
             )
           }}
           selected={selected}
+          ref={domRef}
         >
           <UserAvatar
             src={userChat.user.imageSrc}
@@ -386,12 +393,14 @@ function UsersPaneComponent({
               chat: store.chats.withSelf
             }}
             switchToChatView={switchToChatView}
+            selected={store.view.id === undefined}
           />
           {displayedUsers.map(userChat => (
             <User
               key={userChat.user.id}
               userChat={userChat}
               switchToChatView={switchToChatView}
+              selected={userChat.user.id === +store.view.id!}
             />
           ))}
         </List>
