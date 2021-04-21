@@ -5,7 +5,11 @@ import Accordion from '@material-ui/core/Accordion'
 import AccordionSummary from '@material-ui/core/AccordionSummary'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
 import AccordionActions from '@material-ui/core/AccordionActions'
+import AddIcon from '@material-ui/icons/Add'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import IconButton from '@material-ui/core/IconButton'
 import Typography, { TypographyProps } from '@material-ui/core/Typography'
+import Switch from '@material-ui/core/Switch'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Button from '@material-ui/core/Button'
 import FlagIcon from '@material-ui/icons/Flag'
@@ -39,9 +43,11 @@ const ScrollablePageContentWrapper = styled(PageContentWrapper).attrs({
   }
 `
 
-const Section = styled.section.attrs(({ $type }: { $type: string }) => ({
-  className: `${$type}-announcements`
-}))<{ $type: string }>`
+const Section = styled.section.attrs(
+  ({ $classPrefix }: { $classPrefix: string }) => ({
+    className: `${$classPrefix}-announcements`
+  })
+)<{ $classPrefix: string }>`
   padding: 1rem;
 
   && .unread-message-heading + .MuiAccordion-root,
@@ -50,8 +56,8 @@ const Section = styled.section.attrs(({ $type }: { $type: string }) => ({
   }
 
   // give a bold font for summaries under the unread category
-  ${({ $type }) =>
-    $type === 'unread' &&
+  ${({ $classPrefix }) =>
+    $classPrefix === 'unread' &&
     `
   & .announcement-summary {
     font-weight: 500;
@@ -124,6 +130,8 @@ const AnnouncementHead = styled.div.attrs({
   }
 `
 
+const EditLine = styled.div``
+
 const AnnouncementInfo = styled.div.attrs({ className: 'announcement-info' })`
   display: flex;
 `
@@ -185,11 +193,13 @@ const ConfirmButton = styled(Button).attrs(
 `
 
 function Announcement({
-  announcement
+  announcement,
+  editMode
 }: {
   announcement: AnnouncementInstanceType
+  editMode: boolean
 }) {
-  const { id, summary, details, timestamp, status, priority } = announcement
+  const { id, summary, details, publishOn, status, priority } = announcement
   const [expanded, setExpanded] = React.useState(status === 'unread')
   const smallScreen = useMediaQuery('(max-width: 23.125em)')
   const mediumScreen = useMediaQuery(breakpointSplitHead)
@@ -209,10 +219,10 @@ function Announcement({
           <Typography className="announcement-summary">{summary}</Typography>
           {mediumScreen ? (
             <AnnouncementInfo>
-              {renderInfo(priority, status, smallScreen, timestamp)}
+              {renderInfo(priority, status, smallScreen, publishOn)}
             </AnnouncementInfo>
           ) : (
-            renderInfo(priority, status, smallScreen, timestamp)
+            renderInfo(priority, status, smallScreen, publishOn)
           )}
         </AnnouncementHead>
       </StyledAccordionSummary>
@@ -220,15 +230,27 @@ function Announcement({
         <Typography>{details}</Typography>
       </StyledAccordionDetails>
       <AccordionActions>
-        <RespondButton announcement={announcement} store={store} />
-        {status === 'unread' && <ConfirmButton announcement={announcement} />}
+        {!editMode && (
+          <>
+            <RespondButton announcement={announcement} store={store} />
+            {status === 'unread' && (
+              <ConfirmButton announcement={announcement} />
+            )}
+          </>
+        )}
       </AccordionActions>
     </Accordion>
   )
 }
 
-const getAnnouncementComponent = (announcement: AnnouncementInstanceType) => (
-  <Announcement announcement={announcement} key={announcement.id} />
+const getAnnouncementComponent = (editMode: boolean) => (
+  announcement: AnnouncementInstanceType
+) => (
+  <Announcement
+    announcement={announcement}
+    key={announcement.id}
+    editMode={editMode}
+  />
 )
 
 const NoAnnouncementsTitle = styled(Typography)`
@@ -243,29 +265,56 @@ const EmptyPagePaper = styled(Paper)`
   padding: 3rem;
 `
 
+const StyledFormControlLabel = styled(FormControlLabel)`
+  && {
+    display: block;
+    text-align: right;
+  }
+`
+
 function renderInfo(
   priority: AnnouncementInstanceType['priority'],
   status: AnnouncementInstanceType['status'],
   smallScreen: boolean,
-  timestamp: AnnouncementInstanceType['timestamp']
+  publishOn: AnnouncementInstanceType['publishOn']
 ) {
   return (
     <>
       {priority === 'high' && (
         <HighPriority withAnnotation={status === 'unread' && !smallScreen} />
       )}
-      <Typography>{dayjs(timestamp).format('MMM D, YYYY')}</Typography>
+      <Typography>{dayjs(publishOn).format('MMM D, YYYY')}</Typography>
     </>
   )
 }
 
 function AnnouncementsPage() {
-  const { announcements } = useMst()
+  const store = useMst()
+  const [editMode, setEditMode] = React.useState(false)
 
+  const loggedInType = store.loggedInUser?.type
   return (
-    <ScrollablePageContentWrapper role="article">
-      {!announcements.all.length && (
-        <Section $type="no">
+    <ScrollablePageContentWrapper>
+      {loggedInType === 'staff' && (
+        <StyledFormControlLabel
+          label="Edit Mode"
+          control={
+            <Switch
+              checked={editMode}
+              onChange={() => setEditMode(!editMode)}
+            />
+          }
+        />
+      )}
+      {editMode && (
+        <EditLine>
+          <IconButton>
+            <AddIcon />
+          </IconButton>
+        </EditLine>
+      )}
+      {!store.announcements.all.length && (
+        <Section $classPrefix="no">
           <EmptyPagePaper>
             <NoAnnouncementsTitle>
               There are no posted announcements at the moment. We'll let you
@@ -274,13 +323,15 @@ function AnnouncementsPage() {
           </EmptyPagePaper>
         </Section>
       )}
-      <Section $type="unread">
-        {announcements.unread.length ? <UnreadSectionHeading /> : undefined}
-        {announcements.unread.map(getAnnouncementComponent)}
+      <Section $classPrefix="unread">
+        {store.announcements.unread.length ? (
+          <UnreadSectionHeading />
+        ) : undefined}
+        {store.announcements.unread.map(getAnnouncementComponent(editMode))}
       </Section>
-      <Section $type="read">
-        {announcements.read.length ? <ReadSectionHeading /> : undefined}
-        {announcements.read.map(getAnnouncementComponent)}
+      <Section $classPrefix="read">
+        {store.announcements.read.length ? <ReadSectionHeading /> : undefined}
+        {store.announcements.read.map(getAnnouncementComponent(editMode))}
       </Section>
     </ScrollablePageContentWrapper>
   )

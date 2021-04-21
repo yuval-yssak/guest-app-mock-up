@@ -1,4 +1,5 @@
 import React from 'react'
+import dayjs from 'dayjs'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Menu from '@material-ui/core/Menu'
@@ -170,7 +171,8 @@ export default function ProminentAppBar({
               id: uuidv4(),
               summary: lorem.generateWords(8),
               details: lorem.generateSentences(2),
-              timestamp: new Date(),
+              publishOn: new Date(),
+              publishEnd: dayjs().add(1, 'week').toDate(),
               status: 'unread',
               priority: 'high'
             })
@@ -185,7 +187,8 @@ export default function ProminentAppBar({
               id: uuidv4(),
               summary: lorem.generateWords(8),
               details: lorem.generateSentences(2),
-              timestamp: new Date(),
+              publishOn: new Date(),
+              publishEnd: dayjs().add(1, 'week').toDate(),
               status: 'unread',
               priority: 'low'
             })

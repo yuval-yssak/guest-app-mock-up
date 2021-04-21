@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { UserChatSnapshotType, UserChatType } from '../../models/ChatModel'
+import { UserChatSnapshotType } from '../../models/ChatModel'
 import Avatar from '@material-ui/core/Avatar'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import TextField from '@material-ui/core/TextField'
@@ -163,43 +163,54 @@ const StyledSearchbar = styled(TextField).attrs({ type: 'search' })<{
 `
 
 const User = observer(
-  ({
-    userChat,
-    switchToChatView,
-    selected
-  }: {
-    userChat: UserChatType
-    switchToChatView?: () => void
-    selected: boolean
-  }) => {
+  ({ id, switchToChatView }: { id: string; switchToChatView?: () => void }) => {
     const store = useMst()
     const domRef = React.createRef<HTMLDivElement>()
+    const selected = (store.view.id || '') === id
+    const [firstRender, setFirstRender] = React.useState(true)
 
     React.useEffect(() => {
       setImmediate(() => {
-        if (domRef.current && selected && !isElementInViewport(domRef.current))
+        if (
+          domRef.current &&
+          selected &&
+          firstRender &&
+          !isElementInViewport(domRef.current)
+        )
           domRef.current.scrollIntoView({ block: 'center' })
       })
-    }, [domRef, selected])
+    }, [domRef, selected, id, firstRender])
 
-    const lastUserName = userChat.chat.unreadCount
+    React.useEffect(
+      // after initial load - do not allow jumping of the scrolling position
+      () => {
+        setTimeout(() => {
+          setFirstRender(false)
+        }, 1000)
+      },
+      []
+    )
+
+    const chat = id
+      ? store.chats.withUsers!.find(uc => uc.user.id === +id)!.chat
+      : store.chats.withSelf
+
+    const lastUserName = chat.unreadCount
       ? getLastReadMessage()?.user.personName.split(/\s/)[0]
       : getLastMessage().user.personName.split(/\s/)[0]
 
-    const lastMessageContent = userChat.chat.unreadCount
+    const lastMessageContent = chat.unreadCount
       ? getLastReadMessage()?.content.slice(0, 80)
       : getLastMessage().content.slice(0, 80)
 
     function getLastReadMessage() {
-      return userChat.chat.orderedMessages.find(
-        m => m.timestamp > userChat.chat.lastReadTimestamp
+      return chat.orderedMessages.find(
+        m => m.timestamp > chat.lastReadTimestamp
       )
     }
 
     function getLastMessage() {
-      return userChat.chat.orderedMessages[
-        userChat.chat.orderedMessages.length - 1
-      ]
+      return chat.orderedMessages[chat.orderedMessages.length - 1]
     }
 
     return (
@@ -207,27 +218,33 @@ const User = observer(
         <StyledUser
           onClick={() => {
             switchToChatView?.()
-            store.view.openChatPage(
-              userChat.user === store.loggedInUser
-                ? undefined
-                : userChat.user.id.toString()
-            )
+            store.view.openChatPage(id)
           }}
           selected={selected}
           ref={domRef}
         >
           <UserAvatar
-            src={userChat.user.imageSrc}
-            name={userChat.user.personName}
+            src={
+              id
+                ? store.users.find(user => user.id === +id)!.imageSrc
+                : store.loggedInUser!.imageSrc
+            }
+            name={
+              id
+                ? store.users.find(user => user.id === +id)!.personName
+                : store.loggedInUser!.personName
+            }
           />
           <MiddleSection>
-            <StyledUserName>{userChat.user.personName}</StyledUserName>
-            {userChat.chat.orderedMessages.length ? (
+            <StyledUserName>
+              {store.users.find(user => user.id === +id)?.personName}
+            </StyledUserName>
+            {chat.orderedMessages.length ? (
               <>
                 <LastMessageContent>
                   <Typography
                     variant="body1"
-                    {...(userChat.chat.unreadCount && {
+                    {...(chat.unreadCount && {
                       style: { fontWeight: 700 }
                     })}
                   >
@@ -235,7 +252,7 @@ const User = observer(
                   </Typography>
                   <Typography
                     variant="body2"
-                    {...(userChat.chat.unreadCount && {
+                    {...(chat.unreadCount && {
                       style: { fontWeight: 700 }
                     })}
                   >
@@ -247,12 +264,11 @@ const User = observer(
               <></>
             )}
           </MiddleSection>
-          {userChat.chat.orderedMessages.length ? (
+          {chat.orderedMessages.length ? (
             <TimeSignature>
               {
-                userChat.chat.orderedMessages[
-                  userChat.chat.orderedMessages.length - 1
-                ].timeSignature
+                chat.orderedMessages[chat.orderedMessages.length - 1]
+                  .timeSignature
               }
             </TimeSignature>
           ) : (
@@ -275,12 +291,20 @@ function UsersPaneComponent({
   const [containerHeight, setContainerHeight] = React.useState(0)
   const [searchTerm, setSearchTerm] = React.useState('')
 
-  const displayedUsers = store.chats.withUsers?.filter(userChat => {
+  const usersArray = [''].concat(
+    store.chats.withUsers!.map(uc => uc.user.id.toString())
+  )
+
+  const filteredUsersArray = usersArray.filter(userID => {
     if (!searchTerm.trim()) return true
-    return userChat.user.personName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  })!
+    return (
+      !userID ||
+      store.users
+        .find(u => u.id === +userID)!
+        .personName.toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    )
+  })
 
   // track divHeight whenever DOM element changes or number of items
   // changes so that they amount to less than the full height of the container.
@@ -364,8 +388,8 @@ function UsersPaneComponent({
           tabIndex={0}
           onKeyDown={e => {
             // navigate up & down via the arrow keys
-            const selectedUserIndex = displayedUsers.findIndex(
-              userChat => userChat.user.id === +store.view.id!
+            const selectedUserIndex = filteredUsersArray.findIndex(
+              id => id === store.view.id
             )
 
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -376,31 +400,21 @@ function UsersPaneComponent({
                 store.view.openChatPage()
               else {
                 const nextId =
-                  displayedUsers[
+                  filteredUsersArray[
                     selectedUserIndex + 1 * (e.key === 'ArrowUp' ? -1 : 1)
-                  ]?.user.id
+                  ]
                 if (nextId) {
-                  store.view.openChatPage(nextId?.toString())
+                  store.view.openChatPage(nextId)
                 }
               }
             }
           }}
         >
-          <User
-            key={store.loggedInUser!.id}
-            userChat={{
-              user: store.loggedInUser!,
-              chat: store.chats.withSelf
-            }}
-            switchToChatView={switchToChatView}
-            selected={store.view.id === undefined}
-          />
-          {displayedUsers.map(userChat => (
+          {filteredUsersArray.map(id => (
             <User
-              key={userChat.user.id}
-              userChat={userChat}
+              key={id || store.loggedInUser!.id}
+              id={id}
               switchToChatView={switchToChatView}
-              selected={userChat.user.id === +store.view.id!}
             />
           ))}
         </List>
