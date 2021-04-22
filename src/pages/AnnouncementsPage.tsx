@@ -19,8 +19,11 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import { useMst } from '../models/reactHook'
 import dayjs from 'dayjs'
+import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers'
+import DayjsUtils from '@date-io/dayjs'
 import { RootStoreType } from '../models/RootStore'
 import { AnnouncementInstanceType } from '../models/AnnouncementsModel'
+import TextField from '@material-ui/core/TextField'
 
 const breakpointSplitHead = '(max-width: 45em)'
 
@@ -28,6 +31,17 @@ const StyledAccordionDetails = styled(AccordionDetails)`
   && {
     display: grid;
     justify-items: end;
+  }
+`
+
+const Title = styled.h2`
+  font-weight: 300;
+  margin-bottom: 1rem;
+`
+
+const StyledTextField = styled(TextField)`
+  && {
+    margin-bottom: 0.8rem;
   }
 `
 
@@ -193,11 +207,9 @@ const ConfirmButton = styled(Button).attrs(
 `
 
 function Announcement({
-  announcement,
-  editMode
+  announcement
 }: {
   announcement: AnnouncementInstanceType
-  editMode: boolean
 }) {
   const { id, summary, details, publishOn, status, priority } = announcement
   const [expanded, setExpanded] = React.useState(status === 'unread')
@@ -230,7 +242,7 @@ function Announcement({
         <Typography>{details}</Typography>
       </StyledAccordionDetails>
       <AccordionActions>
-        {!editMode && (
+        {!store.announcements.editMode && (
           <>
             <RespondButton announcement={announcement} store={store} />
             {status === 'unread' && (
@@ -242,16 +254,6 @@ function Announcement({
     </Accordion>
   )
 }
-
-const getAnnouncementComponent = (editMode: boolean) => (
-  announcement: AnnouncementInstanceType
-) => (
-  <Announcement
-    announcement={announcement}
-    key={announcement.id}
-    editMode={editMode}
-  />
-)
 
 const NoAnnouncementsTitle = styled(Typography)`
   && {
@@ -288,52 +290,137 @@ function renderInfo(
   )
 }
 
-function AnnouncementsPage() {
+const NewDraft = observer(function NewDraft() {
   const store = useMst()
-  const [editMode, setEditMode] = React.useState(false)
 
-  const loggedInType = store.loggedInUser?.type
+  if (!store.announcements.editMode?.newDraft) return null
+
   return (
-    <ScrollablePageContentWrapper>
-      {loggedInType === 'staff' && (
-        <StyledFormControlLabel
-          label="Edit Mode"
+    <div>
+      <Title>New Announcement</Title>
+      <form>
+        <StyledTextField
+          name="draft-summary"
+          label="Summary"
+          placeholder="Enter a one-line summary here"
+          fullWidth
+          value={store.announcements.editMode.newDraft.summary}
+          onChange={e =>
+            store.announcements.editMode?.newDraft?.setSummary(e.target.value)
+          }
+        />
+        <StyledTextField
+          name="draft-details"
+          label="Details"
+          placeholder="Full announcement contents"
+          multiline
+          rows={6}
+          fullWidth
+          value={store.announcements.editMode.newDraft.details}
+          onChange={e =>
+            store.announcements.editMode?.newDraft?.setDetails(e.target.value)
+          }
+        />
+        <DateTimePicker
+          style={{ minWidth: '20rem' }}
+          variant="dialog"
+          format="ddd, MMM DD, YYYY hh:mm a"
+          margin="normal"
+          label="Publish On"
+          value={store.announcements.editMode.newDraft.publishOn}
+          onChange={e =>
+            store.announcements.editMode?.newDraft?.setPublishOn(e?.toDate())
+          }
+          autoOk
+        />
+        <DateTimePicker
+          style={{ minWidth: '20rem' }}
+          variant="dialog"
+          format="ddd, MMM DD, YYYY hh:mm a"
+          margin="normal"
+          label="Publish end"
+          value={store.announcements.editMode.newDraft.publishEnd}
+          onChange={e =>
+            store.announcements.editMode?.newDraft?.setPublishEnd(e?.toDate())
+          }
+          autoOk
+        />
+        <FormControlLabel
+          label="Mark as important"
           control={
             <Switch
-              checked={editMode}
-              onChange={() => setEditMode(!editMode)}
+              checked={
+                store.announcements.editMode.newDraft.priority === 'high'
+              }
+              onChange={() =>
+                store.announcements.editMode?.newDraft?.togglePriority()
+              }
             />
           }
         />
-      )}
-      {editMode && (
-        <EditLine>
-          <IconButton>
-            <AddIcon />
-          </IconButton>
-        </EditLine>
-      )}
-      {!store.announcements.all.length && (
-        <Section $classPrefix="no">
-          <EmptyPagePaper>
-            <NoAnnouncementsTitle>
-              There are no posted announcements at the moment. We'll let you
-              know when something important comes up.
-            </NoAnnouncementsTitle>
-          </EmptyPagePaper>
+      </form>
+    </div>
+  )
+})
+
+function AnnouncementsPage() {
+  const store = useMst()
+  const loggedInType = store.loggedInUser?.type
+  return (
+    <MuiPickersUtilsProvider utils={DayjsUtils}>
+      <ScrollablePageContentWrapper>
+        {loggedInType === 'staff' && (
+          <StyledFormControlLabel
+            label="Edit Mode"
+            control={
+              <Switch
+                checked={!!store.announcements.editMode}
+                onChange={() =>
+                  !!store.announcements.editMode
+                    ? store.announcements.exitEditMode()
+                    : store.announcements.enterIntoEditMode()
+                }
+              />
+            }
+          />
+        )}
+        {!!store.announcements.editMode &&
+          !store.announcements.editMode.newDraft && (
+            <EditLine>
+              <IconButton
+                onClick={() => store.announcements.editMode!.startNewDraft()}
+              >
+                <AddIcon />
+              </IconButton>
+            </EditLine>
+          )}
+        <NewDraft />
+        {!store.announcements.all.length && (
+          <Section $classPrefix="no">
+            <EmptyPagePaper>
+              <NoAnnouncementsTitle>
+                There are no posted announcements at the moment. We'll let you
+                know when something important comes up.
+              </NoAnnouncementsTitle>
+            </EmptyPagePaper>
+          </Section>
+        )}
+        <Section $classPrefix="unread">
+          {store.announcements.unread.length ? (
+            <UnreadSectionHeading />
+          ) : undefined}
+          {store.announcements.unread.map(announcement => (
+            <Announcement announcement={announcement} key={announcement.id} />
+          ))}
         </Section>
-      )}
-      <Section $classPrefix="unread">
-        {store.announcements.unread.length ? (
-          <UnreadSectionHeading />
-        ) : undefined}
-        {store.announcements.unread.map(getAnnouncementComponent(editMode))}
-      </Section>
-      <Section $classPrefix="read">
-        {store.announcements.read.length ? <ReadSectionHeading /> : undefined}
-        {store.announcements.read.map(getAnnouncementComponent(editMode))}
-      </Section>
-    </ScrollablePageContentWrapper>
+        <Section $classPrefix="read">
+          {store.announcements.read.length ? <ReadSectionHeading /> : undefined}
+          {store.announcements.read.map(announcement => (
+            <Announcement announcement={announcement} key={announcement.id} />
+          ))}
+        </Section>
+      </ScrollablePageContentWrapper>
+    </MuiPickersUtilsProvider>
   )
 }
 

@@ -20,13 +20,36 @@ export interface AnnouncementCreateType
 export interface AnnouncementInstanceType
   extends Instance<typeof AnnouncementModel> {}
 
-const AnnouncementDraftModel = types.model('AnnouncementDraftModel', {
-  summary: types.string,
-  details: types.string,
-  publishOn: types.maybe(types.Date),
-  publishEnd: types.maybe(types.Date),
-  priority: types.union(types.literal('low'), types.literal('high')),
-  sendNotification: types.boolean
+const AnnouncementDraftModel = types
+  .model('AnnouncementDraftModel', {
+    summary: types.string,
+    details: types.string,
+    publishOn: types.maybe(types.Date),
+    publishEnd: types.maybe(types.Date),
+    priority: types.union(types.literal('low'), types.literal('high')),
+    sendNotification: types.boolean
+  })
+  .actions(self => ({
+    setSummary(newSummary: string) {
+      self.summary = newSummary
+    },
+    setDetails(newDetails: string) {
+      self.details = newDetails
+    },
+    setPublishOn(newDate: Date | undefined) {
+      self.publishOn = newDate
+    },
+    setPublishEnd(newDate: Date | undefined) {
+      self.publishEnd = newDate
+    },
+    togglePriority() {
+      self.priority = self.priority === 'high' ? 'low' : 'high'
+    }
+  }))
+
+const AnnouncementReadStatsModel = types.model('AnnouncementReadStatsModel', {
+  readBy: types.reference(UserModel),
+  timestamp: types.Date
 })
 
 const AnnouncementModel = types
@@ -42,7 +65,7 @@ const AnnouncementModel = types
     // stats are available only to staff
     stats: types.maybe(
       types.model('AnnouncementStatsModel', {
-        readBy: types.array(types.reference(UserModel))
+        readStatistics: types.array(AnnouncementReadStatsModel)
       })
     )
   })
@@ -77,7 +100,7 @@ const EditModeModel = types
     discardDraft() {
       self.newDraft = undefined
     },
-    editAnnouncement(id: string) {
+    beginToeditAnnouncement(id: string) {
       const announcement = ((getParent(self, 1) as any)
         .all as AnnouncementInstanceType[]).find(a => a.id === id)
       if (announcement)
@@ -132,6 +155,9 @@ const AnnouncementsProps = types
     },
     enterIntoEditMode() {
       if (!self.editMode) self.editMode = EditModeModel.create()
+    },
+    exitEditMode() {
+      self.editMode = undefined
     }
   }))
 
