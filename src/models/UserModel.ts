@@ -6,5 +6,6 @@ export const UserModel = types.model('UserModel', {
   id: types.identifierNumber,
   personName: types.string,
   imageSrc: types.string,
-  type: types.union(types.literal('guest'), types.literal('staff'))
+  type: types.union(types.literal('guest'), types.literal('staff')),
+  inHouse: types.optional(types.boolean, true)
 })

@@ -8,6 +8,9 @@ import AccordionActions from '@material-ui/core/AccordionActions'
 import AddIcon from '@material-ui/icons/Add'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import IconButton from '@material-ui/core/IconButton'
+import SaveIcon from '@material-ui/icons/Save'
+import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import Switch from '@material-ui/core/Switch'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -78,9 +81,13 @@ const Section = styled.section.attrs(
   }`}
 `
 
-const StyledAccordionSummary = styled(AccordionSummary)<{ $expanded: boolean }>`
+const StyledAccordionSummary = styled(AccordionSummary)<{
+  $expanded: boolean
+  $keepExpanded: boolean
+}>`
   & .announcement-summary {
-    ${({ $expanded }) => $expanded && `font-weight:500;`}
+    ${({ $expanded, $keepExpanded }) =>
+      !$keepExpanded && $expanded && `font-weight:500;`}
   }
 `
 
@@ -100,6 +107,18 @@ const SectionHeading = styled.div`
     font-size: 1rem;
     line-height: 1;
   }
+`
+
+const AllSectionHeading = styled(SectionHeading).attrs({
+  className: 'all-message-heading',
+  'aria-label': 'all messages',
+  children: (
+    <MessageTypeHeading component="h2" variant="h6">
+      All Announcements
+    </MessageTypeHeading>
+  )
+})`
+  background-color: ${({ theme }) => theme.palette.primary.light};
 `
 
 const UnreadSectionHeading = styled(SectionHeading).attrs({
@@ -206,10 +225,69 @@ const ConfirmButton = styled(Button).attrs(
   }
 `
 
-function Announcement({
+const ReadStats = styled(Button).attrs({ className: 'read-stats' })`
+  & .MuiButton-label {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  & .MuiLinearProgress-determinate {
+    border-radius: 0.25rem;
+    height: 1.5rem;
+    min-width: 8rem;
+    margin-left: 1ch;
+  }
+`
+
+const StatsButton = observer(function StatsButton({
   announcement
 }: {
   announcement: AnnouncementInstanceType
+}) {
+  if (announcement.stats) {
+    return (
+      <ReadStats variant="outlined">
+        <Typography variant="caption">Read Confirmations:</Typography>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '1ch'
+          }}
+        >
+          <LinearProgress
+            variant="determinate"
+            value={announcement.stats.readPercentage}
+          />
+          <Typography
+            variant="caption"
+            component="div"
+            color="textSecondary"
+          >{`${Math.round(announcement.stats.readPercentage)}%`}</Typography>
+        </div>
+      </ReadStats>
+    )
+  } else {
+    return (
+      <ReadStats disabled>
+        <Typography variant="caption">
+          Read Confirmations Stats Unavailable
+        </Typography>
+      </ReadStats>
+    )
+  }
+})
+
+const Buttons = styled.div`
+  display: flex;
+`
+
+function Announcement({
+  announcement,
+  keepExpanded = false
+}: {
+  announcement: AnnouncementInstanceType
+  keepExpanded?: boolean
 }) {
   const { id, summary, details, publishOn, status, priority } = announcement
   const [expanded, setExpanded] = React.useState(status === 'unread')
@@ -218,7 +296,7 @@ function Announcement({
   const store = useMst()
   return (
     <Accordion
-      expanded={expanded}
+      expanded={keepExpanded || expanded}
       onChange={(_event, expanded) => setExpanded(expanded)}
     >
       <StyledAccordionSummary
@@ -226,6 +304,7 @@ function Announcement({
         aria-controls={`${id}-content`}
         id={`${id}-header`}
         $expanded={expanded}
+        $keepExpanded={keepExpanded}
       >
         <AnnouncementHead $priority={priority}>
           <Typography className="announcement-summary">{summary}</Typography>
@@ -242,7 +321,18 @@ function Announcement({
         <Typography>{details}</Typography>
       </StyledAccordionDetails>
       <AccordionActions>
-        {!store.announcements.editMode && (
+        {store.announcements.editMode ? (
+          <Buttons>
+            <StatsButton announcement={announcement} />
+            <Button
+              style={{ wordBreak: 'keep-all' }}
+              variant="outlined"
+              color="primary"
+            >
+              Edit
+            </Button>
+          </Buttons>
+        ) : (
           <>
             <RespondButton announcement={announcement} store={store} />
             {status === 'unread' && (
@@ -357,7 +447,44 @@ const NewDraft = observer(function NewDraft() {
               }
             />
           }
+        />{' '}
+        <br />
+        <FormControlLabel
+          label="Actively send announcement via email / push notification"
+          control={
+            <Switch
+              checked={store.announcements.editMode.newDraft.sendNotification}
+              onChange={() =>
+                store.announcements.editMode?.newDraft?.toggleNotify()
+              }
+            />
+          }
         />
+        <br />
+        <Button color="primary" variant="outlined">
+          Save
+        </Button>
+        <br />
+        <Button color="primary" variant="contained">
+          Save
+        </Button>
+        <br />
+        <Button color="primary">💾</Button> <br />
+        <Button color="primary" variant="outlined">
+          💾
+        </Button>
+        <br />
+        <Button color="primary" variant="contained">
+          💾
+        </Button>
+        <br />
+        <IconButton>
+          <SaveIcon />
+        </IconButton>{' '}
+        <br />
+        <IconButton>
+          <SaveOutlinedIcon />
+        </IconButton>
       </form>
     </div>
   )
@@ -405,20 +532,43 @@ function AnnouncementsPage() {
             </EmptyPagePaper>
           </Section>
         )}
-        <Section $classPrefix="unread">
-          {store.announcements.unread.length ? (
-            <UnreadSectionHeading />
-          ) : undefined}
-          {store.announcements.unread.map(announcement => (
-            <Announcement announcement={announcement} key={announcement.id} />
-          ))}
-        </Section>
-        <Section $classPrefix="read">
-          {store.announcements.read.length ? <ReadSectionHeading /> : undefined}
-          {store.announcements.read.map(announcement => (
-            <Announcement announcement={announcement} key={announcement.id} />
-          ))}
-        </Section>
+        {!!store.announcements.editMode ? (
+          <Section $classPrefix="all">
+            {store.announcements.all.length ? <AllSectionHeading /> : undefined}
+            {store.announcements.all.map(announcement => (
+              <Announcement
+                announcement={announcement}
+                key={announcement.id}
+                keepExpanded
+              />
+            ))}
+          </Section>
+        ) : (
+          <>
+            <Section $classPrefix="unread">
+              {store.announcements.unread.length ? (
+                <UnreadSectionHeading />
+              ) : undefined}
+              {store.announcements.unread.map(announcement => (
+                <Announcement
+                  announcement={announcement}
+                  key={announcement.id}
+                />
+              ))}
+            </Section>
+            <Section $classPrefix="read">
+              {store.announcements.read.length ? (
+                <ReadSectionHeading />
+              ) : undefined}
+              {store.announcements.read.map(announcement => (
+                <Announcement
+                  announcement={announcement}
+                  key={announcement.id}
+                />
+              ))}
+            </Section>
+          </>
+        )}
       </ScrollablePageContentWrapper>
     </MuiPickersUtilsProvider>
   )

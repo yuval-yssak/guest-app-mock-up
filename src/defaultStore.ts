@@ -45,6 +45,19 @@ export const users: UserType[] = ([
 
 const loggedInUser = 1
 
+function generateStats() {
+  return {
+    readStatistics: users
+      .filter((_, i) => i < Math.random() * users.length)
+      .map(u => ({
+        readBy: u.id,
+        timestamp: new Date(
+          Date.now() - Math.random() * 1000 * 60 * 60 * 24 * 2
+        )
+      }))
+  }
+}
+
 const defaultStore: RootStoreSnapshotIn = {
   users,
   loggedInUser,
@@ -59,7 +72,8 @@ const defaultStore: RootStoreSnapshotIn = {
         details:
           'Omnis similique fuga sequi quam labore, voluptate unde iure asperiores. Laborum, tenetur soluta ad possimus inventore quas consequuntur, sequi earum velit omnis repellat eligendi exercitationem sint, numquam sunt rem ipsam? Nobis repudiandae repellendus totam fugiat nulla a consectetur veniam optio?',
         publishOn: dayjs().subtract(4, 'hours').toDate(),
-        publishEnd: dayjs().add(1, 'week').toDate()
+        publishEnd: dayjs().add(1, 'week').toDate(),
+        stats: { readStatistics: [] }
       },
       {
         id: '3',
@@ -69,7 +83,8 @@ const defaultStore: RootStoreSnapshotIn = {
         details:
           'Sint vitae, repudiandae dicta cum non, dolorem a, quaerat eum vero labore ipsam nulla similique maiores omnis at expedita vel quasi dolores sequi consequatur deserunt. Alias aut molestiae, fugit ad voluptate voluptatem sed, nam quasi corrupti, tempore sit temporibus doloribus.',
         publishOn: dayjs().subtract(4, 'minutes').toDate(),
-        publishEnd: dayjs().add(1, 'week').toDate()
+        publishEnd: dayjs().add(1, 'week').toDate(),
+        stats: generateStats()
       },
       {
         id: '1',
@@ -79,7 +94,8 @@ const defaultStore: RootStoreSnapshotIn = {
         details:
           'Rem culpa, labore dolores et nobis quod deserunt error ad pariatur sunt quasi praesentium officia reprehenderit odit eius numquam quo temporibus repellat voluptatibus placeat doloribus architecto. Repellat, illum sint enim ipsum laboriosam qui maiores repudiandae quas vero accusamus! Fugiat nesciunt minima consequuntur, optio in veritatis sapiente nisi totam autem eaque!',
         publishOn: dayjs().subtract(4, 'days').toDate(),
-        publishEnd: dayjs().add(1, 'week').toDate()
+        publishEnd: dayjs().add(1, 'week').toDate(),
+        stats: generateStats()
       },
       {
         id: '4',
@@ -89,7 +105,8 @@ const defaultStore: RootStoreSnapshotIn = {
         details:
           'Inventore aperiam ipsam dolorem quia reiciendis, quam quasi illo ab doloribus perspiciatis quisquam aliquam sit sed eos nulla quod nostrum!',
         publishOn: dayjs().subtract(2, 'days').toDate(),
-        publishEnd: dayjs().add(1, 'week').toDate()
+        publishEnd: dayjs().add(1, 'week').toDate(),
+        stats: generateStats()
       },
       {
         id: '5',
@@ -99,7 +116,8 @@ const defaultStore: RootStoreSnapshotIn = {
         details:
           'Illo, provident dolores! Dolores saepe voluptatibus fugit, vel unde doloribus cumque reprehenderit quidem ipsum recusandae eveniet possimus tempora consequuntur. Vitae.',
         publishOn: dayjs().subtract(2, 'days').toDate(),
-        publishEnd: dayjs().add(1, 'week').toDate()
+        publishEnd: dayjs().add(1, 'week').toDate(),
+        stats: generateStats()
       },
       {
         id: '6',
@@ -109,7 +127,8 @@ const defaultStore: RootStoreSnapshotIn = {
         details:
           'Alias laboriosam incidunt dolorem dolorum, praesentium ullam est at culpa doloribus dignissimos ipsa atque? Reiciendis voluptatem dolore cumque incidunt ullam.',
         publishOn: dayjs().subtract(2, 'days').toDate(),
-        publishEnd: dayjs().add(1, 'week').toDate()
+        publishEnd: dayjs().add(1, 'week').toDate(),
+        stats: generateStats()
       },
       {
         id: '7',
@@ -119,7 +138,8 @@ const defaultStore: RootStoreSnapshotIn = {
         details:
           'Explicabo exercitationem cum voluptates dolor iste autem magni quod molestiae, mollitia ratione nihil obcaecati? Repellendus quidem facilis perspiciatis eum sapiente.',
         publishOn: dayjs().subtract(2, 'days').toDate(),
-        publishEnd: dayjs().add(1, 'week').toDate()
+        publishEnd: dayjs().add(1, 'week').toDate(),
+        stats: generateStats()
       },
       {
         id: '8',
@@ -129,7 +149,8 @@ const defaultStore: RootStoreSnapshotIn = {
         details:
           'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corrupti quidem ipsum culpa ullam, eius sapiente ratione ad quasi sint saepe quisquam! Libero asperiores magnam sunt adipisci, recusandae, nemo nihil ad et, corporis accusamus qui officiis natus harum voluptatibus? Similique, pariatur.',
         publishOn: dayjs().subtract(2, 'days').toDate(),
-        publishEnd: dayjs().add(1, 'week').toDate()
+        publishEnd: dayjs().add(1, 'week').toDate(),
+        stats: generateStats()
       },
       {
         id: '9',
@@ -215,7 +236,8 @@ export function generateUsers(count: number, idOffset: number): UserType[] {
     id: i + idOffset,
     personName: `${faker.name.firstName()} ${faker.name.lastName()}`,
     imageSrc: Math.random() > 0.8 ? '' : faker.image.avatar(),
-    type: 'guest'
+    type: 'guest',
+    inHouse: true
   }))
 }
 

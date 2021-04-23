@@ -5,7 +5,7 @@ import {
   SnapshotIn,
   Instance
 } from 'mobx-state-tree'
-import { UserModel } from './UserModel'
+import { UserModel, UserType } from './UserModel'
 import { ViewType } from './ViewModel'
 
 function compareByTimestamp(
@@ -44,6 +44,9 @@ const AnnouncementDraftModel = types
     },
     togglePriority() {
       self.priority = self.priority === 'high' ? 'low' : 'high'
+    },
+    toggleNotify() {
+      self.sendNotification = !self.sendNotification
     }
   }))
 
@@ -64,9 +67,19 @@ const AnnouncementModel = types
     sendNotification: types.optional(types.boolean, false),
     // stats are available only to staff
     stats: types.maybe(
-      types.model('AnnouncementStatsModel', {
-        readStatistics: types.array(AnnouncementReadStatsModel)
-      })
+      types
+        .model('AnnouncementStatsModel', {
+          readStatistics: types.array(AnnouncementReadStatsModel)
+        })
+        .views(self => ({
+          get readPercentage() {
+            const read = self.readStatistics.filter(r => r.readBy.inHouse)
+              .length
+            const usersLength = ((getRoot(self) as any)
+              .users as UserType[]).filter(u => u.inHouse).length
+            return (read / usersLength) * 100
+          }
+        }))
     )
   })
   .actions(self => ({
