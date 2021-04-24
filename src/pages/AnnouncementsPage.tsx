@@ -67,8 +67,8 @@ const Section = styled.section.attrs(
 )<{ $classPrefix: string }>`
   padding: 1rem;
 
-  && .unread-message-heading + .MuiAccordion-root,
-  && .read-message-heading + .MuiAccordion-root {
+  && .unread-announcements-heading + .MuiAccordion-root,
+  && .read-announcements-heading + .MuiAccordion-root {
     margin-top: 0;
   }
 
@@ -110,8 +110,8 @@ const SectionHeading = styled.div`
 `
 
 const AllSectionHeading = styled(SectionHeading).attrs({
-  className: 'all-message-heading',
-  'aria-label': 'all messages',
+  className: 'all-announcements-heading',
+  'aria-label': 'all announcements',
   children: (
     <MessageTypeHeading component="h2" variant="h6">
       All Announcements
@@ -122,8 +122,8 @@ const AllSectionHeading = styled(SectionHeading).attrs({
 `
 
 const UnreadSectionHeading = styled(SectionHeading).attrs({
-  className: 'unread-message-heading',
-  'aria-label': 'unread messages',
+  className: 'unread-announcements-heading',
+  'aria-label': 'unread announcements',
   children: (
     <MessageTypeHeading component="h2" variant="h6">
       Unread
@@ -134,8 +134,8 @@ const UnreadSectionHeading = styled(SectionHeading).attrs({
 `
 
 const ReadSectionHeading = styled(SectionHeading).attrs({
-  className: 'read-message-heading',
-  'aria-label': 'read messages',
+  className: 'read-announcements-heading',
+  'aria-label': 'read announcements',
   children: (
     <MessageTypeHeading component="h2" variant="h6">
       Read
