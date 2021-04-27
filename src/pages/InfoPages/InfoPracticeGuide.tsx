@@ -541,7 +541,6 @@ export default function InfoPracticeGuide() {
             Contracting the facial muscles to force the air out of the nose.
           </li>
         </ul>
-
         <Heading1>Anuloma Viloma</Heading1>
         <Heading1>Alternate Nostril Breathing</Heading1>
         <Paragraph>
@@ -643,12 +642,259 @@ export default function InfoPracticeGuide() {
           <li>The chest is dropped with exhalation.</li>
           <li>The breath is not smooth.</li>
         </ul>
-
         <Heading1>
           The Sun Salutation <em>sūrya namaskāra</em>
         </Heading1>
+        <Paragraph>
+          This exercise is called the Sun Salutation because it is best
+          practised early in the morning facing the Sun. It combines asanas and
+          pranayama.
+        </Paragraph>
+        <Heading3>Starting Position</Heading3>
+        Stand erect with feet together and hands by the sides. Take a deep
+        breath.
+        <Heading3>Position 1</Heading3>
+        Exhale; bring the hands together at the chest in the “prayer position,”
+        centering the body.
+        <Heading3>Position 2</Heading3>
+        Inhale, stretch the arms over the head. Arch back, dropping the head
+        back.
+        <Heading3>Position 3</Heading3>
+        Exhale and bend forward. Put the hands on the floor next to the feet.
+        Make sure that the fingers are in line with the toes. Bring the head in
+        to the knees.
+        <Heading3>Position 4</Heading3>
+        Inhale; stretch the right foot back as far as possible. Put the right
+        knee one the floor. Stretch the head upwards.
+        <Heading3>Position 5</Heading3>
+        Retain the breath; bring both legs back so that the entire body is in a
+        straight line from head to heels (“Push-up” position).
+        <Heading3>Position 6</Heading3>
+        Exhale, drop the knees to the floor. Lower the chest straight down so
+        that it is on the ground between the hands. Bring the forehead (or chin)
+        to the floor.
+        <Heading3>Position 7</Heading3>
+        Inhale; slide the body forward. Arch up and back. Legs and hips remain
+        on the ground (Cobra position).
+        <Heading3>Position 8</Heading3>
+        Exhale; raise the hips. Drop the head between the arms; stretch the
+        heels towards the floor (Inverted-V position).
+        <Heading3>Position 9</Heading3>
+        Inhale, bring the right foot forward between the hands (fingers and toes
+        in line). Drop the left knee to the floor and stretch the head up (same
+        as Position 4).
+        <Heading3>Position 10</Heading3>
+        Exhale; bring the left leg forward next to the right leg. Keep the hips
+        up as high as possible and bring the forehead in towards the knees (same
+        as Position 3).
+        <Heading3>Position 11</Heading3>
+        Inhale; stretch up. Bring the arms straight up over the head and arch
+        back (same as Position 2).
+        <Heading3>Position 12</Heading3>
+        Exhale; drop the arms down next to the sides and relax.
         <Heading1>The Twelve Basic Asanas</Heading1>
         {/* <Img src="/images/rama 12.jpg" alt="12 main Asanas" /> */}
+        <Heading2>
+          1 Sirshasan
+          <em>The Headstand</em>
+        </Heading2>
+        <Paragraph>
+          The Headstand is practised as the first of the 12 Basic Asanas, after
+          the Pranayama (breathing exercises) and Sun Salutation (warm up
+          exercise). It is called “King” of Asanas, of which there are estimated
+          84,000 different ones. To Begin:
+        </Paragraph>
+        <Heading3>Shashankasan, Child’s Pose</Heading3>
+        <Paragraph>
+          Sit on your heels with the forehead on the floor. Hands are relaxed
+          palms upward next to feet. Relax in this position for a few moments.
+          Relax in this position for a few moments, mentally preparing yourself
+          for the Headstand.
+        </Paragraph>
+        <Heading3>Dolphin, Preparatory Exercise</Heading3>
+        <Paragraph>
+          Sit up on heels. Clasp hold of opposite elbow with each hand. Bring
+          arms to ground. Interlock fingers, forming triangle on ground with
+          arms. Straighten the knees so that you are standing on the toes,
+          bringing the hips up. Keep head up off the ground. Rock forward and
+          back, bringing the chin in front of the hands then pushing the body
+          back as far as possible.
+        </Paragraph>
+        <Paragraph>
+          Do 2-3 rounds of 8 or 12 rocks. Relaxing in Child’s Pose between
+          rounds.
+        </Paragraph>
+        <Paragraph>
+          The purpose of the Dolphin is to strengthen the arms and shoulders,
+          preparing them for the Headstand. Even after you are able to do the
+          Headstand, it is a good idea to continue practising the Dolphin as it
+          helps to increase the holding time.{' '}
+        </Paragraph>
+        <Heading2>Sirshasan, Headstand</Heading2>
+        <Heading3>The Eight Steps</Heading3>
+        <Paragraph>
+          From the Child’s Pose, sit up on the heels, knees together. Place each
+          hand on the opposite elbow, measuring the distance. Bring the arms to
+          the ground under the shoulders.{' '}
+        </Paragraph>
+        <Paragraph>
+          Bring the hands together so that the arms form a tripod on the ground,
+          interlocking the fingers.
+        </Paragraph>
+        <Paragraph>
+          Place the back of the head against the hands and raise the hips. (Make
+          sure that the elbows are stationary).
+        </Paragraph>
+        <Paragraph>
+          Walk the feet forward towards the head. Keep the hips up and knees
+          straight.{' '}
+        </Paragraph>
+        <Paragraph>
+          Bend the knees in towards the chest. Bring the heels up to the
+          buttocks.
+        </Paragraph>
+        <Paragraph>
+          Straighten the back, making sure that the spine retains its natural
+          curve. Be able to balance in this position for at least 30 seconds
+          before going further.
+        </Paragraph>
+        <Paragraph>
+          Keeping the knees bent and together, slowly straighten the hips until
+          the best knees are pointing up towards the ceiling.{' '}
+        </Paragraph>
+        <Paragraph>Straighten the knees.</Paragraph>
+        <Heading3>Holding the position:</Heading3>
+        <Paragraph>
+          Start with 5 seconds, gradually increasing the time to 15 minutes.
+          Optimum time is 5-10 minutes on a daily basis.
+        </Paragraph>
+        <Paragraph>
+          While in the position, make the breath smooth and rhythmic.
+        </Paragraph>
+        <Heading3>To come out of the position:</Heading3>
+        <Paragraph>Bend the knees, bringing them into the chest.</Paragraph>
+        <Paragraph>Bend the hips bringing the feet to the floor.</Paragraph>
+        <Paragraph>
+          Relax in the Child’s Pose before lifting head off the ground.
+        </Paragraph>
+        <Heading3>Common Mistakes:</Heading3>
+        <Paragraph>Weight on the head and/ or the neck</Paragraph>
+        <Paragraph>
+          To Correct: Make sure that 90% of weight is on the elbows. Make sure
+          that the elbows stay firmly on the ground and don’t slip out to sides.
+          If you are having difficulties, practise the Dolphin.
+        </Paragraph>
+        <Paragraph>Back over-arched; legs dropping back.</Paragraph>
+        <Paragraph>
+          To Correct: keep knees straight; heels towards ceiling. Tighten
+          abdominal muscles.{' '}
+        </Paragraph>
+        <Heading3>*Do not practice headstand if you: </Heading3>
+        <Paragraph>Have high blood pressure</Paragraph>
+        <Paragraph>Suffer from Glaucoma</Paragraph>
+        <Paragraph>Are 4 or more months pregnant</Paragraph>
+        <Heading3>Benefits of the Headstand</Heading3>
+        <Heading4>Physical benefits</Heading4>
+        <Paragraph>
+          The “King” of the Asanas, Sishasan gives a much deserved rest to the
+          heart by inverting the body and keeping it in a straight line. This
+          counteracts the pull of gravity. This allows the heart a rest, as it
+          needs only to pump the blood with enough force for it to reach the
+          toes; gravity will return the blood to the heart.{' '}
+        </Paragraph>
+        <Paragraph>The Headstand is a panacea for all human ills.</Paragraph>
+        <Paragraph>
+          People who practise Sirshan on a regular basis tend to have slow rates
+          of respiration and heartbeat. This indicates that the Respiratory and
+          Circulatory systems are strong and flexible .
+        </Paragraph>
+        <Paragraph>
+          The aorta, carotids and subclavian arteries receive an increase of
+          arterial (freshly oxygenated) blood.{' '}
+        </Paragraph>
+        <Paragraph>
+          The brain, spinal cord and sympathetic nervous system are supplied
+          with an increased flow of blood rich in nutrients.
+        </Paragraph>
+        <Paragraph>
+          As a result of the brain receiving a rich supply of nutrients, all
+          body functions are toned and enhanced.
+        </Paragraph>
+        <Paragraph>
+          Disorders of the nerves, eyes, ears, nose and throat are improved.
+        </Paragraph>
+        <Paragraph>
+          Persons suffering from varicose veins will feel a relief in the
+          Headstand as stagnant blood will drain from the lower extremities.
+          Sirshasan is also a remedy for renal colic, and stubborn constipation.
+        </Paragraph>
+        <Paragraph>
+          Pressure is relieved on the lower back. When the body is inverted, the
+          cervical and thoracic (upper) parts of the back take more pressure;
+          the lumbar and sacral areas (lower back) are relieved of much of their
+          usual burden.
+        </Paragraph>
+        <Paragraph>
+          The Headstand combats dropped stomach and nervous or hepatic asthma.{' '}
+        </Paragraph>
+        <Paragraph>
+          Inverting the body enhances deep breathing, bringing increased oxygen
+          supply to the brain.
+        </Paragraph>
+        <Paragraph>
+          The Headstand is one of the most powerful asanas for the body and
+          mind.
+        </Paragraph>
+        <Heading4>Mental benefits</Heading4>
+        <Paragraph>Memory and intellectual capacity are increased. </Paragraph>
+        <Paragraph>
+          Improved concentration; the headstand is particularly beneficial to
+          people who need strong powers of concentration in their work:
+          students, politicians, artists, scientists and writers.
+        </Paragraph>
+        <Paragraph>Improved Sensory faculties (eyesight, hearing).</Paragraph>
+        <Paragraph>
+          The person who practises the Headstand on a regular basis will rarely
+          suffer from nervous disorders.
+        </Paragraph>
+        <Heading4>Psychic benefits</Heading4>
+        <Paragraph>
+          “He who practises the Headstand for three hours daily conquers time.”
+          ~Yoga Tatwa Upanishad
+        </Paragraph>
+        <Paragraph>
+          Useful in keeping up Brahmacharya because seminal energy is transmuted
+          into Ojas-Shakti and stored in the brain. This is sex-sublimation.
+        </Paragraph>
+        <Heading3>
+          Sarvasan, Corpse Pose
+          <em>Relaxation Position</em>
+        </Heading3>
+        <Paragraph>
+          This should be practiced before and after each of the other asanas.
+          Lie flat on the back. Feet are at least half a metre apart.
+        </Paragraph>
+        <Paragraph>
+          Arms are out to a 45 degree (approx) angle to the body; hands are
+          palms upwards. Eyes are closed. When you first lie down, shake out the
+          shoulders to relieve the tension. Then roll the head slowly from side
+          to side once or twice to relax the neck. Bring the head back to
+          centre. Focus the mind on the breath. Inhale, the abdomen expands,
+          filling the lungs with air. Exhale, the air is pushed out of the lungs
+          and abdomen contracts. Relax for at least a minute before Asanas.
+        </Paragraph>
+        <Heading3>Variations of the Headstand</Heading3>
+        <Heading4>Variation 1</Heading4>
+        <Paragraph>
+          Unclasp the hands and transfer weight to the left side. Place right
+          hand where elbow was. Repeat on other side. Interlock the legs. This
+          greatly increases the venous blood flow to the heart.
+        </Paragraph>
+        <Heading4>Variation 2 </Heading4>
+        <Paragraph>
+          Position hands as in variation 1. Shift weight to left side and
+          stretch right arm in from of you palm down. Repeat on other side.
+        </Paragraph>
       </section>
       <section>
         <Heading1>Chants</Heading1>
