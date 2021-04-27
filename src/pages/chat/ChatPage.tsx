@@ -41,7 +41,8 @@ const BackButton = styled(IconButton)`
     position: absolute;
     left: 10px;
     top: 10px;
-    background-color: palegoldenrod;
+    background-color: #eee;
+    z-index: 10;
   }
 `
 
@@ -112,7 +113,7 @@ const StickyDayLabel = styled.div.attrs(({ day }: { day: string }) => ({
   color: #555;
   grid-column: 1 / -1;
   position: sticky;
-  top: 0.4rem;
+  top: 0.5rem;
   width: 7.3rem;
   text-align: center;
   z-index: 2;

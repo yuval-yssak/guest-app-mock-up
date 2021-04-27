@@ -8,8 +8,6 @@ import AccordionActions from '@material-ui/core/AccordionActions'
 import AddIcon from '@material-ui/icons/Add'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import IconButton from '@material-ui/core/IconButton'
-import SaveIcon from '@material-ui/icons/Save'
-import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import Switch from '@material-ui/core/Switch'
@@ -247,7 +245,7 @@ const StatsButton = observer(function StatsButton({
   if (announcement.stats) {
     return (
       <ReadStats variant="outlined">
-        <Typography variant="caption">Read Confirmations:</Typography>
+        <Typography variant="caption">Confirmations:</Typography>
         <div
           style={{
             display: 'flex',
@@ -271,7 +269,7 @@ const StatsButton = observer(function StatsButton({
     return (
       <ReadStats disabled>
         <Typography variant="caption">
-          Read Confirmations Stats Unavailable
+          Confirmation Stats Unavailable
         </Typography>
       </ReadStats>
     )
@@ -386,13 +384,13 @@ const NewDraft = observer(function NewDraft() {
   if (!store.announcements.editMode?.newDraft) return null
 
   return (
-    <div>
+    <div style={{ padding: '16px' }}>
       <Title>New Announcement</Title>
       <form>
         <StyledTextField
           name="draft-summary"
-          label="Summary"
-          placeholder="Enter a one-line summary here"
+          label="Subject"
+          placeholder="Enter a one-line subject here"
           fullWidth
           value={store.announcements.editMode.newDraft.summary}
           onChange={e =>
@@ -435,8 +433,9 @@ const NewDraft = observer(function NewDraft() {
           }
           autoOk
         />
+        <br />
         <FormControlLabel
-          label="Mark as important"
+          label="Important"
           control={
             <Switch
               checked={
@@ -448,9 +447,8 @@ const NewDraft = observer(function NewDraft() {
             />
           }
         />{' '}
-        <br />
         <FormControlLabel
-          label="Actively send announcement via email / push notification"
+          label="Push notification"
           control={
             <Switch
               checked={store.announcements.editMode.newDraft.sendNotification}
@@ -461,30 +459,13 @@ const NewDraft = observer(function NewDraft() {
           }
         />
         <br />
-        <Button color="primary" variant="outlined">
+        <Button
+          color="primary"
+          variant="outlined"
+          style={{ fontWeight: 400, float: 'right' }}
+        >
           Save
         </Button>
-        <br />
-        <Button color="primary" variant="contained">
-          Save
-        </Button>
-        <br />
-        <Button color="primary">💾</Button> <br />
-        <Button color="primary" variant="outlined">
-          💾
-        </Button>
-        <br />
-        <Button color="primary" variant="contained">
-          💾
-        </Button>
-        <br />
-        <IconButton>
-          <SaveIcon />
-        </IconButton>{' '}
-        <br />
-        <IconButton>
-          <SaveOutlinedIcon />
-        </IconButton>
       </form>
     </div>
   )
@@ -498,6 +479,7 @@ function AnnouncementsPage() {
       <ScrollablePageContentWrapper>
         {loggedInType === 'staff' && (
           <StyledFormControlLabel
+            style={{ marginTop: '0.5rem' }}
             label="Edit Mode"
             control={
               <Switch
@@ -515,6 +497,7 @@ function AnnouncementsPage() {
           !store.announcements.editMode.newDraft && (
             <EditLine>
               <IconButton
+                style={{ backgroundColor: '#eee' }}
                 onClick={() => store.announcements.editMode!.startNewDraft()}
               >
                 <AddIcon />
