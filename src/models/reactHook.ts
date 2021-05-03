@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { RootStoreType } from './RootStore'
-const MSTContext = React.createContext<RootStoreType>(null as any)
+import { RootStore, RootStoreType } from './RootStore'
+const MSTContext = React.createContext<RootStoreType>(RootStore.create({}))
 
 export const Provider = MSTContext.Provider
 

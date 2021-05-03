@@ -1,5 +1,5 @@
 import { types, Instance, SnapshotOut } from 'mobx-state-tree'
-import { match, compile, MatchResult } from 'path-to-regexp'
+import { match, compile } from 'path-to-regexp'
 
 export interface ViewType extends Instance<typeof ViewModel> {}
 export interface ViewSnapshotType extends SnapshotOut<typeof ViewModel> {}
@@ -10,6 +10,8 @@ const ViewModel = types
       types.literal('/'),
       types.literal('/activities'),
       types.literal('/announcements'),
+      types.literal('/announcements/details'),
+      types.literal('/announcements/new'),
       types.literal('/chat'),
       types.literal('/custom'),
       types.literal('/info-section'),
@@ -59,6 +61,13 @@ const ViewModel = types
   .actions(self => ({
     openActivitiesPage: () => (self.page = '/activities'),
     openAnnouncementsPage: () => (self.page = '/announcements'),
+    openAnnouncementsNewDraftPage: () => {
+      self.page = '/announcements/new'
+    },
+    openAnnouncementsDetailsPage: (id: string) => {
+      self.page = '/announcements/details'
+      self.id = id
+    },
     openChatPage: (id?: string) => {
       self.page = '/chat'
       self.id = id
@@ -108,48 +117,47 @@ function getViewFromURL() {
 
   if (matchedCustom) return { page: '/custom', id: matchedCustom.params.id }
 
-  const matchInfoSection = match([
-    '/info-section/:id1/:id2',
-    '/info-section/:id1'
-  ])
-  const matchedInfoSection = matchInfoSection(pathname) as MatchResult
+  const matchPeople = match<{ subpage: string }>('/people/:subpage')
+  const matchedPeople = matchPeople(pathname)
 
-  const matchPeople = match('/people/:subpage')
-  const matchedPeople = matchPeople(pathname) as MatchResult<{
-    subpage: string
-  }>
-
-  if (matchedPeople) {
-    if (matchedPeople.params.subpage?.match(/^\d+$/)) {
-      return { page: '/people', id: matchedPeople.params.subpage }
-    }
+  if (matchedPeople && matchedPeople.params.subpage.match(/^\d+$/)) {
+    return { page: '/people', id: matchedPeople.params.subpage }
   }
 
-  const matchChat = match('/chat/:subpage')
-  const matchedChat = matchChat(pathname) as MatchResult<{
-    subpage: string
-  }>
+  const matchChat = match<{ subpage: string }>('/chat/:subpage')
+  const matchedChat = matchChat(pathname)
 
   if (matchedChat) {
-    if (matchedChat.params.subpage?.match(/^\d+$/)) {
+    if (matchedChat.params.subpage.match(/^\d+$/)) {
       return { page: '/chat', id: matchedChat.params.subpage }
     }
   }
 
-  const matchGeneral = match<{ page: string }>('/:page')
-  const matchedGeneral = matchGeneral(pathname) as MatchResult
+  const matchAnnouncements = match<{ id: string }>('/announcements/details/:id')
+  const matchedAnnouncements = matchAnnouncements(pathname)
 
-  if (matchedGeneral || matchedInfoSection || matchedPeople)
-    switch (
-      matchedGeneral.path ||
-      matchedInfoSection.path ||
-      matchedPeople.path
-    ) {
+  if (matchedAnnouncements) {
+    return {
+      page: '/announcements/details',
+      id: matchedAnnouncements.params.id
+    }
+  }
+
+  const matchGeneral = match<{
+    page: string
+    subpage?: string
+    subpage2?: string
+  }>('/:page/:subpage?/:subpage2?')
+  const matchedGeneral = matchGeneral(pathname)
+
+  if (matchedGeneral)
+    switch (matchedGeneral && matchedGeneral.path) {
       case '':
       case '/':
         return { page: '/' }
       case '/activities':
       case '/announcements':
+      case '/announcements/new':
       case '/chat':
       case '/info-section':
       case '/info-section/arriving-at-the-airport':
@@ -167,8 +175,7 @@ function getViewFromURL() {
       case '/people/search':
       case '/settings': {
         return {
-          page:
-            matchedGeneral.path || matchedInfoSection.path || matchedPeople.path
+          page: matchedGeneral && matchedGeneral.path
         }
       }
       case '/people/':

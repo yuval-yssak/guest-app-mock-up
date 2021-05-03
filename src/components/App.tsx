@@ -19,6 +19,7 @@ import LoginPage from '../pages/LoginPage'
 import PeoplePage from '../pages/People/People'
 import ManualSignUpPage from '../pages/ManualSignUpPage'
 import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
+import AnnouncementDraftPage from '../pages/AnnouncementDraftPage'
 import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirport'
 import { useMst } from '../models/reactHook'
 import { SnackbarProvider } from 'notistack'
@@ -64,7 +65,6 @@ const AnimatedBottomNavigation = styled(MainBottomNavigation)`
 
 const Main = styled.main`
   display: grid;
-  align-items: center;
   justify-items: center;
   position: relative;
   height: 100%;
@@ -112,6 +112,8 @@ function App() {
         return 'Main Page'
       case '/announcements':
         return 'Announcements'
+      case '/announcements/new':
+        return 'New Announcement'
       case '/chat':
         return 'Chat'
       case '/info-section':
@@ -193,6 +195,9 @@ function App() {
                       {store.view.page === '/root' && <h1>Dashboard</h1>}
                       {store.view.page === '/announcements' && (
                         <AnnouncementsPage />
+                      )}
+                      {store.view.page === '/announcements/new' && (
+                        <AnnouncementDraftPage />
                       )}
                       {store.view.page === '/chat' && <ChatPage />}
                       {store.view.page === '/info-section' && (

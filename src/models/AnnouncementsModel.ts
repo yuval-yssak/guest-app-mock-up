@@ -1,33 +1,36 @@
 import {
   types,
   getRoot,
-  getParent,
   SnapshotIn,
-  Instance
+  Instance,
+  getSnapshot
 } from 'mobx-state-tree'
-import { UserModel, UserType } from './UserModel'
 import { ViewType } from './ViewModel'
-
-function compareByTimestamp(
-  a: AnnouncementInstanceType,
-  b: AnnouncementInstanceType
-) {
-  return b.publishOn.getTime() - a.publishOn.getTime()
-}
+import { UserModel, UserType } from './UserModel'
+import dayjs from 'dayjs'
 
 export interface AnnouncementCreateType
   extends SnapshotIn<typeof AnnouncementModel> {}
 export interface AnnouncementInstanceType
   extends Instance<typeof AnnouncementModel> {}
 
+const AudienceModel = types.optional(
+  types.model({
+    everyoneInHouse: types.maybe(types.boolean),
+    allGuestsAndChildren: types.maybe(types.boolean)
+  }),
+  { everyoneInHouse: true }
+)
+
 const AnnouncementDraftModel = types
   .model('AnnouncementDraftModel', {
     summary: types.string,
     details: types.string,
     publishOn: types.maybe(types.Date),
-    publishEnd: types.maybe(types.Date),
+    publishEnd: types.optional(types.Date, dayjs().add(2, 'days').toDate()),
     priority: types.union(types.literal('low'), types.literal('high')),
-    sendNotification: types.boolean
+    sendNotification: types.boolean,
+    audience: AudienceModel
   })
   .actions(self => ({
     setSummary(newSummary: string) {
@@ -39,7 +42,7 @@ const AnnouncementDraftModel = types
     setPublishOn(newDate: Date | undefined) {
       self.publishOn = newDate
     },
-    setPublishEnd(newDate: Date | undefined) {
+    setPublishEnd(newDate: Date) {
       self.publishEnd = newDate
     },
     togglePriority() {
@@ -55,6 +58,27 @@ const AnnouncementReadStatsModel = types.model('AnnouncementReadStatsModel', {
   timestamp: types.Date
 })
 
+export const AnnouncementStatsModel = types
+  .model('AnnouncementStatsModel', {
+    readStatistics: types.array(AnnouncementReadStatsModel)
+  })
+  .views(self => ({
+    get readPercentage() {
+      const readCount = self.readStatistics.filter(r => r.readBy.inHouse).length
+
+      const rootStore = getRoot(self) as any
+
+      const usersCount = (rootStore.users as UserType[]).filter(u => u.inHouse)
+        .length
+      return (readCount / usersCount) * 100
+    }
+  }))
+
+const AdminModel = types.model('AdminModel', {
+  sendNotification: types.optional(types.boolean, false),
+  stats: AnnouncementStatsModel
+})
+
 const AnnouncementModel = types
   .model('BasicAnnouncementModel', {
     id: types.identifier,
@@ -64,23 +88,8 @@ const AnnouncementModel = types
     status: types.union(types.literal('read'), types.literal('unread')),
     priority: types.union(types.literal('low'), types.literal('high')),
     publishEnd: types.Date,
-    sendNotification: types.optional(types.boolean, false),
-    // stats are available only to staff
-    stats: types.maybe(
-      types
-        .model('AnnouncementStatsModel', {
-          readStatistics: types.array(AnnouncementReadStatsModel)
-        })
-        .views(self => ({
-          get readPercentage() {
-            const read = self.readStatistics.filter(r => r.readBy.inHouse)
-              .length
-            const usersLength = ((getRoot(self) as any)
-              .users as UserType[]).filter(u => u.inHouse).length
-            return (read / usersLength) * 100
-          }
-        }))
-    )
+    audience: AudienceModel,
+    admin: types.maybe(AdminModel)
   })
   .actions(self => ({
     toggle() {
@@ -88,64 +97,41 @@ const AnnouncementModel = types
     }
   }))
 
-const EditAnnouncementModel = types.model('EditAnnouncementModel', {
-  announcement: types.reference(AnnouncementModel),
-  editingPublishOn: types.Date,
-  editingPublishEnd: types.Date,
-  editingPriority: types.union(types.literal('low'), types.literal('high')),
-  editingSendNotification: types.boolean
-})
-
 const EditModeModel = types
   .model('EditModeModel', {
-    newDraft: types.maybe(AnnouncementDraftModel),
-    editAnnouncement: types.maybe(EditAnnouncementModel)
+    newDraft: types.maybe(AnnouncementDraftModel)
   })
   .actions(self => ({
-    startNewDraft() {
+    clearDraft() {
       self.newDraft = AnnouncementDraftModel.create({
         summary: '',
         details: '',
         priority: 'low',
+        publishOn: undefined,
+        publishEnd: dayjs().add(2, 'days').toDate(),
         sendNotification: false
       })
-    },
-    discardDraft() {
-      self.newDraft = undefined
-    },
-    beginToeditAnnouncement(id: string) {
-      const announcement = ((getParent(self, 1) as any)
-        .all as AnnouncementInstanceType[]).find(a => a.id === id)
-      if (announcement)
-        self.editAnnouncement = EditAnnouncementModel.create({
-          announcement: id,
-          editingPublishEnd: announcement?.publishEnd,
-          editingPublishOn: announcement?.publishOn,
-          editingPriority: announcement?.priority,
-          editingSendNotification: announcement.sendNotification
-        })
-    },
-    discardEditing() {
-      self.editAnnouncement = undefined
     }
   }))
 
 const AnnouncementsProps = types
   .model({
-    all: types.array(AnnouncementModel),
+    active: types.array(AnnouncementModel),
     editMode: types.maybe(EditModeModel)
   })
   .views(self => ({
     announcementById(id: string) {
-      return self.all.find(a => a.id === id)
+      return self.active.find(a => a.id === id)
     },
     get unread() {
-      return self.all
+      return self.active
         .filter(a => a.status === 'unread')
         .sort(compareByTimestamp)
     },
     get read() {
-      return self.all.filter(a => a.status === 'read').sort(compareByTimestamp)
+      return self.active
+        .filter(a => a.status === 'read')
+        .sort(compareByTimestamp)
     }
   }))
   .volatile(_self => ({ initialDelay: true }))
@@ -167,25 +153,61 @@ const AnnouncementsProps = types
       self.initialDelay = false
     },
     enterIntoEditMode() {
-      if (!self.editMode) self.editMode = EditModeModel.create()
+      if (!self.editMode) {
+        self.editMode = EditModeModel.create({
+          newDraft: {
+            summary: '',
+            details: '',
+            priority: 'low',
+            sendNotification: false
+          }
+        })
+      }
     },
     exitEditMode() {
       self.editMode = undefined
     }
   }))
 
+function compareByTimestamp(
+  a: AnnouncementInstanceType,
+  b: AnnouncementInstanceType
+) {
+  return b.publishOn.getTime() - a.publishOn.getTime()
+}
+
 export interface AnnouncementsInstanceType
   extends Instance<typeof AnnouncementsModel> {}
 
 export const AnnouncementsModel = AnnouncementsProps.actions(self => ({
   add(announcement: AnnouncementCreateType) {
-    self.all.push(announcement)
+    self.active.push(announcement)
   },
   remove(id: string) {
-    const index = self.all.findIndex(a => a.id === id)
-    if (index > -1) self.all.splice(index, 1)
+    const index = self.active.findIndex(a => a.id === id)
+    if (index > -1) self.active.splice(index, 1)
   },
-  clearAll() {
-    while (self.all.length) self.all.pop()
+  removeAllActive() {
+    while (self.active.length) self.active.pop()
+  }
+})).actions(self => ({
+  saveDraft() {
+    const newDraft = self.editMode?.newDraft
+
+    if (newDraft?.summary.trim() && newDraft.details.trim()) {
+      const announcement: AnnouncementCreateType = {
+        summary: newDraft.summary,
+        details: newDraft.details,
+        publishOn: newDraft.publishOn || Date.now(),
+        publishEnd: newDraft.publishEnd,
+        audience: getSnapshot(newDraft.audience),
+        status: 'read',
+        id: Math.random().toString(36).slice(2),
+        priority: newDraft.priority
+      }
+
+      self.add(announcement)
+      self.editMode?.clearDraft()
+    }
   }
 }))

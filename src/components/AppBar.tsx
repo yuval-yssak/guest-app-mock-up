@@ -199,7 +199,7 @@ export default function ProminentAppBar({
         </MenuItem>
         <MenuItem
           onClick={() => {
-            store.announcements.clearAll()
+            store.announcements.removeAllActive()
             handleMoreClose()
           }}
         >

@@ -20,29 +20,14 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import { useMst } from '../models/reactHook'
 import dayjs from 'dayjs'
-import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers'
-import DayjsUtils from '@date-io/dayjs'
 import { RootStoreType } from '../models/RootStore'
 import { AnnouncementInstanceType } from '../models/AnnouncementsModel'
-import TextField from '@material-ui/core/TextField'
 
 const breakpointSplitHead = '(max-width: 45em)'
 
 const StyledAccordionDetails = styled(AccordionDetails)`
   && {
     display: grid;
-    justify-items: end;
-  }
-`
-
-const Title = styled.h2`
-  font-weight: 300;
-  margin-bottom: 1rem;
-`
-
-const StyledTextField = styled(TextField)`
-  && {
-    margin-bottom: 0.8rem;
   }
 `
 
@@ -89,7 +74,7 @@ const StyledAccordionSummary = styled(AccordionSummary)<{
   }
 `
 
-const MessageTypeHeading = styled(Typography)<
+const AnnouncementTypeHeading = styled(Typography)<
   TypographyProps<'h2', { component: 'h2' }>
 >`
   && {
@@ -111,9 +96,9 @@ const AllSectionHeading = styled(SectionHeading).attrs({
   className: 'all-announcements-heading',
   'aria-label': 'all announcements',
   children: (
-    <MessageTypeHeading component="h2" variant="h6">
+    <AnnouncementTypeHeading component="h2" variant="h6">
       All Announcements
-    </MessageTypeHeading>
+    </AnnouncementTypeHeading>
   )
 })`
   background-color: ${({ theme }) => theme.palette.primary.light};
@@ -123,9 +108,9 @@ const UnreadSectionHeading = styled(SectionHeading).attrs({
   className: 'unread-announcements-heading',
   'aria-label': 'unread announcements',
   children: (
-    <MessageTypeHeading component="h2" variant="h6">
+    <AnnouncementTypeHeading component="h2" variant="h6">
       Unread
-    </MessageTypeHeading>
+    </AnnouncementTypeHeading>
   )
 })`
   background-color: ${({ theme }) => theme.palette.primary.light};
@@ -135,9 +120,9 @@ const ReadSectionHeading = styled(SectionHeading).attrs({
   className: 'read-announcements-heading',
   'aria-label': 'read announcements',
   children: (
-    <MessageTypeHeading component="h2" variant="h6">
+    <AnnouncementTypeHeading component="h2" variant="h6">
       Read
-    </MessageTypeHeading>
+    </AnnouncementTypeHeading>
   )
 })`
   background-color: ${({ theme }) =>
@@ -242,7 +227,7 @@ const StatsButton = observer(function StatsButton({
 }: {
   announcement: AnnouncementInstanceType
 }) {
-  if (announcement.stats) {
+  if (announcement.admin?.stats) {
     return (
       <ReadStats variant="outlined">
         <Typography variant="caption">Confirmations:</Typography>
@@ -255,13 +240,15 @@ const StatsButton = observer(function StatsButton({
         >
           <LinearProgress
             variant="determinate"
-            value={announcement.stats.readPercentage}
+            value={announcement.admin.stats.readPercentage}
           />
           <Typography
             variant="caption"
             component="div"
             color="textSecondary"
-          >{`${Math.round(announcement.stats.readPercentage)}%`}</Typography>
+          >{`${Math.round(
+            announcement.admin.stats.readPercentage
+          )}%`}</Typography>
         </div>
       </ReadStats>
     )
@@ -378,182 +365,81 @@ function renderInfo(
   )
 }
 
-const NewDraft = observer(function NewDraft() {
-  const store = useMst()
-
-  if (!store.announcements.editMode?.newDraft) return null
-
-  return (
-    <div style={{ padding: '16px' }}>
-      <Title>New Announcement</Title>
-      <form>
-        <StyledTextField
-          name="draft-summary"
-          label="Subject"
-          placeholder="Enter a one-line subject here"
-          fullWidth
-          value={store.announcements.editMode.newDraft.summary}
-          onChange={e =>
-            store.announcements.editMode?.newDraft?.setSummary(e.target.value)
-          }
-        />
-        <StyledTextField
-          name="draft-details"
-          label="Details"
-          placeholder="Full announcement contents"
-          multiline
-          rows={6}
-          fullWidth
-          value={store.announcements.editMode.newDraft.details}
-          onChange={e =>
-            store.announcements.editMode?.newDraft?.setDetails(e.target.value)
-          }
-        />
-        <DateTimePicker
-          style={{ minWidth: '20rem' }}
-          variant="dialog"
-          format="ddd, MMM DD, YYYY hh:mm a"
-          margin="normal"
-          label="Publish On"
-          value={store.announcements.editMode.newDraft.publishOn}
-          onChange={e =>
-            store.announcements.editMode?.newDraft?.setPublishOn(e?.toDate())
-          }
-          autoOk
-        />
-        <DateTimePicker
-          style={{ minWidth: '20rem' }}
-          variant="dialog"
-          format="ddd, MMM DD, YYYY hh:mm a"
-          margin="normal"
-          label="Publish end"
-          value={store.announcements.editMode.newDraft.publishEnd}
-          onChange={e =>
-            store.announcements.editMode?.newDraft?.setPublishEnd(e?.toDate())
-          }
-          autoOk
-        />
-        <br />
-        <FormControlLabel
-          label="Important"
-          control={
-            <Switch
-              checked={
-                store.announcements.editMode.newDraft.priority === 'high'
-              }
-              onChange={() =>
-                store.announcements.editMode?.newDraft?.togglePriority()
-              }
-            />
-          }
-        />{' '}
-        <FormControlLabel
-          label="Push notification"
-          control={
-            <Switch
-              checked={store.announcements.editMode.newDraft.sendNotification}
-              onChange={() =>
-                store.announcements.editMode?.newDraft?.toggleNotify()
-              }
-            />
-          }
-        />
-        <br />
-        <Button
-          color="primary"
-          variant="outlined"
-          style={{ fontWeight: 400, float: 'right' }}
-        >
-          Save
-        </Button>
-      </form>
-    </div>
-  )
-})
-
 function AnnouncementsPage() {
   const store = useMst()
   const loggedInType = store.loggedInUser?.type
   return (
-    <MuiPickersUtilsProvider utils={DayjsUtils}>
-      <ScrollablePageContentWrapper>
-        {loggedInType === 'staff' && (
-          <StyledFormControlLabel
-            style={{ marginTop: '0.5rem' }}
-            label="Edit Mode"
-            control={
-              <Switch
-                checked={!!store.announcements.editMode}
-                onChange={() =>
-                  !!store.announcements.editMode
-                    ? store.announcements.exitEditMode()
-                    : store.announcements.enterIntoEditMode()
-                }
-              />
-            }
-          />
-        )}
-        {!!store.announcements.editMode &&
-          !store.announcements.editMode.newDraft && (
-            <EditLine>
-              <IconButton
-                style={{ backgroundColor: '#eee' }}
-                onClick={() => store.announcements.editMode!.startNewDraft()}
-              >
-                <AddIcon />
-              </IconButton>
-            </EditLine>
-          )}
-        <NewDraft />
-        {!store.announcements.all.length && (
-          <Section $classPrefix="no">
-            <EmptyPagePaper>
-              <NoAnnouncementsTitle>
-                There are no posted announcements at the moment. We'll let you
-                know when something important comes up.
-              </NoAnnouncementsTitle>
-            </EmptyPagePaper>
-          </Section>
-        )}
-        {!!store.announcements.editMode ? (
-          <Section $classPrefix="all">
-            {store.announcements.all.length ? <AllSectionHeading /> : undefined}
-            {store.announcements.all.map(announcement => (
-              <Announcement
-                announcement={announcement}
-                key={announcement.id}
-                keepExpanded
-              />
+    <ScrollablePageContentWrapper>
+      {loggedInType === 'staff' && (
+        <StyledFormControlLabel
+          style={{ marginTop: '0.5rem' }}
+          label="Edit Mode"
+          control={
+            <Switch
+              checked={!!store.announcements.editMode}
+              onChange={() =>
+                !!store.announcements.editMode
+                  ? store.announcements.exitEditMode()
+                  : store.announcements.enterIntoEditMode()
+              }
+            />
+          }
+        />
+      )}
+      {!!store.announcements.editMode && (
+        <EditLine>
+          <IconButton
+            style={{ backgroundColor: '#eee' }}
+            onClick={() => store.view.openAnnouncementsNewDraftPage()}
+          >
+            <AddIcon />
+          </IconButton>
+        </EditLine>
+      )}
+      {!store.announcements.active.length && (
+        <Section $classPrefix="no">
+          <EmptyPagePaper>
+            <NoAnnouncementsTitle>
+              There are no posted announcements at the moment. We'll let you
+              know when something important comes up.
+            </NoAnnouncementsTitle>
+          </EmptyPagePaper>
+        </Section>
+      )}
+      {!!store.announcements.editMode ? (
+        <Section $classPrefix="active">
+          {store.announcements.active.length ? (
+            <AllSectionHeading />
+          ) : undefined}
+          {store.announcements.active.map(announcement => (
+            <Announcement
+              announcement={announcement}
+              key={announcement.id}
+              keepExpanded
+            />
+          ))}
+        </Section>
+      ) : (
+        <>
+          <Section $classPrefix="unread">
+            {store.announcements.unread.length ? (
+              <UnreadSectionHeading />
+            ) : undefined}
+            {store.announcements.unread.map(announcement => (
+              <Announcement announcement={announcement} key={announcement.id} />
             ))}
           </Section>
-        ) : (
-          <>
-            <Section $classPrefix="unread">
-              {store.announcements.unread.length ? (
-                <UnreadSectionHeading />
-              ) : undefined}
-              {store.announcements.unread.map(announcement => (
-                <Announcement
-                  announcement={announcement}
-                  key={announcement.id}
-                />
-              ))}
-            </Section>
-            <Section $classPrefix="read">
-              {store.announcements.read.length ? (
-                <ReadSectionHeading />
-              ) : undefined}
-              {store.announcements.read.map(announcement => (
-                <Announcement
-                  announcement={announcement}
-                  key={announcement.id}
-                />
-              ))}
-            </Section>
-          </>
-        )}
-      </ScrollablePageContentWrapper>
-    </MuiPickersUtilsProvider>
+          <Section $classPrefix="read">
+            {store.announcements.read.length ? (
+              <ReadSectionHeading />
+            ) : undefined}
+            {store.announcements.read.map(announcement => (
+              <Announcement announcement={announcement} key={announcement.id} />
+            ))}
+          </Section>
+        </>
+      )}
+    </ScrollablePageContentWrapper>
   )
 }
 

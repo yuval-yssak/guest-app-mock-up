@@ -93,4 +93,15 @@ export default function onStart(rootStore: RootStoreType) {
       }
     }
   )
+
+  // switch into edit mode when page is on a new annoncement
+  autorun(() => {
+    if (
+      rootStore.view.page === '/announcements/new' &&
+      rootStore.loggedInUser?.type === 'staff' &&
+      !rootStore.announcements.editMode
+    ) {
+      rootStore.announcements.enterIntoEditMode()
+    }
+  })
 }
