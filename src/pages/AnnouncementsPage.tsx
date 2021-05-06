@@ -15,7 +15,6 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import Switch from '@material-ui/core/Switch'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import Button from '@material-ui/core/Button'
 import FlagIcon from '@material-ui/icons/Flag'
 import styled from 'styled-components'
 import PageContentWrapper from '../components/PageContentWrapper'
@@ -25,6 +24,7 @@ import { useMst } from '../models/reactHook'
 import dayjs from 'dayjs'
 import { AnnouncementInstanceType } from '../models/AnnouncementsModel'
 import TextField from '@material-ui/core/TextField'
+import { PrimaryButton, SecondaryButton } from '../components/common/Buttons'
 
 const breakpointSplitHead = '(max-width: 45em)'
 
@@ -184,21 +184,6 @@ function HighPriority({ withAnnotation }: { withAnnotation: boolean }) {
     </HighPriorityContainer>
   )
 }
-
-const SecondaryButton = styled(Button).attrs({
-  variant: 'outlined',
-  size: 'small'
-})``
-
-const PrimaryButton = styled(Button).attrs({
-  variant: 'outlined',
-  size: 'small',
-  color: 'primary'
-})`
-  && {
-    font-weight: 400;
-  }
-`
 
 const ReadStats = styled(SecondaryButton).attrs({ className: 'read-stats' })`
   & .MuiButton-label {

@@ -2,13 +2,13 @@ import React from 'react'
 import { observer } from 'mobx-react-lite'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
-import Button from '@material-ui/core/Button'
 import styled from 'styled-components'
 import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers'
 import DayjsUtils from '@date-io/dayjs'
 
 import { useMst } from '../models/reactHook'
 import TextField from '@material-ui/core/TextField'
+import { PrimaryButton, SecondaryButton } from '../components/common/Buttons'
 
 const StyledTextField = styled(TextField)`
   && {
@@ -134,22 +134,15 @@ const AnnouncementDraftPage = observer(function NewDraft() {
             />
           </Wrapper>
           <Wrapper $alignToRight>
-            <Button
-              onClick={() => store.view.openAnnouncementsPage()}
-              variant="outlined"
-            >
+            <SecondaryButton onClick={() => store.view.openAnnouncementsPage()}>
               Back
-            </Button>
-            <Button
-              variant="outlined"
+            </SecondaryButton>
+            <SecondaryButton
               onClick={() => store.announcements.editMode?.clearDraft()}
             >
               Clear
-            </Button>
-            <Button
-              color="primary"
-              variant="outlined"
-              style={{ fontWeight: 400 }}
+            </SecondaryButton>
+            <PrimaryButton
               onClick={() => {
                 if (
                   store.announcements.editMode?.newDraft?.subject.trim() &&
@@ -161,7 +154,7 @@ const AnnouncementDraftPage = observer(function NewDraft() {
               }}
             >
               Save
-            </Button>
+            </PrimaryButton>
           </Wrapper>
         </form>
       </NewAnnouncementWrapper>
