@@ -25,8 +25,8 @@ const AudienceModel = types.optional(
 
 const AnnouncementDraftModel = types
   .model('AnnouncementDraftModel', {
-    summary: types.string,
-    details: types.string,
+    subject: types.string,
+    bodyText: types.string,
     publishOn: types.maybe(types.Date),
     publishEnd: types.optional(types.Date, dayjs().add(2, 'days').toDate()),
     priority: types.union(types.literal('low'), types.literal('high')),
@@ -34,11 +34,11 @@ const AnnouncementDraftModel = types
     audience: AudienceModel
   })
   .actions(self => ({
-    setSummary(newSummary: string) {
-      self.summary = newSummary
+    setSubject(newSubject: string) {
+      self.subject = newSubject
     },
-    setDetails(newDetails: string) {
-      self.details = newDetails
+    setBodyText(newBodyText: string) {
+      self.bodyText = newBodyText
     },
     setPublishOn(newDate: Date | undefined) {
       self.publishOn = newDate
@@ -83,8 +83,8 @@ const AdminModel = types.model('AdminModel', {
 const AnnouncementModel = types
   .model('BasicAnnouncementModel', {
     id: types.identifier,
-    summary: types.string,
-    details: types.string,
+    subject: types.string,
+    bodyText: types.string,
     publishOn: types.Date,
     status: types.union(types.literal('read'), types.literal('unread')),
     priority: types.union(types.literal('low'), types.literal('high')),
@@ -105,8 +105,8 @@ const EditModeModel = types
   .actions(self => ({
     clearDraft() {
       self.newDraft = AnnouncementDraftModel.create({
-        summary: '',
-        details: '',
+        subject: '',
+        bodyText: '',
         priority: 'low',
         publishOn: undefined,
         publishEnd: dayjs().add(2, 'days').toDate(),
@@ -177,8 +177,8 @@ const AnnouncementsProps = types
       if (!self.editMode) {
         self.editMode = EditModeModel.create({
           newDraft: {
-            summary: '',
-            details: '',
+            subject: '',
+            bodyText: '',
             priority: 'low',
             sendNotification: false
           }
@@ -205,10 +205,10 @@ export const AnnouncementsModel = AnnouncementsProps.actions(self => ({
   saveDraft() {
     const newDraft = self.editMode?.newDraft
 
-    if (newDraft?.summary.trim() && newDraft.details.trim()) {
+    if (newDraft?.subject.trim() && newDraft.bodyText.trim()) {
       const announcement: AnnouncementCreateType = {
-        summary: newDraft.summary,
-        details: newDraft.details,
+        subject: newDraft.subject,
+        bodyText: newDraft.bodyText,
         publishOn: newDraft.publishOn || Date.now(),
         publishEnd: newDraft.publishEnd,
         audience: getSnapshot(newDraft.audience),

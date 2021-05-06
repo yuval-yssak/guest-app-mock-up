@@ -23,7 +23,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import { useMst } from '../models/reactHook'
 import dayjs from 'dayjs'
-import { RootStoreType } from '../models/RootStore'
 import { AnnouncementInstanceType } from '../models/AnnouncementsModel'
 import TextField from '@material-ui/core/TextField'
 
@@ -154,7 +153,8 @@ const EditLine = styled.div.attrs({ className: 'edit-management-line' })`
   display: flex;
   column-gap: 1rem;
   padding-top: 1rem;
-  height: 4rem;
+  align-items: center;
+  /* height: 4rem; */
 `
 
 const AnnouncementInfo = styled.div.attrs({ className: 'announcement-info' })`
@@ -185,39 +185,22 @@ function HighPriority({ withAnnotation }: { withAnnotation: boolean }) {
   )
 }
 
-const RespondButton = styled(Button).attrs(
-  ({
-    store,
-    announcement
-  }: {
-    store: RootStoreType
-    announcement: AnnouncementInstanceType
-  }) => ({
-    variant: 'outlined',
-    size: 'small',
-    onClick: () => {
-      store.view.openChatPage()
-      if (announcement.status === 'unread') announcement.toggle()
-    },
-    children: 'Respond'
-  })
-)<{ announcement: AnnouncementInstanceType; store: RootStoreType }>``
+const SecondaryButton = styled(Button).attrs({
+  variant: 'outlined',
+  size: 'small'
+})``
 
-const ConfirmButton = styled(Button).attrs(
-  ({ announcement }: { announcement: AnnouncementInstanceType }) => ({
-    variant: 'outlined',
-    size: 'small',
-    color: 'primary',
-    onClick: () => announcement.toggle(),
-    children: 'Confirm as read'
-  })
-)<{ announcement: AnnouncementInstanceType }>`
+const PrimaryButton = styled(Button).attrs({
+  variant: 'outlined',
+  size: 'small',
+  color: 'primary'
+})`
   && {
     font-weight: 400;
   }
 `
 
-const ReadStats = styled(Button).attrs({ className: 'read-stats' })`
+const ReadStats = styled(SecondaryButton).attrs({ className: 'read-stats' })`
   & .MuiButton-label {
     display: flex;
     flex-wrap: wrap;
@@ -225,8 +208,8 @@ const ReadStats = styled(Button).attrs({ className: 'read-stats' })`
 
   & .MuiLinearProgress-determinate {
     border-radius: 0.25rem;
-    height: 1.5rem;
-    min-width: 8rem;
+    height: 1rem;
+    min-width: 6rem;
     margin-left: 1ch;
   }
 `
@@ -278,13 +261,17 @@ const Buttons = styled.div`
 
 function Announcement({
   announcement,
-  keepExpanded = false
+  keepExpanded = false,
+  initialExpanded = false
 }: {
   announcement: AnnouncementInstanceType
   keepExpanded?: boolean
+  initialExpanded?: boolean
 }) {
-  const { id, summary, details, publishOn, status, priority } = announcement
-  const [expanded, setExpanded] = React.useState(status === 'unread')
+  const { id, subject, bodyText, publishOn, status, priority } = announcement
+  const [expanded, setExpanded] = React.useState(
+    initialExpanded || status === 'unread'
+  )
   const smallScreen = useMediaQuery('(max-width: 23.125em)')
   const mediumScreen = useMediaQuery(breakpointSplitHead)
   const store = useMst()
@@ -301,7 +288,7 @@ function Announcement({
         $keepExpanded={keepExpanded}
       >
         <AnnouncementHead $priority={priority}>
-          <Typography className="announcement-summary">{summary}</Typography>
+          <Typography className="announcement-summary">{subject}</Typography>
           {mediumScreen ? (
             <AnnouncementInfo>
               {renderInfo(priority, status, smallScreen, publishOn)}
@@ -312,25 +299,32 @@ function Announcement({
         </AnnouncementHead>
       </StyledAccordionSummary>
       <StyledAccordionDetails>
-        <Typography>{details}</Typography>
+        <Typography>{bodyText}</Typography>
       </StyledAccordionDetails>
       <AccordionActions>
         {store.announcements.editMode ? (
           <Buttons>
             <StatsButton announcement={announcement} />
-            <Button
-              style={{ wordBreak: 'keep-all' }}
-              variant="outlined"
-              color="primary"
+            <PrimaryButton
+            // style={{ wordBreak: 'keep-all' }}
             >
               Edit
-            </Button>
+            </PrimaryButton>
           </Buttons>
         ) : (
           <>
-            <RespondButton announcement={announcement} store={store} />
+            <SecondaryButton
+              onClick={() => {
+                store.view.openChatPage()
+                if (announcement.status === 'unread') announcement.toggle()
+              }}
+              children="Respond"
+            />
             {status === 'unread' && (
-              <ConfirmButton announcement={announcement} />
+              <PrimaryButton
+                children="Confirm as read"
+                onClick={() => announcement.toggle()}
+              />
             )}
           </>
         )}
@@ -392,6 +386,12 @@ const StyledSearchbar = styled(TextField).attrs({ type: 'search' })<{
   }
 `
 
+const StyledToggleButton = styled(ToggleButton)`
+  && {
+    padding: 0.1875rem 0.5625rem;
+  }
+`
+
 function AnnouncementsPage() {
   const store = useMst()
   const loggedInType = store.loggedInUser?.type
@@ -412,10 +412,12 @@ function AnnouncementsPage() {
               <IconButton
                 style={{ backgroundColor: '#eee' }}
                 onClick={() => store.view.openAnnouncementsNewDraftPage()}
+                size="small"
               >
                 <AddIcon />
               </IconButton>
               <ToggleButtonGroup
+                size="small"
                 value={view}
                 exclusive
                 onChange={() =>
@@ -423,12 +425,12 @@ function AnnouncementsPage() {
                 }
                 aria-label="view selection"
               >
-                <ToggleButton value="active" aria-label="active">
+                <StyledToggleButton value="active" aria-label="active">
                   Active
-                </ToggleButton>
-                <ToggleButton value="archived" aria-label="archived">
+                </StyledToggleButton>
+                <StyledToggleButton value="archived" aria-label="archived">
                   Archived
-                </ToggleButton>
+                </StyledToggleButton>
               </ToggleButtonGroup>
             </>
           )}
@@ -475,7 +477,7 @@ function AnnouncementsPage() {
             <Announcement
               announcement={announcement}
               key={announcement.id}
-              keepExpanded
+              initialExpanded={view === 'active'}
             />
           ))}
         </Section>

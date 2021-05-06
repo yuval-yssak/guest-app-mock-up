@@ -53,25 +53,27 @@ const AnnouncementDraftPage = observer(function NewDraft() {
       <NewAnnouncementWrapper>
         <form>
           <StyledTextField
-            name="draft-summary"
+            name="draft-subject"
             label="Subject"
             placeholder="Enter a one-line subject here"
             fullWidth
-            value={store.announcements.editMode.newDraft.summary}
+            value={store.announcements.editMode.newDraft.subject}
             onChange={e =>
-              store.announcements.editMode?.newDraft?.setSummary(e.target.value)
+              store.announcements.editMode?.newDraft?.setSubject(e.target.value)
             }
           />
           <StyledTextField
-            name="draft-details"
-            label="Details"
+            name="draft-body-text"
+            label="Body Text"
             placeholder="Full announcement contents"
             multiline
             rows={6}
             fullWidth
-            value={store.announcements.editMode.newDraft.details}
+            value={store.announcements.editMode.newDraft.bodyText}
             onChange={e =>
-              store.announcements.editMode?.newDraft?.setDetails(e.target.value)
+              store.announcements.editMode?.newDraft?.setBodyText(
+                e.target.value
+              )
             }
           />
           <Wrapper>
@@ -150,8 +152,8 @@ const AnnouncementDraftPage = observer(function NewDraft() {
               style={{ fontWeight: 400 }}
               onClick={() => {
                 if (
-                  store.announcements.editMode?.newDraft?.summary.trim() &&
-                  store.announcements.editMode?.newDraft.details.trim()
+                  store.announcements.editMode?.newDraft?.subject.trim() &&
+                  store.announcements.editMode?.newDraft.bodyText.trim()
                 ) {
                   store.announcements.saveDraft()
                   store.view.openAnnouncementsPage()

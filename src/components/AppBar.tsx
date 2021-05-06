@@ -169,8 +169,8 @@ export default function ProminentAppBar({
           onClick={() => {
             store.announcements.add({
               id: uuidv4(),
-              summary: lorem.generateWords(8),
-              details: lorem.generateSentences(2),
+              subject: lorem.generateWords(8),
+              bodyText: lorem.generateSentences(2),
               publishOn: new Date(),
               publishEnd: dayjs().add(1, 'week').toDate(),
               status: 'unread',
@@ -185,8 +185,8 @@ export default function ProminentAppBar({
           onClick={() => {
             store.announcements.add({
               id: uuidv4(),
-              summary: lorem.generateWords(8),
-              details: lorem.generateSentences(2),
+              subject: lorem.generateWords(8),
+              bodyText: lorem.generateSentences(2),
               publishOn: new Date(),
               publishEnd: dayjs().add(1, 'week').toDate(),
               status: 'unread',
