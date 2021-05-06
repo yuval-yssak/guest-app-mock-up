@@ -8,6 +8,7 @@ import {
 import { ViewType } from './ViewModel'
 import { UserModel, UserType } from './UserModel'
 import dayjs from 'dayjs'
+import { now } from 'mobx-utils'
 
 export interface AnnouncementCreateType
   extends SnapshotIn<typeof AnnouncementModel> {}
@@ -116,12 +117,30 @@ const EditModeModel = types
 
 const AnnouncementsProps = types
   .model({
-    active: types.array(AnnouncementModel),
+    _all: types.array(AnnouncementModel),
     editMode: types.maybe(EditModeModel)
   })
   .views(self => ({
+    get active() {
+      return self._all.filter(
+        a =>
+          dayjs(now(60000)).isAfter(a.publishOn) &&
+          dayjs(now(60000)).isBefore(a.publishEnd)
+      )
+    },
+    get archived() {
+      return self._all.filter(
+        a =>
+          !(
+            dayjs(now(60000)).isAfter(a.publishOn) &&
+            dayjs(now(60000)).isBefore(a.publishEnd)
+          )
+      )
+    }
+  }))
+  .views(self => ({
     announcementById(id: string) {
-      return self.active.find(a => a.id === id)
+      return self._all.find(a => a.id === id)
     },
     get unread() {
       return self.active
@@ -144,7 +163,9 @@ const AnnouncementsProps = types
       return !self.initialDelay &&
         importantUnreadCount &&
         ((getRoot(self) as any).view as ViewType).page !== '/announcements'
-        ? `${importantUnreadCount} new important announcements`
+        ? `${importantUnreadCount} new important announcement${
+            importantUnreadCount > 1 ? `s` : ''
+          }`
         : ''
     }
   }))
@@ -169,26 +190,16 @@ const AnnouncementsProps = types
     }
   }))
 
-function compareByTimestamp(
-  a: AnnouncementInstanceType,
-  b: AnnouncementInstanceType
-) {
-  return b.publishOn.getTime() - a.publishOn.getTime()
-}
-
-export interface AnnouncementsInstanceType
-  extends Instance<typeof AnnouncementsModel> {}
-
 export const AnnouncementsModel = AnnouncementsProps.actions(self => ({
   add(announcement: AnnouncementCreateType) {
-    self.active.push(announcement)
+    self._all.push(announcement)
   },
   remove(id: string) {
-    const index = self.active.findIndex(a => a.id === id)
-    if (index > -1) self.active.splice(index, 1)
+    const index = self._all.findIndex(a => a.id === id)
+    if (index > -1) self._all.splice(index, 1)
   },
-  removeAllActive() {
-    while (self.active.length) self.active.pop()
+  removeAll() {
+    while (self._all.length) self._all.pop()
   }
 })).actions(self => ({
   saveDraft() {
@@ -211,3 +222,13 @@ export const AnnouncementsModel = AnnouncementsProps.actions(self => ({
     }
   }
 }))
+
+function compareByTimestamp(
+  a: AnnouncementInstanceType,
+  b: AnnouncementInstanceType
+) {
+  return b.publishOn.getTime() - a.publishOn.getTime()
+}
+
+export interface AnnouncementsInstanceType
+  extends Instance<typeof AnnouncementsModel> {}

@@ -132,7 +132,12 @@ const AnnouncementDraftPage = observer(function NewDraft() {
             />
           </Wrapper>
           <Wrapper $alignToRight>
-            <Button variant="outlined">Back</Button>
+            <Button
+              onClick={() => store.view.openAnnouncementsPage()}
+              variant="outlined"
+            >
+              Back
+            </Button>
             <Button
               variant="outlined"
               onClick={() => store.announcements.editMode?.clearDraft()}

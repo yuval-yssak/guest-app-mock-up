@@ -62,7 +62,7 @@ const defaultStore: RootStoreSnapshotIn = {
   users,
   loggedInUser,
   announcements: {
-    active: [
+    _all: [
       {
         id: '2',
         status: 'unread',

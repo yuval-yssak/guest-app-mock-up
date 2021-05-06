@@ -2,6 +2,7 @@ import { reaction, autorun } from 'mobx'
 import { getSnapshot, applySnapshot } from 'mobx-state-tree'
 import { RootStoreType } from './models/RootStore'
 import { ViewSnapshotType } from './models/ViewModel'
+
 export default function onStart(rootStore: RootStoreType) {
   // whenever the view changes - push to browser history
   reaction(

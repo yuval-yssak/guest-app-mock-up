@@ -7,7 +7,10 @@ import AccordionDetails from '@material-ui/core/AccordionDetails'
 import AccordionActions from '@material-ui/core/AccordionActions'
 import AddIcon from '@material-ui/icons/Add'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import ToggleButton from '@material-ui/lab/ToggleButton'
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import IconButton from '@material-ui/core/IconButton'
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import Switch from '@material-ui/core/Switch'
@@ -22,6 +25,7 @@ import { useMst } from '../models/reactHook'
 import dayjs from 'dayjs'
 import { RootStoreType } from '../models/RootStore'
 import { AnnouncementInstanceType } from '../models/AnnouncementsModel'
+import TextField from '@material-ui/core/TextField'
 
 const breakpointSplitHead = '(max-width: 45em)'
 
@@ -97,7 +101,7 @@ const AllSectionHeading = styled(SectionHeading).attrs({
   'aria-label': 'all announcements',
   children: (
     <AnnouncementTypeHeading component="h2" variant="h6">
-      All Announcements
+      Announcements
     </AnnouncementTypeHeading>
   )
 })`
@@ -146,7 +150,12 @@ const AnnouncementHead = styled.div.attrs({
   }
 `
 
-const EditLine = styled.div``
+const EditLine = styled.div.attrs({ className: 'edit-management-line' })`
+  display: flex;
+  column-gap: 1rem;
+  padding-top: 1rem;
+  height: 4rem;
+`
 
 const AnnouncementInfo = styled.div.attrs({ className: 'announcement-info' })`
   display: flex;
@@ -343,10 +352,8 @@ const EmptyPagePaper = styled(Paper)`
 `
 
 const StyledFormControlLabel = styled(FormControlLabel)`
-  && {
-    display: block;
-    text-align: right;
-  }
+  flex-grow: 1;
+  justify-content: flex-end;
 `
 
 function renderInfo(
@@ -365,53 +372,106 @@ function renderInfo(
   )
 }
 
+// todo: reuse code (duplicate from UsersPane.tsx)
+const StyledSearchbar = styled(TextField).attrs({ type: 'search' })<{
+  value: unknown // https://material-ui.com/guides/typescript/#handling-value-and-event-handlers
+}>`
+  // place the placeholder in the center when there is no search term.
+  text-align: ${({ value }) => (value === '' ? `center` : `initial`)};
+  width: 100%;
+
+  & input {
+    text-align: inherit;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  // hide the black underline when there is no search input
+  & .MuiInput-underline::before {
+    ${({ value }) => value === '' && `opacity: 0;`}
+  }
+`
+
 function AnnouncementsPage() {
   const store = useMst()
   const loggedInType = store.loggedInUser?.type
+  const [view, setView] = React.useState<'active' | 'archived'>('active')
+  const [searchTerm, setSearchTerm] = React.useState('')
+
+  const viewedAnnouncements =
+    view === 'active'
+      ? store.announcements.active
+      : store.announcements.archived
+
   return (
     <ScrollablePageContentWrapper>
       {loggedInType === 'staff' && (
-        <StyledFormControlLabel
-          style={{ marginTop: '0.5rem' }}
-          label="Edit Mode"
-          control={
-            <Switch
-              checked={!!store.announcements.editMode}
-              onChange={() =>
-                !!store.announcements.editMode
-                  ? store.announcements.exitEditMode()
-                  : store.announcements.enterIntoEditMode()
-              }
-            />
-          }
-        />
-      )}
-      {!!store.announcements.editMode && (
         <EditLine>
-          <IconButton
-            style={{ backgroundColor: '#eee' }}
-            onClick={() => store.view.openAnnouncementsNewDraftPage()}
-          >
-            <AddIcon />
-          </IconButton>
+          {!!store.announcements.editMode && (
+            <>
+              <IconButton
+                style={{ backgroundColor: '#eee' }}
+                onClick={() => store.view.openAnnouncementsNewDraftPage()}
+              >
+                <AddIcon />
+              </IconButton>
+              <ToggleButtonGroup
+                value={view}
+                exclusive
+                onChange={() =>
+                  setView(view => (view === 'active' ? 'archived' : 'active'))
+                }
+                aria-label="view selection"
+              >
+                <ToggleButton value="active" aria-label="active">
+                  Active
+                </ToggleButton>
+                <ToggleButton value="archived" aria-label="archived">
+                  Archived
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </>
+          )}
+          <StyledFormControlLabel
+            label="Edit Mode"
+            control={
+              <Switch
+                checked={!!store.announcements.editMode}
+                onChange={() =>
+                  !!store.announcements.editMode
+                    ? store.announcements.exitEditMode()
+                    : store.announcements.enterIntoEditMode()
+                }
+              />
+            }
+          />
         </EditLine>
       )}
-      {!store.announcements.active.length && (
-        <Section $classPrefix="no">
-          <EmptyPagePaper>
-            <NoAnnouncementsTitle>
-              There are no posted announcements at the moment. We'll let you
-              know when something important comes up.
-            </NoAnnouncementsTitle>
-          </EmptyPagePaper>
-        </Section>
-      )}
       {!!store.announcements.editMode ? (
-        <Section $classPrefix="active">
-          {store.announcements.active.length ? (
-            <AllSectionHeading />
-          ) : undefined}
-          {store.announcements.active.map(announcement => (
+        <Section $classPrefix={view}>
+          {view === 'archived' && (
+            <>
+              <StyledSearchbar
+                placeholder="🔍"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Escape') {
+                    e.preventDefault()
+                    setSearchTerm('')
+                  }
+                }}
+              >
+                Search bar
+              </StyledSearchbar>
+
+              <IconButton>
+                <MoreHorizIcon />
+              </IconButton>
+            </>
+          )}
+          {!!viewedAnnouncements.length && <AllSectionHeading />}
+          {viewedAnnouncements.map(announcement => (
             <Announcement
               announcement={announcement}
               key={announcement.id}
@@ -421,22 +481,40 @@ function AnnouncementsPage() {
         </Section>
       ) : (
         <>
-          <Section $classPrefix="unread">
-            {store.announcements.unread.length ? (
+          {!viewedAnnouncements.length && (
+            <Section $classPrefix="no">
+              <EmptyPagePaper>
+                <NoAnnouncementsTitle>
+                  There are no posted {view} announcements at the moment.
+                  {view === 'active'
+                    ? " We'll let you know when something important comes up."
+                    : ''}
+                </NoAnnouncementsTitle>
+              </EmptyPagePaper>
+            </Section>
+          )}
+          {store.announcements.unread.length ? (
+            <Section $classPrefix="unread">
               <UnreadSectionHeading />
-            ) : undefined}
-            {store.announcements.unread.map(announcement => (
-              <Announcement announcement={announcement} key={announcement.id} />
-            ))}
-          </Section>
-          <Section $classPrefix="read">
-            {store.announcements.read.length ? (
+              {store.announcements.unread.map(announcement => (
+                <Announcement
+                  announcement={announcement}
+                  key={announcement.id}
+                />
+              ))}
+            </Section>
+          ) : undefined}
+          {store.announcements.read.length ? (
+            <Section $classPrefix="read">
               <ReadSectionHeading />
-            ) : undefined}
-            {store.announcements.read.map(announcement => (
-              <Announcement announcement={announcement} key={announcement.id} />
-            ))}
-          </Section>
+              {store.announcements.read.map(announcement => (
+                <Announcement
+                  announcement={announcement}
+                  key={announcement.id}
+                />
+              ))}
+            </Section>
+          ) : undefined}
         </>
       )}
     </ScrollablePageContentWrapper>
