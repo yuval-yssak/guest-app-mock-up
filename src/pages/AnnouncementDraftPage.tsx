@@ -1,19 +1,40 @@
-import React from 'react'
+import * as React from 'react'
+import dayjs, { Dayjs } from 'dayjs'
 import { observer } from 'mobx-react-lite'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
+import Typography from '@material-ui/core/Typography'
 import styled from 'styled-components'
 import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers'
 import DayjsUtils from '@date-io/dayjs'
+import { useForm } from 'react-hook-form'
 
 import { useMst } from '../models/reactHook'
 import TextField from '@material-ui/core/TextField'
 import { PrimaryButton, SecondaryButton } from '../components/common/Buttons'
 
+// A "Field" contains the field and its error message
+const Field = styled.div.attrs({ className: 'form-field' })`
+  position: relative;
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+`
+
+// give room for error message
 const StyledTextField = styled(TextField)`
   && {
     margin-bottom: 0.8rem;
   }
+`
+
+const FormError = styled(Typography).attrs({
+  className: 'form-error',
+  variant: 'body2'
+})`
+  color: ${({ theme }) => theme.palette.secondary.dark};
+  position: absolute;
+  bottom: -0.7rem;
 `
 
 const NewAnnouncementWrapper = styled.div`
@@ -22,6 +43,7 @@ const NewAnnouncementWrapper = styled.div`
   width: clamp(14.5rem, 80%, 60rem);
 `
 
+// A line wrapper in a form
 const Wrapper = styled.div<{ $alignToRight?: boolean }>`
   display: flex;
   flex-wrap: wrap;
@@ -43,66 +65,167 @@ const StyledDateTimePicker = styled(DateTimePicker)`
   }
 `
 
+type Inputs = {
+  draftSubject: string
+  draftBodyText: string
+  draftPublishOn: Dayjs | null
+  draftPublishEnd: Dayjs
+}
+
 const AnnouncementDraftPage = observer(function NewDraft() {
   const store = useMst()
 
-  if (!store.announcements.editMode?.newDraft) return null
+  // use React Hook Form to validate input when "touched"
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    getValues,
+    trigger
+  } = useForm<Inputs>({ mode: 'onTouched' })
+
+  if (!store.announcements.editMode?.newDraft)
+    return <div>Cannot create a new announcement</div>
+
+  function save(_data: Inputs) {
+    store.announcements.saveDraft()
+    store.view.openAnnouncementsPage()
+  }
+
+  // register all fields with their validation rules
+  const draftSubject = register('draftSubject', {
+    required: true,
+    maxLength: 80
+  })
+  const draftBodyText = register('draftBodyText', { required: true })
+  const draftPublishOn = register('draftPublishOn', {
+    validate: {
+      beforeNow: date =>
+        date ? dayjs().isBefore(dayjs(date.toString())) : true
+    }
+  })
+  const draftPublishEnd = register('draftPublishEnd', {
+    required: true,
+    validate: {
+      afterPublishOnDate: date => {
+        const publishOnDate = dayjs(getValues('draftPublishOn') || undefined)
+
+        return date
+          ? dayjs(date.toString()).isAfter(publishOnDate.add(15, 'minutes'))
+          : true
+      }
+    }
+  })
 
   return (
     <MuiPickersUtilsProvider utils={DayjsUtils}>
       <NewAnnouncementWrapper>
-        <form>
-          <StyledTextField
-            name="draft-subject"
-            label="Subject"
-            placeholder="Enter a one-line subject here"
-            fullWidth
-            value={store.announcements.editMode.newDraft.subject}
-            onChange={e =>
-              store.announcements.editMode?.newDraft?.setSubject(e.target.value)
-            }
-          />
-          <StyledTextField
-            name="draft-body-text"
-            label="Body Text"
-            placeholder="Full announcement contents"
-            multiline
-            rows={6}
-            fullWidth
-            value={store.announcements.editMode.newDraft.bodyText}
-            onChange={e =>
-              store.announcements.editMode?.newDraft?.setBodyText(
-                e.target.value
-              )
-            }
-          />
+        <form onSubmit={handleSubmit(save)}>
+          <Field>
+            <StyledTextField
+              label="Subject"
+              placeholder="Enter a one-line subject here"
+              fullWidth
+              value={store.announcements.editMode.newDraft.subject}
+              {...draftSubject}
+              onChange={e => {
+                // override React Hook Form register with update to store
+                store.announcements.editMode?.newDraft?.setSubject(
+                  e.target.value
+                )
+                draftSubject.onChange(e)
+              }}
+            />
+            {errors.draftSubject?.type === 'required' && (
+              <FormError>* This field is required</FormError>
+            )}
+            {errors.draftSubject?.type === 'maxLength' && (
+              <FormError>* maximum 80 Characters</FormError>
+            )}
+          </Field>
+          <Field>
+            <StyledTextField
+              label="Body Text"
+              placeholder="Full announcement contents"
+              multiline
+              rows={6}
+              fullWidth
+              value={store.announcements.editMode.newDraft.bodyText}
+              {...draftBodyText}
+              onChange={e => {
+                store.announcements.editMode?.newDraft?.setBodyText(
+                  e.target.value
+                )
+                draftBodyText.onChange(e)
+              }}
+            />
+            {errors.draftBodyText && (
+              <FormError>* This field is required</FormError>
+            )}
+          </Field>
           <Wrapper>
-            <StyledDateTimePicker
-              variant="dialog"
-              format="ddd, MMM DD, YYYY hh:mm a"
-              margin="normal"
-              label="Publish On"
-              value={store.announcements.editMode.newDraft.publishOn}
-              onChange={e =>
-                store.announcements.editMode?.newDraft?.setPublishOn(
-                  e?.toDate()
-                )
-              }
-              autoOk
-            />
-            <StyledDateTimePicker
-              variant="dialog"
-              format="ddd, MMM DD, YYYY hh:mm a"
-              margin="normal"
-              label="Publish end"
-              value={store.announcements.editMode.newDraft.publishEnd}
-              onChange={e =>
-                store.announcements.editMode?.newDraft?.setPublishEnd(
-                  e?.toDate()!
-                )
-              }
-              autoOk
-            />
+            <Field>
+              <StyledDateTimePicker
+                variant="dialog"
+                format="ddd, MMM DD, YYYY hh:mm a"
+                margin="normal"
+                label="Start publishing on"
+                minDate={dayjs().toDate()}
+                value={store.announcements.editMode.newDraft.publishOn}
+                // supply name, onBlur, inputRef and onChange to rhf with modifications
+                name={draftPublishOn.name}
+                onBlur={draftPublishOn.onBlur}
+                inputRef={draftPublishOn.ref}
+                onChange={date => {
+                  store.announcements.editMode?.newDraft?.setPublishOn(
+                    date?.toDate() || null
+                  )
+                  setValue('draftPublishOn', date, {
+                    shouldValidate: true,
+                    shouldDirty: true
+                  })
+                  // trigger validation on publishEnd field
+                  trigger('draftPublishEnd')
+                }}
+                autoOk
+                clearable // OK to clear this field. When empty - it means "start now"
+              />
+              {errors.draftPublishOn?.type === 'beforeNow' && (
+                <FormError>* Cannot backdate publishing date</FormError>
+              )}
+            </Field>
+            <Field>
+              <StyledDateTimePicker
+                variant="dialog"
+                format="ddd, MMM DD, YYYY hh:mm a"
+                margin="normal"
+                label="Stop publishing on"
+                minDate={
+                  store.announcements.editMode.newDraft.publishOn ||
+                  dayjs().toDate()
+                }
+                minDateMessage={<></>}
+                value={store.announcements.editMode.newDraft.publishEnd}
+                name={draftPublishEnd.name}
+                onBlur={draftPublishEnd.onBlur}
+                inputRef={draftPublishEnd.ref}
+                onChange={date => {
+                  store.announcements.editMode?.newDraft?.setPublishEnd(
+                    date!.toDate()
+                  )
+
+                  setValue('draftPublishEnd', dayjs(date!.toString()), {
+                    shouldValidate: true,
+                    shouldDirty: true
+                  })
+                }}
+                autoOk
+              />
+              {errors.draftPublishEnd && (
+                <FormError>* minimum 15 minute duration</FormError>
+              )}
+            </Field>
           </Wrapper>
           <br />
           <Wrapper>
@@ -142,19 +265,7 @@ const AnnouncementDraftPage = observer(function NewDraft() {
             >
               Clear
             </SecondaryButton>
-            <PrimaryButton
-              onClick={() => {
-                if (
-                  store.announcements.editMode?.newDraft?.subject.trim() &&
-                  store.announcements.editMode?.newDraft.bodyText.trim()
-                ) {
-                  store.announcements.saveDraft()
-                  store.view.openAnnouncementsPage()
-                }
-              }}
-            >
-              Save
-            </PrimaryButton>
+            <PrimaryButton type="submit">Save</PrimaryButton>
           </Wrapper>
         </form>
       </NewAnnouncementWrapper>

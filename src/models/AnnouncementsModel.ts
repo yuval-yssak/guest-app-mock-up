@@ -27,7 +27,7 @@ const AnnouncementDraftModel = types
   .model('AnnouncementDraftModel', {
     subject: types.string,
     bodyText: types.string,
-    publishOn: types.maybe(types.Date),
+    publishOn: types.maybeNull(types.Date),
     publishEnd: types.optional(types.Date, dayjs().add(2, 'days').toDate()),
     priority: types.union(types.literal('low'), types.literal('high')),
     sendNotification: types.boolean,
@@ -40,7 +40,7 @@ const AnnouncementDraftModel = types
     setBodyText(newBodyText: string) {
       self.bodyText = newBodyText
     },
-    setPublishOn(newDate: Date | undefined) {
+    setPublishOn(newDate: Date | null) {
       self.publishOn = newDate
     },
     setPublishEnd(newDate: Date) {
@@ -69,8 +69,9 @@ export const AnnouncementStatsModel = types
 
       const rootStore = getRoot(self) as any
 
-      const usersCount = (rootStore.users as UserType[]).filter(u => u.inHouse)
-        .length
+      const usersCount = (rootStore.users as UserType[]).filter(
+        u => u.inHouse
+      ).length
       return (readCount / usersCount) * 100
     }
   }))

@@ -291,7 +291,10 @@ function Announcement({
           <Buttons>
             <StatsButton announcement={announcement} />
             <PrimaryButton
-            // style={{ wordBreak: 'keep-all' }}
+              onClick={() => {
+                console.log('announcement', announcement.id)
+                store.view.openAnnouncementsEditPage(announcement.id)
+              }}
             >
               Edit
             </PrimaryButton>
