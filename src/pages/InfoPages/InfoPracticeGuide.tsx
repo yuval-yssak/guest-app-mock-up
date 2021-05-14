@@ -897,6 +897,199 @@ export default function InfoPracticeGuide() {
         </Paragraph>
       </section>
       <section>
+        <Heading2>
+          2. Sarvangasana <em>The Shoulderstand</em>{' '}
+        </Heading2>
+
+        <Paragraph>
+          The word “Sarva” means “all parts” in Sanskrit, hence “Sarvangasan” or
+          Shoulderstand is said to benefit the entire body. According to Swami
+          Sivananda there are three asanas which alone will keep the body in
+          perfect health: Headstand, Shoulderstand, and Forward-Bend.
+        </Paragraph>
+        <Heading3>Leg Raises, Preparatory Exercises</Heading3>
+        <Paragraph>
+          In order to strengthen the Abdominal and Lumbar (lower back) muscles,
+          the following exercises may be performed:
+        </Paragraph>
+        <Heading4>Single Leg Raises</Heading4>
+        <Paragraph>
+          Lying flat on the back, bring the feet together. Press the small of
+          the back into the floor and keep the chin towards the chest, so that
+          the neck stays on the ground. Inhale, raise the right leg, keeping the
+          toes back towards the head. Exhale, lower the leg. Repeat the exercise
+          with the left leg. Alternating legs, repeat three times on each side.
+        </Paragraph>
+        <Paragraph>
+          The third time that each leg is raised, catch hold on it with both
+          hands. Stretch the leg towards the head, then try to bring the
+          forehead towards the knee.
+        </Paragraph>
+        <Heading4>Double Leg Raises</Heading4>
+        <Paragraph>
+          Remain flat on the back with feet together, lower back flat against
+          the floor and chin towards the chest. Inhaling, bring both legs (at
+          the same time) up to a right angle. Exhale, lower legs to ground,
+          concentrating on keeping the back flat on the floor. Repeat 5 times,
+          working up to 10 Double Leg Raises. People who are unable to keep the
+          back flat on the ground should do only Single Leg Raises, until the
+          back is strengthened sufficiently.
+        </Paragraph>
+        <Heading3>Coming into the position </Heading3>
+        <ul>
+          <li>Lying flat on the back, bring the feet together.</li>
+          <li>Inhale, bringing the legs up to a right angle.</li>
+          <li>Lift the hips off the ground.</li>
+          <li>Support the back with the hands.</li>
+          <li>
+            Straighten the body, walking the hands down the back until you are
+            resting on the shoulders.
+          </li>
+        </ul>
+        <Heading3>Holding the position:</Heading3>
+        <Paragraph>
+          Straighten the back by bringing the hands as close to the shoulders as
+          you can. Fingers should be pointing towards the spine with thumbs
+          towards the chest. Keep the legs up. Relax the calf muscles; keep the
+          knees straight and feet together. Relax into the position. breathe
+          deeply through the nose.
+        </Paragraph>
+        <Paragraph>
+          Beginners hold the Shoulderstand for 30 seconds. More advanced
+          students may increase the time gradually to 3 minutes.
+        </Paragraph>
+        <Heading3>To come out of the position:</Heading3>
+        <ul>
+          <li>Reverse the procedure of going up</li>
+          <li>Lower the feet to a 45 degree angle over the head.</li>
+          <li>
+            Bring the hands (palms downward) flat on the floor behind the back.
+            Push the hands into the floor, using them as a brake. Concentrate on
+            keeping the head on the ground.
+          </li>
+          <li>
+            Slowly lower yourself out of the position, unrolling the body
+            slowly. Try to feel each vertebrae as it is lowered to the ground
+            separately.
+          </li>
+          <li>
+            When you have come out of the position, rest and relax in the corpse
+            pose
+          </li>
+        </ul>
+        <Heading3>Common Mistakes:</Heading3>
+        <ul>
+          <li>Knees are bent.</li>
+          <li>
+            Feet are allowed to separatie, causing the hips to rotate outward.
+          </li>
+          <li>
+            Weight of the body is unevenly distributed, causing the body to lean
+            to one side.
+          </li>
+          <li>The body should be relaxed, but straight.</li>
+        </ul>
+        <Heading3>Benefits of the Shoulderstand</Heading3>
+        <Heading4>Physical benefits</Heading4>
+        <ul>
+          <li>
+            Because of the chin pressing on the throat, the thyroid gland is
+            affected and regulated. The thyroid is perhaps the most important
+            gland of the endocrine system, regulating all other glands. It is a
+            butterfly shaped gland located in the front of and next to the
+            larynx.
+          </li>
+          <li>The Shoulderstand brings a rich blood supply to the thyroid.</li>
+          <li>
+            The thyroid regulates the body’s metabolism and heat production.
+          </li>
+          <li>
+            The thyroid hormones regulate the growth and development of the
+            body.
+          </li>
+          <li>
+            The thyroid promotes protein synthesis and proper growth of the
+            muscle and bone tissues.
+          </li>
+          <li>
+            It controls the heart rate, heart contractability and blood
+            pressure.
+          </li>
+          <li>
+            Weight problems (over and under) are often the result of thyroid
+            problems. The Shoulderstand helps to bring the thyroid to its proper
+            level of activity.
+          </li>
+          <li>
+            The chin pressing onto the base of the throat also stimulates and
+            regulates the parathyroid gland.{' '}
+          </li>
+          <li>
+            The parathyroid helps to maintain proper calcium levels in the blood
+            and tissues.
+          </li>
+          <li>
+            Normal skeletal and cardiac muscle activity, as well as blood
+            clotting, depend on proper calcium levels.
+          </li>
+          <li>
+            Insufficiency of the parathyroid functioning can cause stiffness,
+            cramps, spasms and even convulsions.{' '}
+          </li>
+          <li>
+            Overactive parathyroid functioning can lead to kidney disease, bone
+            disease, and muscle weakness.
+          </li>
+          <li>
+            The Shoulderstand centralized the blood supply in the spinal column
+            and feeds the spine abundantly. It keeps the spine strong and
+            elastic.
+          </li>
+          <li>
+            Because of the inverted body position, blood is not permitted to
+            stagnate in the veins of the lower limbs. This stagnation often
+            occurs as a result of broken capillaries or lack of tone in the
+            circulatory system (varicose veins). The Shoulderstand causes the
+            blood to recirculate. Hence it is a very good tonic for people who
+            stand on their feet all day and/or have a tendency towards varicose
+            veins.
+          </li>
+          <li>
+            The Shoulderstand encourages deep abdominal breathing as it limits
+            the use of the top portion of the lungs.
+          </li>
+          <li>A gentle massage is given to the heart.</li>
+          <li>The throat and thoracic regions are strengthened.</li>
+          <li>
+            The cervical region is stretched as well as the shoulder muscles.
+          </li>
+          <li>
+            The Shoulderstand helps to keep a youthful figure and smooth skin.
+          </li>
+        </ul>
+        <Heading4>Mental benefits</Heading4>
+        <ul>
+          <li>The Shoulderstand relieves mental sluggishness</li>
+          <li>It helps cure insomnia & depression</li>
+        </ul>
+        <Heading4>Psychic benefits</Heading4>
+        <ul>
+          <li>The focus is on Vishuddhi Chakra (located at the neck).</li>
+        </ul>
+        <Heading3>Variations of the Shoulderstand</Heading3>
+        <Heading4>Variation 1</Heading4>
+        <Paragraph>
+          Supporting the back with the hands, exhale and lower the right leg to
+          the floor behind the head. Inhale and bring it back up. Keep both legs
+          straight. Repeat three times with each leg.
+        </Paragraph>
+        <Heading4>Variation 2 </Heading4>
+        <Paragraph>
+          Slowly bring your right then your left hand up alongside your thighs.
+          Hold the position, breathing normally.
+        </Paragraph>
+      </section>
+      <section>
         <Heading1>Chants</Heading1>
         <Heading2>
           <em>dhyāna ślokaḥ</em>

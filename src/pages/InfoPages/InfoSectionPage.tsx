@@ -7,9 +7,6 @@ import CardContent from '@material-ui/core/CardContent'
 import CardMedia from '@material-ui/core/CardMedia'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import InfoCovid19GuidelinesPage from './InfoCovid19GuidelinesPage'
-import InfoArrivingAtTheAirport from './InfoArrivingAtTheAirport'
-import InfoPracticeGuide from './InfoPracticeGuide'
 import styled from 'styled-components'
 import { useMst } from '../../models/reactHook'
 import { observer } from 'mobx-react-lite'
@@ -126,11 +123,6 @@ function MediaCard({
 
 export default observer(function InfoSetingsPage() {
   const store = useMst()
-  const page = store.view.id || ''
-
-  if (page === 'covid-19-guidelines') return <InfoCovid19GuidelinesPage />
-  if (page === 'arriving-at-the-airport') return <InfoArrivingAtTheAirport />
-  if (page === 'practice-guide') return <InfoPracticeGuide />
 
   return (
     <StyledPageContentWrapper>

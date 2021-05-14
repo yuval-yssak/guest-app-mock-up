@@ -10,13 +10,15 @@ const ViewModel = types
       types.literal('/'),
       types.literal('/activities'),
       types.literal('/announcements'),
-      types.literal('/announcements/details'),
+      types.literal('/announcements/stats'),
+      types.literal('/announcements/edit'),
       types.literal('/announcements/new'),
       types.literal('/chat'),
       types.literal('/custom'),
       types.literal('/info-section'),
       types.literal('/info-section/arriving-at-the-airport'),
       types.literal('/info-section/practice-guide'),
+      types.literal('/info-section/covid-19-guidelines'),
       types.literal('/info-section/abc/123'),
       types.literal('/login'),
       types.literal('/manualSignup'),
@@ -50,6 +52,8 @@ const ViewModel = types
           return self.page
         case '/people':
         case '/chat':
+        case '/announcements/edit':
+        case '/announcements/stats':
           if (self.id) return `${self.page}/${self.id}`
           return self.page
         default:
@@ -64,8 +68,12 @@ const ViewModel = types
     openAnnouncementsNewDraftPage: () => {
       self.page = '/announcements/new'
     },
-    openAnnouncementsDetailsPage: (id: string) => {
-      self.page = '/announcements/details'
+    openAnnouncementsEditPage: (id: string) => {
+      self.page = '/announcements/edit'
+      self.id = id
+    },
+    openAnnouncementsStatsPage: (id: string) => {
+      self.page = '/announcements/stats'
       self.id = id
     },
     openChatPage: (id?: string) => {
@@ -81,8 +89,8 @@ const ViewModel = types
       self.id = undefined
     },
     openInfoSectionPage: (id?: string) => {
-      self.page = '/info-section'
-      self.id = id
+      if (id) self.page = `/info-section/${id}`
+      else self.page = `/info-section`
     },
     openInfoSectionAbc123() {
       self.page = '/info-section/abc/123'
@@ -133,12 +141,18 @@ function getViewFromURL() {
     }
   }
 
-  const matchAnnouncements = match<{ id: string }>('/announcements/details/:id')
+  // catch either an edit or stats page of an announcement
+  const matchAnnouncements = match<{ id: string }>(
+    '/announcements/(stats|edit)/:id'
+  )
   const matchedAnnouncements = matchAnnouncements(pathname)
 
   if (matchedAnnouncements) {
     return {
-      page: '/announcements/details',
+      page:
+        // page will be either /announcements/stats or /announcements/edit
+        matchedAnnouncements &&
+        matchedAnnouncements.path.replace(/\/[^/]*$/, ''),
       id: matchedAnnouncements.params.id
     }
   }
@@ -162,6 +176,7 @@ function getViewFromURL() {
       case '/info-section':
       case '/info-section/arriving-at-the-airport':
       case '/info-section/practice-guide':
+      case '/info-section/covid-19-guidelines':
       case '/info-section/abc/123':
       case '/login':
       case '/manualSignup':

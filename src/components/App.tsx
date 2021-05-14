@@ -24,6 +24,8 @@ import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirpor
 import { useMst } from '../models/reactHook'
 import { SnackbarProvider } from 'notistack'
 import WarningsNotifier from './WarningsNotifier'
+import InfoCovid19GuidelinesPage from '../pages/InfoPages/InfoCovid19GuidelinesPage'
+import InfoPracticeGuide from '../pages/InfoPages/InfoPracticeGuide'
 
 const scaleFrom0 = keyframes`
 0% {
@@ -203,6 +205,18 @@ function App() {
                       {store.view.page === '/info-section' && (
                         <InfoSectionPage />
                       )}
+                      {store.view.page ===
+                        '/info-section/covid-19-guidelines' && (
+                        <InfoCovid19GuidelinesPage />
+                      )}
+                      {store.view.page ===
+                        '/info-section/arriving-at-the-airport' && (
+                        <InfoArrivingAtTheAirport />
+                      )}
+                      {store.view.page === '/info-section/practice-guide' && (
+                        <InfoPracticeGuide />
+                      )}
+
                       {store.view.page === '/info-section/abc/123' && (
                         <div>Specific page inside two levels of navigation</div>
                       )}
