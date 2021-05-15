@@ -43,6 +43,7 @@ export const WarningModel = types
       switch (self.action?.onClick) {
         case 'open announcements page': {
           ;(store.view as ViewType).openAnnouncementsPage()
+          store.announcements.exitEditMode()
           return
         }
         case 'dismiss': {
