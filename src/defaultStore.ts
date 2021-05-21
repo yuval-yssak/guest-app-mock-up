@@ -74,8 +74,8 @@ const defaultStore: RootStoreSnapshotIn = {
         bodyText:
           'Omnis similique fuga sequi quam labore, voluptate unde iure asperiores. Laborum, tenetur soluta ad possimus inventore quas consequuntur, sequi earum velit omnis repellat eligendi exercitationem sint, numquam sunt rem ipsam? Nobis repudiandae repellendus totam fugiat nulla a consectetur veniam optio?',
         audience: { targetName: 'all-residents' },
-        publishOn: dayjs().subtract(4, 'hours').toDate(),
-        publishEnd: dayjs().add(1, 'week').toDate(),
+        publishOn: dayjs().subtract(4, 'weeks').toDate(),
+        publishEnd: dayjs().subtract(4, 'week').add(2, 'days').toDate(),
         admin: {
           stats: { readStatistics: [] }
         }

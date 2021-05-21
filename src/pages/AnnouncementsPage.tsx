@@ -385,6 +385,7 @@ function AnnouncementsPage() {
   const loggedInType = store.loggedInUser?.type
   const [view, setView] = React.useState<'active' | 'archived'>('active')
   const [searchTerm, setSearchTerm] = React.useState('')
+  const smallScreen = useMediaQuery('(max-width: 31.5625em)')
 
   const viewedAnnouncements =
     view === 'active'
@@ -414,7 +415,7 @@ function AnnouncementsPage() {
                 aria-label="view selection"
               >
                 <StyledToggleButton value="active" aria-label="active">
-                  Active
+                  {smallScreen ? 'Active' : 'Active/Scheduled'}
                 </StyledToggleButton>
                 <StyledToggleButton value="archived" aria-label="archived">
                   Archived

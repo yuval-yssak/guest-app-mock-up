@@ -1,5 +1,5 @@
 import * as React from 'react'
-import dayjs, { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { observer } from 'mobx-react-lite'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -34,6 +34,7 @@ dayjs.extend(minMax)
 // A "Field" contains the field and its error message
 const Field = styled.div.attrs({ className: 'form-field' })`
   position: relative;
+  flex: 1;
 `
 
 // give room for error message
@@ -66,7 +67,7 @@ const NewAnnouncementWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   width: clamp(14.5rem, 80%, 60rem);
-  margin-top: '1rem';
+  margin-top: 1rem;
 `
 
 // A line wrapper in a form
@@ -76,7 +77,6 @@ const Wrapper = styled.div.attrs({ className: 'line-wrapper' })<{
   display: flex;
   flex-wrap: wrap;
   column-gap: 2rem;
-  width: 100%;
 
   &:not(:last-child) {
     margin-bottom: 1rem;
@@ -136,9 +136,9 @@ const AudienceCountChip = styled(Chip).attrs({
 type formInputs = {
   draftSubject: string
   draftBodyText: string
-  draftAudience: AnnouncementInstanceType['audience']['targetName']
-  draftPublishOn: Dayjs | null
-  draftPublishEnd: Dayjs
+  draftAudience: string
+  draftPublishOn: string
+  draftPublishEnd: string
 }
 
 function getAudienceTargetLabel(
@@ -248,11 +248,13 @@ function EditAnnouncementComponent(
   })
   const draftBodyText = register('draftBodyText', { required: true })
   const draftAudience = register('draftAudience', { required: true })
+
   const draftPublishOn = register('draftPublishOn', {
     validate: {
-      beforeNow: date =>
-        !publishOnDisabledLogic() &&
-        (date ? dayjs().isBefore(dayjs(date.toString())) : true)
+      beforeNow: date => {
+        if (publishOnDisabledLogic()) return true
+        else return date ? dayjs().isBefore(dayjs(date.toString())) : true
+      }
     }
   })
   const draftPublishEnd = register('draftPublishEnd', {
@@ -280,8 +282,11 @@ function EditAnnouncementComponent(
     if (props.mode === 'edit' && originalPublishOn) {
       setValue('draftSubject', subject)
       setValue('draftBodyText', bodyText)
-      setValue('draftPublishOn', dayjs(originalPublishOn))
-      setValue('draftAudience', audience.targetName)
+      setValue(
+        'draftPublishOn',
+        dayjs(originalPublishOn).format('ddd, MMM DD, YYYY hh:mm a')
+      )
+      setValue('draftAudience', getAudienceTargetLabel(audience))
     }
   }, [setValue, bodyText, props.mode, originalPublishOn, subject, audience])
 
@@ -374,6 +379,7 @@ function EditAnnouncementComponent(
                       <ArrowDropDownIcon />
                     </InputAdornment>
                   }
+                  autoComplete="off"
                 />
               </InputLabel>
               <Dialog
@@ -491,10 +497,14 @@ function EditAnnouncementComponent(
                 inputRef={draftPublishOn.ref}
                 onChange={date => {
                   setPublishOn(date?.toDate() || null)
-                  setValue('draftPublishOn', date, {
-                    shouldValidate: true,
-                    shouldDirty: true
-                  })
+                  setValue(
+                    'draftPublishOn',
+                    date?.format('ddd, MMM DD, YYYY hh:mm a') || '',
+                    {
+                      shouldValidate: true,
+                      shouldDirty: true
+                    }
+                  )
                   // trigger validation on publishEnd field
                   trigger('draftPublishEnd')
                 }}
@@ -519,13 +529,19 @@ function EditAnnouncementComponent(
                 inputRef={draftPublishEnd.ref}
                 disabled={publishEndDisabledLogic()}
                 onChange={date => {
+                  // the assumption is that date has to be non null
+                  // since the picker is not clearable
                   if (dayjs().isBefore(date!)) {
                     setPublishEnd(date!.toDate())
 
-                    setValue('draftPublishEnd', dayjs(date!.toString()), {
-                      shouldValidate: true,
-                      shouldDirty: true
-                    })
+                    setValue(
+                      'draftPublishEnd',
+                      date!.format('ddd, MMM DD, YYYY hh:mm a'),
+                      {
+                        shouldValidate: true,
+                        shouldDirty: true
+                      }
+                    )
                   } else setError('draftPublishEnd', { type: 'beforeNow' })
                 }}
                 autoOk
@@ -621,6 +637,7 @@ const EditAnnouncement = observer(function EditAnnouncement() {
   }, [announcement])
 
   function saveEdit() {
+    console.log('saving', announcement, announcementClone)
     if (announcement && announcementClone) {
       applySnapshot(announcement, getSnapshot(announcementClone))
       store.view.openAnnouncementsPage()

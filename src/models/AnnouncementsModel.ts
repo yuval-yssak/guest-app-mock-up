@@ -146,19 +146,13 @@ const AnnouncementsProps = types
   })
   .views(self => ({
     get active() {
-      return self._all.filter(
-        a =>
-          dayjs(now(60000)).isAfter(a.publishOn) &&
-          dayjs(now(60000)).isBefore(a.publishEnd)
+      return self._all.filter(a =>
+        dayjs(now(60000)).add(1, 'minute').isBefore(a.publishEnd)
       )
     },
     get archived() {
       return self._all.filter(
-        a =>
-          !(
-            dayjs(now(60000)).isAfter(a.publishOn) &&
-            dayjs(now(60000)).isBefore(a.publishEnd)
-          )
+        a => !dayjs(now(60000)).add(1, 'minute').isBefore(a.publishEnd)
       )
     }
   }))
@@ -217,7 +211,7 @@ const AnnouncementsProps = types
 
 export const AnnouncementsModel = AnnouncementsProps.actions(self => ({
   add(announcement: AnnouncementCreateType) {
-    self._all.push(announcement)
+    self._all.unshift(announcement)
   },
   remove(id: string) {
     const index = self._all.findIndex(a => a.id === id)
