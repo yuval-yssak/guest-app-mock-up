@@ -172,6 +172,7 @@ export default function ProminentAppBar({
               subject: lorem.generateWords(8),
               bodyText: lorem.generateSentences(2),
               publishOn: new Date(),
+              audience: { targetName: 'all-residents' },
               publishEnd: dayjs().add(1, 'week').toDate(),
               status: 'unread',
               priority: 'high'
@@ -188,6 +189,7 @@ export default function ProminentAppBar({
               subject: lorem.generateWords(8),
               bodyText: lorem.generateSentences(2),
               publishOn: new Date(),
+              audience: { targetName: 'all-residents' },
               publishEnd: dayjs().add(1, 'week').toDate(),
               status: 'unread',
               priority: 'low'
@@ -211,8 +213,8 @@ export default function ProminentAppBar({
             const staffUsers = users.filter(({ type }) => type === 'staff')
 
             store.chats.withSelf.insertOtherMessage({
-              user:
-                staffUsers[Math.floor(Math.random() * staffUsers.length)].id,
+              user: staffUsers[Math.floor(Math.random() * staffUsers.length)]
+                .id,
               timestamp: new Date(),
               content: lorem.generateSentences(
                 Math.floor(Math.random() * 10 + 1)

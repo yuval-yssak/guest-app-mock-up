@@ -16,32 +16,34 @@ const lorem = new LoremIpsum({
   }
 })
 
-export const users: UserType[] = ([
-  {
-    id: 1,
-    type: 'staff',
-    personName: 'Pranava Chaitanya',
-    imageSrc: '/images/pranava-chaitanya.jpg'
-  },
-  {
-    id: 2,
-    type: 'staff',
-    personName: 'Iswara Chaitanya',
-    imageSrc: '/images/iswara-chaitanya.jpg'
-  },
-  {
-    id: 3,
-    personName: 'Bhargavi',
-    imageSrc: '',
-    type: 'staff'
-  },
-  {
-    id: 4,
-    personName: 'Jenny',
-    imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg',
-    type: 'guest'
-  }
-] as UserType[]).concat(generateUsers(46, 5))
+export const users: UserType[] = (
+  [
+    {
+      id: 1,
+      type: 'staff',
+      personName: 'Pranava Chaitanya',
+      imageSrc: '/images/pranava-chaitanya.jpg'
+    },
+    {
+      id: 2,
+      type: 'staff',
+      personName: 'Iswara Chaitanya',
+      imageSrc: '/images/iswara-chaitanya.jpg'
+    },
+    {
+      id: 3,
+      personName: 'Bhargavi',
+      imageSrc: '',
+      type: 'staff'
+    },
+    {
+      id: 4,
+      personName: 'Jenny',
+      imageSrc: '/images/photo-1493666438817-866a91353ca9.jpeg',
+      type: 'guest'
+    }
+  ] as UserType[]
+).concat(generateUsers(46, 5))
 
 const loggedInUser = 1
 
@@ -71,6 +73,7 @@ const defaultStore: RootStoreSnapshotIn = {
           'Odit dolores provident sed perferendis blanditiis maiores neque.',
         bodyText:
           'Omnis similique fuga sequi quam labore, voluptate unde iure asperiores. Laborum, tenetur soluta ad possimus inventore quas consequuntur, sequi earum velit omnis repellat eligendi exercitationem sint, numquam sunt rem ipsam? Nobis repudiandae repellendus totam fugiat nulla a consectetur veniam optio?',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(4, 'hours').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate(),
         admin: {
@@ -84,6 +87,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Ex earum eaque vel rem eos, dolorem officiis.',
         bodyText:
           'Sint vitae, repudiandae dicta cum non, dolorem a, quaerat eum vero labore ipsam nulla similique maiores omnis at expedita vel quasi dolores sequi consequatur deserunt. Alias aut molestiae, fugit ad voluptate voluptatem sed, nam quasi corrupti, tempore sit temporibus doloribus.',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(4, 'minutes').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate(),
         admin: { stats: generateStats() }
@@ -95,6 +99,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
         bodyText:
           'Rem culpa, labore dolores et nobis quod deserunt error ad pariatur sunt quasi praesentium officia reprehenderit odit eius numquam quo temporibus repellat voluptatibus placeat doloribus architecto. Repellat, illum sint enim ipsum laboriosam qui maiores repudiandae quas vero accusamus! Fugiat nesciunt minima consequuntur, optio in veritatis sapiente nisi totam autem eaque!',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(4, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate(),
         admin: { stats: generateStats() }
@@ -106,6 +111,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Ad quos dolores quam?',
         bodyText:
           'Inventore aperiam ipsam dolorem quia reiciendis, quam quasi illo ab doloribus perspiciatis quisquam aliquam sit sed eos nulla quod nostrum!',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(2, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate(),
         admin: { stats: generateStats() }
@@ -117,6 +123,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Distinctio reiciendis natus ea?',
         bodyText:
           'Illo, provident dolores! Dolores saepe voluptatibus fugit, vel unde doloribus cumque reprehenderit quidem ipsum recusandae eveniet possimus tempora consequuntur. Vitae.',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(2, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate(),
         admin: { stats: generateStats() }
@@ -128,6 +135,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Modi at ipsam eaque?',
         bodyText:
           'Alias laboriosam incidunt dolorem dolorum, praesentium ullam est at culpa doloribus dignissimos ipsa atque? Reiciendis voluptatem dolore cumque incidunt ullam.',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(2, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate(),
         admin: { stats: generateStats() }
@@ -139,6 +147,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Qui facilis accusamus magni.',
         bodyText:
           'Explicabo exercitationem cum voluptates dolor iste autem magni quod molestiae, mollitia ratione nihil obcaecati? Repellendus quidem facilis perspiciatis eum sapiente.',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(2, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate(),
         admin: { stats: generateStats() }
@@ -150,6 +159,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Lorem ipsum dolor sit amet consectetur adipisicing.',
         bodyText:
           'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corrupti quidem ipsum culpa ullam, eius sapiente ratione ad quasi sint saepe quisquam! Libero asperiores magnam sunt adipisci, recusandae, nemo nihil ad et, corporis accusamus qui officiis natus harum voluptatibus? Similique, pariatur.',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(2, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate(),
         admin: { stats: generateStats() }
@@ -161,6 +171,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Nam corrupti consectetur, explicabo fuga libero aperiam?',
         bodyText:
           'Amet rem dolores, magni dolorem optio, illum veniam placeat nesciunt, laborum blanditiis omnis. Sunt nisi incidunt praesentium perspiciatis ea ratione porro eum quae voluptates repellat, illum dolore natus soluta consequatur obcaecati ducimus nobis hic nihil quod tempora animi fuga cum?',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(2, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate()
       },
@@ -171,6 +182,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Quidem exercitationem numquam rerum nemo maxime ab.',
         bodyText:
           'Dolor earum a fuga id pariatur aliquam? Earum neque corrupti dicta, molestiae eos iure suscipit aspernatur, error rem minus similique harum qui obcaecati perspiciatis maiores saepe? Maiores veniam rem laboriosam doloribus repudiandae? Repellendus odio possimus architecto nostrum debitis tempora itaque!',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(2, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate()
       },
@@ -181,6 +193,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Error dolorem, tempore voluptas harum minima hic!',
         bodyText:
           'Illum ipsa delectus consequuntur temporibus sunt est dolores illo rem quaerat maxime commodi doloribus adipisci magni perferendis optio deleniti animi, non, ad distinctio dolore magnam ipsum? Porro dignissimos magnam alias tenetur eius ullam, reiciendis accusantium minus eum! Velit, quidem quis!',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(2, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate()
       },
@@ -191,6 +204,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Voluptatibus, blanditiis modi. Numquam odit esse quo!',
         bodyText:
           'Molestiae ipsa nostrum fuga! Distinctio voluptatem optio fugiat? Non error impedit ea, sapiente laborum quaerat? Id adipisci, quo dignissimos fugiat earum voluptates dolor facilis, expedita autem nemo itaque dicta qui odio. Error pariatur dolorem, voluptatibus distinctio illum quo officiis expedita?',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(2, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate()
       },
@@ -201,6 +215,7 @@ const defaultStore: RootStoreSnapshotIn = {
         subject: 'Facilis perferendis animi accusantium ullam alias nostrum.',
         bodyText:
           'Autem necessitatibus voluptatum beatae fuga odio fugiat harum, odit rem similique esse ipsum, dolorem magnam ducimus soluta. Perferendis est provident error magni, cumque amet velit. Eligendi est atque saepe, odio et veritatis, placeat minima ratione animi reiciendis excepturi explicabo modi!',
+        audience: { targetName: 'all-residents' },
         publishOn: dayjs().subtract(2, 'days').toDate(),
         publishEnd: dayjs().add(1, 'week').toDate()
       }

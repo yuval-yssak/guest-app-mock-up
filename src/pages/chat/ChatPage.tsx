@@ -152,9 +152,8 @@ const ChatContainerPage = observer(function ChatContainerPage() {
 })
 
 function StaffChatSinglePane() {
-  const [visiblePane, setVisiblePane] = React.useState<'users' | 'chat'>(
-    'users'
-  )
+  const [visiblePane, setVisiblePane] =
+    React.useState<'users' | 'chat'>('users')
 
   if (visiblePane === 'users') {
     return <UsersPane switchToChatView={() => setVisiblePane('chat')} />
@@ -224,10 +223,13 @@ const ChatPage = observer(function ChatPage({
 
   // build message react components
 
-  const chat = (withPerson
-    ? store.chats.withUsers?.find(chatUser => chatUser.user.id === +withPerson)
-        ?.chat
-    : store.chats.withSelf)!
+  const chat = (
+    withPerson
+      ? store.chats.withUsers?.find(
+          chatUser => chatUser.user.id === +withPerson
+        )?.chat
+      : store.chats.withSelf
+  )!
   const days = arrangeChatInDays(chat)
 
   const messagesInDays = buildMessagesJSX(days, chat, dividerRef)

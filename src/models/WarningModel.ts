@@ -61,16 +61,16 @@ export const WarningsModel = types
   .views(self => ({
     // the list of all warnings
     list(): WarningType[] {
-      const internalList = (entries(self.internalList) as unknown) as [
+      const internalList = entries(self.internalList) as unknown as [
         string,
         WarningType
       ][]
 
       const list = Array.from(internalList).map(a => a[1])
 
-      const announcementsSnackbar = (getRoot(
-        self
-      ) as RootStoreType).announcements.snackbar()
+      const announcementsSnackbar = (
+        getRoot(self) as RootStoreType
+      ).announcements.snackbar()
 
       if (announcementsSnackbar)
         list.push(
@@ -98,7 +98,7 @@ export const WarningsModel = types
     },
     dismissOne(key: string) {
       if (
-        ((values(self.internalList) as unknown) as WarningType[]).find(
+        (values(self.internalList) as unknown as WarningType[]).find(
           warning => warning.key === key
         )
       ) {

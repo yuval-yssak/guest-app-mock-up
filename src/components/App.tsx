@@ -19,7 +19,7 @@ import LoginPage from '../pages/LoginPage'
 import PeoplePage from '../pages/People/People'
 import ManualSignUpPage from '../pages/ManualSignUpPage'
 import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
-import AnnouncementDraftPage from '../pages/AnnouncementDraftPage'
+import AnnouncementEditPage from '../pages/AnnouncementEditPage'
 import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirport'
 import { useMst } from '../models/reactHook'
 import { SnackbarProvider } from 'notistack'
@@ -116,6 +116,8 @@ function App() {
         return 'Announcements'
       case '/announcements/new':
         return 'New Announcement'
+      case '/announcements/edit':
+        return 'Edit Announcement'
       case '/chat':
         return 'Chat'
       case '/info-section':
@@ -160,19 +162,18 @@ function App() {
     }
   })
 
-  const toggleDrawer = (open: boolean) => (
-    event: React.KeyboardEvent | React.MouseEvent
-  ) => {
-    if (
-      event.type === 'keydown' &&
-      ['Tab', 'Shift', 'Space', 'Enter'].some(
-        k => k === (event as React.KeyboardEvent).key
-      )
-    ) {
-      return
+  const toggleDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event.type === 'keydown' &&
+        ['Tab', 'Shift', 'Space', 'Enter'].some(
+          k => k === (event as React.KeyboardEvent).key
+        )
+      ) {
+        return
+      }
+      setDrawerOpen(open)
     }
-    setDrawerOpen(open)
-  }
 
   return (
     <>
@@ -198,9 +199,9 @@ function App() {
                       {store.view.page === '/announcements' && (
                         <AnnouncementsPage />
                       )}
-                      {store.view.page === '/announcements/new' && (
-                        <AnnouncementDraftPage />
-                      )}
+                      {['/announcements/new', '/announcements/edit'].some(
+                        page => page === store.view.page
+                      ) && <AnnouncementEditPage />}
                       {store.view.page === '/chat' && <ChatPage />}
                       {store.view.page === '/info-section' && (
                         <InfoSectionPage />
@@ -237,7 +238,6 @@ function App() {
                       )}
                     </Main>
                   </Background>
-                  {/* <AnnouncementSnackbar /> */}
                   <AnimatedBottomNavigation />
                 </>
               )}

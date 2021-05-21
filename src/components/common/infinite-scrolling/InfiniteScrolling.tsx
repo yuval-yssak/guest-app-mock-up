@@ -28,14 +28,11 @@ export interface Props {
 
 export default function InfiniteScroll(props: Props) {
   const [showLoader, setShowLoader] = React.useState(false)
-  const [
-    pullToRefreshThresholdBreached,
-    setPullToRefreshThresholdBreached
-  ] = React.useState(false)
+  const [pullToRefreshThresholdBreached, setPullToRefreshThresholdBreached] =
+    React.useState(false)
 
-  const el = React.useRef<
-    HTMLElement | undefined | (Window & typeof globalThis)
-  >()
+  const el =
+    React.useRef<HTMLElement | undefined | (Window & typeof globalThis)>()
   const _scrollableNode = React.useRef<HTMLElement | undefined | null>()
   const _infScroll = React.useRef<HTMLDivElement | undefined>()
   const lastScrollTop = React.useRef(0)
@@ -141,11 +138,8 @@ export default function InfiniteScroll(props: Props) {
     }
   }, [props.initialScrollY])
 
-  const {
-    pullDownToRefresh,
-    pullDownToRefreshThreshold,
-    refreshFunction
-  } = props
+  const { pullDownToRefresh, pullDownToRefreshThreshold, refreshFunction } =
+    props
 
   React.useEffect(() => {
     // variables to keep track of pull down behaviour
@@ -240,8 +234,9 @@ export default function InfiniteScroll(props: Props) {
       maxPullDownDistance.current =
         (_pullDown.current &&
           _pullDown.current.firstChild &&
-          (_pullDown.current
-            .firstChild as HTMLDivElement).getBoundingClientRect().height) ||
+          (
+            _pullDown.current.firstChild as HTMLDivElement
+          ).getBoundingClientRect().height) ||
         0
 
       // not sure this is needed...

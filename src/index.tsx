@@ -11,7 +11,7 @@ const rootElement = document.getElementById('root')
 
 let rootStore = RootStore.create(defaultStore)
 
-;((window as unknown) as Window & { store: RootStoreType }).store = rootStore
+;(window as unknown as Window & { store: RootStoreType }).store = rootStore
 
 function render() {
   ReactDOM.render(
@@ -30,9 +30,11 @@ try {
   if (module.hot) {
     module.hot.accept(['./models/RootStore'], () => {
       // Store definition changed, recreate a new one from old state
-      ;((window as unknown) as Window & {
-        store: RootStoreType
-      }).store = rootStore = RootStore.create(getSnapshot(rootStore))
+      ;(
+        window as unknown as Window & {
+          store: RootStoreType
+        }
+      ).store = rootStore = RootStore.create(getSnapshot(rootStore))
     })
 
     module.hot.accept(['./components/App'], () => {

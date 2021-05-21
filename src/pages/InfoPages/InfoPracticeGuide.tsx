@@ -356,7 +356,7 @@ export default function InfoPracticeGuide() {
           <li>
             Regularity of time, place and practice are most important.
             Regularity conditions the mind to slow down its activities with a
-            minimum of delay
+            minimum of delay.
           </li>
           <li>
             The most effective times are early dawn and dusk, when the
@@ -366,9 +366,18 @@ export default function InfoPracticeGuide() {
             apt to be calm.
           </li>
           <li>
-            Try to have a separate room for meditation. As meditation is
-            repeated, the powerful vibrations set up will be lodged in the area;
-            an atmosphere of peace and purity will be felt.
+            Try to have a separate room for meditation. If this is impossible,
+            screen off a portion of a room; do not allow others to enter it. The
+            area should be used only for meditation, and should be kept free
+            from other vibrations and associations. Incense should be burned
+            morning and evening. The focal point of the room should be a picture
+            or image of the chosen deity or inspirational figure, with the
+            meditation mat placed before it. As meditation is repeated, the
+            powerful vibrations set up will be lodged in the room. In six months
+            the peace and purity of the atmosphere will be felt; it will have a
+            magnetic aura. In times of stress you can sit in the room, do
+            repetition of Mantra for half an hour, and experience comfort and
+            relief.
           </li>
           <li>
             When sitting, face North or East in order to take advantage of
@@ -396,7 +405,9 @@ export default function InfoPracticeGuide() {
           </li>
           <li>
             Do not force the mind to be still, as this will set in motion
-            additional brain waves, hindering meditation.
+            additional brain waves, hindering meditation. If the mind persists
+            in wandering, simply dissociate from it, and watch it, objectively,
+            as though you were watching a movie. It will gradually slow down.
           </li>
           <li>
             Select a focal point on which the mind may rest. For people who are

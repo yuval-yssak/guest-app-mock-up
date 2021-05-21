@@ -1,10 +1,4 @@
-import {
-  types,
-  getRoot,
-  SnapshotIn,
-  Instance,
-  getSnapshot
-} from 'mobx-state-tree'
+import { types, getRoot, SnapshotIn, Instance } from 'mobx-state-tree'
 import { ViewType } from './ViewModel'
 import { UserModel, UserType } from './UserModel'
 import dayjs from 'dayjs'
@@ -15,13 +9,22 @@ export interface AnnouncementCreateType
 export interface AnnouncementInstanceType
   extends Instance<typeof AnnouncementModel> {}
 
-const AudienceModel = types.optional(
-  types.model({
-    everyoneInHouse: types.maybe(types.boolean),
-    allGuestsAndChildren: types.maybe(types.boolean)
-  }),
-  { everyoneInHouse: true }
-)
+const AudienceTarget = types.model('AudienceTarget', {
+  targetName: types.maybeNull(
+    types.union(
+      types.literal('all-residents-and-visitors'),
+      types.literal('all-residents'),
+      types.literal('all-residents-guests'),
+      types.literal('all-residents-guests-no-children'),
+      types.literal('all-staff-karma-yogis'),
+      types.literal('all-karma-yogis'),
+      types.literal('all-staff'),
+      types.literal('all-speakers'),
+      types.literal('students-in-course')
+    )
+  ),
+  id: types.maybe(types.number) // in case type='students-in-course'
+})
 
 const AnnouncementDraftModel = types
   .model('AnnouncementDraftModel', {
@@ -30,8 +33,8 @@ const AnnouncementDraftModel = types
     publishOn: types.maybeNull(types.Date),
     publishEnd: types.optional(types.Date, dayjs().add(2, 'days').toDate()),
     priority: types.union(types.literal('low'), types.literal('high')),
-    sendNotification: types.boolean,
-    audience: AudienceModel
+    sendAlert: types.boolean,
+    audience: AudienceTarget
   })
   .actions(self => ({
     setSubject(newSubject: string) {
@@ -39,6 +42,10 @@ const AnnouncementDraftModel = types
     },
     setBodyText(newBodyText: string) {
       self.bodyText = newBodyText
+    },
+    setAudience(newAudience: typeof self.audience) {
+      self.audience.targetName = newAudience.targetName
+      self.audience.id = newAudience.id
     },
     setPublishOn(newDate: Date | null) {
       self.publishOn = newDate
@@ -50,7 +57,7 @@ const AnnouncementDraftModel = types
       self.priority = self.priority === 'high' ? 'low' : 'high'
     },
     toggleNotify() {
-      self.sendNotification = !self.sendNotification
+      self.sendAlert = !self.sendAlert
     }
   }))
 
@@ -76,8 +83,8 @@ export const AnnouncementStatsModel = types
     }
   }))
 
-const AdminModel = types.model('AdminModel', {
-  sendNotification: types.optional(types.boolean, false),
+const AdminExtensionModel = types.model('AdminExtensionModel', {
+  sendAlert: types.optional(types.boolean, false),
   stats: AnnouncementStatsModel
 })
 
@@ -90,12 +97,27 @@ const AnnouncementModel = types
     status: types.union(types.literal('read'), types.literal('unread')),
     priority: types.union(types.literal('low'), types.literal('high')),
     publishEnd: types.Date,
-    audience: AudienceModel,
-    admin: types.maybe(AdminModel)
+    audience: AudienceTarget,
+    admin: types.maybe(AdminExtensionModel)
   })
   .actions(self => ({
     toggle() {
       self.status = self.status === 'read' ? 'unread' : 'read'
+    },
+    setSubject(newSubject: string) {
+      self.subject = newSubject
+    },
+    setBodyText(newBodyText: string) {
+      self.bodyText = newBodyText
+    },
+    setPublishOn(newPublishOn: Date) {
+      self.publishOn = newPublishOn
+    },
+    setPublishEnd(newPublishEnd: Date) {
+      self.publishEnd = newPublishEnd
+    },
+    togglePriority() {
+      self.priority = self.priority === 'high' ? 'low' : 'high'
     }
   }))
 
@@ -111,7 +133,8 @@ const EditModeModel = types
         priority: 'low',
         publishOn: undefined,
         publishEnd: dayjs().add(2, 'days').toDate(),
-        sendNotification: false
+        audience: { targetName: null },
+        sendAlert: false
       })
     }
   }))
@@ -181,7 +204,8 @@ const AnnouncementsProps = types
             subject: '',
             bodyText: '',
             priority: 'low',
-            sendNotification: false
+            audience: { targetName: null },
+            sendAlert: false
           }
         })
       }
@@ -212,7 +236,10 @@ export const AnnouncementsModel = AnnouncementsProps.actions(self => ({
         bodyText: newDraft.bodyText,
         publishOn: newDraft.publishOn || Date.now(),
         publishEnd: newDraft.publishEnd,
-        audience: getSnapshot(newDraft.audience),
+        audience: {
+          targetName: newDraft.audience.targetName,
+          id: newDraft.audience.id
+        },
         status: 'read',
         id: Math.random().toString(36).slice(2),
         priority: newDraft.priority
