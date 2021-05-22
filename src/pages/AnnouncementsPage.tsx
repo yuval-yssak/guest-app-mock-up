@@ -292,7 +292,9 @@ function Announcement({
         </AnnouncementHead>
       </StyledAccordionSummary>
       <StyledAccordionDetails>
-        <Typography>{bodyText}</Typography>
+        <Typography style={{ whiteSpace: 'pre-wrap' }} component="pre">
+          {bodyText}
+        </Typography>
       </StyledAccordionDetails>
       <AccordionActions>
         {store.announcements.editMode ? (
