@@ -3,8 +3,8 @@ import dayjs from 'dayjs'
 import { observer } from 'mobx-react-lite'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Input from '@material-ui/core/Input'
 import Skeleton from '@material-ui/lab/Skeleton'
+import Input from '@material-ui/core/Input'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import InputLabel from '@material-ui/core/InputLabel'
 import List from '@material-ui/core/List'
@@ -15,6 +15,8 @@ import Chip from '@material-ui/core/Chip'
 import Switch from '@material-ui/core/Switch'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import Popover from '@material-ui/core/Popover'
+import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers'
 import styled from 'styled-components'
@@ -185,7 +187,6 @@ function EditAnnouncementComponent(
     togglePriority: () => void
     sendAlert: boolean
     toggleNotify: () => void
-    goBack: () => void
     reset: () => void
   } & (
     | { mode: 'edit'; originalPublishOn: Date; originalPublishEnd: Date }
@@ -208,7 +209,6 @@ function EditAnnouncementComponent(
     togglePriority,
     sendAlert,
     toggleNotify,
-    goBack,
     reset,
     mode
   } = props
@@ -221,8 +221,42 @@ function EditAnnouncementComponent(
     setValue,
     setError,
     getValues,
+    clearErrors,
     trigger
   } = useForm<formInputs>({ mode: 'onTouched' })
+
+  const store = useMst()
+
+  const [populationLoaded, setPopulationLoaded] = React.useState(false)
+
+  // emulate loading data delay
+  React.useEffect(() => {
+    setTimeout(() => setPopulationLoaded(true), 4500)
+  }, [])
+
+  // update the form with the prop values
+  // (otherwise each field has to be manually touched for verification)
+  React.useEffect(() => {
+    setValue('draftSubject', subject)
+    setValue('draftBodyText', bodyText)
+    publishOn &&
+      setValue(
+        'draftPublishOn',
+        dayjs(publishOn).format('ddd, MMM DD, YYYY hh:mm a')
+      )
+    setValue(
+      'draftPublishEnd',
+      dayjs(publishEnd).format('ddd, MMM DD, YYYY hh:mm a')
+    )
+    setValue('draftAudience', getAudienceTargetLabel(audience))
+  }, [setValue, bodyText, publishOn, publishEnd, subject, audience])
+
+  const [showSendAlertAnchor, setShowSendAlertAnchor] =
+    React.useState<HTMLElement | null>(null)
+  const [audienceDialogOpen, setAudienceDialogOpen] = React.useState(false)
+
+  const shouldBeAbleToArchive = mode === 'edit' && dayjs().isBefore(publishEnd)
+  const shouldBeAbleToDuplicate = mode === 'edit'
 
   function publishOnDisabledLogic() {
     if (props.mode === 'edit') return dayjs().isAfter(props.originalPublishOn)
@@ -270,31 +304,12 @@ function EditAnnouncementComponent(
     }
   })
 
-  const originalPublishOn = props.mode === 'edit' && props.originalPublishOn
-
-  const [populationLoaded, setPopulationLoaded] = React.useState(false)
-
-  React.useEffect(() => {
-    setTimeout(() => setPopulationLoaded(true), 4500)
-  }, [])
-
-  React.useEffect(() => {
-    if (props.mode === 'edit' && originalPublishOn) {
-      setValue('draftSubject', subject)
-      setValue('draftBodyText', bodyText)
-      setValue(
-        'draftPublishOn',
-        dayjs(originalPublishOn).format('ddd, MMM DD, YYYY hh:mm a')
-      )
-      setValue('draftAudience', getAudienceTargetLabel(audience))
-    }
-  }, [setValue, bodyText, props.mode, originalPublishOn, subject, audience])
-
-  const [audienceDialogOpen, setAudienceDialogOpen] = React.useState(false)
-
   const setAndClose = (value: AnnouncementInstanceType['audience']) => {
-    setAudience(value)
-    setAudienceDialogOpen(false)
+    if (value) {
+      setAudience(value)
+      setAudienceDialogOpen(false)
+      clearErrors('draftAudience')
+    }
   }
 
   return (
@@ -302,29 +317,31 @@ function EditAnnouncementComponent(
       <NewAnnouncementWrapper>
         <form onSubmit={handleSubmit(save)}>
           <Wrapper>
-            <Field>
-              <StyledTextField
-                label="Subject"
-                placeholder="Enter a one-line subject here"
-                fullWidth
-                value={subject}
-                {...draftSubject}
-                disabled={mode === 'edit'}
-                onChange={e => {
-                  if (mode === 'new') {
-                    // override React Hook Form register with update to store
-                    setSubject(e.target.value)
-                    draftSubject.onChange(e)
-                  }
-                }}
-              />
-              {errors.draftSubject?.type === 'required' && (
-                <FormError>* This field is required</FormError>
-              )}
-              {errors.draftSubject?.type === 'maxLength' && (
-                <FormError>* Maximum 80 Characters</FormError>
-              )}
-            </Field>
+            <Tooltip title="Maximum 80 characters">
+              <Field>
+                <StyledTextField
+                  label="Subject"
+                  placeholder="Enter a one-line subject here"
+                  fullWidth
+                  value={subject}
+                  {...draftSubject}
+                  disabled={mode === 'edit'}
+                  onChange={e => {
+                    if (mode === 'new') {
+                      // override React Hook Form register with update to store
+                      setSubject(e.target.value)
+                      draftSubject.onChange(e)
+                    }
+                  }}
+                />
+                {errors.draftSubject?.type === 'required' && (
+                  <FormError>* This field is required</FormError>
+                )}
+                {errors.draftSubject?.type === 'maxLength' && (
+                  <FormError>* Exceeds 80 characters limit</FormError>
+                )}
+              </Field>
+            </Tooltip>
           </Wrapper>
           <Wrapper>
             <Field>
@@ -481,36 +498,38 @@ function EditAnnouncementComponent(
           </Wrapper>
           <Wrapper>
             <Field>
-              <StyledDateTimePicker
-                variant="dialog"
-                format="ddd, MMM DD, YYYY hh:mm a"
-                margin="normal"
-                label="Start publishing on"
-                minDate={
-                  publishOnDisabledLogic() ? new Date(0) : dayjs().toDate()
-                }
-                value={publishOn}
-                disabled={publishOnDisabledLogic()}
-                // supply name, onBlur, inputRef and onChange to rhf with modifications
-                name={draftPublishOn.name}
-                onBlur={draftPublishOn.onBlur}
-                inputRef={draftPublishOn.ref}
-                onChange={date => {
-                  setPublishOn(date?.toDate() || null)
-                  setValue(
-                    'draftPublishOn',
-                    date?.format('ddd, MMM DD, YYYY hh:mm a') || '',
-                    {
-                      shouldValidate: true,
-                      shouldDirty: true
-                    }
-                  )
-                  // trigger validation on publishEnd field
-                  trigger('draftPublishEnd')
-                }}
-                autoOk
-                clearable // OK to clear this field. When empty - it means "start now"
-              />
+              <Tooltip title="Choose a date or keep empty to start publishing now">
+                <StyledDateTimePicker
+                  variant="dialog"
+                  format="ddd, MMM DD, YYYY hh:mm a"
+                  margin="normal"
+                  label="Start publishing on"
+                  minDate={
+                    publishOnDisabledLogic() ? new Date(0) : dayjs().toDate()
+                  }
+                  value={publishOn}
+                  disabled={publishOnDisabledLogic()}
+                  // supply name, onBlur, inputRef and onChange to rhf with modifications
+                  name={draftPublishOn.name}
+                  onBlur={draftPublishOn.onBlur}
+                  inputRef={draftPublishOn.ref}
+                  onChange={date => {
+                    setPublishOn(date?.toDate() || null)
+                    setValue(
+                      'draftPublishOn',
+                      date?.format('ddd, MMM DD, YYYY hh:mm a') || '',
+                      {
+                        shouldValidate: true,
+                        shouldDirty: true
+                      }
+                    )
+                    // trigger validation on publishEnd field
+                    trigger('draftPublishEnd')
+                  }}
+                  autoOk
+                  clearable // OK to clear this field. When empty - it means "start now"
+                />
+              </Tooltip>
               {errors.draftPublishOn?.type === 'beforeNow' && (
                 <FormError>* Past date</FormError>
               )}
@@ -557,25 +576,95 @@ function EditAnnouncementComponent(
           </Wrapper>
           <br />
           <Wrapper>
-            <FormControlLabel
-              label="Important"
-              control={
-                <Switch
-                  checked={priority === 'high'}
-                  onChange={() => togglePriority()}
-                />
-              }
-            />
-            <FormControlLabel
-              label="Send Alert"
-              control={
-                <Switch checked={sendAlert} onChange={() => toggleNotify()} />
-              }
-            />
+            <Tooltip title="High importance is for safety & health concerns only">
+              <FormControlLabel
+                label="Important"
+                control={
+                  <Switch
+                    checked={priority === 'high'}
+                    onChange={() => togglePriority()}
+                  />
+                }
+              />
+            </Tooltip>
+            <Tooltip title="Send alert will issue an email and a push notification for the users who have registered to receive notifications in any of their devices. Push notifications currently do not work at all on Apple devices, and email notifications are subject to user preferences.">
+              <FormControlLabel
+                label="Send Alert"
+                control={
+                  <>
+                    <Switch
+                      checked={sendAlert}
+                      onChange={() => toggleNotify()}
+                    />
+                  </>
+                }
+              />
+            </Tooltip>
+            <Popover
+              open={!!showSendAlertAnchor}
+              anchorEl={showSendAlertAnchor}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+              transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+              onClose={() => setShowSendAlertAnchor(null)}
+              onClick={() => setShowSendAlertAnchor(null)}
+            >
+              <Typography
+                style={{ maxWidth: 'min(20rem, 80vw)', padding: '1rem' }}
+              >
+                Send alert will issue an email and a push notification for the
+                users who have registered to receive notifications in any of
+                their devices. <br /> Push notifications currently do not work
+                at all on Apple devices, and email notifications are subject to
+                user preferences.
+              </Typography>
+            </Popover>
           </Wrapper>
           <Wrapper $alignToRight>
-            <SecondaryButton onClick={goBack}>Back</SecondaryButton>
+            <Tooltip title="Discard changes">
+              <SecondaryButton
+                onClick={() => {
+                  if (window.history.length) window.history.back()
+                  else store.view.openAnnouncementsPage()
+                }}
+              >
+                Back
+              </SecondaryButton>
+            </Tooltip>
             <SecondaryButton onClick={reset}>Reset</SecondaryButton>
+            {shouldBeAbleToArchive && (
+              // todo: implement archiving
+              <SecondaryButton>Archive</SecondaryButton>
+            )}
+            {shouldBeAbleToDuplicate && (
+              <SecondaryButton
+                onClick={() => {
+                  const currentDraftSnapshot = getSnapshot(
+                    store.announcements.editMode!.newDraft!
+                  )
+                  store.view.openAnnouncementsNewDraftPage()
+                  if (
+                    currentDraftSnapshot?.subject ||
+                    currentDraftSnapshot?.bodyText
+                  ) {
+                    setImmediate(() =>
+                      alert(
+                        'You are currently editing a draft. Reset the draft first if you want to duplicate an archived announcement.'
+                      )
+                    )
+                  } else if (store.announcements.editMode) {
+                    store.announcements.editMode.clearDraft()
+                    const newDraft = store.announcements.editMode.newDraft!
+                    newDraft.setSubject(subject)
+                    newDraft.setBodyText(bodyText)
+                    newDraft.setAudience(audience)
+                    if (priority === 'high') newDraft.togglePriority()
+                    if (sendAlert) newDraft.toggleNotify()
+                  }
+                }}
+              >
+                Duplicate
+              </SecondaryButton>
+            )}
             <PrimaryButton type="submit">Save</PrimaryButton>
           </Wrapper>
         </form>
@@ -637,7 +726,6 @@ const EditAnnouncement = observer(function EditAnnouncement() {
   }, [announcement])
 
   function saveEdit() {
-    console.log('saving', announcement, announcementClone)
     if (announcement && announcementClone) {
       applySnapshot(announcement, getSnapshot(announcementClone))
       store.view.openAnnouncementsPage()
@@ -667,7 +755,7 @@ const EditAnnouncement = observer(function EditAnnouncement() {
       audience={announcementClone.audience}
       setAudience={() => {}}
       publishOn={displayEmptyPublishOn ? null : announcementClone.publishOn}
-      originalPublishOn={announcementClone.publishOn}
+      originalPublishOn={announcement.publishOn}
       setPublishOn={(newPublishOn: Date | null) => {
         if (newPublishOn) {
           announcementClone.setPublishOn(newPublishOn)
@@ -675,13 +763,12 @@ const EditAnnouncement = observer(function EditAnnouncement() {
         } else setDisplayEmptyPublishOn(true)
       }}
       publishEnd={announcementClone.publishEnd}
-      originalPublishEnd={announcementClone.publishEnd}
+      originalPublishEnd={announcement.publishEnd}
       setPublishEnd={announcementClone.setPublishEnd}
       priority={announcementClone.priority}
       togglePriority={() => {}}
       sendAlert={false}
       toggleNotify={() => {}}
-      goBack={() => store.view.openAnnouncementsPage()}
       reset={() => {
         setAnnouncementClone(clone(announcement))
       }}
@@ -732,7 +819,6 @@ const AnnouncementDraftPage = observer(function AnnouncementDraftPage() {
         toggleNotify={() =>
           store.announcements.editMode?.newDraft?.toggleNotify()
         }
-        goBack={() => store.view.openAnnouncementsPage()}
         reset={() => store.announcements.editMode?.clearDraft()}
       />
     )

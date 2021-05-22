@@ -12,6 +12,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
 import IconButton from '@material-ui/core/IconButton'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import LinearProgress from '@material-ui/core/LinearProgress'
+import Tooltip from '@material-ui/core/Tooltip'
 import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import Switch from '@material-ui/core/Switch'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -37,7 +38,7 @@ const StyledAccordionDetails = styled(AccordionDetails)`
 const ScrollablePageContentWrapper = styled(PageContentWrapper).attrs({
   className: 'scrollable'
 })`
-  word-break: break-all;
+  word-break: break-word;
 
   && {
     overflow-y: scroll;
@@ -141,7 +142,7 @@ const AnnouncementHead = styled.div.attrs({
     }) => $priority === 'high' && 'max-content'};
   width: 100%;
   justify-content: space-between;
-  align-items: start;
+  align-items: center;
   grid-gap: 0.5rem;
 
   @media ${breakpointSplitHead} {
@@ -149,12 +150,19 @@ const AnnouncementHead = styled.div.attrs({
   }
 `
 
-const EditLine = styled.div.attrs({ className: 'edit-management-line' })`
-  display: flex;
+const EditLine = styled.div.attrs({ className: 'edit-management-line' })<{
+  $editModeOpen: boolean
+}>`
+  display: grid;
+  ${({ $editModeOpen }) =>
+    $editModeOpen
+      ? `grid-template-columns: max-content minmax(min-content, 1fr) max-content;`
+      : `justify-content: end;`}
   column-gap: 1rem;
   padding-top: 1rem;
-  align-items: center;
-  /* height: 4rem; */
+  align-items: start;
+  margin-left: 0.3rem;
+  margin-right: 0.3rem;
 `
 
 const AnnouncementInfo = styled.div.attrs({ className: 'announcement-info' })`
@@ -291,10 +299,9 @@ function Announcement({
           <Buttons>
             <StatsButton announcement={announcement} />
             <PrimaryButton
-              onClick={() => {
-                console.log('announcement', announcement.id)
+              onClick={() =>
                 store.view.openAnnouncementsEditPage(announcement.id)
-              }}
+              }
             >
               Edit
             </PrimaryButton>
@@ -385,7 +392,8 @@ function AnnouncementsPage() {
   const loggedInType = store.loggedInUser?.type
   const [view, setView] = React.useState<'active' | 'archived'>('active')
   const [searchTerm, setSearchTerm] = React.useState('')
-  const smallScreen = useMediaQuery('(max-width: 31.5625em)')
+  const smallScreen = useMediaQuery('(max-width: 37.5em)')
+  const verySmallScreen = useMediaQuery('(max-width: 24em)')
 
   const viewedAnnouncements =
     view === 'active'
@@ -395,16 +403,18 @@ function AnnouncementsPage() {
   return (
     <ScrollablePageContentWrapper>
       {loggedInType === 'staff' && (
-        <EditLine>
+        <EditLine $editModeOpen={!!store.announcements.editMode}>
           {!!store.announcements.editMode && (
             <>
-              <IconButton
-                style={{ backgroundColor: '#eee' }}
-                onClick={() => store.view.openAnnouncementsNewDraftPage()}
-                size="small"
-              >
-                <AddIcon />
-              </IconButton>
+              <Tooltip title="Create a new announcement">
+                <IconButton
+                  style={{ backgroundColor: '#eee' }}
+                  onClick={() => store.view.openAnnouncementsNewDraftPage()}
+                  size="small"
+                >
+                  <AddIcon />
+                </IconButton>
+              </Tooltip>
               <ToggleButtonGroup
                 size="small"
                 value={view}
@@ -413,6 +423,7 @@ function AnnouncementsPage() {
                   setView(view => (view === 'active' ? 'archived' : 'active'))
                 }
                 aria-label="view selection"
+                style={{ flexWrap: 'wrap' }}
               >
                 <StyledToggleButton value="active" aria-label="active">
                   {smallScreen ? 'Active' : 'Active/Scheduled'}
@@ -424,7 +435,7 @@ function AnnouncementsPage() {
             </>
           )}
           <StyledFormControlLabel
-            label="Edit Mode"
+            label={verySmallScreen ? 'Edit' : 'Edit Mode'}
             control={
               <Switch
                 checked={!!store.announcements.editMode}
@@ -462,13 +473,15 @@ function AnnouncementsPage() {
             </>
           )}
           {!!viewedAnnouncements.length && <AllSectionHeading />}
-          {viewedAnnouncements.map(announcement => (
-            <Announcement
-              announcement={announcement}
-              key={announcement.id}
-              initialExpanded={view === 'active'}
-            />
-          ))}
+          {viewedAnnouncements
+            .filter(a => a.subject.match(new RegExp(searchTerm.trim(), 'i')))
+            .map(announcement => (
+              <Announcement
+                announcement={announcement}
+                key={announcement.id}
+                initialExpanded={view === 'active'}
+              />
+            ))}
         </Section>
       ) : (
         <>
