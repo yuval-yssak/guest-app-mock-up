@@ -333,6 +333,7 @@ function EditAnnouncementComponent(
                       draftSubject.onChange(e)
                     }
                   }}
+                  autoComplete="off"
                 />
                 {errors.draftSubject?.type === 'required' && (
                   <FormError>* This field is required</FormError>
@@ -360,6 +361,7 @@ function EditAnnouncementComponent(
                     draftBodyText.onChange(e)
                   }
                 }}
+                autoComplete="off"
               />
               {errors.draftBodyText && (
                 <FormError>* This field is required</FormError>
