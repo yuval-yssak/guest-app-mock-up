@@ -15,7 +15,6 @@ import Chip from '@material-ui/core/Chip'
 import Switch from '@material-ui/core/Switch'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import Popover from '@material-ui/core/Popover'
 import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers'
@@ -114,6 +113,10 @@ const StyledInput = styled(Input)`
   }
 `
 
+const AudienceInputLabel = styled(InputLabel)`
+  width: 100%;
+`
+
 const MultilineListItem = styled(ListItem)`
   && {
     white-space: normal;
@@ -134,6 +137,13 @@ const AudienceCountChip = styled(Chip).attrs({
   color: 'primary',
   variant: 'outlined'
 })``
+
+const PrimaryButtonWithMargin = styled(PrimaryButton)`
+  && {
+    margin: 1rem;
+    margin-top: 0;
+  }
+`
 
 type formInputs = {
   draftSubject: string
@@ -251,8 +261,6 @@ function EditAnnouncementComponent(
     setValue('draftAudience', getAudienceTargetLabel(audience))
   }, [setValue, bodyText, publishOn, publishEnd, subject, audience])
 
-  const [showSendAlertAnchor, setShowSendAlertAnchor] =
-    React.useState<HTMLElement | null>(null)
   const [audienceDialogOpen, setAudienceDialogOpen] = React.useState(false)
 
   const shouldBeAbleToArchive = mode === 'edit' && dayjs().isBefore(publishEnd)
@@ -324,14 +332,13 @@ function EditAnnouncementComponent(
                   placeholder="Enter a one-line subject here"
                   fullWidth
                   value={subject}
-                  {...draftSubject}
                   disabled={mode === 'edit'}
+                  name={draftSubject.name}
+                  onBlur={draftSubject.onBlur}
+                  inputRef={draftSubject.ref}
                   onChange={e => {
-                    if (mode === 'new') {
-                      // override React Hook Form register with update to store
-                      setSubject(e.target.value)
-                      draftSubject.onChange(e)
-                    }
+                    setSubject(e.target.value) // update to store
+                    draftSubject.onChange(e) // register change in the form hook
                   }}
                   autoComplete="off"
                 />
@@ -353,13 +360,13 @@ function EditAnnouncementComponent(
                 rows={6}
                 fullWidth
                 value={bodyText}
-                {...draftBodyText}
                 disabled={mode === 'edit'}
+                name={draftBodyText.name}
+                onBlur={draftBodyText.onBlur}
+                inputRef={draftBodyText.ref}
                 onChange={e => {
-                  if (mode === 'new') {
-                    setBodyText(e.target.value)
-                    draftBodyText.onChange(e)
-                  }
+                  setBodyText(e.target.value) // update to store
+                  draftBodyText.onChange(e) // register change in the form hook
                 }}
                 autoComplete="off"
               />
@@ -370,7 +377,7 @@ function EditAnnouncementComponent(
           </Wrapper>
           <Wrapper>
             <Field>
-              <InputLabel style={{ width: '100%' }}>
+              <AudienceInputLabel>
                 Audience
                 <br />
                 <StyledInput
@@ -400,7 +407,7 @@ function EditAnnouncementComponent(
                   }
                   autoComplete="off"
                 />
-              </InputLabel>
+              </AudienceInputLabel>
               <Dialog
                 onClose={() => setAudienceDialogOpen(false)}
                 aria-labelledby="simple-dialog-title"
@@ -488,9 +495,9 @@ function EditAnnouncementComponent(
                 </ElevatedPaper>
                 <ElevatedPaper>
                   <StyledListSubheader>Course Participants</StyledListSubheader>
-                  <PrimaryButton disabled style={{ margin: '1rem' }}>
+                  <PrimaryButtonWithMargin disabled>
                     Course Students...
-                  </PrimaryButton>
+                  </PrimaryButtonWithMargin>
                 </ElevatedPaper>
               </Dialog>
               {errors.draftAudience && (
@@ -602,24 +609,6 @@ function EditAnnouncementComponent(
                 }
               />
             </Tooltip>
-            <Popover
-              open={!!showSendAlertAnchor}
-              anchorEl={showSendAlertAnchor}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-              transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-              onClose={() => setShowSendAlertAnchor(null)}
-              onClick={() => setShowSendAlertAnchor(null)}
-            >
-              <Typography
-                style={{ maxWidth: 'min(20rem, 80vw)', padding: '1rem' }}
-              >
-                Send alert will issue an email and a push notification for the
-                users who have registered to receive notifications in any of
-                their devices. <br /> Push notifications currently do not work
-                at all on Apple devices, and email notifications are subject to
-                user preferences.
-              </Typography>
-            </Popover>
           </Wrapper>
           <Wrapper $alignToRight>
             <Tooltip title="Discard changes">
@@ -632,7 +621,9 @@ function EditAnnouncementComponent(
                 Back
               </SecondaryButton>
             </Tooltip>
-            <SecondaryButton onClick={reset}>Reset</SecondaryButton>
+            <SecondaryButton onClick={reset}>
+              {mode === 'edit' ? `Reset` : `Clear`}
+            </SecondaryButton>
             {shouldBeAbleToArchive && (
               // todo: implement archiving
               <SecondaryButton>Archive</SecondaryButton>

@@ -347,6 +347,11 @@ const StyledFormControlLabel = styled(FormControlLabel)`
   justify-content: flex-end;
 `
 
+const SearchBarRow = styled.div`
+  display: flex;
+  align-items: center;
+`
+
 function renderInfo(
   priority: AnnouncementInstanceType['priority'],
   status: AnnouncementInstanceType['status'],
@@ -369,7 +374,7 @@ const StyledSearchbar = styled(TextField).attrs({ type: 'search' })<{
 }>`
   // place the placeholder in the center when there is no search term.
   text-align: ${({ value }) => (value === '' ? `center` : `initial`)};
-  width: 100%;
+  flex: 1;
 
   & input {
     text-align: inherit;
@@ -454,7 +459,7 @@ function AnnouncementsPage() {
       {!!store.announcements.editMode ? (
         <Section $classPrefix={view}>
           {view === 'archived' && (
-            <>
+            <SearchBarRow>
               <StyledSearchbar
                 placeholder="🔍"
                 value={searchTerm}
@@ -469,10 +474,12 @@ function AnnouncementsPage() {
                 Search bar
               </StyledSearchbar>
 
-              <IconButton>
-                <MoreHorizIcon />
-              </IconButton>
-            </>
+              <Tooltip title="Advanced search">
+                <IconButton>
+                  <MoreHorizIcon />
+                </IconButton>
+              </Tooltip>
+            </SearchBarRow>
           )}
           {!!viewedAnnouncements.length && <AllSectionHeading />}
           {viewedAnnouncements
