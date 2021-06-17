@@ -163,7 +163,7 @@ function ManualSignup() {
   React.useEffect(() => console.log(passwordHidden), [passwordHidden])
   return (
     <Box height="100vh" justifyContent="center" display="flex">
-      <Grid container justify="center" style={{ margin: 'auto 0' }}>
+      <Grid container justifyContent="center" style={{ margin: 'auto 0' }}>
         <Grid item xs={12} sm={8} md={6} lg={4} xl={3}>
           <PaddedPaper>
             <Typography component="h1" variant="h5">
@@ -177,7 +177,7 @@ function ManualSignup() {
               <Grid
                 container
                 direction="column"
-                justify="space-between"
+                justifyContent="space-between"
                 spacing={2}
               >
                 <Controller

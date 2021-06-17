@@ -1,8 +1,8 @@
 // @ts-check
 import React from 'react'
 import styled from 'styled-components'
-import { XGrid, GridRowParams } from '@material-ui/x-grid'
-import { useMst } from '../../models/reactHook'
+// import { XGrid, GridRowParams } from '@material-ui/x-grid'
+// import { useMst } from '../../models/reactHook'
 
 const Heading = styled.h2`
   margin-bottom: 2rem;
@@ -91,24 +91,24 @@ rows.forEach(a => a.id)
 /**
  * {import('@material-ui/x-grid').GridColDef[]} columns
  */
-const columns = [
-  { field: 'name', headerName: 'Name', width: 150 },
-  { field: 'program', headerName: 'Program', width: 150 }
-]
+// const columns = [
+//   { field: 'name', headerName: 'Name', width: 150 },
+//   { field: 'program', headerName: 'Program', width: 150 }
+// ]
 
-const StyledXGrid = styled(XGrid)`
-  background-color: rgba(255, 255, 255, 0.88);
-  & > .MuiDataGrid-main > div:first-child {
-    display: none;
-  }
-`
+// const StyledXGrid = styled(XGrid)`
+//   background-color: rgba(255, 255, 255, 0.88);
+//   & > .MuiDataGrid-main > div:first-child {
+//     display: none;
+//   }
+// `
 
 function PeopleList({ filter }: { filter?: string }) {
-  const store = useMst()
+  // const store = useMst()
 
-  function rowClick(param: GridRowParams, event: React.MouseEvent) {
-    store.view.openPeoplePage(param.id.toString())
-  }
+  // function rowClick(param: GridRowParams, event: React.MouseEvent) {
+  //   store.view.openPeoplePage(param.id.toString())
+  // }
 
   return (
     <>
@@ -148,12 +148,12 @@ function PeopleList({ filter }: { filter?: string }) {
       <br />
       <br />
       <div style={{ height: 300, width: '100%' }}>
-        <StyledXGrid
+        {/* <StyledXGrid
           rows={rows}
           columns={columns}
           pagination
           onRowClick={rowClick}
-        />
+        /> */}
       </div>
     </>
   )

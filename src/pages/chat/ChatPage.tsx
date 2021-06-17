@@ -314,7 +314,7 @@ const ChatPage = observer(function ChatPage({
                 : `Blessed Self,`
             }
             multiline
-            rowsMax={5}
+            maxRows={5}
             margin="dense"
             variant="outlined"
             value={userInput}

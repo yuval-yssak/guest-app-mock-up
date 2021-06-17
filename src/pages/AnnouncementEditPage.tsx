@@ -1,9 +1,9 @@
 import * as React from 'react'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { observer } from 'mobx-react-lite'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Skeleton from '@material-ui/lab/Skeleton'
+import Skeleton from '@material-ui/core/Skeleton'
 import Input from '@material-ui/core/Input'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -17,9 +17,10 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
-import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers'
+import DateTimePicker from '@material-ui/lab/DateTimePicker'
+import AdapterDayjs from '@material-ui/lab/AdapterDayjs'
+import LocalizationProvider from '@material-ui/lab/LocalizationProvider'
 import styled from 'styled-components'
-import DayjsUtils from '@date-io/dayjs'
 import { FieldError, useForm } from 'react-hook-form'
 
 import { useMst } from '../models/reactHook'
@@ -41,6 +42,13 @@ const Field = styled.div.attrs({ className: 'form-field' })`
 // give room for error message
 const StyledTextField = styled(TextField)`
   && {
+    margin-bottom: 0.8rem;
+  }
+`
+
+const DateTimeTextField = styled(TextField)`
+  && {
+    min-width: 15rem;
     margin-bottom: 0.8rem;
   }
 `
@@ -93,13 +101,6 @@ const Wrapper = styled.div.attrs({ className: 'line-wrapper' })<{
   `}
 `
 
-const StyledDateTimePicker = styled(DateTimePicker)`
-  && {
-    min-width: 15rem;
-    margin-bottom: 0.8rem;
-  }
-`
-
 const StyledInput = styled(Input)`
   && {
     margin-bottom: 0.8rem;
@@ -149,8 +150,8 @@ type formInputs = {
   draftSubject: string
   draftBodyText: string
   draftAudience: string
-  draftPublishOn: string
-  draftPublishEnd: string
+  draftPublishOn: Dayjs | null
+  draftPublishEnd: Dayjs
 }
 
 function getAudienceTargetLabel(
@@ -249,15 +250,8 @@ function EditAnnouncementComponent(
   React.useEffect(() => {
     setValue('draftSubject', subject)
     setValue('draftBodyText', bodyText)
-    publishOn &&
-      setValue(
-        'draftPublishOn',
-        dayjs(publishOn).format('ddd, MMM DD, YYYY hh:mm a')
-      )
-    setValue(
-      'draftPublishEnd',
-      dayjs(publishEnd).format('ddd, MMM DD, YYYY hh:mm a')
-    )
+    publishOn && setValue('draftPublishOn', dayjs(publishOn))
+    setValue('draftPublishEnd', dayjs(publishEnd))
     setValue('draftAudience', getAudienceTargetLabel(audience))
   }, [setValue, bodyText, publishOn, publishEnd, subject, audience])
 
@@ -321,7 +315,7 @@ function EditAnnouncementComponent(
   }
 
   return (
-    <MuiPickersUtilsProvider utils={DayjsUtils}>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <NewAnnouncementWrapper>
         <form onSubmit={handleSubmit(save)}>
           <Wrapper>
@@ -508,71 +502,73 @@ function EditAnnouncementComponent(
           <Wrapper>
             <Field>
               <Tooltip title="Choose a date or keep empty to start publishing now">
-                <StyledDateTimePicker
-                  variant="dialog"
-                  format="ddd, MMM DD, YYYY hh:mm a"
-                  margin="normal"
+                <DateTimePicker
+                  inputFormat="MM/DD/YYYY HH:mm a"
                   label="Start publishing on"
                   minDate={
                     publishOnDisabledLogic() ? new Date(0) : dayjs().toDate()
                   }
-                  value={publishOn}
+                  value={(publishOn && dayjs(publishOn)) || null}
                   disabled={publishOnDisabledLogic()}
                   // supply name, onBlur, inputRef and onChange to rhf with modifications
-                  name={draftPublishOn.name}
-                  onBlur={draftPublishOn.onBlur}
-                  inputRef={draftPublishOn.ref}
+                  renderInput={params => (
+                    <DateTimeTextField
+                      {...params}
+                      name={draftPublishOn.name}
+                      onBlur={draftPublishOn.onBlur}
+                      inputRef={draftPublishOn.ref}
+                      helperText="Keep blank to start publishing now."
+                    />
+                  )}
                   onChange={date => {
                     setPublishOn(date?.toDate() || null)
-                    setValue(
-                      'draftPublishOn',
-                      date?.format('ddd, MMM DD, YYYY hh:mm a') || '',
-                      {
-                        shouldValidate: true,
-                        shouldDirty: true
-                      }
-                    )
+                    setValue('draftPublishOn', date, {
+                      shouldValidate: true,
+                      shouldDirty: true
+                    })
                     // trigger validation on publishEnd field
                     trigger('draftPublishEnd')
                   }}
-                  autoOk
-                  clearable // OK to clear this field. When empty - it means "start now"
+                  clearable
                 />
               </Tooltip>
-              {errors.draftPublishOn?.type === 'beforeNow' && (
+              {(errors.draftPublishOn as FieldError)?.type === 'beforeNow' && (
                 <FormError>* Past date</FormError>
               )}
             </Field>
             <Field>
-              <StyledDateTimePicker
-                variant="dialog"
-                format="ddd, MMM DD, YYYY hh:mm a"
-                margin="normal"
+              <DateTimePicker
+                inputFormat="MM/DD/YYYY HH:mm a"
                 label="Stop publishing on"
-                minDate={getMinDateForPublishEnd()}
-                minDateMessage={<></>}
-                value={publishEnd}
-                name={draftPublishEnd.name}
-                onBlur={draftPublishEnd.onBlur}
-                inputRef={draftPublishEnd.ref}
+                minDateTime={getMinDateForPublishEnd()}
+                value={dayjs(publishEnd)}
+                renderInput={params => (
+                  <DateTimeTextField
+                    {...params}
+                    name={draftPublishEnd.name}
+                    onBlur={draftPublishEnd.onBlur}
+                    inputRef={draftPublishEnd.ref}
+                    helperText=""
+                  />
+                )}
                 disabled={publishEndDisabledLogic()}
                 onChange={date => {
+                  if (!date) {
+                    console.error('publish end changed to null')
+                    return
+                  } // the picker is not clearable, so there will always be a date.
+
                   // the assumption is that date has to be non null
                   // since the picker is not clearable
                   if (dayjs().isBefore(date!)) {
-                    setPublishEnd(date!.toDate())
+                    setPublishEnd(date.toDate())
 
-                    setValue(
-                      'draftPublishEnd',
-                      date!.format('ddd, MMM DD, YYYY hh:mm a'),
-                      {
-                        shouldValidate: true,
-                        shouldDirty: true
-                      }
-                    )
+                    setValue('draftPublishEnd', date, {
+                      shouldValidate: true,
+                      shouldDirty: true
+                    })
                   } else setError('draftPublishEnd', { type: 'beforeNow' })
                 }}
-                autoOk
               />
               {(errors.draftPublishEnd as FieldError)?.type ===
                 'afterPublishOnDate' && (
@@ -662,7 +658,7 @@ function EditAnnouncementComponent(
           </Wrapper>
         </form>
       </NewAnnouncementWrapper>
-    </MuiPickersUtilsProvider>
+    </LocalizationProvider>
   )
 }
 
@@ -684,7 +680,7 @@ function AudienceTargetItem({
   return (
     <MultilineListItem
       selected={value === name}
-      button
+      as="button"
       onClick={() => setSelected({ targetName: name, id: undefined })}
       disabled={disabled}
     >

@@ -3,7 +3,7 @@ import React from 'react'
 import styled, { ThemeProvider, keyframes } from 'styled-components'
 import {
   ThemeProvider as MuiThemeProvider,
-  createMuiTheme
+  createTheme
 } from '@material-ui/core'
 
 import { observer } from 'mobx-react-lite'
@@ -22,7 +22,7 @@ import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
 import AnnouncementEditPage from '../pages/AnnouncementEditPage'
 import InfoArrivingAtTheAirport from '../pages/InfoPages/InfoArrivingAtTheAirport'
 import { useMst } from '../models/reactHook'
-import { SnackbarProvider } from 'notistack'
+// import { SnackbarProvider } from 'notistack'
 import WarningsNotifier from './WarningsNotifier'
 import InfoCovid19GuidelinesPage from '../pages/InfoPages/InfoCovid19GuidelinesPage'
 import InfoPracticeGuide from '../pages/InfoPages/InfoPracticeGuide'
@@ -145,9 +145,9 @@ function App() {
     }
   }
 
-  const customTheme = createMuiTheme({
+  const customTheme = createTheme({
     palette: {
-      type: store.preferences.darkMode ? 'dark' : 'light',
+      mode: store.preferences.darkMode ? 'dark' : 'light',
       primary: { main: '#f29500' },
       secondary: { main: '#ffcf00' }
     },
@@ -180,70 +180,66 @@ function App() {
       <CssReset />
       <MuiThemeProvider theme={customTheme}>
         <ThemeProvider theme={customTheme}>
-          <SnackbarProvider>
-            <WarningsNotifier />
-            <AppWrapper online={store.status.online}>
-              {store.view.page === '/login' ? (
-                <LoginPage />
-              ) : store.view.page === '/manualSignup' ? (
-                <ManualSignUpPage />
-              ) : (
-                <>
-                  <AppBar
-                    toggleDrawer={toggleDrawer}
-                    pageTitle={getPageTitle()}
-                  />
-                  <Background>
-                    <Main ref={mainRef} tabIndex={-1}>
-                      {store.view.page === '/root' && <h1>Dashboard</h1>}
-                      {store.view.page === '/announcements' && (
-                        <AnnouncementsPage />
-                      )}
-                      {['/announcements/new', '/announcements/edit'].some(
-                        page => page === store.view.page
-                      ) && <AnnouncementEditPage />}
-                      {store.view.page === '/chat' && <ChatPage />}
-                      {store.view.page === '/info-section' && (
-                        <InfoSectionPage />
-                      )}
-                      {store.view.page ===
-                        '/info-section/covid-19-guidelines' && (
-                        <InfoCovid19GuidelinesPage />
-                      )}
-                      {store.view.page ===
-                        '/info-section/arriving-at-the-airport' && (
-                        <InfoArrivingAtTheAirport />
-                      )}
-                      {store.view.page === '/info-section/practice-guide' && (
-                        <InfoPracticeGuide />
-                      )}
+          {/* <SnackbarProvider> */}
+          <WarningsNotifier />
+          <AppWrapper online={store.status.online}>
+            {store.view.page === '/login' ? (
+              <LoginPage />
+            ) : store.view.page === '/manualSignup' ? (
+              <ManualSignUpPage />
+            ) : (
+              <>
+                <AppBar
+                  toggleDrawer={toggleDrawer}
+                  pageTitle={getPageTitle()}
+                />
+                <Background>
+                  <Main ref={mainRef} tabIndex={-1}>
+                    {store.view.page === '/root' && <h1>Dashboard</h1>}
+                    {store.view.page === '/announcements' && (
+                      <AnnouncementsPage />
+                    )}
+                    {['/announcements/new', '/announcements/edit'].some(
+                      page => page === store.view.page
+                    ) && <AnnouncementEditPage />}
+                    {store.view.page === '/chat' && <ChatPage />}
+                    {store.view.page === '/info-section' && <InfoSectionPage />}
+                    {store.view.page ===
+                      '/info-section/covid-19-guidelines' && (
+                      <InfoCovid19GuidelinesPage />
+                    )}
+                    {store.view.page ===
+                      '/info-section/arriving-at-the-airport' && (
+                      <InfoArrivingAtTheAirport />
+                    )}
+                    {store.view.page === '/info-section/practice-guide' && (
+                      <InfoPracticeGuide />
+                    )}
 
-                      {store.view.page === '/info-section/abc/123' && (
-                        <div>Specific page inside two levels of navigation</div>
-                      )}
-                      {store.view.page ===
-                        '/info-section/arriving-at-the-airport' && (
-                        <InfoArrivingAtTheAirport />
-                      )}
-                      {store.view.page === '/map' && <div>Map</div>}
-                      {store.view.page === '/my-bookings' && (
-                        <div>Account Details Page</div>
-                      )}
-                      {store.view.page.match(/\/people(\/|$)/) && (
-                        <PeoplePage />
-                      )}
-                      {store.view.page === '/settings' && <SettingsPage />}
-                      {store.view.page === '/activities' && (
-                        <div>Activities Page</div>
-                      )}
-                    </Main>
-                  </Background>
-                  <AnimatedBottomNavigation />
-                </>
-              )}
-            </AppWrapper>
-            <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
-          </SnackbarProvider>{' '}
+                    {store.view.page === '/info-section/abc/123' && (
+                      <div>Specific page inside two levels of navigation</div>
+                    )}
+                    {store.view.page ===
+                      '/info-section/arriving-at-the-airport' && (
+                      <InfoArrivingAtTheAirport />
+                    )}
+                    {store.view.page === '/map' && <div>Map</div>}
+                    {store.view.page === '/my-bookings' && (
+                      <div>Account Details Page</div>
+                    )}
+                    {store.view.page.match(/\/people(\/|$)/) && <PeoplePage />}
+                    {store.view.page === '/settings' && <SettingsPage />}
+                    {store.view.page === '/activities' && (
+                      <div>Activities Page</div>
+                    )}
+                  </Main>
+                </Background>
+                <AnimatedBottomNavigation />
+              </>
+            )}
+          </AppWrapper>
+          <TemporaryDrawer open={drawerOpen} toggleDrawer={toggleDrawer} />
+          {/* </SnackbarProvider> */}
         </ThemeProvider>
       </MuiThemeProvider>
     </>
