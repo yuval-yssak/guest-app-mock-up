@@ -118,16 +118,30 @@ const AudienceInputLabel = styled(InputLabel)`
   width: 100%;
 `
 
-const MultilineListItem = styled(ListItem)`
+const MultilineListItem = styled(ListItem)<{
+  selected: boolean
+}>`
   && {
     white-space: normal;
     display: flex;
     column-gap: 0.5rem;
+    background-color: ${({ selected, theme: { palette } }) =>
+      selected
+        ? palette.mode === 'light'
+          ? palette.grey['200']
+          : palette.grey['800']
+        : 'inherit'};
+  }
+
+  &:hover {
+    background-color: ${({ theme: { palette } }) =>
+      palette.mode === 'light' ? palette.grey['200'] : palette.grey['800']};
   }
 `
 
 const ElevatedPaper = styled(Paper).attrs({ elevation: 2 })`
   margin: 1rem;
+  padding: 1rem;
 `
 
 const AudienceSegmentName = styled(Typography).attrs({ variant: 'body1' })`
@@ -505,19 +519,24 @@ function EditAnnouncementComponent(
                 <DateTimePicker
                   inputFormat="MM/DD/YYYY HH:mm a"
                   label="Start publishing on"
-                  minDate={
+                  minDateTime={
                     publishOnDisabledLogic() ? new Date(0) : dayjs().toDate()
                   }
                   value={(publishOn && dayjs(publishOn)) || null}
                   disabled={publishOnDisabledLogic()}
                   // supply name, onBlur, inputRef and onChange to rhf with modifications
                   renderInput={params => (
-                    <DateTimeTextField
-                      {...params}
+                    <TextField
                       name={draftPublishOn.name}
                       onBlur={draftPublishOn.onBlur}
+                      autoComplete="off"
                       inputRef={draftPublishOn.ref}
-                      helperText="Keep blank to start publishing now."
+                      {...params}
+                      helperText={
+                        errors.draftPublishOn
+                          ? ''
+                          : 'Keep blank to start publishing now.'
+                      }
                     />
                   )}
                   onChange={date => {
@@ -544,11 +563,12 @@ function EditAnnouncementComponent(
                 value={dayjs(publishEnd)}
                 renderInput={params => (
                   <DateTimeTextField
-                    {...params}
                     name={draftPublishEnd.name}
                     onBlur={draftPublishEnd.onBlur}
                     inputRef={draftPublishEnd.ref}
+                    {...params}
                     helperText=""
+                    autoComplete="off"
                   />
                 )}
                 disabled={publishEndDisabledLogic()}
@@ -680,7 +700,8 @@ function AudienceTargetItem({
   return (
     <MultilineListItem
       selected={value === name}
-      as="button"
+      as="div"
+      color="transparent"
       onClick={() => setSelected({ targetName: name, id: undefined })}
       disabled={disabled}
     >
