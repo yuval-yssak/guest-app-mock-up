@@ -4,7 +4,7 @@ import {
   minimumChatMessageWidth,
   inBetweenChatMessageWidth,
   maximumChatMessageWidth
-} from './UsersPane'
+} from './UsersPaneStyles'
 import PageContentWrapper from '../../components/PageContentWrapper'
 
 export const ChatPageContainer = styled(PageContentWrapper).attrs({

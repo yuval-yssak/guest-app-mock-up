@@ -1,140 +1,29 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import { observer } from 'mobx-react-lite'
-import ArrowBackIcon from '@material-ui/icons/ArrowBack'
-import IconButton from '@material-ui/core/IconButton'
-import LinearProgress from '@material-ui/core/LinearProgress'
 import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
 import SendIcon from '@material-ui/icons/Send'
-import styled from 'styled-components'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
-
-import InfiniteScroll from '../../components/common/infinite-scrolling/InfiniteScrolling'
 
 import { useMst } from '../../models/reactHook'
 import { ChatType } from '../../models/ChatModel'
 import DateMessages from './DateMessages'
 import { OtherMessage, SelfMessage, UnreadMessagesDivider } from './Message'
-import {
-  UsersPane,
-  minimumChatMessageWidth,
-  inBetweenChatMessageWidth,
-  maximumChatMessageWidth,
-  usersPaneWidth
-} from './UsersPane'
+import { UsersPane } from './UsersPane'
 import {
   ChatContainer,
   ChatPageContainer,
   MessagesScrollable
 } from './Containers'
 import { generateRandomMessages } from '../../defaultStore'
-
-const StyledIconButton = styled(IconButton)`
-  && {
-    align-self: end;
-  }
-`
-
-const BackButton = styled(IconButton)`
-  && {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    background-color: #eee;
-    z-index: 10;
-  }
-`
-
-function SwitchBack({ fn }: { fn: () => void }) {
-  return (
-    <BackButton onClick={fn}>
-      <ArrowBackIcon />
-    </BackButton>
-  )
-}
-
-const UserInputSection = styled.section.attrs({
-  className: 'user-input-section'
-})<{ staffView: boolean }>`
-  display: grid;
-  grid-template-columns: 1fr max-content;
-  grid-gap: 1rem;
-  grid-column: 1 / -1;
-  width: 100%;
-  overflow: hidden; // overflows at the bottom. Wihout hiding overflow - the chat container slides under the app bar.
-
-  margin-top: 0.5rem;
-  justify-self: center;
-  margin-bottom: 0.3rem;
-
-  ${({ staffView }) =>
-    staffView &&
-    `
-      padding-right: calc(
-        (
-          100vw - clamp(
-            calc(${minimumChatMessageWidth} + ${usersPaneWidth}),
-            ${inBetweenChatMessageWidth},
-            calc(${maximumChatMessageWidth} + ${usersPaneWidth})
-          )
-        ) / 2
-      );
-  `}
-
-  @media (max-width: 54em) {
-    width: 90%;
-  }
-
-  @media (max-width: 50em) {
-    grid-gap: 0;
-    margin-left: 0.6rem;
-  }
-
-  @media (max-width: 32.5em) {
-    width: 100%;
-  }
-`
-
-const DayLabelText = styled(Typography).attrs({ variant: 'h6' })`
-  && {
-    font-size: 0.85rem;
-  }
-`
-
-const StickyDayLabel = styled.div.attrs(({ day }: { day: string }) => ({
-  className: 'day-label',
-  children: <DayLabelText>{day}</DayLabelText>
-}))<{ day: string }>`
-  justify-self: center;
-  padding: 0.1rem;
-  border-radius: 1.1rem;
-  background-color: #eee;
-  color: #555;
-  grid-column: 1 / -1;
-  position: sticky;
-  top: 0.5rem;
-  width: 7.3rem;
-  text-align: center;
-  z-index: 2;
-`
-
-const StyledInfiniteScroll = styled(InfiniteScroll)`
-  display: grid;
-  grid-row-gap: 2rem;
-
-  &:focus {
-    outline: none;
-  }
-`
-
-const StyledLinearProgress = styled(LinearProgress)`
-  && {
-    flex: 1 0 4px;
-    margin-bottom: 0;
-    margin-top: 0.18rem;
-  }
-`
+import {
+  SwitchBack,
+  StickyDayLabel,
+  StyledIconButton,
+  StyledInfiniteScroll,
+  StyledLinearProgress,
+  UserInputSection
+} from './ChatPageStyles'
 
 const ChatContainerPage = observer(function ChatContainerPage() {
   const store = useMst()
@@ -152,8 +41,9 @@ const ChatContainerPage = observer(function ChatContainerPage() {
 })
 
 function StaffChatSinglePane() {
-  const [visiblePane, setVisiblePane] =
-    React.useState<'users' | 'chat'>('users')
+  const [visiblePane, setVisiblePane] = React.useState<'users' | 'chat'>(
+    'users'
+  )
 
   if (visiblePane === 'users') {
     return <UsersPane switchToChatView={() => setVisiblePane('chat')} />
