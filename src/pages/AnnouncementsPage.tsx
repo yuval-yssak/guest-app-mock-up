@@ -1,211 +1,46 @@
 import React from 'react'
 import { observer } from 'mobx-react-lite'
-import Paper from '@material-ui/core/Paper'
 import Accordion from '@material-ui/core/Accordion'
-import AccordionSummary from '@material-ui/core/AccordionSummary'
-import AccordionDetails from '@material-ui/core/AccordionDetails'
 import AccordionActions from '@material-ui/core/AccordionActions'
 import AddIcon from '@material-ui/icons/Add'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import ToggleButton from '@material-ui/core/ToggleButton'
+import FlagIcon from '@material-ui/icons/Flag'
 import ToggleButtonGroup from '@material-ui/core/ToggleButtonGroup'
 import IconButton from '@material-ui/core/IconButton'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
-import LinearProgress from '@material-ui/core/LinearProgress'
 import Tooltip from '@material-ui/core/Tooltip'
-import Typography, { TypographyProps } from '@material-ui/core/Typography'
+import Typography from '@material-ui/core/Typography'
 import Switch from '@material-ui/core/Switch'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import FlagIcon from '@material-ui/icons/Flag'
-import styled from 'styled-components'
-import PageContentWrapper from '../components/PageContentWrapper'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 import { useMst } from '../models/reactHook'
 import dayjs from 'dayjs'
 import { AnnouncementInstanceType } from '../models/AnnouncementsModel'
-import TextField from '@material-ui/core/TextField'
 import { PrimaryButton, SecondaryButton } from '../components/common/Buttons'
-
-const breakpointSplitHead = '(max-width: 45em)'
-
-const StyledAccordionDetails = styled(AccordionDetails)`
-  && {
-    display: grid;
-  }
-`
-
-const ScrollablePageContentWrapper = styled(PageContentWrapper).attrs({
-  className: 'scrollable'
-})`
-  word-break: break-word;
-
-  && {
-    overflow-y: scroll;
-    grid-template-rows: min-content 1fr;
-    align-items: start;
-  }
-`
-
-const Section = styled.section.attrs(
-  ({ $classPrefix }: { $classPrefix: string }) => ({
-    className: `${$classPrefix}-announcements`
-  })
-)<{ $classPrefix: string }>`
-  padding: 1rem;
-
-  && .unread-announcements-heading + .MuiAccordion-root,
-  && .read-announcements-heading + .MuiAccordion-root {
-    margin-top: 0;
-  }
-
-  // give a bold font for summaries under the unread category
-  ${({ $classPrefix }) =>
-    $classPrefix === 'unread' &&
-    `
-  & .announcement-summary {
-    font-weight: 500;
-  }`}
-`
-
-const StyledAccordionSummary = styled(AccordionSummary)<{
-  $expanded: boolean
-  $keepExpanded: boolean
-}>`
-  & .announcement-summary {
-    ${({ $expanded, $keepExpanded }) =>
-      !$keepExpanded && $expanded && `font-weight:500;`}
-  }
-`
-
-const AnnouncementTypeHeading = styled(Typography)<
-  TypographyProps<'h2', { component: 'h2' }>
->`
-  && {
-    line-height: 1;
-    font-weight: 500;
-  }
-`
-
-const SectionHeading = styled.div`
-  color: ${({ theme }) => theme.palette.primary.contrastText};
-  padding: 0.5rem 1rem;
-  & h2 {
-    font-size: 1rem;
-    line-height: 1;
-  }
-`
-
-const AllSectionHeading = styled(SectionHeading).attrs({
-  className: 'all-announcements-heading',
-  'aria-label': 'all announcements',
-  children: (
-    <AnnouncementTypeHeading component="h2" variant="h6">
-      Announcements
-    </AnnouncementTypeHeading>
-  )
-})`
-  background-color: ${({ theme }) => theme.palette.primary.light};
-`
-
-const UnreadSectionHeading = styled(SectionHeading).attrs({
-  className: 'unread-announcements-heading',
-  'aria-label': 'unread announcements',
-  children: (
-    <AnnouncementTypeHeading component="h2" variant="h6">
-      Unread
-    </AnnouncementTypeHeading>
-  )
-})`
-  background-color: ${({ theme }) => theme.palette.primary.light};
-`
-
-const ReadSectionHeading = styled(SectionHeading).attrs({
-  className: 'read-announcements-heading',
-  'aria-label': 'read announcements',
-  children: (
-    <AnnouncementTypeHeading component="h2" variant="h6">
-      Read
-    </AnnouncementTypeHeading>
-  )
-})`
-  background-color: ${({ theme }) =>
-    theme.palette.grey[theme.palette.mode === 'dark' ? '500' : '300']};
-`
-
-const AnnouncementHead = styled.div.attrs({
-  className: 'announcement-head'
-})<{ $priority: 'high' | 'low' }>`
-  display: grid;
-  grid-template-columns: minmax(min-content, 1fr) max-content ${({
-      $priority
-    }) => $priority === 'high' && 'max-content'};
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  grid-gap: 0.5rem;
-
-  @media ${breakpointSplitHead} {
-    grid-template-columns: 1fr;
-  }
-`
-
-const EditLine = styled.div.attrs({ className: 'edit-management-line' })<{
-  $editModeOpen: boolean
-}>`
-  display: grid;
-  ${({ $editModeOpen }) =>
-    $editModeOpen
-      ? `grid-template-columns: max-content minmax(min-content, 1fr) max-content;`
-      : `justify-content: end;`}
-  column-gap: 1rem;
-  padding-top: 1rem;
-  align-items: start;
-  margin-left: 0.3rem;
-  margin-right: 0.3rem;
-`
-
-const AnnouncementInfo = styled.div.attrs({ className: 'announcement-info' })`
-  display: flex;
-`
-
-const Important = styled(Typography).attrs({
-  className: 'important',
-  'aria-label': 'important'
-})`
-  && {
-    font-weight: 500;
-    letter-spacing: 1.2px;
-    margin: 0 0.4rem;
-  }
-`
-
-const HighPriorityContainer = styled.div`
-  display: flex;
-`
-
-function HighPriority({ withAnnotation }: { withAnnotation: boolean }) {
-  return (
-    <HighPriorityContainer>
-      <FlagIcon color="primary" />
-      {withAnnotation && <Important color="primary">Important</Important>}
-    </HighPriorityContainer>
-  )
-}
-
-const ReadStats = styled(SecondaryButton).attrs({ className: 'read-stats' })`
-  & .MuiButton-label {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  & .MuiLinearProgress-determinate {
-    border-radius: 0.25rem;
-    height: 1rem;
-    min-width: 6rem;
-    margin-left: 1ch;
-  }
-`
+import {
+  Important,
+  HighPriorityContainer,
+  ReadStats,
+  breakpointSplitHead,
+  StyledAccordionDetails,
+  ScrollablePageContentWrapper,
+  Section,
+  StyledAccordionSummary,
+  AllSectionHeading,
+  UnreadSectionHeading,
+  ReadSectionHeading,
+  AnnouncementHead,
+  EditLine,
+  AnnouncementInfo,
+  Buttons,
+  NoAnnouncementsTitle,
+  EmptyPagePaper,
+  StyledFormControlLabel,
+  SearchBarRow,
+  StyledSearchbar,
+  StyledToggleButton
+} from './AnnouncementsPageStyles'
 
 const StatsButton = observer(function StatsButton({
   announcement
@@ -247,10 +82,6 @@ const StatsButton = observer(function StatsButton({
     )
   }
 })
-
-const Buttons = styled.div`
-  display: flex;
-`
 
 function Announcement({
   announcement,
@@ -330,27 +161,14 @@ function Announcement({
   )
 }
 
-const NoAnnouncementsTitle = styled(Typography)`
-  && {
-    text-align: center;
-    ${({ theme }) => theme.palette.type === 'dark' && `color:  #fff`};
-  }
-`
-
-const EmptyPagePaper = styled(Paper)`
-  margin-top: 5%;
-  padding: 3rem;
-`
-
-const StyledFormControlLabel = styled(FormControlLabel)`
-  flex-grow: 1;
-  justify-content: flex-end;
-`
-
-const SearchBarRow = styled.div`
-  display: flex;
-  align-items: center;
-`
+function HighPriority({ withAnnotation }: { withAnnotation: boolean }) {
+  return (
+    <HighPriorityContainer>
+      <FlagIcon color="primary" />
+      {withAnnotation && <Important color="primary">Important</Important>}
+    </HighPriorityContainer>
+  )
+}
 
 function renderInfo(
   priority: AnnouncementInstanceType['priority'],
@@ -367,32 +185,6 @@ function renderInfo(
     </>
   )
 }
-
-// todo: reuse code (duplicate from UsersPane.tsx)
-const StyledSearchbar = styled(TextField).attrs({ type: 'search' })<{
-  value: unknown // https://material-ui.com/guides/typescript/#handling-value-and-event-handlers
-}>`
-  // place the placeholder in the center when there is no search term.
-  text-align: ${({ value }) => (value === '' ? `center` : `initial`)};
-  flex: 1;
-
-  & input {
-    text-align: inherit;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-
-  // hide the black underline when there is no search input
-  & .MuiInput-underline::before {
-    ${({ value }) => value === '' && `opacity: 0;`}
-  }
-`
-
-const StyledToggleButton = styled(ToggleButton)`
-  && {
-    padding: 0.1875rem 0.5625rem;
-  }
-`
 
 function AnnouncementsPage() {
   const store = useMst()
