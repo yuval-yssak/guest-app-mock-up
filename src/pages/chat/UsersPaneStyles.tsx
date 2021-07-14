@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import Avatar from '@material-ui/core/Avatar'
-import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 
 export const usersPaneWidth = '30rem'
@@ -120,23 +119,4 @@ export const MiddleSection = styled.div.attrs({
   overflow: hidden;
   margin: 0 0.4rem;
   flex-grow: 1;
-`
-
-export const StyledSearchbar = styled(TextField).attrs({ type: 'search' })<{
-  value: unknown // https://material-ui.com/guides/typescript/#handling-value-and-event-handlers
-}>`
-  // place the placeholder in the center when there is no search term.
-  text-align: ${({ value }) => (value === '' ? `center` : `initial`)};
-  width: 100%;
-
-  & input {
-    text-align: inherit;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-
-  // hide the black underline when there is no search input
-  & .MuiInput-underline::before {
-    ${({ value }) => value === '' && `opacity: 0;`}
-  }
 `

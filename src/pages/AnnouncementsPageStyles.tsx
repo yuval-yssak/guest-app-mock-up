@@ -6,7 +6,6 @@ import Typography, { TypographyProps } from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import ToggleButton from '@material-ui/core/ToggleButton'
-import TextField from '@material-ui/core/TextField'
 import { SecondaryButton } from '../components/common/Buttons'
 
 export const breakpointSplitHead = '(max-width: 45em)'
@@ -193,7 +192,7 @@ export const Buttons = styled.div`
 export const NoAnnouncementsTitle = styled(Typography)`
   && {
     text-align: center;
-    ${({ theme }) => theme.palette.type === 'dark' && `color:  #fff`};
+    ${({ theme }) => theme.palette.mode === 'dark' && `color:  #fff`};
   }
 `
 
@@ -205,31 +204,6 @@ export const EmptyPagePaper = styled(Paper)`
 export const StyledFormControlLabel = styled(FormControlLabel)`
   flex-grow: 1;
   justify-content: flex-end;
-`
-
-export const SearchBarRow = styled.div`
-  display: flex;
-  align-items: center;
-`
-
-// todo: reuse code (duplicate from UsersPane.tsx)
-export const StyledSearchbar = styled(TextField).attrs({ type: 'search' })<{
-  value: unknown // https://material-ui.com/guides/typescript/#handling-value-and-event-handlers
-}>`
-  // place the placeholder in the center when there is no search term.
-  text-align: ${({ value }) => (value === '' ? `center` : `initial`)};
-  flex: 1;
-
-  & input {
-    text-align: inherit;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-
-  // hide the black underline when there is no search input
-  & .MuiInput-underline::before {
-    ${({ value }) => value === '' && `opacity: 0;`}
-  }
 `
 
 export const StyledToggleButton = styled(ToggleButton)`

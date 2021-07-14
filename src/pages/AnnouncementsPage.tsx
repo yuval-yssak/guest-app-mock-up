@@ -37,10 +37,9 @@ import {
   NoAnnouncementsTitle,
   EmptyPagePaper,
   StyledFormControlLabel,
-  SearchBarRow,
-  StyledSearchbar,
   StyledToggleButton
 } from './AnnouncementsPageStyles'
+import { SearchBar, SearchBarRow } from '../components/common/SearchBar'
 
 const StatsButton = observer(function StatsButton({
   announcement
@@ -252,19 +251,10 @@ function AnnouncementsPage() {
         <Section $classPrefix={view}>
           {view === 'archived' && (
             <SearchBarRow>
-              <StyledSearchbar
-                placeholder="🔍"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Escape') {
-                    e.preventDefault()
-                    setSearchTerm('')
-                  }
-                }}
-              >
-                Search bar
-              </StyledSearchbar>
+              <SearchBar
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+              />
 
               <Tooltip title="Advanced search">
                 <IconButton>

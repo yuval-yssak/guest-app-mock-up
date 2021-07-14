@@ -4,23 +4,15 @@ import { observer } from 'mobx-react-lite'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Skeleton from '@material-ui/core/Skeleton'
-import Input from '@material-ui/core/Input'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import InputLabel from '@material-ui/core/InputLabel'
 import List from '@material-ui/core/List'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import ListItem from '@material-ui/core/ListItem'
-import Paper from '@material-ui/core/Paper'
-import Chip from '@material-ui/core/Chip'
 import Switch from '@material-ui/core/Switch'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Tooltip from '@material-ui/core/Tooltip'
-import Typography from '@material-ui/core/Typography'
 import DateTimePicker from '@material-ui/lab/DateTimePicker'
 import AdapterDayjs from '@material-ui/lab/AdapterDayjs'
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider'
-import styled from 'styled-components'
 import { FieldError, useForm } from 'react-hook-form'
 
 import { useMst } from '../models/reactHook'
@@ -30,135 +22,24 @@ import { AnnouncementInstanceType } from '../models/AnnouncementsModel'
 import { clone, applySnapshot, getSnapshot } from 'mobx-state-tree'
 
 import minMax from 'dayjs/plugin/minMax'
+import {
+  Field,
+  StyledTextField,
+  DateTimeTextField,
+  FormError,
+  StyledListSubheader,
+  NewAnnouncementWrapper,
+  Wrapper,
+  StyledInput,
+  AudienceInputLabel,
+  MultilineListItem,
+  ElevatedPaper,
+  AudienceSegmentName,
+  AudienceCountChip,
+  PrimaryButtonWithMargin
+} from './AnnouncementEditPageStyles'
 
 dayjs.extend(minMax)
-
-// A "Field" contains the field and its error message
-const Field = styled.div.attrs({ className: 'form-field' })`
-  position: relative;
-  flex: 1;
-`
-
-// give room for error message
-const StyledTextField = styled(TextField)`
-  && {
-    margin-bottom: 0.8rem;
-  }
-`
-
-const DateTimeTextField = styled(TextField)`
-  && {
-    min-width: 15rem;
-    margin-bottom: 0.8rem;
-  }
-`
-
-const FormError = styled(Typography).attrs({
-  className: 'form-error',
-  variant: 'body2'
-})`
-  color: ${({ theme }) => theme.palette.secondary.dark};
-  position: absolute;
-  bottom: 0.7rem;
-  transform: translateY(100%);
-`
-
-const StyledListSubheader = styled(ListSubheader).attrs({
-  disableSticky: true
-})<{ $secondary?: boolean }>`
-  && {
-    color: #aaa;
-    ${({ $secondary }) => $secondary && `margin-left: 1rem;`}
-  }
-`
-
-const NewAnnouncementWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  width: clamp(14.5rem, 80%, 60rem);
-  margin-top: 1rem;
-`
-
-// A line wrapper in a form
-const Wrapper = styled.div.attrs({ className: 'line-wrapper' })<{
-  $alignToRight?: boolean
-}>`
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: 2rem;
-
-  &:not(:last-child) {
-    margin-bottom: 1rem;
-  }
-
-  ${({ $alignToRight }) =>
-    $alignToRight &&
-    `
-      justify-content: flex-end;
-      column-gap: 0.5rem;
-      row-gap: 0.5rem;
-      
-  `}
-`
-
-const StyledInput = styled(Input)`
-  && {
-    margin-bottom: 0.8rem;
-    cursor: pointer;
-  }
-
-  && input,
-  && .MuiInputAdornment-root,
-  && .MuiInputBase-root {
-    cursor: pointer;
-  }
-`
-
-const AudienceInputLabel = styled(InputLabel)`
-  width: 100%;
-`
-
-const MultilineListItem = styled(ListItem)<{
-  selected: boolean
-}>`
-  && {
-    white-space: normal;
-    display: flex;
-    column-gap: 0.5rem;
-    background-color: ${({ selected, theme: { palette } }) =>
-      selected
-        ? palette.mode === 'light'
-          ? palette.grey['200']
-          : palette.grey['800']
-        : 'inherit'};
-  }
-
-  &:hover {
-    background-color: ${({ theme: { palette } }) =>
-      palette.mode === 'light' ? palette.grey['200'] : palette.grey['800']};
-  }
-`
-
-const ElevatedPaper = styled(Paper).attrs({ elevation: 2 })`
-  margin: 1rem;
-  padding: 1rem;
-`
-
-const AudienceSegmentName = styled(Typography).attrs({ variant: 'body1' })`
-  flex: 1;
-`
-
-const AudienceCountChip = styled(Chip).attrs({
-  color: 'primary',
-  variant: 'outlined'
-})``
-
-const PrimaryButtonWithMargin = styled(PrimaryButton)`
-  && {
-    margin: 1rem;
-    margin-top: 0;
-  }
-`
 
 type formInputs = {
   draftSubject: string
