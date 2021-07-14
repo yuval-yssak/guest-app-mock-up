@@ -62,11 +62,19 @@ const ViewModel = types
     }
   }))
 
+  // notice: both self.page & self.id have to be updated
   .actions(self => ({
-    openActivitiesPage: () => (self.page = '/activities'),
-    openAnnouncementsPage: () => (self.page = '/announcements'),
+    openActivitiesPage: () => {
+      self.page = '/activities'
+      self.id = undefined
+    },
+    openAnnouncementsPage: () => {
+      self.page = '/announcements'
+      self.id = undefined
+    },
     openAnnouncementsNewDraftPage: () => {
       self.page = '/announcements/new'
+      self.id = undefined
     },
     openAnnouncementsEditPage: (id: string) => {
       self.page = '/announcements/edit'
@@ -89,26 +97,36 @@ const ViewModel = types
       self.id = undefined
     },
     openInfoSectionPage: (id?: string) => {
+      self.id = undefined
       if (id) self.page = `/info-section/${id}`
       else self.page = `/info-section`
     },
     openInfoSectionAbc123() {
       self.page = '/info-section/abc/123'
+      self.id = undefined
     },
     openInfoSectionArriving() {
       self.page = '/info-section/arriving-at-the-airport'
+      self.id = undefined
     },
-    openManualSignupPage: () => (self.page = '/manualSignup'),
-    openLoginPage: () => (self.page = '/login'),
+    openManualSignupPage: () => {
+      self.page = '/manualSignup'
+      self.id = undefined
+    },
+    openLoginPage: () => {
+      self.page = '/login'
+      self.id = undefined
+    },
     openPeoplePage: (subPage?: string) => {
+      self.id = subPage
       if (subPage?.match(/^\d+$/)) {
         self.page = '/people'
-        self.id = subPage
       } else self.page = subPage ? `/people/${subPage}` : '/people'
     },
-
-    // (self.page = subPage ? `/people/${subPage}` : '/people'),
-    openSettingsPage: () => (self.page = '/settings'),
+    openSettingsPage: () => {
+      self.page = '/settings'
+      self.id = undefined
+    },
     setFromURL() {
       const newView = getViewFromURL()
       self.page = newView.page
