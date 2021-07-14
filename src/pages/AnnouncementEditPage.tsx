@@ -328,6 +328,51 @@ function EditAnnouncementComponent(
     }
   }
 
+  type AudienceTarget = {
+    name: AnnouncementInstanceType['audience']['targetName']
+    count: number
+    waitWithSkeleton?: boolean
+  }
+  const audienceTargets: AudienceTarget[] = [
+    { name: 'all-residents-and-visitors', count: 270 },
+    { name: 'all-residents', count: 259 },
+    { name: 'all-residents-guests', count: 184 },
+    {
+      name: 'all-residents-guests-no-children',
+      count: 182,
+      waitWithSkeleton: populationLoaded
+    },
+    {
+      name: 'all-staff-karma-yogis',
+      count: 122,
+      waitWithSkeleton: populationLoaded
+    },
+    { name: 'all-karma-yogis', count: 68, waitWithSkeleton: populationLoaded },
+    { name: 'all-staff', count: 54, waitWithSkeleton: populationLoaded },
+    {
+      name: 'all-speakers',
+      count: 9,
+      waitWithSkeleton: populationLoaded
+    }
+  ]
+
+  function renderAudienceTargetItem(targetItem: AudienceTarget) {
+    return (
+      <AudienceTargetItem
+        name={targetItem.name}
+        count={targetItem.count}
+        setSelected={setAndClose}
+        value={audience.targetName}
+        disabled={mode === 'edit'}
+        waitWithSkeleton={
+          targetItem.waitWithSkeleton === undefined
+            ? true
+            : targetItem.waitWithSkeleton
+        }
+      />
+    )
+  }
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <NewAnnouncementWrapper>
@@ -426,80 +471,23 @@ function EditAnnouncementComponent(
                 </DialogTitle>
                 <ElevatedPaper>
                   <StyledListSubheader>Everyone present</StyledListSubheader>
-                  <AudienceTargetItem
-                    name="all-residents-and-visitors"
-                    count={270}
-                    setSelected={setAndClose}
-                    value={audience.targetName}
-                    disabled={mode === 'edit'}
-                  />
+                  {audienceTargets.slice(0, 1).map(renderAudienceTargetItem)}
                 </ElevatedPaper>
                 <ElevatedPaper>
                   <StyledListSubheader>Resident Audience</StyledListSubheader>
                   <List>
-                    <AudienceTargetItem
-                      name="all-residents"
-                      count={259}
-                      setSelected={setAndClose}
-                      value={audience.targetName}
-                      disabled={mode === 'edit'}
-                    />
+                    {audienceTargets.slice(1, 2).map(renderAudienceTargetItem)}
                     <StyledListSubheader $secondary>
                       Resident Guests
                     </StyledListSubheader>
-
-                    <AudienceTargetItem
-                      name="all-residents-guests"
-                      count={184}
-                      setSelected={setAndClose}
-                      value={audience.targetName}
-                      disabled={mode === 'edit'}
-                    />
-                    <AudienceTargetItem
-                      name="all-residents-guests-no-children"
-                      count={182}
-                      setSelected={setAndClose}
-                      value={audience.targetName}
-                      disabled={mode === 'edit'}
-                      waitWithSkeleton={populationLoaded}
-                    />
+                    {audienceTargets.slice(2, 4).map(renderAudienceTargetItem)}
                   </List>
                   <StyledListSubheader $secondary>
                     Resident Staff/Karma Yogis
                   </StyledListSubheader>
-                  <AudienceTargetItem
-                    name="all-staff-karma-yogis"
-                    count={122}
-                    setSelected={setAndClose}
-                    value={audience.targetName}
-                    disabled={mode === 'edit'}
-                    waitWithSkeleton={populationLoaded}
-                  />
-                  <AudienceTargetItem
-                    name="all-karma-yogis"
-                    count={68}
-                    setSelected={setAndClose}
-                    value={audience.targetName}
-                    disabled={mode === 'edit'}
-                    waitWithSkeleton={populationLoaded}
-                  />
-                  <AudienceTargetItem
-                    name="all-staff"
-                    count={54}
-                    setSelected={setAndClose}
-                    value={audience.targetName}
-                    disabled={mode === 'edit'}
-                    waitWithSkeleton={populationLoaded}
-                  />
+                  {audienceTargets.slice(4, 7).map(renderAudienceTargetItem)}
                   <StyledListSubheader $secondary>Speakers</StyledListSubheader>
-                  <AudienceTargetItem
-                    name="all-speakers"
-                    count={9}
-                    setSelected={setAndClose}
-                    value={audience.targetName}
-                    disabled={mode === 'edit'}
-                    waitWithSkeleton={populationLoaded}
-                  />
+                  {audienceTargets.slice(7, 8).map(renderAudienceTargetItem)}
                 </ElevatedPaper>
                 <ElevatedPaper>
                   <StyledListSubheader>Course Participants</StyledListSubheader>
