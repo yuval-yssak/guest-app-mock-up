@@ -122,7 +122,10 @@ const ChatPage = observer(function ChatPage({
   )!
   const days = arrangeChatInDays(chat)
 
-  const messagesInDays = buildMessagesJSX(days, chat, dividerRef)
+  const messagesInDays = React.useMemo(
+    () => buildMessagesJSX(days, chat, dividerRef),
+    [chat, days, dividerRef]
+  )
 
   // scroll last read message or first unread messages on any update
   React.useEffect(() => {
