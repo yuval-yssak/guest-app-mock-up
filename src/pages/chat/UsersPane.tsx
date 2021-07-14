@@ -7,6 +7,7 @@ import { generateRandomMessages, generateUsers } from '../../defaultStore'
 import { useMst } from '../../models/reactHook'
 import { observer } from 'mobx-react-lite'
 import { isElementInViewport } from '../../components/common/isElementInViewport'
+import { SearchBar, SearchBarRow } from '../../components/common/SearchBar'
 
 import {
   List,
@@ -15,7 +16,6 @@ import {
   UsersPaneContainer,
   LastMessageContent,
   MiddleSection,
-  StyledSearchbar,
   StyledUserName,
   TimeSignature
 } from './UsersPaneStyles'
@@ -237,6 +237,30 @@ function UsersPaneComponent({
     }, 2000)
   }
 
+  function handleKeyDown(e: React.KeyboardEvent<HTMLUListElement>) {
+    // navigate up & down via the arrow keys
+    const selectedUserIndex = filteredUsersArray.findIndex(
+      id => id === store.view.id
+    )
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      switchToChatView?.()
+
+      if (selectedUserIndex === 0 && e.key === 'ArrowUp')
+        store.view.openChatPage()
+      else {
+        const nextId =
+          filteredUsersArray[
+            selectedUserIndex + 1 * (e.key === 'ArrowUp' ? -1 : 1)
+          ]
+        if (nextId) {
+          store.view.openChatPage(nextId)
+        }
+      }
+    }
+  }
+
   return (
     <UsersPaneContainer ref={containerDomRef} role="navigation">
       <InfiniteScroll
@@ -248,45 +272,10 @@ function UsersPaneComponent({
         next={loadNext}
         height={containerHeight - 1}
       >
-        <StyledSearchbar
-          placeholder="🔍"
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === 'Escape') {
-              e.preventDefault()
-              setSearchTerm('')
-            }
-          }}
-        >
-          Search bar
-        </StyledSearchbar>
-        <List
-          tabIndex={0}
-          onKeyDown={e => {
-            // navigate up & down via the arrow keys
-            const selectedUserIndex = filteredUsersArray.findIndex(
-              id => id === store.view.id
-            )
-
-            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-              e.preventDefault()
-              switchToChatView?.()
-
-              if (selectedUserIndex === 0 && e.key === 'ArrowUp')
-                store.view.openChatPage()
-              else {
-                const nextId =
-                  filteredUsersArray[
-                    selectedUserIndex + 1 * (e.key === 'ArrowUp' ? -1 : 1)
-                  ]
-                if (nextId) {
-                  store.view.openChatPage(nextId)
-                }
-              }
-            }
-          }}
-        >
+        <SearchBarRow>
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        </SearchBarRow>
+        <List tabIndex={0} onKeyDown={handleKeyDown}>
           {filteredUsersArray.map(id => (
             <User
               key={id || store.loggedInUser!.id}
