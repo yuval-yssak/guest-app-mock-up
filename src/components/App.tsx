@@ -50,7 +50,7 @@ const Background = styled.div.attrs({ className: 'background' })`
     height: 100%;
     animation: ${scaleFrom0} 1.6s cubic-bezier(0.83, 0, 0.17, 1);
     transition: opacity 1s cubic-bezier(0.83, 0, 0.17, 1);
-    opacity: ${({ theme }) => (theme.palette.type === 'dark' ? 0.08 : 0.1)};
+    opacity: ${({ theme }) => (theme.palette.mode === 'dark' ? 0.08 : 0.1)};
   }
 `
 

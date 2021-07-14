@@ -56,15 +56,15 @@ const StyledUser = styled.div.attrs({ className: 'user' })<{
 
   height: 4.5rem;
   background-color: ${({ theme: { palette }, selected }) =>
-    palette.type === 'dark' && selected
+    palette.mode === 'dark' && selected
       ? palette.grey['300']
-      : palette.type === 'dark' && !selected
+      : palette.mode === 'dark' && !selected
       ? palette.grey['700']
-      : palette.type === 'light' && selected
+      : palette.mode === 'light' && selected
       ? palette.grey['200']
       : palette.grey['50']};
   color: ${({ theme: { palette } }) =>
-    palette.type === 'dark' ? '#fff' : palette.primary.contrastText};
+    palette.mode === 'dark' ? '#fff' : palette.primary.contrastText};
   border-top: 1px solid ${({ theme }) => theme.palette.grey['300']};
   border-left: 1px solid ${({ theme }) => theme.palette.grey['300']};
   border-right: 1px solid ${({ theme }) => theme.palette.grey['300']};

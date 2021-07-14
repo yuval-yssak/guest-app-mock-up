@@ -68,7 +68,7 @@ const SelfMessageContainer = styled(MessageContainer).attrs({
 
 const MessageFrame = styled.div`
   border: 1px solid
-    ${({ theme }) => (theme.palette.type === 'dark' ? '#888' : '#ddd')};
+    ${({ theme }) => (theme.palette.mode === 'dark' ? '#888' : '#ddd')};
   border-radius: 0.5rem;
   padding: 0.7rem;
   text-align: left;
@@ -85,9 +85,9 @@ const OtherMessageFrame = styled(MessageFrame).attrs({
   className: 'other-message-frame'
 })`
   background-color: ${({ theme: { palette } }) =>
-    palette.type === 'dark' ? palette.grey['700'] : palette.grey['50']};
+    palette.mode === 'dark' ? palette.grey['700'] : palette.grey['50']};
   color: ${({ theme: { palette } }) =>
-    palette.type === 'dark' ? '#fff' : palette.primary.contrastText};
+    palette.mode === 'dark' ? '#fff' : palette.primary.contrastText};
 `
 
 const StyledAvatar = styled(Avatar)`

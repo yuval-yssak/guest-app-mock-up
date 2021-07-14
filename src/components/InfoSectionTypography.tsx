@@ -8,7 +8,7 @@ export const Article = styled(PageContentWrapper).attrs({
   && {
     overflow-y: scroll;
     color: ${({ theme }) =>
-      theme.palette.grey[theme.palette.type === 'dark' ? '50' : '700']};
+      theme.palette.grey[theme.palette.mode === 'dark' ? '50' : '700']};
 
     align-items: end;
     box-sizing: content-box;

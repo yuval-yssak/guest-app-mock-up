@@ -130,7 +130,7 @@ const ReadSectionHeading = styled(SectionHeading).attrs({
   )
 })`
   background-color: ${({ theme }) =>
-    theme.palette.grey[theme.palette.type === 'dark' ? '500' : '300']};
+    theme.palette.grey[theme.palette.mode === 'dark' ? '500' : '300']};
 `
 
 const AnnouncementHead = styled.div.attrs({

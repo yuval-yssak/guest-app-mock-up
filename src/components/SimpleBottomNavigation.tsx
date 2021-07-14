@@ -15,7 +15,7 @@ const breakpointSmallHeight = 'screen and (max-height: 20em)'
 const StyledBottomNavigation = styled(BottomNavigation)`
   && {
     background-color: ${({ theme }) =>
-      theme.palette.type === 'dark'
+      theme.palette.mode === 'dark'
         ? theme.palette.background.default
         : theme.palette.grey['50']};
     height: unset;
