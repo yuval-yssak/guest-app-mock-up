@@ -16,7 +16,7 @@ const range = (len: number) => {
   return arr
 }
 
-type Person2 = {
+export type Person2 = {
   headshot: string
   arrivalTime: string
   name: string
@@ -63,19 +63,15 @@ const newPerson: () => Person2 = () => {
 }
 
 export default function makeData(...lens: number[]) {
-  const makeDataLevel: (depth: number) => any = (depth = 0) => {
+  const makeDataLevel: (depth: number) => Person2[] = (depth = 0) => {
     const len = lens[depth]
-    const aa = range(len)
 
-    const bb = aa.map(d => {
+    return range(len).map(() => {
       return {
         ...newPerson(),
         subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined
       }
     })
-
-    console.log(bb)
-    return bb
   }
 
   return makeDataLevel(0)

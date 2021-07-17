@@ -24,6 +24,7 @@ import {
   Droppable
 } from 'react-beautiful-dnd'
 import TableToolbar from './TableToolbar'
+import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
 
 const TableBody = styled.div`
@@ -113,12 +114,12 @@ const Heading = styled.div<{ isDragging: boolean }>`
 `
 
 const DroppableContainer = styled.div`
+  border: 1px solid #ccc;
+  border-radius: 0.3rem;
+  border-spacing: 0;
   display: flex;
   flex-direction: column;
-  border-spacing: 0;
-  border: 1px solid black;
   overflow: scroll;
-  height: calc(100% - 4px);
 
   .tr {
     :last-child {
@@ -167,37 +168,35 @@ const SortIcon = ({
         >
           <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"></path>
         </SortIconComponent>
-      )}{' '}
+      )}
     </span>
   )
 }
 
 const SortIconComponent = styled.svg<{ hint: boolean; up: boolean }>`
-  width: 1em;
-  height: 1em;
   color: ${({ hint }) => (hint ? '#ddd' : 'black')};
   fill: currentColor;
+  height: 1em;
   transform: rotate(${({ up }) => (up ? 0 : 180)}deg);
+  width: 1em;
 `
 
 const ResizerComponent = styled.svg`
-  display: inline-block;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  fill: currentColor;
-  width: 1em;
-  height: 1em;
   color: #ddd;
   display: inline-block;
   font-size: 1.5rem;
-  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   flex-shrink: 0;
-  user-select: none;
+  height: 1em;
+  fill: currentColor;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  touch-action: none; // prevents from scrolling while dragging on touch devices
   transform: translate(50%, -50%);
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  user-select: none;
+  width: 1em;
   z-index: 1;
-  ${'' /* prevents from scrolling while dragging on touch devices */}
-  touch-action:none;
 `
 
 const Resizer = (props: React.SVGAttributes<SVGElement>) => (
@@ -226,6 +225,43 @@ function pushSelectColumn<DataStructure extends {}>(
       ...columns
     ]
   })
+}
+
+export function ScrollableDataGrid<DataStructure extends {}>({
+  columns,
+  data,
+  setData,
+  nonSortable = false,
+  disableResize = false,
+  withGlobalFilter = false
+}: {
+  columns: Column<DataStructure>[]
+  data: DataStructure[]
+  setData: React.Dispatch<React.SetStateAction<DataStructure[]>>
+  nonSortable?: boolean
+  disableResize?: boolean
+  withGlobalFilter?: boolean
+}) {
+  return (
+    <div
+      style={{
+        overflow: 'hidden',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
+      <DataGrid
+        columns={columns}
+        data={data}
+        setData={setData}
+        nonSortable={nonSortable}
+        disableResize={disableResize}
+        withGlobalFilter={withGlobalFilter}
+      />
+    </div>
+  )
 }
 
 export function DataGrid<DataStructure extends {}>({
@@ -409,60 +445,50 @@ export function DataGrid<DataStructure extends {}>({
                   )
                 })}
               </TableBody>
-
-              <div>
-                <span>
-                  Page <strong>{pageIndex + 1}</strong> of{' '}
-                  <strong>{pageOptions.length}</strong>{' '}
-                </span>
-                <span>
-                  | Go to page:{' '}
-                  <input
-                    type="number"
-                    value={pageIndex + 1}
-                    onChange={e => {
-                      const pageNumber = e.target.value
-                        ? Number(e.target.value) - 1
-                        : 0
-                      gotoPage(pageNumber)
-                    }}
-                  />
-                </span>
-                <select
-                  value={pageSize}
-                  onChange={e => setPageSize(Number(e.target.value))}
-                >
-                  {[5, 10, 25, 50, Number.MAX_SAFE_INTEGER].map(pageSize => (
-                    <option key={pageSize} value={pageSize}>
-                      Show{' '}
-                      {pageSize === Number.MAX_SAFE_INTEGER ? 'All' : pageSize}
-                    </option>
-                  ))}
-                </select>
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                  {'<<'}
-                </button>
-                <button
-                  onClick={() => previousPage()}
-                  disabled={!canPreviousPage}
-                >
-                  Previous
-                </button>
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                  Next
-                </button>
-                <button
-                  onClick={() => gotoPage(pageCount - 1)}
-                  disabled={!canNextPage}
-                >
-                  {'>>'}
-                </button>
-              </div>
               {provided.placeholder}
             </DroppableContainer>
           )}
         </Droppable>
       </DragDropContext>
+      <div style={{ marginTop: '1rem' }}>
+        <span>
+          Page <strong>{pageIndex + 1}</strong> of{' '}
+          <strong>{pageOptions.length}</strong>{' '}
+        </span>
+        <span>
+          | Go to page:{' '}
+          <input
+            type="number"
+            value={pageIndex + 1}
+            onChange={e => {
+              const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0
+              gotoPage(pageNumber)
+            }}
+          />
+        </span>
+        <select
+          value={pageSize}
+          onChange={e => setPageSize(Number(e.target.value))}
+        >
+          {[5, 10, 25, 50, Number.MAX_SAFE_INTEGER].map(pageSize => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize === Number.MAX_SAFE_INTEGER ? 'All' : pageSize}
+            </option>
+          ))}
+        </select>
+        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          {'<<'}
+        </button>
+        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          Previous
+        </button>
+        <button onClick={() => nextPage()} disabled={!canNextPage}>
+          Next
+        </button>
+        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          {'>>'}
+        </button>
+      </div>
     </>
   )
 }
@@ -474,15 +500,11 @@ export const EditableCell = React.memo(function EditableCell<
   row: { index },
   column: { id },
   setData
-}: // updateMyData // This is a custom function that we supplied to our table instance
-{
+}: {
   value: string
   row: { index: number }
   column: { id: string }
-  // updateMyData: (...args: any[]) => any | void
   setData: React.Dispatch<React.SetStateAction<DataStructure[]>>
-
-  rest: any[]
 }) {
   // We need to keep and update the state of the cell normally
   const [value, setValue] = React.useState(initialValue)
@@ -519,3 +541,7 @@ export const EditableCell = React.memo(function EditableCell<
     />
   )
 })
+
+export function GridCheckbox({ value }: { value: boolean }) {
+  return <Checkbox checked={value} />
+}
