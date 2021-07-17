@@ -140,6 +140,8 @@ function App() {
         switch (subPage) {
           case 'arriving-today':
             return 'Arriving Today'
+          case 'arriving-soon':
+            return 'Arriving in the next 7 days'
           default:
             return 'People List'
         }

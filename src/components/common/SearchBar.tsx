@@ -49,9 +49,7 @@ export const SearchBar = ({
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       value={searchTerm}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-        setSearchTerm(e.target.value)
-      }
+      onChange={e => setSearchTerm(e.target.value)}
     />
   )
 }

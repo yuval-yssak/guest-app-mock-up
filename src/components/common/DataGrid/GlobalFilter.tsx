@@ -3,7 +3,7 @@ import { useAsyncDebounce } from 'react-table'
 import { SearchBar, SearchBarRow } from '../SearchBar'
 
 const GlobalFilter = ({
-  filter,
+  filter = '',
   setFilter
 }: {
   filter: string
