@@ -279,7 +279,31 @@ export function DataGrid<DataStructure extends {}>({
       disableSortBy: nonSortable,
       disableResizing: disableResize,
       disableGlobalFilter: !withGlobalFilter,
-      setData
+      setData,
+      // set global filter to search only in certain columns
+      globalFilter: (rows, _columnIds, filterValue: string) => {
+        return rows.filter(row =>
+          filterValue
+            .trim()
+            .split(/\W/)
+            .every(word => {
+              let wordMatch = false
+              for (const column in row.values) {
+                if (
+                  ['name', 'comments'].some(
+                    filterableColumn => column === filterableColumn
+                  )
+                ) {
+                  if (!wordMatch)
+                    wordMatch = !!(row.values[column] as string).match(
+                      new RegExp(word, 'i')
+                    )
+                }
+              }
+              return wordMatch
+            })
+        )
+      }
     },
     useBlockLayout,
     useResizeColumns,
