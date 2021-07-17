@@ -41,18 +41,18 @@ export default function onStart(rootStore: RootStoreType) {
     }
   })
 
-  // prevent unauthorized access to "people" page
-  let prevViewSnapshotForPeople: ViewSnapshotType | null
+  // prevent unauthorized access to "registrations" page
+  let prevViewSnapshotForRegistrations: ViewSnapshotType | null
   autorun(() => {
-    if (rootStore.view.page !== '/people') {
+    if (rootStore.view.page !== '/registrations') {
       // store previous page
-      prevViewSnapshotForPeople = getSnapshot(rootStore.view)
+      prevViewSnapshotForRegistrations = getSnapshot(rootStore.view)
     } else if (rootStore.loggedInUser?.type !== 'staff') {
       // this is an unauthorized state.
 
-      if (prevViewSnapshotForPeople)
+      if (prevViewSnapshotForRegistrations)
         // restore view to previous page
-        applySnapshot(rootStore.view, prevViewSnapshotForPeople)
+        applySnapshot(rootStore.view, prevViewSnapshotForRegistrations)
       // or to homepage
       else rootStore.view.openHomePage()
     }

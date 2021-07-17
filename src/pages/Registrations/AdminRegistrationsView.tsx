@@ -46,14 +46,14 @@ function Teaser({
 }) {
   const store = useMst()
   return (
-    <StyledTeaser onClick={() => store.view.openPeoplePage(link)}>
+    <StyledTeaser onClick={() => store.view.openRegistrationsPage(link)}>
       <div className="label">{label}</div>
       <div className="sub-label">{subLabel}</div>
     </StyledTeaser>
   )
 }
 
-function AdminPeopleView() {
+function AdminRegistrationsView() {
   return (
     <>
       <MainTeasers>
@@ -87,4 +87,4 @@ function AdminPeopleView() {
   )
 }
 
-export default AdminPeopleView
+export default AdminRegistrationsView

@@ -16,7 +16,7 @@ import AnnouncementsPage from '../pages/AnnouncementsPage'
 import SettingsPage from '../pages/SettingsPage'
 import ChatPage from '../pages/chat/ChatPage'
 import LoginPage from '../pages/LoginPage'
-import PeoplePage from '../pages/People/People'
+import RegistrationsPage from '../pages/Registrations/Registrations'
 import ManualSignUpPage from '../pages/ManualSignUpPage'
 import InfoSectionPage from '../pages/InfoPages/InfoSectionPage'
 import AnnouncementEditPage from '../pages/AnnouncementEditPage'
@@ -134,8 +134,8 @@ function App() {
         return 'Ashram Map'
       case '/my-bookings':
         return 'My Bookings'
-      case (store.view.page.match(/^\/people(\/|$)/) || {}).input:
-        const subPage = store.view.page.replace(/^\/people/, '').slice(1)
+      case (store.view.page.match(/^\/registrations(\/|$)/) || {}).input:
+        const subPage = store.view.page.replace(/^\/registrations/, '').slice(1)
 
         switch (subPage) {
           case 'arriving-today':
@@ -236,7 +236,9 @@ function App() {
                     {store.view.page === '/my-bookings' && (
                       <div>Account Details Page</div>
                     )}
-                    {store.view.page.match(/\/people(\/|$)/) && <PeoplePage />}
+                    {store.view.page.match(/\/registrations(\/|$)/) && (
+                      <RegistrationsPage />
+                    )}
                     {store.view.page === '/settings' && <SettingsPage />}
                     {store.view.page === '/activities' && (
                       <div>Activities Page</div>
