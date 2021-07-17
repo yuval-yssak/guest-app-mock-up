@@ -1,134 +1,118 @@
 import React from 'react'
 
-import CssBaseline from '@material-ui/core/CssBaseline'
 import makeData from './makeData'
 import { Column } from 'react-table'
 import Avatar from '@material-ui/core/Avatar'
 import { DataGrid } from '../../components/common/DataGrid/DataGrid'
-import TextField from '@material-ui/core/TextField'
+import Checkbox from '@material-ui/core/Checkbox'
 
 type People = {
   headshot: string
   arrivalTime: string
-  names: string
+  name: string
   rooms: string
-  visits: string
   status: string
+  balance: number
+  comments: string
+  signedForms: boolean
+  firstTime: boolean
+  nights: number
+  preferredContactMethod: string
+  appUser: boolean
+  credit: boolean
 }
 
-const EditableCell = React.memo(function EditableCell<
-  DataStructure extends {}
->({
-  value: initialValue,
-  row: { index },
-  column: { id },
-  setData
-}: // updateMyData // This is a custom function that we supplied to our table instance
-{
-  value: string
-  row: { index: number }
-  column: { id: string }
-  // updateMyData: (...args: any[]) => any | void
-  setData: React.Dispatch<React.SetStateAction<DataStructure[]>>
-
-  rest: any[]
-}) {
-  // We need to keep and update the state of the cell normally
-  const [value, setValue] = React.useState(initialValue)
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value)
-  }
-
-  // We'll only update the external data when the input is blurred
-  const onBlur = () => {
-    setData(data => {
-      const abd = data.map<DataStructure>(function mapData(currentRow, i) {
-        if (i === index) {
-          return { ...currentRow, [id]: value }
-        } else return currentRow
-      })
-      return abd
-    })
-  }
-
-  // If the initialValue is changed externall, sync it up with our state
-  React.useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
-
-  return (
-    <TextField
-      variant="standard"
-      multiline
-      maxRows={4}
-      value={value}
-      onChange={onChange}
-      onBlur={onBlur}
-    />
-  )
-})
+function MyCheckbox({ value }: { value: boolean }) {
+  return <Checkbox checked={value} />
+}
 
 function PeopleList({ filter }: { filter?: string }) {
   const columns = React.useMemo(
     () =>
       [
         {
-          Header: 'Headshot',
+          Header: '',
           accessor: 'headshot',
           persistant: true,
           Cell: React.memo(({ value, row, column }: any) => {
             return <Avatar src={value} />
-          })
+          }),
+          width: 70,
+          disableSortBy: true
         },
         {
           Header: 'Arrival Time',
           accessor: 'arrivalTime',
-          persistant: true
+          persistant: true,
+          width: 120
         },
         {
-          Header: 'Names',
-          accessor: 'names'
+          Header: 'Name',
+          accessor: 'name'
         },
         {
           Header: 'Rooms',
           accessor: 'rooms',
-          Cell: EditableCell
+          width: 140
         },
         {
           Header: 'Balance',
-          accessor: 'visits'
+          accessor: 'balance',
+          width: 100
+        },
+        { Header: 'Comments', accessor: 'comments' },
+        {
+          Header: 'Signed Forms?',
+          accessor: 'signedForms',
+          Cell: MyCheckbox,
+          width: 80
         },
         {
-          Header: 'Special Requests',
-          accessor: 'status'
-        }
+          Header: 'First Time?',
+          accessor: 'firstTime',
+          Cell: MyCheckbox,
+          width: 80
+        },
+        { Header: 'Nights', accessor: 'nights', width: 80 },
+        {
+          Header: 'Preferred Contact Method',
+          accessor: 'preferredContactMethod'
+        },
+        { Header: 'App User', accessor: 'appUser', Cell: MyCheckbox },
+        { Header: 'Credit?', accessor: 'credit', Cell: MyCheckbox }
       ] as Column<People>[],
     []
   )
 
   const [data, setData] = React.useState(() => makeData(20) as People[])
 
-  const [sortable, setSortable] = React.useState(false)
-  const [disableResize, setDisableResize] = React.useState(true)
-  const [disableGlobalFilter, setDisableGlobalFilter] = React.useState(true)
-
   return (
-    <div>
-      <CssBaseline />
-      <button onClick={() => setSortable(s => !s)}>toggle sortable</button>
-      <button onClick={() => setDisableResize(s => !s)}>toggle resize</button>
-      <button onClick={() => setDisableGlobalFilter(s => !s)}>
-        toggle global filter
-      </button>
-      <DataGrid
-        columns={columns}
-        data={data}
-        setData={setData}
-        nonSortable={!sortable}
-        disableResize={disableResize}
-        withGlobalFilter={!disableGlobalFilter}
-      />
+    <div
+      style={{
+        padding: '100px',
+        overflow: 'hidden',
+        width: '100%',
+        height: '100%'
+      }}
+    >
+      <div
+        style={{
+          overflow: 'hidden',
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <DataGrid
+          columns={columns}
+          data={data}
+          setData={setData}
+          nonSortable={false}
+          disableResize={false}
+          withGlobalFilter={true}
+        />
+      </div>
     </div>
   )
 }

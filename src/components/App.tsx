@@ -135,7 +135,14 @@ function App() {
       case '/my-bookings':
         return 'My Bookings'
       case (store.view.page.match(/^\/people(\/|$)/) || {}).input:
-        return 'People & Registrations'
+        const subPage = store.view.page.replace(/^\/people/, '').slice(1)
+
+        switch (subPage) {
+          case 'arriving-today':
+            return 'Arriving Today'
+          default:
+            return 'People List'
+        }
       case '/settings':
         return 'Settings'
       case '/activities':
