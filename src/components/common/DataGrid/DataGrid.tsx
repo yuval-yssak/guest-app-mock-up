@@ -24,22 +24,25 @@ import {
   Droppable
 } from 'react-beautiful-dnd'
 import TableToolbar from './TableToolbar'
+import TextField from '@material-ui/core/TextField'
 
-const TableBody = styled.div``
+const TableBody = styled.div`
+  overflow-y: scroll;
+  height: 100%;
+  flex: 1;
+  width: fit-content;
+`
 
 const TableHead = styled.div`
-  ${
-    '' /* In this example we use an absolutely position resizer,
- so this is required. */
-  }
-  position: relative;
+  position: relative; // In this example we use an absolutely position resizer, so this is required
+
   :last-child {
     border-right: 0;
   }
 `
 
 const TableHeadRow = styled.div`
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #999;
 `
 
 const StyledColumn = styled.div<{ isDragging: boolean }>`
@@ -110,9 +113,12 @@ const Heading = styled.div<{ isDragging: boolean }>`
 `
 
 const DroppableContainer = styled.div`
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   border-spacing: 0;
   border: 1px solid black;
+  overflow: scroll;
+  height: calc(100% - 4px);
 
   .tr {
     :last-child {
@@ -125,9 +131,15 @@ const DroppableContainer = styled.div`
   .td {
     padding: 0.5rem;
     margin: 0;
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
+    border-bottom: 1px solid #ddd;
+    /* border-right: 1px solid black; */
+    display: flex;
+    align-items: center;
     :last-child {
+      border-right: 0;
+    }
+    :nth-child(1),
+    :nth-child(2) {
       border-right: 0;
     }
   }
@@ -208,7 +220,8 @@ function pushSelectColumn<DataStructure extends {}>(
           ({ row }: { row: UseRowSelectRowProps<DataStructure> }) => (
             <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
           )
-        )
+        ),
+        width: 20
       },
       ...columns
     ]
@@ -243,7 +256,6 @@ export function DataGrid<DataStructure extends {}>({
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    selectedFlatRows,
     prepareRow,
     setColumnOrder,
     visibleColumns,
@@ -339,8 +351,10 @@ export function DataGrid<DataStructure extends {}>({
                             provided={provided}
                             column={column}
                             setIsResizing={setIsResizing}
-                            nonSortable={nonSortable}
-                            disableResize={disableResize}
+                            nonSortable={nonSortable || !!column.disableSortBy}
+                            disableResize={
+                              disableResize || !!column.disableResizing
+                            }
                           ></ColumnComponent>
                         )}
                       </Draggable>
@@ -348,7 +362,6 @@ export function DataGrid<DataStructure extends {}>({
                   </TableHeadRow>
                 ))}
               </TableHead>
-
               <TableBody {...getTableBodyProps()}>
                 {page.map(row => {
                   prepareRow(row)
@@ -356,7 +369,14 @@ export function DataGrid<DataStructure extends {}>({
                     <div {...row.getRowProps()} className="tr">
                       {row.cells.map(cell => {
                         return (
-                          <div {...cell.getCellProps()} className="td">
+                          <div
+                            {...cell.getCellProps()}
+                            style={{
+                              ...cell.getCellProps().style,
+                              display: ''
+                            }}
+                            className="td"
+                          >
                             {cell.render('Cell')}
                           </div>
                         )
@@ -365,6 +385,7 @@ export function DataGrid<DataStructure extends {}>({
                   )
                 })}
               </TableBody>
+
               <div>
                 <span>
                   Page <strong>{pageIndex + 1}</strong> of{' '}
@@ -413,19 +434,6 @@ export function DataGrid<DataStructure extends {}>({
                   {'>>'}
                 </button>
               </div>
-              <pre>
-                <code>
-                  {JSON.stringify(
-                    {
-                      selectedFlatRows: selectedFlatRows.map(
-                        row => row.original
-                      )
-                    },
-                    null,
-                    2
-                  )}
-                </code>
-              </pre>
               {provided.placeholder}
             </DroppableContainer>
           )}
@@ -434,3 +442,56 @@ export function DataGrid<DataStructure extends {}>({
     </>
   )
 }
+
+export const EditableCell = React.memo(function EditableCell<
+  DataStructure extends {}
+>({
+  value: initialValue,
+  row: { index },
+  column: { id },
+  setData
+}: // updateMyData // This is a custom function that we supplied to our table instance
+{
+  value: string
+  row: { index: number }
+  column: { id: string }
+  // updateMyData: (...args: any[]) => any | void
+  setData: React.Dispatch<React.SetStateAction<DataStructure[]>>
+
+  rest: any[]
+}) {
+  // We need to keep and update the state of the cell normally
+  const [value, setValue] = React.useState(initialValue)
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value)
+  }
+
+  // We'll only update the external data when the input is blurred
+  const onBlur = () => {
+    setData(data => {
+      const abd = data.map<DataStructure>(function mapData(currentRow, i) {
+        if (i === index) {
+          return { ...currentRow, [id]: value }
+        } else return currentRow
+      })
+      return abd
+    })
+  }
+
+  // If the initialValue is changed externall, sync it up with our state
+  React.useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  return (
+    <TextField
+      variant="standard"
+      multiline
+      maxRows={4}
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+    />
+  )
+})

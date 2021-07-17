@@ -16,8 +16,22 @@ const range = (len: number) => {
   return arr
 }
 
-const newPerson = () => {
-  const statusChance = Math.random()
+type Person2 = {
+  headshot: string
+  arrivalTime: string
+  name: string
+  rooms: string
+  balance: number
+  comments: string
+  signedForms: boolean
+  firstTime: boolean
+  nights: number
+  preferredContactMethod: string
+  appUser: boolean
+  credit: boolean
+}
+
+const newPerson: () => Person2 = () => {
   return {
     headshot: faker.image.avatar(),
     arrivalTime: `${Math.floor(Math.random() * 12)
@@ -25,7 +39,7 @@ const newPerson = () => {
       .padStart(2, '0')}:${(Math.floor(Math.random() * 12) * 5)
       .toString()
       .padStart(2, '0')}`,
-    names: lorem
+    name: lorem
       .generateSentences(1)
       .slice(0, -1)
       .split(' ')
@@ -34,15 +48,17 @@ const newPerson = () => {
     rooms: new Array(Math.floor(Math.random() * 3) + 1)
       .fill(null)
       .map(r => Math.floor(Math.random() * 30))
-      .join('\n'),
+      .join(', '),
     visits: Math.floor(Math.random() * 100),
     progress: Math.floor(Math.random() * 100),
-    status:
-      statusChance > 0.66
-        ? 'relationship'
-        : statusChance > 0.33
-        ? 'complicated'
-        : 'single'
+    appUser: Math.random() > 0.5,
+    balance: Math.random() > 0.5 ? Math.floor(Math.random() * 200) * 5 : 0,
+    comments: lorem.generateSentences(1),
+    credit: false,
+    firstTime: Math.random() > 0.5,
+    nights: Math.floor(Math.random() * 14) + 1,
+    preferredContactMethod: 'App',
+    signedForms: Math.random() > 0.7
   }
 }
 
