@@ -1,8 +1,8 @@
 import React from 'react'
 import { observer } from 'mobx-react-lite'
 import { useMst } from '../../models/reactHook'
-import AdminPeopleView from './AdminPeopleView'
-import PeopleList from './PeopleList'
+import AdminRegistrationsView from './AdminRegistrationsView'
+import RegistrationsList from './RegistrationsList'
 import PersonDetails from './PersonDetails'
 import styled from 'styled-components'
 import PageContentWrapper from '../../components/PageContentWrapper'
@@ -26,21 +26,25 @@ const DataGridContainer = styled(PageContentWrapper)`
   }
 `
 
-function PeopleEntry() {
+function RegistrationsEntry() {
   const store = useMst()
   return (
     <>
-      {store.view.page === '/people' && store.view.id && (
+      {store.view.page === '/registrations' && store.view.id && (
         <PersonDetails id={+store.view.id} />
       )}
-      {store.view.page === '/people' && !store.view.id && <AdminPeopleView />}
-      {store.view.page.match(/^\/people\/.+/) && (
+      {store.view.page === '/registrations' && !store.view.id && (
+        <AdminRegistrationsView />
+      )}
+      {store.view.page.match(/^\/registrations\/.+/) && (
         <DataGridContainer>
-          <PeopleList filter={store.view.page.replace(/^\/people\//, '')} />
+          <RegistrationsList
+            filter={store.view.page.replace(/^\/registrations\//, '')}
+          />
         </DataGridContainer>
       )}
     </>
   )
 }
 
-export default observer(PeopleEntry)
+export default observer(RegistrationsEntry)

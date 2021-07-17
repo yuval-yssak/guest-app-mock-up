@@ -69,7 +69,10 @@ export default function TemporaryDrawer({
             </ListItem>
             <Divider />
             {store.loggedInUser?.type === 'staff' && (
-              <ListItem button onClick={() => store.view.openPeoplePage()}>
+              <ListItem
+                button
+                onClick={() => store.view.openRegistrationsPage()}
+              >
                 <StyledListItemIcon>
                   <PeopleIcon />
                 </StyledListItemIcon>
