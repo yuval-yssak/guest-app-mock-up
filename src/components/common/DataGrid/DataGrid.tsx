@@ -26,6 +26,8 @@ import {
 import TableToolbar from './TableToolbar'
 import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
+import Tooltip from '@material-ui/core/Tooltip'
+import { HTMLAttributes } from 'react'
 
 const TableBody = styled.div`
   overflow-y: scroll;
@@ -43,7 +45,7 @@ const TableHead = styled.div`
 `
 
 const TableHeadRow = styled.div`
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid ${({ theme }) => theme.palette.grey['200']};
 `
 
 const StyledColumn = styled.div<{ isDragging: boolean }>`
@@ -66,6 +68,7 @@ function ColumnComponent<DataStructure extends {}>({
   disableResize: boolean
 }) {
   const [onHover, setOnHover] = React.useState(false)
+
   return (
     <StyledColumn
       isDragging={snapshot.isDragging}
@@ -76,29 +79,31 @@ function ColumnComponent<DataStructure extends {}>({
       onMouseEnter={() => setOnHover(true)}
       onMouseLeave={() => setOnHover(false)}
     >
-      <Heading
-        isDragging={snapshot.isDragging}
-        {...provided.dragHandleProps}
-        {...provided.draggableProps}
-        ref={provided.innerRef}
-      >
-        {column.render('Header')}
-        {/* Use column.getResizerProps to hook up the events correctly */}
-        {!disableResize && (
-          <Resizer
-            {...column.getResizerProps()}
-            onMouseEnter={() => setIsResizing(true)}
-            onMouseLeave={() => setIsResizing(false)}
-          />
-        )}
-        {!nonSortable && (
-          <SortIcon
-            isSorted={column.isSorted}
-            isSortedDesc={column.isSortedDesc}
-            onHover={onHover}
-          ></SortIcon>
-        )}
-      </Heading>
+      <Tooltip title={column.render('Header') || ''}>
+        <Heading
+          isDragging={snapshot.isDragging}
+          {...provided.dragHandleProps}
+          {...provided.draggableProps}
+          ref={provided.innerRef}
+        >
+          {column.render('Header')}
+          {/* Use column.getResizerProps to hook up the events correctly */}
+          {!disableResize && (
+            <Resizer
+              {...column.getResizerProps()}
+              onMouseEnter={() => setIsResizing(true)}
+              onMouseLeave={() => setIsResizing(false)}
+            />
+          )}
+          {!nonSortable && (
+            <SortIcon
+              isSorted={column.isSorted}
+              isSortedDesc={column.isSortedDesc}
+              onHover={onHover}
+            ></SortIcon>
+          )}
+        </Heading>
+      </Tooltip>
     </StyledColumn>
   )
 }
@@ -107,15 +112,39 @@ const Heading = styled.div<{ isDragging: boolean }>`
   ${({ isDragging }) => !isDragging && 'transform: inherit !important;'}
   background-color: ${({ isDragging }) =>
     isDragging ? 'lightYellow' : 'white'};
-  padding: 0.5rem;
   border-radius: 0.4rem;
+  padding: 0.5rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 
+const TableCell = ({
+  children,
+  ...rest
+}: HTMLAttributes<HTMLDivElement & { value: any }>) => {
+  return (
+    <div {...rest}>
+      <Tooltip title={React.Children.only(children) || ''}>
+        <div
+          style={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          {children}
+        </div>
+      </Tooltip>
+    </div>
+  )
+}
+
 const DroppableContainer = styled.div`
-  border: 1px solid #ccc;
-  border-radius: 0.3rem;
+  border: 1px solid ${({ theme }) => theme.palette.grey['200']};
+  border-radius: 0;
   border-spacing: 0;
   display: flex;
   flex-direction: column;
@@ -132,7 +161,7 @@ const DroppableContainer = styled.div`
   .td {
     padding: 0.5rem;
     margin: 0;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid ${({ theme }) => theme.palette.grey['200']};
     /* border-right: 1px solid black; */
     display: flex;
     align-items: center;
@@ -373,12 +402,6 @@ export function DataGrid<DataStructure extends {}>({
 
   return (
     <>
-      {withGlobalFilter && (
-        <TableToolbar
-          setGlobalFilter={setGlobalFilter}
-          globalFilter={globalFilter}
-        />
-      )}
       <DragDropContext
         onDragStart={onDragStart}
         onDragUpdate={onDragUpdate}
@@ -429,7 +452,7 @@ export function DataGrid<DataStructure extends {}>({
                     <div {...row.getRowProps()} className="tr">
                       {row.cells.map(cell => {
                         return (
-                          <div
+                          <TableCell
                             {...cell.getCellProps()}
                             style={{
                               ...cell.getCellProps().style,
@@ -438,7 +461,7 @@ export function DataGrid<DataStructure extends {}>({
                             className="td"
                           >
                             {cell.render('Cell')}
-                          </div>
+                          </TableCell>
                         )
                       })}
                     </div>
@@ -489,6 +512,12 @@ export function DataGrid<DataStructure extends {}>({
           {'>>'}
         </button>
       </div>
+      {withGlobalFilter && (
+        <TableToolbar
+          setGlobalFilter={setGlobalFilter}
+          globalFilter={globalFilter}
+        />
+      )}
     </>
   )
 }
