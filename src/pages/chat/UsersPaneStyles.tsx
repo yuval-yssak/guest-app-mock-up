@@ -45,7 +45,7 @@ export const StyledUser = styled.div.attrs({ className: 'user' })<{
   overflow: hidden;
   white-space: nowrap;
 
-  height: 4.5rem;
+  height: 5.8rem;
   background-color: ${({ theme: { palette }, selected }) =>
     palette.mode === 'dark' && selected
       ? palette.grey['300']
@@ -56,13 +56,13 @@ export const StyledUser = styled.div.attrs({ className: 'user' })<{
       : palette.grey['50']};
   color: ${({ theme: { palette } }) =>
     palette.mode === 'dark' ? '#fff' : palette.primary.contrastText};
-  border-top: 1px solid ${({ theme }) => theme.palette.grey['300']};
-  border-left: 1px solid ${({ theme }) => theme.palette.grey['300']};
-  border-right: 1px solid ${({ theme }) => theme.palette.grey['300']};
+  border-top: 1px solid ${({ theme }) => theme.palette.grey['100']};
+  border-left: 1px solid ${({ theme }) => theme.palette.grey['100']};
+  border-right: 1px solid ${({ theme }) => theme.palette.grey['100']};
   padding-right: 0.5rem;
 
   &:last-child {
-    border-bottom: 1px solid ${({ theme }) => theme.palette.grey['300']};
+    /* border-bottom: 1px solid ${({ theme }) => theme.palette.grey['300']}; */
   }
 
   &:hover {
@@ -81,9 +81,10 @@ export const StyledUserAvatar = styled(Avatar).attrs({
 
 export const StyledUserName = styled(Typography).attrs({
   className: 'user__name'
-})`
+})<{ unread: boolean }>`
   && {
-    font-weight: 500;
+    font-weight: ${({ unread }) => (unread ? 500 : 300)};
+    line-height: 1;
   }
 `
 
@@ -93,6 +94,8 @@ export const TimeSignature = styled(Typography).attrs({
   && {
     font-size: 0.7rem;
     color: ${({ theme }) => theme.palette.grey['700']};
+    grid-row: 1/2;
+    grid-column: 2/3;
   }
 `
 
@@ -102,6 +105,8 @@ export const LastMessageContent = styled.div.attrs({
   display: flex;
   align-items: center;
   color: ${({ theme }) => theme.palette.grey['700']};
+  grid-row: 2/3;
+  grid-column: 1/-1;
 
   & > :first-child {
     margin-right: 1ch; // one-letter's width margin
@@ -113,10 +118,14 @@ export const LastMessageContent = styled.div.attrs({
   }
 `
 
-export const MiddleSection = styled.div.attrs({
-  className: 'user__middle-section'
+export const UserTeaser = styled.div.attrs({
+  className: 'user__user-teaser'
 })`
   overflow: hidden;
   margin: 0 0.4rem;
   flex-grow: 1;
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: end;
+  grid-row-gap: 0.4rem;
 `

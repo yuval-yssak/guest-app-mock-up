@@ -15,7 +15,7 @@ import {
   StyledUserAvatar,
   UsersPaneContainer,
   LastMessageContent,
-  MiddleSection,
+  UserTeaser,
   StyledUserName,
   TimeSignature
 } from './UsersPaneStyles'
@@ -112,45 +112,28 @@ const User = observer(
                 : store.loggedInUser!.personName
             }
           />
-          <MiddleSection>
-            <StyledUserName>
-              {store.users.find(user => user.id === +id)?.personName}
+          <UserTeaser>
+            <StyledUserName unread={!!chat.unreadCount}>
+              {store.users.find(user => user.id === +id)?.personName ||
+                'Front Desk'}
             </StyledUserName>
             {chat.orderedMessages.length ? (
               <>
                 <LastMessageContent>
-                  <Typography
-                    variant="body1"
-                    {...(chat.unreadCount && {
-                      style: { fontWeight: 700 }
-                    })}
-                  >
-                    {lastUserName}:
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    {...(chat.unreadCount && {
-                      style: { fontWeight: 700 }
-                    })}
-                  >
-                    {lastMessageContent}
-                  </Typography>
+                  <Typography variant="body1">{lastUserName}:</Typography>
+                  <Typography variant="body2">{lastMessageContent}</Typography>
                 </LastMessageContent>
+                <TimeSignature>
+                  {
+                    chat.orderedMessages[chat.orderedMessages.length - 1]
+                      .timeSignature
+                  }
+                </TimeSignature>
               </>
             ) : (
               <></>
             )}
-          </MiddleSection>
-          {chat.orderedMessages.length ? (
-            <TimeSignature>
-              {
-                chat.orderedMessages[chat.orderedMessages.length - 1]
-                  .timeSignature
-              }
-            </TimeSignature>
-          ) : (
-            <></>
-          )}
+          </UserTeaser>
         </StyledUser>
       </li>
     )
