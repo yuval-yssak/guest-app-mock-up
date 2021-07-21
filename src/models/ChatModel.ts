@@ -75,6 +75,12 @@ const ChatModel = types
     },
     insertOtherMessage(message: MessageCreationType) {
       self.messages.push(message)
+    },
+    setAllMessagesRead() {
+      self.lastReadTimestamp = self.messages
+        .map(m => dayjs(m.timestamp))
+        .reduce((max, t) => (max.isBefore(t) ? t : max), dayjs(0))
+        .toDate()
     }
   }))
   .actions(self => ({
