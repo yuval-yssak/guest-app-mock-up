@@ -81,9 +81,9 @@ export const StyledUserAvatar = styled(Avatar).attrs({
 
 export const StyledUserName = styled(Typography).attrs({
   className: 'user__name'
-})<{ unread: boolean }>`
+})<{ $unread: boolean }>`
   && {
-    font-weight: ${({ unread }) => (unread ? 500 : 300)};
+    font-weight: ${({ $unread }) => ($unread ? 500 : 300)};
     line-height: 1;
   }
 `

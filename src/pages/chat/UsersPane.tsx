@@ -113,7 +113,7 @@ const User = observer(
             }
           />
           <UserTeaser>
-            <StyledUserName unread={!!chat.unreadCount}>
+            <StyledUserName $unread={!!chat.unreadCount}>
               {store.users.find(user => user.id === +id)?.personName ||
                 'Front Desk'}
             </StyledUserName>
