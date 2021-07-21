@@ -50,6 +50,25 @@ function StaffChatSinglePane() {
   } else return <ChatPage selectAnotherUser={() => setVisiblePane('users')} />
 }
 
+// This hook issues a callback when a prop is sustained for a certain timeout
+function useWhenPropSustained(
+  prop: unknown,
+  timeout: number,
+  callback: () => void
+) {
+  const initialTimeRef = React.useRef(Date.now())
+
+  React.useEffect(() => {
+    initialTimeRef.current = Date.now()
+  }, [prop])
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      if (Date.now() - initialTimeRef.current >= timeout) callback()
+    }, timeout)
+  }, [prop, timeout, callback])
+}
+
 const ChatPage = observer(function ChatPage({
   staffView = false,
   selectAnotherUser
@@ -120,31 +139,35 @@ const ChatPage = observer(function ChatPage({
         )?.chat
       : store.chats.withSelf
   )!
+
+  useWhenPropSustained(store.view.id, 2000, () => chat.setAllMessagesRead())
+
   const days = arrangeChatInDays(chat)
 
   const messagesInDays = React.useMemo(
-    () => buildMessagesJSX(days, chat, dividerRef),
+    () => buildMessagesElements(days, chat, dividerRef),
     [chat, days, dividerRef]
   )
+
+  const initialUnreadCount = React.useRef(chat?.unreadCount)
+  React.useEffect(() => {
+    initialUnreadCount.current = chat?.unreadCount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store.view.id])
 
   // scroll last read message or first unread messages on any update
   React.useEffect(() => {
     if (beforeAnyScroll)
       setImmediate(() => {
-        if (chat?.unreadCount) dividerRef.current?.scrollIntoView(true)
+        if (initialUnreadCount.current) dividerRef.current?.scrollIntoView(true)
         else {
           containerDomRef.current
             ?.querySelector('.date-messages:last-of-type section:last-child')
             ?.scrollIntoView()
         }
+        setBeforeAnyScroll(false)
       })
-  }, [
-    chat?.unreadCount,
-    chat?.messages.length,
-    dividerRef,
-    containerDomRef,
-    beforeAnyScroll
-  ])
+  }, [chat?.messages.length, dividerRef, containerDomRef, beforeAnyScroll])
 
   function submitMessage() {
     if (!userInput.trim()) return
@@ -254,7 +277,7 @@ function arrangeChatInDays(chat: ChatType) {
   }, [])
 }
 
-function buildMessagesJSX(
+function buildMessagesElements(
   days: { date: string; messages: ChatType['orderedMessages'] }[],
   chat: ChatType,
   dividerRef: React.RefObject<HTMLDivElement>
