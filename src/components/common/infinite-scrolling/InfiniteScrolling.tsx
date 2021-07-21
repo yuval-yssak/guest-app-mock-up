@@ -1,4 +1,4 @@
-import React, { ReactNode, CSSProperties } from 'react'
+import * as React from 'react'
 import { usePrevious } from '../../../hooks/usePrevious'
 import { ThresholdUnits, parseThreshold } from './threshold'
 
@@ -6,18 +6,18 @@ type Fn = () => void
 export interface Props {
   next: Fn
   hasMore: boolean
-  children: ReactNode
-  loader: ReactNode
+  children: React.ReactNode
+  loader: React.ReactNode
   scrollThreshold?: number | string
-  endMessage?: ReactNode
-  style?: CSSProperties
+  endMessage?: React.ReactNode
+  style?: React.CSSProperties
   height?: number | string
-  scrollableTarget?: ReactNode
+  scrollableTarget?: React.ReactNode
   hasChildren?: boolean
   inverse?: boolean
   pullDownToRefresh?: boolean
-  pullDownToRefreshContent?: ReactNode
-  releaseToRefreshContent?: ReactNode
+  pullDownToRefreshContent?: React.ReactNode
+  releaseToRefreshContent?: React.ReactNode
   pullDownToRefreshThreshold?: number
   refreshFunction?: Fn
   onScroll?: (e: MouseEvent) => void
@@ -31,8 +31,9 @@ export default function InfiniteScroll(props: Props) {
   const [pullToRefreshThresholdBreached, setPullToRefreshThresholdBreached] =
     React.useState(false)
 
-  const el =
-    React.useRef<HTMLElement | undefined | (Window & typeof globalThis)>()
+  const el = React.useRef<
+    HTMLElement | undefined | (Window & typeof globalThis)
+  >()
   const _scrollableNode = React.useRef<HTMLElement | undefined | null>()
   const _infScroll = React.useRef<HTMLDivElement | undefined>()
   const lastScrollTop = React.useRef(0)
@@ -320,7 +321,7 @@ export default function InfiniteScroll(props: Props) {
     overflow: 'auto',
     WebkitOverflowScrolling: 'touch',
     ...props.style
-  } as CSSProperties
+  } as React.CSSProperties
   const hasChildren =
     props.hasChildren ||
     !!(

@@ -28,6 +28,13 @@ const BackButton = styled(IconButton)`
   }
 `
 
+export const ScrollDownButton = styled(IconButton)`
+&&{position:absolute;
+ bottom: 1rem;
+ background-color: ${({ theme }) => theme.palette.primary.light}
+ }}
+}`
+
 export function SwitchBack({ fn }: { fn: () => void }) {
   return (
     <BackButton onClick={fn}>
