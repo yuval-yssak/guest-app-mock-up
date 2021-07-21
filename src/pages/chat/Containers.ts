@@ -68,6 +68,7 @@ export const MessagesScrollable = styled.div.attrs({
   overflow-y: auto;
   display: grid;
   grid-row-gap: 2rem;
+  position: relative;
 
   &:focus {
     outline: none;

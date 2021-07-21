@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite'
 import TextField from '@material-ui/core/TextField'
 import SendIcon from '@material-ui/icons/Send'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
-
+import ArrowDownwardOutlinedIcon from '@material-ui/icons/ArrowDownwardOutlined'
 import { useMst } from '../../models/reactHook'
 import { ChatType } from '../../models/ChatModel'
 import DateMessages from './DateMessages'
@@ -17,6 +17,7 @@ import {
 } from './Containers'
 import { generateRandomMessages } from '../../defaultStore'
 import {
+  ScrollDownButton,
   SwitchBack,
   StickyDayLabel,
   StyledIconButton,
@@ -48,6 +49,14 @@ function StaffChatSinglePane() {
   if (visiblePane === 'users') {
     return <UsersPane switchToChatView={() => setVisiblePane('chat')} />
   } else return <ChatPage selectAnotherUser={() => setVisiblePane('users')} />
+}
+
+function ScrollToBottomIcon({ scrollFn }: { scrollFn: () => void }) {
+  return (
+    <ScrollDownButton onClick={scrollFn}>
+      <ArrowDownwardOutlinedIcon color="action" />
+    </ScrollDownButton>
+  )
 }
 
 const ChatPage = observer(function ChatPage({
@@ -175,6 +184,8 @@ const ChatPage = observer(function ChatPage({
     }
   }
 
+  const [notAtBottom, setNotAtBottom] = React.useState(true)
+
   if (!store.loggedInUser) return <h1>Not Logged In</h1>
 
   return (
@@ -193,9 +204,28 @@ const ChatPage = observer(function ChatPage({
             next={loadNext(chat.orderedMessages[0].timestamp)}
             height={containerHeight - 1 - 4 - 1}
             inverse
+            onScroll={e => {
+              const scrollingDiv = e.target as HTMLDivElement
+
+              setNotAtBottom(
+                scrollingDiv.scrollTop + scrollingDiv.clientHeight <
+                  scrollingDiv.scrollHeight - 20
+              )
+            }}
           >
             {messagesInDays}
           </StyledInfiniteScroll>
+          {notAtBottom && (
+            <ScrollToBottomIcon
+              scrollFn={() =>
+                containerDomRef.current
+                  ?.querySelector(
+                    '.date-messages:last-of-type section:last-child'
+                  )
+                  ?.scrollIntoView({ behavior: 'smooth' })
+              }
+            />
+          )}
         </MessagesScrollable>
         <UserInputSection staffView={staffView}>
           <TextField
