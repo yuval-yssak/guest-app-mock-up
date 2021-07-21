@@ -11,7 +11,10 @@ import {
   usePagination,
   Column,
   Hooks,
-  useGlobalFilter
+  useGlobalFilter,
+  Row,
+  IdType,
+  useAsyncDebounce
 } from 'react-table'
 import { IndeterminateCheckbox } from './IndeterminateCheckBox'
 import styled from 'styled-components/macro'
@@ -27,7 +30,6 @@ import TableToolbar from './TableToolbar'
 import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
 import Tooltip from '@material-ui/core/Tooltip'
-import { HTMLAttributes } from 'react'
 
 const TableBody = styled.div`
   overflow-y: scroll;
@@ -121,26 +123,11 @@ const Heading = styled.div<{ isDragging: boolean }>`
   white-space: nowrap;
 `
 
-const TableCell = ({
-  children,
-  ...rest
-}: HTMLAttributes<HTMLDivElement & { value: any }>) => {
-  return (
-    <div {...rest}>
-      <Tooltip title={React.Children.only(children) || ''}>
-        <div
-          style={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}
-        >
-          {children}
-        </div>
-      </Tooltip>
-    </div>
-  )
-}
+const DataGridContainer = styled.div`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
 
 const DroppableContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.palette.grey['200']};
@@ -256,6 +243,34 @@ function pushSelectColumn<DataStructure extends {}>(
   })
 }
 
+function filterFunction<D extends object>(
+  rows: Array<Row<D>>,
+  columnIds: Array<IdType<D>>,
+  filterValue: string
+): Array<Row<D>> {
+  return rows.filter(row =>
+    filterValue
+      .trim()
+      .split(/\W/)
+      .every(word => {
+        let wordMatch = false
+        for (const column in row.values) {
+          if (
+            ['name', 'comments'].some(
+              filterableColumn => column === filterableColumn
+            )
+          ) {
+            if (!wordMatch)
+              wordMatch = !!(row.values[column] as string).match(
+                new RegExp(word, 'i')
+              )
+          }
+        }
+        return wordMatch
+      })
+  )
+}
+
 export function ScrollableDataGrid<DataStructure extends {}>({
   columns,
   data,
@@ -335,7 +350,9 @@ export function DataGrid<DataStructure extends {}>({
     pageOptions,
     state: { pageIndex, pageSize, globalFilter },
     setPageSize,
-    setGlobalFilter
+    setGlobalFilter,
+    rows,
+    preGlobalFilteredRows
   } = useTable<DataStructure>(
     {
       columns,
@@ -346,29 +363,7 @@ export function DataGrid<DataStructure extends {}>({
       disableGlobalFilter: !withGlobalFilter,
       setData,
       // set global filter to search only in certain columns
-      globalFilter: (rows, _columnIds, filterValue: string) => {
-        return rows.filter(row =>
-          filterValue
-            .trim()
-            .split(/\W/)
-            .every(word => {
-              let wordMatch = false
-              for (const column in row.values) {
-                if (
-                  ['name', 'comments'].some(
-                    filterableColumn => column === filterableColumn
-                  )
-                ) {
-                  if (!wordMatch)
-                    wordMatch = !!(row.values[column] as string).match(
-                      new RegExp(word, 'i')
-                    )
-                }
-              }
-              return wordMatch
-            })
-        )
-      }
+      globalFilter: filterFunction
     },
     useBlockLayout,
     useResizeColumns,
@@ -402,6 +397,12 @@ export function DataGrid<DataStructure extends {}>({
 
   return (
     <>
+      {withGlobalFilter && (
+        <TableToolbar
+          setGlobalFilter={setGlobalFilter}
+          globalFilter={globalFilter}
+        />
+      )}
       <DragDropContext
         onDragStart={onDragStart}
         onDragUpdate={onDragUpdate}
@@ -451,8 +452,9 @@ export function DataGrid<DataStructure extends {}>({
                   return (
                     <div {...row.getRowProps()} className="tr">
                       {row.cells.map(cell => {
+                        const cellValue = cell.render('Cell')
                         return (
-                          <TableCell
+                          <div
                             {...cell.getCellProps()}
                             style={{
                               ...cell.getCellProps().style,
@@ -460,8 +462,16 @@ export function DataGrid<DataStructure extends {}>({
                             }}
                             className="td"
                           >
-                            {cell.render('Cell')}
-                          </TableCell>
+                            {typeof cell.value === 'boolean' ? (
+                              <DataGridContainer>{cellValue}</DataGridContainer>
+                            ) : (
+                              <Tooltip title={cellValue || ''}>
+                                <DataGridContainer>
+                                  {cellValue}
+                                </DataGridContainer>
+                              </Tooltip>
+                            )}
+                          </div>
                         )
                       })}
                     </div>
@@ -473,52 +483,132 @@ export function DataGrid<DataStructure extends {}>({
           )}
         </Droppable>
       </DragDropContext>
-      <div style={{ marginTop: '1rem' }}>
-        <span>
-          Page <strong>{pageIndex + 1}</strong> of{' '}
-          <strong>{pageOptions.length}</strong>{' '}
-        </span>
-        <span>
-          | Go to page:{' '}
-          <input
-            type="number"
-            value={pageIndex + 1}
-            onChange={e => {
-              const pageNumber = e.target.value ? Number(e.target.value) - 1 : 0
-              gotoPage(pageNumber)
-            }}
-          />
-        </span>
-        <select
-          value={pageSize}
-          onChange={e => setPageSize(Number(e.target.value))}
-        >
-          {[5, 10, 25, 50, Number.MAX_SAFE_INTEGER].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize === Number.MAX_SAFE_INTEGER ? 'All' : pageSize}
-            </option>
-          ))}
-        </select>
+      <Pagination
+        pageIndex={pageIndex}
+        pageOptions={pageOptions}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        gotoPage={gotoPage}
+        canPreviousPage={canPreviousPage}
+        previousPage={previousPage}
+        nextPage={nextPage}
+        canNextPage={canNextPage}
+        pageCount={pageCount}
+        totalItems={rows.length}
+        totalItemsPreGlobalFilter={preGlobalFilteredRows.length}
+      />
+    </>
+  )
+}
+
+function Pagination({
+  pageIndex,
+  pageOptions,
+  pageSize,
+  setPageSize,
+  gotoPage,
+  canPreviousPage,
+  previousPage,
+  nextPage,
+  canNextPage,
+  pageCount,
+  totalItems,
+  totalItemsPreGlobalFilter
+}: {
+  pageIndex: number
+  pageOptions: number[]
+  gotoPage: (updater: number | ((pageIndex: number) => number)) => void
+  pageSize: number
+  setPageSize: (pageSize: number) => void
+  canPreviousPage: any
+  previousPage: () => void
+  nextPage: () => void
+  canNextPage: boolean
+  pageCount: number
+  totalItems: number
+  totalItemsPreGlobalFilter: number
+}) {
+  const [pageInput, setPageInput] = React.useState<number | ''>(pageIndex + 1)
+  React.useEffect(() => {
+    setPageInput(pageIndex + 1)
+  }, [pageIndex])
+
+  const delayedGotoPage = useAsyncDebounce(value => {
+    gotoPage(value)
+  }, 200)
+
+  return (
+    <div
+      style={{
+        marginTop: '1rem',
+        display: 'flex',
+        flexDirection: 'row-reverse'
+      }}
+    >
+      <div>
+        {totalItemsPreGlobalFilter !== totalItems && (
+          <div>{`Overall ${totalItemsPreGlobalFilter} items`}</div>
+        )}
+        <span>{totalItems} items </span>
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>
         <button onClick={() => previousPage()} disabled={!canPreviousPage}>
           Previous
         </button>
+        <span style={{ padding: '0 1em', fontSize: '0.9rem' }}>
+          {
+            <input
+              style={{
+                width: '2.5em',
+                outline: 'none',
+                marginRight: '0.2rem',
+                textAlign: 'center'
+              }}
+              value={pageInput}
+              onChange={e => {
+                // limit input to numbers or empty value, debounce the page turning
+                if (
+                  !isNaN(+e.target.value) &&
+                  +e.target.value > 0 &&
+                  +e.target.value <= pageOptions.length
+                ) {
+                  setPageInput(+e.target.value)
+                  delayedGotoPage(+e.target.value - 1)
+                }
+                if (e.target.value === '') setPageInput('')
+              }}
+              onBlur={e => {
+                // restore the value when it's empty and blurred.
+                // Empty value is only allowed while editing the page number
+                if (e.target.value === '') setPageInput(pageIndex + 1)
+              }}
+            />
+          }
+          of {pageOptions.length}
+        </span>
         <button onClick={() => nextPage()} disabled={!canNextPage}>
           Next
         </button>
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+        <button
+          style={{ marginRight: '1em' }}
+          onClick={() => gotoPage(pageCount - 1)}
+          disabled={!canNextPage}
+        >
           {'>>'}
         </button>
+        <select
+          value={pageSize}
+          onChange={e => setPageSize(Number(e.target.value))}
+        >
+          {[2, 5, 10, 25, 50, Number.MAX_SAFE_INTEGER].map(pageSize => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize === Number.MAX_SAFE_INTEGER ? 'All' : pageSize}
+            </option>
+          ))}
+        </select>
       </div>
-      {withGlobalFilter && (
-        <TableToolbar
-          setGlobalFilter={setGlobalFilter}
-          globalFilter={globalFilter}
-        />
-      )}
-    </>
+    </div>
   )
 }
 
@@ -571,6 +661,19 @@ export const EditableCell = React.memo(function EditableCell<
   )
 })
 
+const ReadOnlyCheckbox = styled(Checkbox).attrs<{ checked: boolean }>({
+  disabled: true
+})`
+  &&& {
+    color: ${({ theme, checked }) =>
+      checked
+        ? theme.palette.primary.main
+        : theme.palette.mode === 'dark'
+        ? 'white'
+        : 'black'};
+  }
+`
+
 export function GridCheckbox({ value }: { value: boolean }) {
-  return <Checkbox checked={value} />
+  return <ReadOnlyCheckbox checked={value} />
 }
