@@ -84,10 +84,11 @@ const ChatPage = observer(function ChatPage({
 
   const containerDomRef = React.createRef<HTMLDivElement>()
   const [containerHeight, setContainerHeight] = React.useState(0)
-  const [beforeAnyScroll, setBeforeAnyScroll] = React.useState(true)
+  // const [beforeAnyScroll, setBeforeAnyScroll] = React.useState(true)
+  const beforeAnyScroll = React.useRef(true)
 
   React.useEffect(() => {
-    setBeforeAnyScroll(true)
+    beforeAnyScroll.current = true
   }, [store.view.id])
 
   // track divHeight whenever DOM element changes
@@ -125,7 +126,7 @@ const ChatPage = observer(function ChatPage({
         store.chats
           .findChat(+(store.view.id || ''))
           ?.insertMessages(newMessages)
-        setBeforeAnyScroll(false)
+        beforeAnyScroll.current = false
       }, 3000)
     }
   }
@@ -140,7 +141,7 @@ const ChatPage = observer(function ChatPage({
       : store.chats.withSelf
   )!
 
-  useWhenPropSustained(store.view.id, 2000, () => chat.setAllMessagesRead())
+  useWhenPropSustained(store.view.id, 4000, () => chat.setAllMessagesRead())
 
   const days = arrangeChatInDays(chat)
 
@@ -157,7 +158,14 @@ const ChatPage = observer(function ChatPage({
 
   // scroll last read message or first unread messages on any update
   React.useEffect(() => {
-    if (beforeAnyScroll)
+    console.log(
+      'scrolling debate',
+      beforeAnyScroll.current,
+      chat?.messages.length,
+      dividerRef,
+      containerDomRef
+    )
+    if (beforeAnyScroll.current)
       setImmediate(() => {
         if (initialUnreadCount.current) dividerRef.current?.scrollIntoView(true)
         else {
@@ -165,9 +173,9 @@ const ChatPage = observer(function ChatPage({
             ?.querySelector('.date-messages:last-of-type section:last-child')
             ?.scrollIntoView()
         }
-        setBeforeAnyScroll(false)
+        beforeAnyScroll.current = false
       })
-  }, [chat?.messages.length, dividerRef, containerDomRef, beforeAnyScroll])
+  }, [chat?.messages.length, dividerRef, containerDomRef])
 
   function submitMessage() {
     if (!userInput.trim()) return
