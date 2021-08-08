@@ -287,7 +287,7 @@ export const UnreadMessagesDivider = styled.div.attrs({
 })`
   display: grid;
   grid-template-columns: max-content 1fr;
-  grid-column: 1 / 16;
+  grid-column: 1 / 20;
   position: relative;
   align-items: center;
   grid-gap: 0.5rem;

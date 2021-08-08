@@ -233,10 +233,10 @@ function pushSelectColumn<DataStructure extends {}>(
         )),
         Cell: React.memo(
           ({ row }: { row: UseRowSelectRowProps<DataStructure> }) => (
-            <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+            <Checkbox {...row.getToggleRowSelectedProps()} />
           )
         ),
-        width: 20
+        width: 50
       },
       ...columns
     ]
@@ -256,7 +256,7 @@ function filterFunction<D extends object>(
         let wordMatch = false
         for (const column in row.values) {
           if (
-            ['name', 'comments'].some(
+            ['name', 'comments', ''].some(
               filterableColumn => column === filterableColumn
             )
           ) {
@@ -546,10 +546,11 @@ function Pagination({
       }}
     >
       <div>
+        <span>{totalItems} </span>
         {totalItemsPreGlobalFilter !== totalItems && (
-          <div>{`Overall ${totalItemsPreGlobalFilter} items`}</div>
+          <span>{`of ${totalItemsPreGlobalFilter} `}</span>
         )}
-        <span>{totalItems} items </span>
+        <span>items </span>
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>

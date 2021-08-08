@@ -141,7 +141,7 @@ const ChatPage = observer(function ChatPage({
       : store.chats.withSelf
   )!
 
-  useWhenPropSustained(store.view.id, 4000, () => chat.setAllMessagesRead())
+  useWhenPropSustained(store.view.id, 40000, () => chat.setAllMessagesRead())
 
   const days = arrangeChatInDays(chat)
 

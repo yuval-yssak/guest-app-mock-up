@@ -98,7 +98,7 @@ export const StickyDayLabel = styled.div.attrs(({ day }: { day: string }) => ({
   top: 0.5rem;
   width: 7.3rem;
   text-align: center;
-  z-index: 2;
+  z-index: 4;
 `
 
 export const StyledInfiniteScroll = styled(InfiniteScroll)`

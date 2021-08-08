@@ -101,13 +101,17 @@ export default function TemporaryDrawer({
               </StyledListItemIcon>
               <Typography>Chat</Typography>
             </ListItem>
-            <ListItem button onClick={() => store.view.openActivitiesPage()}>
+            <ListItem
+              button
+              onClick={() => store.view.openActivitiesPage()}
+              disabled
+            >
               <StyledListItemIcon>
                 <EventIcon />
               </StyledListItemIcon>
               <Typography>Activities</Typography>
             </ListItem>
-            <ListItem button>
+            <ListItem button disabled>
               <StyledListItemIcon>
                 <AccountBoxIcon />
               </StyledListItemIcon>
@@ -119,7 +123,7 @@ export default function TemporaryDrawer({
               </StyledListItemIcon>
               <Typography>Info Section</Typography>
             </ListItem>
-            <ListItem button>
+            <ListItem button disabled>
               <StyledListItemIcon>
                 <MapIcon />
               </StyledListItemIcon>
