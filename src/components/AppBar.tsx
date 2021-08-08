@@ -132,9 +132,13 @@ export default function ProminentAppBar({
     setMoreEl(null)
   }
 
+  const StackedAppBar = styled(AppBar)`
+    z-index: 1000;
+  `
+
   return (
     <div>
-      <AppBar position="relative" /* set stacking context for shadow*/>
+      <StackedAppBar position="relative" /* set stacking context for shadow*/>
         <StyledToolbar>
           <IconButton
             onClick={toggleDrawer(true)}
@@ -157,7 +161,7 @@ export default function ProminentAppBar({
             <MoreIcon />
           </IconButton>
         </StyledToolbar>
-      </AppBar>
+      </StackedAppBar>
       <Menu
         id="simple-menu"
         anchorEl={moreEl}
