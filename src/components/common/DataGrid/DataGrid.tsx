@@ -81,7 +81,7 @@ function ColumnComponent<DataStructure extends {}>({
       onMouseEnter={() => setOnHover(true)}
       onMouseLeave={() => setOnHover(false)}
     >
-      <Tooltip title={column.render('Header') || ''}>
+      <TooltipOnOverflow tooltip={column.render('Header') || ''}>
         <Heading
           isDragging={snapshot.isDragging}
           {...provided.dragHandleProps}
@@ -105,7 +105,7 @@ function ColumnComponent<DataStructure extends {}>({
             ></SortIcon>
           )}
         </Heading>
-      </Tooltip>
+      </TooltipOnOverflow>
     </StyledColumn>
   )
 }
@@ -462,15 +462,15 @@ export function DataGrid<DataStructure extends {}>({
                             }}
                             className="td"
                           >
-                            {typeof cell.value === 'boolean' ? (
+                            <TooltipOnOverflow
+                              tooltip={
+                                cell.column.id === 'selection' // manually exclude "selection" column
+                                  ? ''
+                                  : cellValue || ''
+                              }
+                            >
                               <DataGridContainer>{cellValue}</DataGridContainer>
-                            ) : (
-                              <Tooltip title={cellValue || ''}>
-                                <DataGridContainer>
-                                  {cellValue}
-                                </DataGridContainer>
-                              </Tooltip>
-                            )}
+                            </TooltipOnOverflow>
                           </div>
                         )
                       })}
@@ -677,4 +677,34 @@ const ReadOnlyCheckbox = styled(Checkbox).attrs<{ checked: boolean }>({
 
 export function GridCheckbox({ value }: { value: boolean }) {
   return <ReadOnlyCheckbox checked={value} />
+}
+
+const TooltippedDiv = styled.div`
+  width: 100%;
+`
+
+function TooltipOnOverflow({
+  children,
+  tooltip
+}: {
+  children: React.ReactElement
+  tooltip: NonNullable<React.ReactNode>
+}) {
+  const ref = React.createRef<HTMLDivElement>()
+  const [overflow, setOverflow] = React.useState(false)
+
+  React.useEffect(() => {
+    setOverflow(
+      Math.abs(
+        (ref.current?.firstElementChild as HTMLDivElement)?.offsetWidth -
+          (ref.current?.firstElementChild?.scrollWidth || 0)
+      ) > 1
+    )
+  }, [ref])
+
+  return (
+    <TooltippedDiv ref={ref}>
+      {overflow ? <Tooltip title={tooltip}>{children}</Tooltip> : children}
+    </TooltippedDiv>
+  )
 }
