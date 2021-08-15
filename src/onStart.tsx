@@ -1,3 +1,4 @@
+import dayjs, { Dayjs } from 'dayjs'
 import { reaction, autorun } from 'mobx'
 import { getSnapshot, applySnapshot } from 'mobx-state-tree'
 import { RootStoreType } from './models/RootStore'
@@ -105,6 +106,32 @@ export default function onStart(rootStore: RootStoreType) {
       !rootStore.announcements.editMode
     ) {
       rootStore.announcements.enterIntoEditMode()
+    }
+  })
+
+  // when a chat view is changed after being sustained for over 3 seconds,
+  // set it as has been read. (while swapping between chat users)
+  let previousChatUserID: string | undefined = rootStore.view.id
+  let chatUserIDLastChange: Dayjs
+  autorun(() => {
+    if (
+      rootStore.view.page === '/chat' &&
+      rootStore.view.id !== previousChatUserID
+    ) {
+      console.log(previousChatUserID)
+      if (dayjs().diff(chatUserIDLastChange, 'seconds') >= 3) {
+        if (previousChatUserID)
+          rootStore.chats
+            .findChat(+previousChatUserID)
+            ?.setToSeeAllMessagesRead()
+        else rootStore.chats.withSelf.setToSeeAllMessagesRead()
+
+        previousChatUserID = rootStore.view.id
+        chatUserIDLastChange = dayjs()
+      } else if (rootStore.view.page === '/chat') {
+        previousChatUserID = rootStore.view.id
+        chatUserIDLastChange = dayjs()
+      }
     }
   })
 }

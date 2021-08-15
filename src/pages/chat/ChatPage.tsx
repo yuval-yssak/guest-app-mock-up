@@ -25,7 +25,6 @@ import {
   UserInputSection
 } from './ChatPageStyles'
 import { useWhenPropSustained } from '../../components/common/hooks'
-import { usePrevious } from '../../hooks/usePrevious'
 
 const ChatContainerPage = observer(function ChatContainerPage() {
   const store = useMst()
@@ -130,35 +129,20 @@ const ChatPage = observer(function ChatPage({
       : store.chats.withSelf
   )!
 
-  const userReadMessageRef = React.useRef(false)
-
-  const previousChat = usePrevious(chat)
-
   // set all messages as read after 3 seconds timeout.
   useWhenPropSustained(store.view.id, 3000, () => {
     chat.sendReadConfirmation()
-    userReadMessageRef.current = true
+    chat.setAllMessagesRead()
   })
-
-  React.useEffect(() => {
-    if (
-      userReadMessageRef.current &&
-      chat.unreadCount &&
-      chat !== previousChat
-    ) {
-      previousChat?.setAllMessagesRead()
-      userReadMessageRef.current = false
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.view.id])
 
   const messagesInDays = React.useMemo(
     () => buildMessagesElements(chat, dividerRef),
     [chat, dividerRef]
   )
 
-  const initialUnreadCount = React.useRef(chat?.unreadCount)
+  const initialUnreadCount = React.useRef(chat?.unreadCountShown)
   React.useEffect(() => {
-    initialUnreadCount.current = chat?.unreadCount
+    initialUnreadCount.current = chat?.unreadCountShown
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.view.id])
 
@@ -308,15 +292,15 @@ function buildMessagesElements(
     })
 
     // add "New messages" divider
-    if (chat?.unreadCount) {
+    if (chat?.unreadCountShown) {
       // find last read message and stick the unread divider under it.
-      const lastReadMessage = date.messages.findIndex(
+      const lastReadMessageShown = date.messages.findIndex(
         message =>
-          message.timestamp.getTime() === chat?.lastReadTimestamp.getTime()
+          message.timestamp.getTime() === chat?.lastReadTimestampShown.getTime()
       )
-      if (~lastReadMessage) {
+      if (~lastReadMessageShown) {
         messages.splice(
-          lastReadMessage + 1,
+          lastReadMessageShown + 1,
           0,
           <UnreadMessagesDivider key="unread-divider" ref={dividerRef} />
         )

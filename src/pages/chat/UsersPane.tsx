@@ -76,8 +76,8 @@ const User = observer(
 
     const [boldenName, setBoldenName] = React.useState(!!chat.unreadCount)
 
-    // show name as normal type if it is shown consecutively for more than 3 seconds
-    useWhenPropSustained(store.view.id, 3000, () => {
+    // show name as normal type if it is shown consecutively for more than 1.5 seconds
+    useWhenPropSustained(store.view.id, 1500, () => {
       if (store.view.id === id) setBoldenName(false)
     })
 
@@ -221,7 +221,8 @@ function UsersPaneComponent({
             newUsers,
             user.id
           ) as UserChatSnapshotType['chat']['messages'],
-          lastReadTimestamp: 0
+          lastReadTimestamp: 0,
+          lastReadTimestampShown: 0
         }
       }))
       store.addUsers(newUsers)

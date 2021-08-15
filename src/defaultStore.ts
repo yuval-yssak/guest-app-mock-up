@@ -226,12 +226,13 @@ const defaultStore: RootStoreSnapshotIn = {
       .filter(user => user.id !== loggedInUser)
       .map(user => {
         const messages = generateRandomMessages(users, user.id, 20)
-
+        const lastReadTimestamp = randomlyChooseLastReadMessageTime(messages)
         return {
           user: user.id,
           chat: {
             messages,
-            lastReadTimestamp: randomlyChooseLastReadMessageTime(messages)
+            lastReadTimestamp,
+            lastReadTimestampShown: lastReadTimestamp
           }
         }
       }),
@@ -239,9 +240,11 @@ const defaultStore: RootStoreSnapshotIn = {
     withSelf: (() => {
       const messages = generateRandomMessages(users, loggedInUser, 20)
 
+      const lastReadTimestamp = randomlyChooseLastReadMessageTime(messages)
       return {
         messages,
-        lastReadTimestamp: randomlyChooseLastReadMessageTime(messages)
+        lastReadTimestamp,
+        lastReadTimestampShown: lastReadTimestamp
       }
     })()
   },

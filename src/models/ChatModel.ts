@@ -54,6 +54,7 @@ const ChatModel = types
 
     // Default date to Unix epoch, so everything is "unread" by default
     lastReadTimestamp: types.optional(types.Date, new Date(0)),
+    lastReadTimestampShown: types.optional(types.Date, new Date(0)),
     messages: types.array(MessageModel)
   })
   .views(self => ({
@@ -69,6 +70,14 @@ const ChatModel = types
           count + (message.timestamp > self.lastReadTimestamp ? 1 : 0),
         0
       )
+    },
+    get unreadCountShown() {
+      if (self.lastReadTimestampShown.getTime() === 0) return 0
+      return self.messages.reduce(
+        (count, message) =>
+          count + (message.timestamp > self.lastReadTimestampShown ? 1 : 0),
+        0
+      )
     }
   }))
   .actions(self => ({
@@ -81,6 +90,12 @@ const ChatModel = types
     },
     setAllMessagesRead() {
       self.lastReadTimestamp = self.messages
+        .map(m => dayjs(m.timestamp))
+        .reduce((max, t) => (max.isBefore(t) ? t : max), dayjs(0))
+        .toDate()
+    },
+    setToSeeAllMessagesRead() {
+      self.lastReadTimestampShown = self.messages
         .map(m => dayjs(m.timestamp))
         .reduce((max, t) => (max.isBefore(t) ? t : max), dayjs(0))
         .toDate()
