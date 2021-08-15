@@ -49,7 +49,10 @@ const MessageModel = types
 
 const ChatModel = types
   .model('ChatModel', {
-    // default date to Unix epoch, so everything is "unread" by default
+    // Last read timestamp is not updated while the user is still
+    // reading the message although the read acknowledgement can get sent.
+
+    // Default date to Unix epoch, so everything is "unread" by default
     lastReadTimestamp: types.optional(types.Date, new Date(0)),
     messages: types.array(MessageModel)
   })
@@ -81,6 +84,9 @@ const ChatModel = types
         .map(m => dayjs(m.timestamp))
         .reduce((max, t) => (max.isBefore(t) ? t : max), dayjs(0))
         .toDate()
+    },
+    sendReadConfirmation() {
+      // placeholder for graphql modification query, view model stays the same
     }
   }))
   .actions(self => ({
