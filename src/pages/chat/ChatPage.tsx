@@ -24,6 +24,8 @@ import {
   StyledLinearProgress,
   UserInputSection
 } from './ChatPageStyles'
+import { useWhenPropSustained } from '../../components/common/hooks'
+import { usePrevious } from '../../hooks/usePrevious'
 
 const ChatContainerPage = observer(function ChatContainerPage() {
   const store = useMst()
@@ -50,25 +52,6 @@ function StaffChatSinglePane() {
   } else return <ChatPage selectAnotherUser={() => setVisiblePane('users')} />
 }
 
-// This hook issues a callback when a prop is sustained for a certain timeout
-function useWhenPropSustained(
-  prop: unknown,
-  timeout: number,
-  callback: () => void
-) {
-  const initialTimeRef = React.useRef(Date.now())
-
-  React.useEffect(() => {
-    initialTimeRef.current = Date.now()
-  }, [prop])
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      if (Date.now() - initialTimeRef.current >= timeout) callback()
-    }, timeout)
-  }, [prop, timeout, callback])
-}
-
 const ChatPage = observer(function ChatPage({
   staffView = false,
   selectAnotherUser
@@ -77,21 +60,26 @@ const ChatPage = observer(function ChatPage({
   selectAnotherUser?: () => void
 }) {
   const store = useMst()
-  const withPerson = store.view.id
-  const [userInput, setUserInput] = React.useState('')
+  const withPerson = store.view.id // chat identifier - person ID
+  const [userInput, setUserInput] = React.useState('') // user's compose message section input (controlled elememt)
 
+  // holding the "New" messages DOM divider for scrolling purposes
   const dividerRef = React.createRef<HTMLDivElement>()
 
+  // holding the DOM messages container
   const containerDomRef = React.createRef<HTMLDivElement>()
+  // control the DOM messages container's height
   const [containerHeight, setContainerHeight] = React.useState(0)
-  // const [beforeAnyScroll, setBeforeAnyScroll] = React.useState(true)
+
+  // reliminary scrolling to unread section is done automatically, only when the chat loads.
   const beforeAnyScroll = React.useRef(true)
 
+  // sets to true whenever another chat is selected.
   React.useEffect(() => {
     beforeAnyScroll.current = true
   }, [store.view.id])
 
-  // track divHeight whenever DOM element changes
+  // track divHeight whenever DOM element changes.
   React.useEffect(() => {
     function setHeight() {
       if (containerDomRef.current) {
@@ -113,6 +101,7 @@ const ChatPage = observer(function ChatPage({
     }
   }, [containerDomRef, containerHeight])
 
+  // holds the DOM user input element.
   const userInputRef = React.createRef<HTMLDivElement>()
   function loadNext(lastTimestamp: Date) {
     return function () {
@@ -141,13 +130,30 @@ const ChatPage = observer(function ChatPage({
       : store.chats.withSelf
   )!
 
-  useWhenPropSustained(store.view.id, 40000, () => chat.setAllMessagesRead())
+  const userReadMessageRef = React.useRef(false)
 
-  const days = arrangeChatInDays(chat)
+  const previousChat = usePrevious(chat)
+
+  // set all messages as read after 3 seconds timeout.
+  useWhenPropSustained(store.view.id, 3000, () => {
+    chat.sendReadConfirmation()
+    userReadMessageRef.current = true
+  })
+
+  React.useEffect(() => {
+    if (
+      userReadMessageRef.current &&
+      chat.unreadCount &&
+      chat !== previousChat
+    ) {
+      previousChat?.setAllMessagesRead()
+      userReadMessageRef.current = false
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store.view.id])
 
   const messagesInDays = React.useMemo(
-    () => buildMessagesElements(days, chat, dividerRef),
-    [chat, days, dividerRef]
+    () => buildMessagesElements(chat, dividerRef),
+    [chat, dividerRef]
   )
 
   const initialUnreadCount = React.useRef(chat?.unreadCount)
@@ -156,15 +162,8 @@ const ChatPage = observer(function ChatPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.view.id])
 
-  // scroll last read message or first unread messages on any update
+  // scroll to last read message or first unread messages on any update
   React.useEffect(() => {
-    console.log(
-      'scrolling debate',
-      beforeAnyScroll.current,
-      chat?.messages.length,
-      dividerRef,
-      containerDomRef
-    )
     if (beforeAnyScroll.current)
       setImmediate(() => {
         if (initialUnreadCount.current) dividerRef.current?.scrollIntoView(true)
@@ -286,10 +285,11 @@ function arrangeChatInDays(chat: ChatType) {
 }
 
 function buildMessagesElements(
-  days: { date: string; messages: ChatType['orderedMessages'] }[],
   chat: ChatType,
   dividerRef: React.RefObject<HTMLDivElement>
 ) {
+  const days = arrangeChatInDays(chat)
+
   return days.map(date => {
     const messages = date.messages.map(message => {
       const props = {

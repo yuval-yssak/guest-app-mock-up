@@ -19,6 +19,7 @@ import {
   StyledUserName,
   TimeSignature
 } from './UsersPaneStyles'
+import { useWhenPropSustained } from '../../components/common/hooks'
 
 //todo: this function has a duplicate in Messages.tsx
 const UserAvatar = ({ src, name }: { src: string; name: string }) => {
@@ -46,6 +47,7 @@ const User = observer(
     const selected = (store.view.id || '') === id
     const [firstRender, setFirstRender] = React.useState(true)
 
+    // Scroll to selected user if it is not in view
     React.useEffect(() => {
       setImmediate(() => {
         if (
@@ -71,6 +73,13 @@ const User = observer(
     const chat = id
       ? store.chats.withUsers!.find(uc => uc.user.id === +id)!.chat
       : store.chats.withSelf
+
+    const [boldenName, setBoldenName] = React.useState(!!chat.unreadCount)
+
+    // show name as normal type if it is shown consecutively for more than 3 seconds
+    useWhenPropSustained(store.view.id, 3000, () => {
+      if (store.view.id === id) setBoldenName(false)
+    })
 
     const lastUserName = chat.unreadCount
       ? getLastReadMessage()?.user.personName.split(/\s/)[0]
@@ -113,7 +122,7 @@ const User = observer(
             }
           />
           <UserTeaser>
-            <StyledUserName $unread={!!chat.unreadCount}>
+            <StyledUserName $unread={boldenName}>
               {store.users.find(user => user.id === +id)?.personName ||
                 'Front Desk'}
             </StyledUserName>
