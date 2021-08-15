@@ -24,7 +24,6 @@ import {
   StyledLinearProgress,
   UserInputSection
 } from './ChatPageStyles'
-import { useWhenPropSustained } from '../../components/common/hooks'
 
 const ChatContainerPage = observer(function ChatContainerPage() {
   const store = useMst()
@@ -128,12 +127,6 @@ const ChatPage = observer(function ChatPage({
         )?.chat
       : store.chats.withSelf
   )!
-
-  // set all messages as read after 3 seconds timeout.
-  useWhenPropSustained(store.view.id, 3000, () => {
-    chat.sendReadConfirmation()
-    chat.setAllMessagesRead()
-  })
 
   const messagesInDays = React.useMemo(
     () => buildMessagesElements(chat, dividerRef),

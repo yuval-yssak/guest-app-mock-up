@@ -114,24 +114,29 @@ export default function onStart(rootStore: RootStoreType) {
   let previousChatUserID: string | undefined = rootStore.view.id
   let chatUserIDLastChange: Dayjs
   autorun(() => {
-    if (
-      rootStore.view.page === '/chat' &&
-      rootStore.view.id !== previousChatUserID
-    ) {
-      console.log(previousChatUserID)
-      if (dayjs().diff(chatUserIDLastChange, 'seconds') >= 3) {
-        if (previousChatUserID)
-          rootStore.chats
-            .findChat(+previousChatUserID)
-            ?.setToSeeAllMessagesRead()
-        else rootStore.chats.withSelf.setToSeeAllMessagesRead()
+    if (rootStore.view.page !== '/chat') return
+    if (rootStore.view.id === previousChatUserID) return
 
-        previousChatUserID = rootStore.view.id
-        chatUserIDLastChange = dayjs()
-      } else if (rootStore.view.page === '/chat') {
-        previousChatUserID = rootStore.view.id
-        chatUserIDLastChange = dayjs()
-      }
+    // the following code will run whenever chat view is switched.
+
+    // If the chat is sustained for over the seconds - SHOW as read.
+    if (dayjs().diff(chatUserIDLastChange, 'seconds') >= 3) {
+      const previousChat = rootStore.chats.findChat(+(previousChatUserID || ''))
+      previousChat?.setToSeeAllMessagesRead()
     }
+
+    previousChatUserID = rootStore.view.id
+    chatUserIDLastChange = dayjs()
+
+    // If the chat is sustained for over the seconds - MARK as read.
+    setTimeout(() => {
+      if (dayjs().diff(chatUserIDLastChange, 'milliseconds') >= 1500) {
+        const newChat = rootStore.chats.findChat(+(rootStore.view.id || ''))
+        if (!!newChat?.unreadCount) {
+          newChat?.sendReadConfirmation()
+          newChat?.setAllMessagesRead()
+        }
+      }
+    }, 1500)
   })
 }
