@@ -1,18 +1,14 @@
 import React from 'react'
+import DirectionsWalkIcon from '@material-ui/icons/DirectionsWalk'
 import FlightLandIcon from '@material-ui/icons/FlightLand'
+import FlightTakeoffIcon from '@material-ui/icons/FlightTakeoff'
+import GroupIcon from '@material-ui/icons/Group'
+import Typography from '@material-ui/core/Typography'
+import SchoolIcon from '@material-ui/icons/School'
+import SearchIcon from '@material-ui/icons/Search'
 import styled from 'styled-components'
 import { useMst } from '../../models/reactHook'
-import Typography from '@material-ui/core/Typography'
 import PageContentWrapper from '../../components/PageContentWrapper'
-
-const MainTeasers = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 2rem;
-  justify-items: center;
-`
-
-const SubTeasers = MainTeasers
 
 const StyledTeaser = styled.div`
   text-align: center;
@@ -36,6 +32,37 @@ const StyledTeaser = styled.div`
 
   & .sub-label {
     font-size: 2rem;
+  }
+`
+
+const CustomPageContentWrapper = styled(PageContentWrapper).attrs({
+  className: 'registrations-teasers-container'
+})`
+  grid-template-rows: unset;
+  grid-auto-rows: max-content;
+
+  @media (max-width: 36.5em) {
+    grid-template-columns: 95%;
+  }
+`
+
+const MainTeasers = styled.div.attrs({
+  className: 'main-teasers'
+})`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1rem;
+
+  & > div {
+    flex: 1;
+    min-width: 15rem;
+  }
+`
+const SubTeasers = styled(MainTeasers)`
+  & > div {
+    background-color: #97f7d7;
   }
 `
 
@@ -65,37 +92,94 @@ function Teaser({
   )
 }
 
+const Heading = styled(Typography).attrs({ variant: 'h4' })`
+  text-align: left;
+  text-transform: uppercase;
+
+  && {
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+  }
+`
+
 function AdminRegistrationsView() {
   return (
-    <PageContentWrapper>
-      <Typography variant="h4" style={{ textAlign: 'left' }}>
-        ARRIVALS
-      </Typography>
+    <CustomPageContentWrapper>
+      <Heading>Departures</Heading>
       <MainTeasers>
         <Teaser
           label="Today"
           subLabel="12"
           link="arriving-today"
-          Icon={FlightLandIcon}
+          Icon={FlightTakeoffIcon}
         />
-        <Teaser label="Tomorrow" subLabel="5" link="arriving-tomorrow" />
-        <Teaser label="Upcoming" subLabel="39" link="arriving-soon" />
-        <Teaser label="Departing today" subLabel="2" link="departing-today" />
         <Teaser
-          label="Departing tomorrow"
-          subLabel="2"
-          link="departing-tomorrow"
+          label="Tomorrow"
+          subLabel="5"
+          link="arriving-tomorrow"
+          Icon={FlightTakeoffIcon}
+        />
+        <Teaser
+          label="Upcoming"
+          subLabel="39"
+          link="arriving-soon"
+          Icon={FlightTakeoffIcon}
         />
       </MainTeasers>
-      <br />
+      <Heading>Arrivals</Heading>
+      <MainTeasers>
+        <Teaser
+          label="Yesterday"
+          subLabel="8"
+          link="arriving-yesterday"
+          Icon={FlightLandIcon}
+        />
+        <Teaser
+          label="Today"
+          subLabel="2"
+          link="arriving-today"
+          Icon={FlightLandIcon}
+        />
+        <Teaser
+          label="Upcoming"
+          subLabel="2"
+          link="arriving-upcoming"
+          Icon={FlightLandIcon}
+        />
+      </MainTeasers>
+      <Heading>In House</Heading>
+      <MainTeasers>
+        <Teaser
+          label="In House"
+          subLabel="195"
+          link="in-house"
+          Icon={GroupIcon}
+        />
+        <Teaser
+          label="TTC/ATTC"
+          subLabel="39"
+          link="current-ttc-attc-students"
+          Icon={SchoolIcon}
+        />
+        <Teaser
+          label="Karma Yogis"
+          subLabel="99"
+          link="current-ky"
+          Icon={DirectionsWalkIcon}
+        />
+      </MainTeasers>
+      <Heading>Other</Heading>
       <SubTeasers>
-        <Teaser label="In House" subLabel="195" link="in-house" />
-        <Teaser label="Search" subLabel="Search" link="search" />
+        <Teaser
+          label="Global Search"
+          subLabel="63452"
+          link="search"
+          Icon={SearchIcon}
+        />
         <Teaser label="Arriving Tomorrow" subLabel="5" link="" />
         <Teaser label="Arriving in next 7 days" subLabel="39" link="" />
-        <Teaser label="Departing tomorrow" subLabel="2" link="" />
       </SubTeasers>
-    </PageContentWrapper>
+    </CustomPageContentWrapper>
   )
 }
 

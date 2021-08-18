@@ -18,42 +18,40 @@ const gridGap = '2rem'
 const StyledPageContentWrapper = styled(PageContentWrapper).attrs({
   className: 'info-section-container'
 })`
-  && {
-    overflow-y: scroll;
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(min-content, ${minTeaserWidth})
-    );
-    justify-content: center;
-    grid-gap: ${gridGap};
-    grid-template-rows: unset;
-    align-content: safe center;
-    align-items: stretch;
-    padding: 2rem
-      calc(
-        (
-            100% -
-              calc(
-                ${minTeaserWidth} * ${maxTeasersInRow} + ${gridGap} *
-                  ${maxTeasersInRow - 1}
-              )
-          ) / 2
-      ); // set padding to limit the number of items in a row, while maintaining the vertical scroller on the far right.
-    // the calculation of the padding is the whole width, subtracting the items and the gaps, dividing by 2 (for the left and right paddings)
-    // if this would be done in grid-template-columns, the vertical scroller would be misplaced.
-    margin-bottom: 2rem;
+  overflow-y: scroll;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min-content, ${minTeaserWidth})
+  );
+  justify-content: center;
+  grid-gap: ${gridGap};
+  grid-template-rows: unset;
+  align-content: safe center;
+  align-items: stretch;
+  padding: 2rem
+    calc(
+      (
+          100% -
+            calc(
+              ${minTeaserWidth} * ${maxTeasersInRow} + ${gridGap} *
+                ${maxTeasersInRow - 1}
+            )
+        ) / 2
+    ); // set padding to limit the number of items in a row, while maintaining the vertical scroller on the far right.
+  // the calculation of the padding is the whole width, subtracting the items and the gaps, dividing by 2 (for the left and right paddings)
+  // if this would be done in grid-template-columns, the vertical scroller would be misplaced.
+  margin-bottom: 2rem;
 
-    @media (max-width: 69em) {
-      padding: 0 5%;
-    }
+  @media (max-width: 69em) {
+    padding: 0 5%;
+  }
 
-    @media (max-width: 55em) {
-      padding: 1rem;
-    }
+  @media (max-width: 55em) {
+    padding: 1rem;
+  }
 
-    @media (max-width: 28em) {
-      padding: 1rem 0.4rem;
-    }
+  @media (max-width: 28em) {
+    padding: 1rem 0.4rem;
   }
 `
 
