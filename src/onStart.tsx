@@ -130,13 +130,13 @@ export default function onStart(rootStore: RootStoreType) {
 
     // If the chat is sustained for over the seconds - MARK as read.
     setTimeout(() => {
-      if (dayjs().diff(chatUserIDLastChange, 'milliseconds') >= 1500) {
+      if (dayjs().diff(chatUserIDLastChange, 'milliseconds') >= 3000) {
         const newChat = rootStore.chats.findChat(+(rootStore.view.id || ''))
         if (!!newChat?.unreadCount) {
           newChat?.sendReadConfirmation()
           newChat?.setAllMessagesRead()
         }
       }
-    }, 1500)
+    }, 3000)
   })
 }

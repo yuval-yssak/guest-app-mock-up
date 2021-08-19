@@ -77,7 +77,7 @@ const User = observer(
     const [boldenName, setBoldenName] = React.useState(!!chat.unreadCount)
 
     // show name as normal type if it is shown consecutively for more than 1.5 seconds
-    useWhenPropSustained(store.view.id, 1500, () => {
+    useWhenPropSustained(store.view.id, 3000, () => {
       if (store.view.id === id) setBoldenName(false)
     })
 
