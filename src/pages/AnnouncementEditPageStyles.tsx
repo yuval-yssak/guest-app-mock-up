@@ -1,7 +1,7 @@
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 import ListSubheader from '@material-ui/core/ListSubheader'
-import ListItem from '@material-ui/core/ListItem'
+import ListItemButton from '@material-ui/core/ListItemButton'
 import Paper from '@material-ui/core/Paper'
 import Chip from '@material-ui/core/Chip'
 import Typography from '@material-ui/core/Typography'
@@ -94,7 +94,7 @@ export const AudienceInputLabel = styled(InputLabel)`
   width: 100%;
 `
 
-export const MultilineListItem = styled(ListItem)<{
+export const MultilineListItem = styled(ListItemButton)<{
   selected: boolean
 }>`
   && {

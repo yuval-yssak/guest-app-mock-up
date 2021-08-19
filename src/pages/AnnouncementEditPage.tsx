@@ -168,9 +168,9 @@ function EditAnnouncementComponent(
   function getMinDateForPublishEnd() {
     if (props.mode === 'edit')
       return publishEndDisabledLogic()
-        ? new Date(0)
-        : dayjs.max(dayjs(), dayjs(props.originalPublishOn)).toDate()
-    else return publishOn || dayjs().toDate()
+        ? dayjs(0)
+        : dayjs.max(dayjs(), dayjs(props.originalPublishOn))
+    else return dayjs(publishOn) || dayjs()
   }
   // register all fields with their validation rules
   const draftSubject = register('draftSubject', {
@@ -388,9 +388,7 @@ function EditAnnouncementComponent(
                 <DateTimePicker
                   inputFormat="MM/DD/YYYY HH:mm a"
                   label="Start publishing on"
-                  minDateTime={
-                    publishOnDisabledLogic() ? new Date(0) : dayjs().toDate()
-                  }
+                  minDateTime={publishOnDisabledLogic() ? dayjs(0) : dayjs()}
                   value={(publishOn && dayjs(publishOn)) || null}
                   disabled={publishOnDisabledLogic()}
                   // supply name, onBlur, inputRef and onChange to rhf with modifications
@@ -569,7 +567,7 @@ function AudienceTargetItem({
   return (
     <MultilineListItem
       selected={value === name}
-      as="div"
+      // as="div"
       color="transparent"
       onClick={() => setSelected({ targetName: name, id: undefined })}
       disabled={disabled}
