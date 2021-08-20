@@ -89,6 +89,7 @@ function MainBottomNavigation({ className }: { className?: string }) {
         onClick={() => store.view.openChatPage()}
       />
       <BottomNavigationAction
+        disabled
         label="Activities"
         icon={<EventIcon />}
         onClick={() => store.view.openActivitiesPage()}
