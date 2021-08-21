@@ -26,6 +26,7 @@ import { useMst } from '../models/reactHook'
 import WarningsNotifier from './WarningsNotifier'
 import InfoCovid19GuidelinesPage from '../pages/InfoPages/InfoCovid19GuidelinesPage'
 import InfoPracticeGuide from '../pages/InfoPages/InfoPracticeGuide'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 const scaleFrom0 = keyframes`
 0% {
@@ -101,6 +102,11 @@ function App() {
   const [drawerOpen, setDrawerOpen] = React.useState(false)
   const mainRef = React.createRef<HTMLElement>()
   const store = useMst()
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+
+  React.useEffect(() => {
+    if (prefersDarkMode) store.preferences.toggleDarkMode()
+  }, [store.preferences, prefersDarkMode])
 
   React.useEffect(() => {
     setGlobalVhProperty()
