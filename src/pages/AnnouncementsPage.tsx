@@ -210,7 +210,7 @@ function AnnouncementsPage() {
                   onClick={() => store.view.openAnnouncementsNewDraftPage()}
                   size="small"
                 >
-                  <AddIcon />
+                  <AddIcon color="primary" />
                 </IconButton>
               </Tooltip>
               <ToggleButtonGroup

@@ -46,27 +46,32 @@ export const StyledUser = styled.div.attrs({ className: 'user' })<{
   white-space: nowrap;
 
   height: 5.8rem;
+
   background-color: ${({ theme: { palette }, selected }) =>
     palette.mode === 'dark' && selected
       ? palette.grey['300']
       : palette.mode === 'dark' && !selected
-      ? palette.grey['700']
+      ? palette.grey['800']
       : palette.mode === 'light' && selected
       ? palette.grey['200']
       : palette.grey['50']};
-  color: ${({ theme: { palette } }) =>
-    palette.mode === 'dark' ? '#fff' : palette.primary.contrastText};
+
+  color: ${({ theme: { palette }, selected }) =>
+    palette.mode === 'light'
+      ? palette.grey['700']
+      : selected
+      ? palette.grey['800']
+      : palette.grey['300']};
+
   border-top: 1px solid ${({ theme }) => theme.palette.grey['100']};
   border-left: 1px solid ${({ theme }) => theme.palette.grey['100']};
   border-right: 1px solid ${({ theme }) => theme.palette.grey['100']};
   padding-right: 0.5rem;
 
-  &:last-child {
-    /* border-bottom: 1px solid ${({ theme }) => theme.palette.grey['300']}; */
-  }
-
   &:hover {
-    background-color: ${({ theme }) => theme.palette.grey['200']};
+    background-color: ${({ theme: { palette } }) =>
+      palette.grey[palette.mode === 'dark' ? '300' : '200']};
+    color: ${({ theme }) => theme.palette.grey['800']};
   }
 `
 
@@ -85,6 +90,8 @@ export const StyledUserName = styled(Typography).attrs({
   && {
     font-weight: ${({ $unread }) => ($unread ? 500 : 300)};
     line-height: 1;
+    color: ${({ theme: { palette } }) =>
+      palette.mode === 'dark' ? 'inherit' : palette.grey['900']};
   }
 `
 
@@ -104,7 +111,6 @@ export const LastMessageContent = styled.div.attrs({
 })`
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.palette.grey['700']};
   grid-row: 2/3;
   grid-column: 1/-1;
 

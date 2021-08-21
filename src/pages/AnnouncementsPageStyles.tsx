@@ -204,6 +204,8 @@ export const EmptyPagePaper = styled(Paper)`
 export const StyledFormControlLabel = styled(FormControlLabel)`
   flex-grow: 1;
   justify-content: flex-end;
+  ${({ theme }) =>
+    theme.palette.mode === 'dark' && `color: ${theme.palette.grey['200']};`}
 `
 
 export const StyledToggleButton = styled(ToggleButton)`
