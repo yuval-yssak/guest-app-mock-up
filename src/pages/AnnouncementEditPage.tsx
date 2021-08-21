@@ -392,12 +392,12 @@ function EditAnnouncementComponent(
                   value={(publishOn && dayjs(publishOn)) || null}
                   disabled={publishOnDisabledLogic()}
                   // supply name, onBlur, inputRef and onChange to rhf with modifications
+                  inputRef={draftPublishOn.ref}
                   renderInput={params => (
                     <TextField
                       name={draftPublishOn.name}
                       onBlur={draftPublishOn.onBlur}
                       autoComplete="off"
-                      inputRef={draftPublishOn.ref}
                       {...params}
                       helperText={
                         errors.draftPublishOn
@@ -428,11 +428,11 @@ function EditAnnouncementComponent(
                 label="Stop publishing on"
                 minDateTime={getMinDateForPublishEnd()}
                 value={dayjs(publishEnd)}
+                inputRef={draftPublishEnd.ref}
                 renderInput={params => (
                   <DateTimeTextField
                     name={draftPublishEnd.name}
                     onBlur={draftPublishEnd.onBlur}
-                    inputRef={draftPublishEnd.ref}
                     {...params}
                     helperText=""
                     autoComplete="off"
