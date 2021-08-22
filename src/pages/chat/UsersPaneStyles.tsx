@@ -49,9 +49,9 @@ export const StyledUser = styled.div.attrs({ className: 'user' })<{
 
   background-color: ${({ theme: { palette }, selected }) =>
     palette.mode === 'dark' && selected
-      ? palette.grey['300']
+      ? palette.grey['400']
       : palette.mode === 'dark' && !selected
-      ? palette.grey['800']
+      ? palette.grey['900']
       : palette.mode === 'light' && selected
       ? palette.grey['200']
       : palette.grey['50']};
@@ -63,14 +63,20 @@ export const StyledUser = styled.div.attrs({ className: 'user' })<{
       ? palette.grey['800']
       : palette.grey['300']};
 
-  border-top: 1px solid ${({ theme }) => theme.palette.grey['100']};
-  border-left: 1px solid ${({ theme }) => theme.palette.grey['100']};
-  border-right: 1px solid ${({ theme }) => theme.palette.grey['100']};
+  border-top: 1px solid
+    ${({ theme: { palette } }) =>
+      palette.grey[palette.mode === 'dark' ? '800' : '100']};
+  border-left: 1px solid
+    ${({ theme: { palette } }) =>
+      palette.grey[palette.mode === 'dark' ? '800' : '100']};
+  border-right: 1px solid
+    ${({ theme: { palette } }) =>
+      palette.grey[palette.mode === 'dark' ? '800' : '100']};
   padding-right: 0.5rem;
 
   &:hover {
     background-color: ${({ theme: { palette } }) =>
-      palette.grey[palette.mode === 'dark' ? '300' : '200']};
+      palette.grey[palette.mode === 'dark' ? '400' : '200']};
     color: ${({ theme }) => theme.palette.grey['800']};
   }
 `

@@ -1,3 +1,4 @@
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -8,6 +9,11 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import { PrimaryButton } from '../components/common/Buttons'
 import styled from 'styled-components'
+
+export const StyledFormControlLabel = styled(FormControlLabel)`
+  color: ${({ theme: { palette } }) =>
+    palette.grey[palette.mode === 'dark' ? '400' : '900']};
+`
 
 // A "Field" contains the field and its error message
 export const Field = styled.div.attrs({ className: 'form-field' })`

@@ -106,6 +106,10 @@ const SwitchContainer = styled.div.attrs({
   }
 `
 
+const StackedAppBar = styled(AppBar)`
+  z-index: 1000;
+`
+
 function ShrinkableDarkModeSwitch() {
   return (
     <SwitchContainer>
@@ -131,10 +135,6 @@ export default function ProminentAppBar({
   const handleMoreClose = () => {
     setMoreEl(null)
   }
-
-  const StackedAppBar = styled(AppBar)`
-    z-index: 1000;
-  `
 
   return (
     <div>

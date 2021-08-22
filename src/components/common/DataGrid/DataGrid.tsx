@@ -114,7 +114,6 @@ const Heading = styled.div<{ isDragging: boolean }>`
   ${({ isDragging }) => !isDragging && 'transform: inherit !important;'}
   background-color: ${({ isDragging }) =>
     isDragging ? 'lightYellow' : 'white'};
-  border-radius: 0.4rem;
   padding: 0.5rem;
   padding-top: 1rem;
   padding-bottom: 1rem;

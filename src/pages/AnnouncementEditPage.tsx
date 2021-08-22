@@ -2,7 +2,6 @@ import * as React from 'react'
 import dayjs, { Dayjs } from 'dayjs'
 import { observer } from 'mobx-react-lite'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Skeleton from '@material-ui/core/Skeleton'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import List from '@material-ui/core/List'
@@ -36,7 +35,8 @@ import {
   ElevatedPaper,
   AudienceSegmentName,
   AudienceCountChip,
-  PrimaryButtonWithMargin
+  PrimaryButtonWithMargin,
+  StyledFormControlLabel
 } from './AnnouncementEditPageStyles'
 
 dayjs.extend(minMax)
@@ -237,9 +237,10 @@ function EditAnnouncementComponent(
     }
   ]
 
-  function renderAudienceTargetItem(targetItem: AudienceTarget) {
+  function renderAudienceTargetItem(targetItem: AudienceTarget, i: number) {
     return (
       <AudienceTargetItem
+        key={i}
         name={targetItem.name}
         count={targetItem.count}
         setSelected={setAndClose}
@@ -384,16 +385,16 @@ function EditAnnouncementComponent(
           </Wrapper>
           <Wrapper>
             <Field>
-              <Tooltip title="Choose a date or keep empty to start publishing now">
-                <DateTimePicker
-                  inputFormat="MM/DD/YYYY HH:mm a"
-                  label="Start publishing on"
-                  minDateTime={publishOnDisabledLogic() ? dayjs(0) : dayjs()}
-                  value={(publishOn && dayjs(publishOn)) || null}
-                  disabled={publishOnDisabledLogic()}
-                  // supply name, onBlur, inputRef and onChange to rhf with modifications
-                  inputRef={draftPublishOn.ref}
-                  renderInput={params => (
+              <DateTimePicker
+                inputFormat="MM/DD/YYYY HH:mm a"
+                label="Start publishing on"
+                minDateTime={publishOnDisabledLogic() ? dayjs(0) : dayjs()}
+                value={(publishOn && dayjs(publishOn)) || null}
+                disabled={publishOnDisabledLogic()}
+                // supply name, onBlur, inputRef and onChange to rhf with modifications
+                inputRef={draftPublishOn.ref}
+                renderInput={params => (
+                  <Tooltip title="Choose a date or keep empty to start publishing now">
                     <TextField
                       name={draftPublishOn.name}
                       onBlur={draftPublishOn.onBlur}
@@ -405,19 +406,19 @@ function EditAnnouncementComponent(
                           : 'Keep blank to start publishing now.'
                       }
                     />
-                  )}
-                  onChange={date => {
-                    setPublishOn(date?.toDate() || null)
-                    setValue('draftPublishOn', date, {
-                      shouldValidate: true,
-                      shouldDirty: true
-                    })
-                    // trigger validation on publishEnd field
-                    trigger('draftPublishEnd')
-                  }}
-                  clearable
-                />
-              </Tooltip>
+                  </Tooltip>
+                )}
+                onChange={date => {
+                  setPublishOn(date?.toDate() || null)
+                  setValue('draftPublishOn', date, {
+                    shouldValidate: true,
+                    shouldDirty: true
+                  })
+                  // trigger validation on publishEnd field
+                  trigger('draftPublishEnd')
+                }}
+                clearable
+              />
               {(errors.draftPublishOn as FieldError)?.type === 'beforeNow' && (
                 <FormError>* Past date</FormError>
               )}
@@ -469,7 +470,7 @@ function EditAnnouncementComponent(
           <br />
           <Wrapper>
             <Tooltip title="High importance is for safety & health concerns only">
-              <FormControlLabel
+              <StyledFormControlLabel
                 label="Important"
                 control={
                   <Switch
@@ -480,7 +481,7 @@ function EditAnnouncementComponent(
               />
             </Tooltip>
             <Tooltip title="Send alert will issue an email and a push notification for the users who have registered to receive notifications in any of their devices. Push notifications currently do not work at all on Apple devices, and email notifications are subject to user preferences.">
-              <FormControlLabel
+              <StyledFormControlLabel
                 label="Send Alert"
                 control={
                   <>
