@@ -1,16 +1,17 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import TextField from '@material-ui/core/TextField'
+import Input from '@material-ui/core/Input'
+import SearchIcon from '@material-ui/icons/Search'
 
 export const SearchBarRow = styled.div`
   display: flex;
   align-items: center;
+  height: 100%;
 `
 
-const StyledTextField = styled(TextField)`
-  // place the placeholder in the center when there is no search term.
-  text-align: ${({ value }) => (value === '' ? `center` : `initial`)};
+const StyledTextField = styled(Input)`
   flex: 1;
+  margin-left: 4rem;
 
   & input {
     text-align: inherit;
@@ -36,20 +37,22 @@ export const SearchBar = ({
   const [hovering, setHovering] = React.useState(false)
 
   return (
-    <StyledTextField
-      type="search"
-      variant="standard"
-      placeholder={hidePlaceHolder && !hovering ? '' : '🔍'}
-      onKeyDown={e => {
-        if (e.key === 'Escape') {
-          e.preventDefault()
-          setSearchTerm('')
-        }
-      }}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      value={searchTerm}
-      onChange={e => setSearchTerm(e.target.value)}
-    />
+    <SearchBarRow>
+      <StyledTextField
+        type="search"
+        disableUnderline
+        onKeyDown={e => {
+          if (e.key === 'Escape') {
+            e.preventDefault()
+            setSearchTerm('')
+          }
+        }}
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+        value={searchTerm}
+        onChange={e => setSearchTerm(e.target.value)}
+      />
+      <SearchIcon />
+    </SearchBarRow>
   )
 }

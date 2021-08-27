@@ -3,8 +3,8 @@ import GlobalFilter from './GlobalFilter'
 import styled from 'styled-components'
 
 const AlignToRight = styled.div`
-  display: flex;
-  flex-direction: row-reverse;
+  border: 1px solid #666;
+  border-radius: 10px;
 `
 
 const TableToolbar = ({

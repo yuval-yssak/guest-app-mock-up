@@ -17,7 +17,6 @@ const DataGridContainer = styled(PageContentWrapper)`
     height: 100%;
     max-width: 100%;
     overflow-y: hidden;
-    padding: 2rem 0;
     width: clamp(45rem, 90%, 109rem);
 
     @media (max-height: 31em) {

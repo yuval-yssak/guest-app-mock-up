@@ -30,6 +30,11 @@ import TableToolbar from './TableToolbar'
 import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
 import Tooltip from '@material-ui/core/Tooltip'
+import Select from '@material-ui/core/Select'
+import MenuItem from '@material-ui/core/MenuItem'
+import IconButton from '@material-ui/core/IconButton'
+import ArrowBackIosNewIcon from '@material-ui/icons/ArrowBackIosNew'
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 
 const TableBody = styled.div`
   overflow-y: scroll;
@@ -120,6 +125,9 @@ const Heading = styled.div<{ isDragging: boolean }>`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  font-weight: 400;
 `
 
 const DataGridContainer = styled.div`
@@ -161,6 +169,31 @@ const DroppableContainer = styled.div`
   }
 `
 
+const SortIconHoverComponent = styled.div`
+  border-radius: 50%;
+  margin-left: 0.7rem;
+  margin-right: 0.7rem;
+  padding: 0.2rem;
+  height: 1.8em;
+  width: 1.8em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.grey['200']};
+  }
+`
+
+const PageInputTextField = styled(TextField)`
+  width: 4.5rem;
+
+  & input {
+    padding: 0.4rem 0.2rem;
+    text-align: center;
+  }
+`
+
 const SortIcon = ({
   isSorted,
   isSortedDesc,
@@ -171,7 +204,7 @@ const SortIcon = ({
   onHover: boolean
 }) => {
   return (
-    <span>
+    <SortIconHoverComponent>
       {(onHover || isSorted) && (
         <SortIconComponent
           className="MuiSvgIcon-root MuiDataGrid-sortIcon MuiSvgIcon-fontSizeSmall"
@@ -184,16 +217,18 @@ const SortIcon = ({
           <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"></path>
         </SortIconComponent>
       )}
-    </span>
+    </SortIconHoverComponent>
   )
 }
 
 const SortIconComponent = styled.svg<{ hint: boolean; up: boolean }>`
-  color: ${({ hint }) => (hint ? '#ddd' : 'black')};
+  color: ${({ hint, theme }) => theme.palette.grey[hint ? '500' : '900']};
   fill: currentColor;
-  height: 1em;
   transform: rotate(${({ up }) => (up ? 0 : 180)}deg);
-  width: 1em;
+  height: 80%;
+  width: 80%;
+  display: flex;
+  align-items: center;
 `
 
 const ResizerComponent = styled.svg`
@@ -228,11 +263,14 @@ function pushSelectColumn<DataStructure extends {}>(
       {
         id: 'selection',
         Header: React.memo(({ getToggleAllRowsSelectedProps }) => (
-          <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+          <IndeterminateCheckbox
+            {...getToggleAllRowsSelectedProps()}
+            size="small"
+          />
         )),
         Cell: React.memo(
           ({ row }: { row: UseRowSelectRowProps<DataStructure> }) => (
-            <Checkbox {...row.getToggleRowSelectedProps()} />
+            <Checkbox {...row.getToggleRowSelectedProps()} size="small" />
           )
         ),
         width: 50
@@ -396,12 +434,34 @@ export function DataGrid<DataStructure extends {}>({
 
   return (
     <>
-      {withGlobalFilter && (
-        <TableToolbar
-          setGlobalFilter={setGlobalFilter}
-          globalFilter={globalFilter}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginTop: '0.5rem'
+        }}
+      >
+        {withGlobalFilter && (
+          <TableToolbar
+            setGlobalFilter={setGlobalFilter}
+            globalFilter={globalFilter}
+          />
+        )}
+        <Pagination
+          pageIndex={pageIndex}
+          pageOptions={pageOptions}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          gotoPage={gotoPage}
+          canPreviousPage={canPreviousPage}
+          previousPage={previousPage}
+          nextPage={nextPage}
+          canNextPage={canNextPage}
+          pageCount={pageCount}
+          totalItems={rows.length}
+          totalItemsPreGlobalFilter={preGlobalFilteredRows.length}
         />
-      )}
+      </div>
       <DragDropContext
         onDragStart={onDragStart}
         onDragUpdate={onDragUpdate}
@@ -482,20 +542,6 @@ export function DataGrid<DataStructure extends {}>({
           )}
         </Droppable>
       </DragDropContext>
-      <Pagination
-        pageIndex={pageIndex}
-        pageOptions={pageOptions}
-        pageSize={pageSize}
-        setPageSize={setPageSize}
-        gotoPage={gotoPage}
-        canPreviousPage={canPreviousPage}
-        previousPage={previousPage}
-        nextPage={nextPage}
-        canNextPage={canNextPage}
-        pageCount={pageCount}
-        totalItems={rows.length}
-        totalItemsPreGlobalFilter={preGlobalFilteredRows.length}
-      />
     </>
   )
 }
@@ -534,79 +580,75 @@ function Pagination({
 
   const delayedGotoPage = useAsyncDebounce(value => {
     gotoPage(value)
-  }, 200)
+  }, 100)
 
   return (
-    <div
-      style={{
-        marginTop: '1rem',
-        display: 'flex',
-        flexDirection: 'row-reverse'
-      }}
-    >
+    <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
       <div>
-        <span>{totalItems} </span>
+        <span style={{ marginRight: '2ch' }}>Showing:</span>
+        <Select
+          labelId="page-size"
+          value={pageSize}
+          onChange={e => setPageSize(Number(e.target.value))}
+          variant="standard"
+          disableUnderline
+        >
+          <MenuItem value={1}>1</MenuItem>
+          <MenuItem value={10}>10</MenuItem>
+          <MenuItem value={25}>25</MenuItem>
+          <MenuItem value={50}>50</MenuItem>
+          <MenuItem value={100}>100</MenuItem>
+          <MenuItem value={200}>200</MenuItem>
+        </Select>
+      </div>
+      <div>
+        <span>
+          {pageIndex * pageSize + 1}-
+          {Math.min(pageIndex * pageSize + pageSize, totalItems)}
+        </span>
+        <span> of {totalItems}</span>
         {totalItemsPreGlobalFilter !== totalItems && (
           <span>{`of ${totalItemsPreGlobalFilter} `}</span>
         )}
-        <span>items </span>
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
-        </button>
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          Previous
-        </button>
-        <span style={{ padding: '0 1em', fontSize: '0.9rem' }}>
-          {
-            <input
-              style={{
-                width: '2.5em',
-                outline: 'none',
-                marginRight: '0.2rem',
-                textAlign: 'center'
-              }}
-              value={pageInput}
-              onChange={e => {
-                // limit input to numbers or empty value, debounce the page turning
-                if (
-                  !isNaN(+e.target.value) &&
-                  +e.target.value > 0 &&
-                  +e.target.value <= pageOptions.length
-                ) {
-                  setPageInput(+e.target.value)
-                  delayedGotoPage(+e.target.value - 1)
-                }
-                if (e.target.value === '') setPageInput('')
-              }}
-              onBlur={e => {
-                // restore the value when it's empty and blurred.
-                // Empty value is only allowed while editing the page number
-                if (e.target.value === '') setPageInput(pageIndex + 1)
-              }}
-            />
-          }
-          of {pageOptions.length}
-        </span>
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          Next
-        </button>
-        <button
-          style={{ marginRight: '1em' }}
-          onClick={() => gotoPage(pageCount - 1)}
-          disabled={!canNextPage}
-        >
-          {'>>'}
-        </button>
-        <select
-          value={pageSize}
-          onChange={e => setPageSize(Number(e.target.value))}
-        >
-          {[2, 5, 10, 25, 50, Number.MAX_SAFE_INTEGER].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize === Number.MAX_SAFE_INTEGER ? 'All' : pageSize}
-            </option>
-          ))}
-        </select>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <IconButton onClick={() => previousPage()} disabled={!canPreviousPage}>
+          <ArrowBackIosNewIcon />
+        </IconButton>
+        <PageInputTextField
+          margin="none"
+          value={pageInput}
+          onChange={e => {
+            // limit input to numbers or empty value, debounce the page turning
+            if (
+              !isNaN(+e.target.value) &&
+              +e.target.value > 0 &&
+              +e.target.value <= pageOptions.length
+            ) {
+              setPageInput(+e.target.value)
+              delayedGotoPage(+e.target.value - 1)
+              return
+            }
+            if (e.target.value === '') setPageInput('')
+          }}
+          onBlur={e => {
+            // restore the value when it's empty and blurred.
+            // Empty value is only allowed while editing the page number
+            if (e.target.value === '') setPageInput(pageIndex + 1)
+          }}
+          onKeyDown={e => {
+            if (e.key === 'ArrowUp') previousPage()
+            else if (e.key === 'ArrowDown') nextPage()
+            else if (e.key === 'End') gotoPage(pageCount - 1)
+            else if (e.key === 'Home') gotoPage(0)
+            else return
+            e.preventDefault()
+          }}
+        />
+        <IconButton onClick={() => nextPage()} disabled={!canNextPage}>
+          <ArrowForwardIosIcon />
+        </IconButton>
       </div>
     </div>
   )
@@ -667,15 +709,15 @@ const ReadOnlyCheckbox = styled(Checkbox).attrs<{ checked: boolean }>({
   &&& {
     color: ${({ theme, checked }) =>
       checked
-        ? theme.palette.primary.main
+        ? theme.palette.primary.light
         : theme.palette.mode === 'dark'
         ? 'white'
-        : 'black'};
+        : theme.palette.grey['600']};
   }
 `
 
 export function GridCheckbox({ value }: { value: boolean }) {
-  return <ReadOnlyCheckbox checked={value} />
+  return <ReadOnlyCheckbox checked={value} size="small" />
 }
 
 const TooltippedDiv = styled.div`

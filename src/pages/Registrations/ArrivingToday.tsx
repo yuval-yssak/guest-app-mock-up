@@ -79,7 +79,7 @@ export function ArrivingToday() {
   const columns = React.useMemo(() => arrivingTodayColumns, [])
 
   const [data, setData] = React.useState(
-    () => makeData(20) as ArrivingTodayRow[]
+    () => makeData(80) as ArrivingTodayRow[]
   )
 
   return (
