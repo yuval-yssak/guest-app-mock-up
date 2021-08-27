@@ -3,7 +3,7 @@ import GlobalFilter from './GlobalFilter'
 import styled from 'styled-components'
 
 const AlignToRight = styled.div`
-  border: 1px solid #666;
+  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
   border-radius: 10px;
 `
 

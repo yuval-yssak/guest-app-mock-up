@@ -2,16 +2,18 @@ import * as React from 'react'
 import styled from 'styled-components'
 import Input from '@material-ui/core/Input'
 import SearchIcon from '@material-ui/icons/Search'
+import ClearIcon from '@material-ui/icons/Clear'
+import IconButton from '@material-ui/core/IconButton'
 
 export const SearchBarRow = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
+  padding-right: 0.3rem;
 `
 
 const StyledTextField = styled(Input)`
   flex: 1;
-  margin-left: 4rem;
 
   & input {
     text-align: inherit;
@@ -34,12 +36,9 @@ export const SearchBar = ({
   setSearchTerm: (newTerm: string) => void
   hidePlaceHolder?: boolean
 }) => {
-  const [hovering, setHovering] = React.useState(false)
-
   return (
     <SearchBarRow>
       <StyledTextField
-        type="search"
         disableUnderline
         onKeyDown={e => {
           if (e.key === 'Escape') {
@@ -47,12 +46,16 @@ export const SearchBar = ({
             setSearchTerm('')
           }
         }}
-        onMouseEnter={() => setHovering(true)}
-        onMouseLeave={() => setHovering(false)}
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
       />
-      <SearchIcon />
+      {searchTerm ? (
+        <IconButton onClick={() => setSearchTerm('')}>
+          <ClearIcon color="primary" />
+        </IconButton>
+      ) : (
+        <SearchIcon color="primary" />
+      )}
     </SearchBarRow>
   )
 }

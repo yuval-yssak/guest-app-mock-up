@@ -459,7 +459,6 @@ export function DataGrid<DataStructure extends {}>({
           canNextPage={canNextPage}
           pageCount={pageCount}
           totalItems={rows.length}
-          totalItemsPreGlobalFilter={preGlobalFilteredRows.length}
         />
       </div>
       <DragDropContext
@@ -557,8 +556,7 @@ function Pagination({
   nextPage,
   canNextPage,
   pageCount,
-  totalItems,
-  totalItemsPreGlobalFilter
+  totalItems
 }: {
   pageIndex: number
   pageOptions: number[]
@@ -571,7 +569,6 @@ function Pagination({
   canNextPage: boolean
   pageCount: number
   totalItems: number
-  totalItemsPreGlobalFilter: number
 }) {
   const [pageInput, setPageInput] = React.useState<number | ''>(pageIndex + 1)
   React.useEffect(() => {
@@ -607,9 +604,6 @@ function Pagination({
           {Math.min(pageIndex * pageSize + pageSize, totalItems)}
         </span>
         <span> of {totalItems}</span>
-        {totalItemsPreGlobalFilter !== totalItems && (
-          <span>{`of ${totalItemsPreGlobalFilter} `}</span>
-        )}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center' }}>
