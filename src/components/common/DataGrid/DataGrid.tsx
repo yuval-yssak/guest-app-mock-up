@@ -26,7 +26,7 @@ import {
   DragUpdate,
   Droppable
 } from 'react-beautiful-dnd'
-import TableToolbar from './TableToolbar'
+import GlobalFilter from './GlobalFilter'
 import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
 import Tooltip from '@material-ui/core/Tooltip'
@@ -249,6 +249,14 @@ const ResizerComponent = styled.svg`
   z-index: 1;
 `
 
+const HeadingRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  height: 4rem;
+`
+
 const Resizer = (props: React.SVGAttributes<SVGElement>) => (
   <ResizerComponent {...props}>
     <path d="M11 19V5h2v14z"></path>
@@ -388,8 +396,7 @@ export function DataGrid<DataStructure extends {}>({
     state: { pageIndex, pageSize, globalFilter },
     setPageSize,
     setGlobalFilter,
-    rows,
-    preGlobalFilteredRows
+    rows
   } = useTable<DataStructure>(
     {
       columns,
@@ -434,18 +441,9 @@ export function DataGrid<DataStructure extends {}>({
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginTop: '0.5rem'
-        }}
-      >
+      <HeadingRow>
         {withGlobalFilter && (
-          <TableToolbar
-            setGlobalFilter={setGlobalFilter}
-            globalFilter={globalFilter}
-          />
+          <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
         )}
         <Pagination
           pageIndex={pageIndex}
@@ -460,7 +458,7 @@ export function DataGrid<DataStructure extends {}>({
           pageCount={pageCount}
           totalItems={rows.length}
         />
-      </div>
+      </HeadingRow>
       <DragDropContext
         onDragStart={onDragStart}
         onDragUpdate={onDragUpdate}

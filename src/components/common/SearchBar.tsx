@@ -5,13 +5,6 @@ import SearchIcon from '@material-ui/icons/Search'
 import ClearIcon from '@material-ui/icons/Clear'
 import IconButton from '@material-ui/core/IconButton'
 
-export const SearchBarRow = styled.div`
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding-right: 0.3rem;
-`
-
 const StyledTextField = styled(Input)`
   flex: 1;
 
@@ -27,7 +20,16 @@ const StyledTextField = styled(Input)`
   }
 `
 
-export const SearchBar = ({
+const AlignToRight = styled.div`
+  align-items: center;
+  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
+  border-radius: 10px;
+  display: flex;
+  height: 2rem;
+  padding-right: 0.3rem;
+`
+
+const SearchBar = ({
   searchTerm,
   setSearchTerm,
   hidePlaceHolder
@@ -37,7 +39,7 @@ export const SearchBar = ({
   hidePlaceHolder?: boolean
 }) => {
   return (
-    <SearchBarRow>
+    <AlignToRight>
       <StyledTextField
         disableUnderline
         onKeyDown={e => {
@@ -56,6 +58,8 @@ export const SearchBar = ({
       ) : (
         <SearchIcon color="primary" />
       )}
-    </SearchBarRow>
+    </AlignToRight>
   )
 }
+
+export default SearchBar

@@ -7,7 +7,7 @@ import { generateRandomMessages, generateUsers } from '../../defaultStore'
 import { useMst } from '../../models/reactHook'
 import { observer } from 'mobx-react-lite'
 import { isElementInViewport } from '../../components/common/isElementInViewport'
-import { SearchBar, SearchBarRow } from '../../components/common/SearchBar'
+import SearchBar from '../../components/common/SearchBar'
 
 import {
   List,
@@ -265,9 +265,7 @@ function UsersPaneComponent({
         next={loadNext}
         height={containerHeight - 1}
       >
-        <SearchBarRow>
-          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        </SearchBarRow>
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <List tabIndex={0} onKeyDown={handleKeyDown}>
           {filteredUsersArray.map(id => (
             <User

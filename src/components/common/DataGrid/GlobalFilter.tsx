@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useAsyncDebounce } from 'react-table'
-import { SearchBar, SearchBarRow } from '../SearchBar'
+import SearchBar from '../SearchBar'
 
 const GlobalFilter = ({
   filter = '',
@@ -20,11 +20,7 @@ const GlobalFilter = ({
     onChangeDebounced(newTerm)
   }
 
-  return (
-    <SearchBarRow>
-      <SearchBar searchTerm={value} setSearchTerm={onChange} />
-    </SearchBarRow>
-  )
+  return <SearchBar searchTerm={value} setSearchTerm={onChange} />
 }
 
 export default GlobalFilter

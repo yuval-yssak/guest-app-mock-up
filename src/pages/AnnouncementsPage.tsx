@@ -39,7 +39,7 @@ import {
   StyledFormControlLabel,
   StyledToggleButton
 } from './AnnouncementsPageStyles'
-import { SearchBar, SearchBarRow } from '../components/common/SearchBar'
+import SearchBar from '../components/common/SearchBar'
 
 const StatsButton = observer(function StatsButton({
   announcement
@@ -250,7 +250,7 @@ function AnnouncementsPage() {
       {!!store.announcements.editMode ? (
         <Section $classPrefix={view}>
           {view === 'archived' && (
-            <SearchBarRow>
+            <>
               <SearchBar
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
@@ -261,7 +261,7 @@ function AnnouncementsPage() {
                   <MoreHorizIcon />
                 </IconButton>
               </Tooltip>
-            </SearchBarRow>
+            </>
           )}
           {!!viewedAnnouncements.length && <AllSectionHeading />}
           {viewedAnnouncements
