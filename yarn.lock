@@ -10216,6 +10216,11 @@ schema-utils@^3.0.0:
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
 
+scroll-sync-react@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/scroll-sync-react/-/scroll-sync-react-1.2.0.tgz#9f9196e17bd3503a67945943ba5313c77e1d9d16"
+  integrity sha512-nGWhT66gA2yzx/Xb4FfmDazZEM/P1bAcFc3pdR1ZF9sJtyrQckV3/6/0znARTjY10W+jz6ARBtnGGOXkqxVIHA==
+
 select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"

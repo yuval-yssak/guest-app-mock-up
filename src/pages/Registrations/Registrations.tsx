@@ -11,13 +11,11 @@ const DataGridContainer = styled(PageContentWrapper)`
   && {
     align-content: start;
     align-items: stretch;
-    grid-template-rows: unset;
+    grid-template-rows: max-content 1fr;
     grid-template-columns: unset;
-    justify-content: center;
     height: 100%;
-    max-width: 100%;
     overflow-y: hidden;
-    width: clamp(45rem, 90%, 109rem);
+    width: 100%;
 
     @media (max-height: 31em) {
       padding: 0;
