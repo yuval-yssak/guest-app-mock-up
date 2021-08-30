@@ -37,22 +37,56 @@ import ArrowBackIosNewIcon from '@material-ui/icons/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import { ScrollSync, ScrollSyncNode } from 'scroll-sync-react'
 
+const PaginationWrapper = styled.div`
+  align-items: center;
+  display: flex;
+  gap: min(2rem, calc(100vw / 30));
+
+  & > div:nth-child(1) {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    @media (max-width: 22em) {
+      & > span {
+        display: none;
+      }
+    }
+  }
+
+  & > div:nth-child(2) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1ch;
+    flex: 1 3rem 0;
+    text-align: center;
+  }
+`
+
+const CenteredSelect = styled(Select)`
+  & > [role='button'] {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+`
+
 const TableBody = styled.div`
   flex: 1;
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
-  padding: 0 calc((100vw - clamp(45rem, 90%, 100rem)) / 2);
+`
 
-  & .tr.odd {
-    background-color: rgba(240, 240, 240, 0.05);
-  }
+const TableRow = styled.div<{ odd?: boolean }>`
+  margin: 0 auto;
+  ${({ odd }) => odd && `background-color: rgba(240, 240, 240, 0.05);`}
 `
 
 const TableHead = styled.div`
   position: relative; // In this example we use an absolutely position resizer, so this is required
   width: 100%;
-  padding: 0 calc((100vw - clamp(45rem, 90%, 100rem)) / 2);
   overflow-x: hidden;
   height: 4rem;
 
@@ -64,8 +98,7 @@ const TableHead = styled.div`
 const HorizontalScroller = styled.div<{ hideScrollBar?: boolean }>`
   height: 100%;
   overflow-x: scroll;
-  /* preveent the parent vertical scroll from being hidden by this child */
-  opacity: 0.9999;
+  padding: 0 calc((100vw - clamp(45rem, 90%, 100rem)) / 2);
 
   ${({ hideScrollBar }) =>
     hideScrollBar &&
@@ -79,10 +112,10 @@ const HorizontalScroller = styled.div<{ hideScrollBar?: boolean }>`
 `
 
 const TableHeadRow = styled.div`
-  /* border-bottom: 1px solid ${({ theme }) => theme.palette.grey['200']}; */
   border: 1px solid ${({ theme }) => theme.palette.grey['200']};
   border-radius: 0;
   border-spacing: 0;
+  margin: 0 auto;
 `
 
 const StyledColumn = styled.div<{ isDragging: boolean }>`
@@ -276,11 +309,14 @@ const ResizerComponent = styled.svg`
 
 const HeadingRow = styled.div`
   display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   margin-top: 0.5rem;
-  height: 4rem;
-  padding: 0 calc((100vw - clamp(45rem, 90%, 100rem)) / 2);
+  min-height: 4rem;
+  padding: 0 2rem;
+  width: 100%;
 `
 
 const Resizer = (props: React.SVGAttributes<SVGElement>) => (
@@ -532,10 +568,7 @@ export function DataGrid<DataStructure extends {}>({
                         {page.map((row, i) => {
                           prepareRow(row)
                           return (
-                            <div
-                              {...row.getRowProps()}
-                              className={`tr${i % 2 === 0 ? '' : ' odd'}`}
-                            >
+                            <TableRow {...row.getRowProps()} odd={i % 2 !== 0}>
                               {row.cells.map(cell => {
                                 const cellValue = cell.render('Cell')
                                 return (
@@ -561,7 +594,7 @@ export function DataGrid<DataStructure extends {}>({
                                   </div>
                                 )
                               })}
-                            </div>
+                            </TableRow>
                           )
                         })}
                       </HorizontalScroller>
@@ -613,10 +646,10 @@ function Pagination({
   }, 100)
 
   return (
-    <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+    <PaginationWrapper>
       <div>
         <span style={{ marginRight: '2ch' }}>Showing:</span>
-        <Select
+        <CenteredSelect
           labelId="page-size"
           value={pageSize}
           onChange={e => setPageSize(Number(e.target.value))}
@@ -629,7 +662,7 @@ function Pagination({
           <MenuItem value={50}>50</MenuItem>
           <MenuItem value={100}>100</MenuItem>
           <MenuItem value={200}>200</MenuItem>
-        </Select>
+        </CenteredSelect>
       </div>
       <div>
         <span>
@@ -677,7 +710,7 @@ function Pagination({
           <ArrowForwardIosIcon />
         </IconButton>
       </div>
-    </div>
+    </PaginationWrapper>
   )
 }
 

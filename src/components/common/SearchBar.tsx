@@ -27,6 +27,7 @@ const AlignToRight = styled.div`
   display: flex;
   height: 2rem;
   padding-right: 0.3rem;
+  flex-basis: 20rem;
 `
 
 const SearchBar = ({

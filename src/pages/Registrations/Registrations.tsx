@@ -12,7 +12,7 @@ const DataGridContainer = styled(PageContentWrapper)`
     align-content: start;
     align-items: stretch;
     grid-template-rows: max-content 1fr;
-    grid-template-columns: unset;
+    grid-template-columns: 1fr;
     height: 100%;
     overflow-y: hidden;
     width: 100%;
