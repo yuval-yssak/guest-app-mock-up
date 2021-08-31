@@ -35,7 +35,6 @@ import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
 import ArrowBackIosNewIcon from '@material-ui/icons/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
-import { ScrollSync, ScrollSyncNode } from 'scroll-sync-react'
 
 const PaginationWrapper = styled.div`
   align-items: center;
@@ -75,8 +74,6 @@ const CenteredSelect = styled(Select)`
 const TableBody = styled.div`
   flex: 1;
   width: 100%;
-  overflow-y: scroll;
-  overflow-x: hidden;
 `
 
 const TableRow = styled.div<{ odd?: boolean }>`
@@ -85,30 +82,17 @@ const TableRow = styled.div<{ odd?: boolean }>`
 `
 
 const TableHead = styled.div`
-  position: relative; // In this example we use an absolutely position resizer, so this is required
-  width: 100%;
-  overflow-x: hidden;
+  /* In this example we use an absolutely position resizer, 
+  so a relative position is required, and sticky is also relative. */
   height: 4rem;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 2;
 
   :last-child {
     border-right: 0;
   }
-`
-
-const HorizontalScroller = styled.div<{ hideScrollBar?: boolean }>`
-  height: 100%;
-  overflow-x: scroll;
-  padding: 0 calc((100vw - clamp(45rem, 90%, 100rem)) / 2);
-
-  ${({ hideScrollBar }) =>
-    hideScrollBar &&
-    `
-      scrollbar-width: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    `}
 `
 
 const TableHeadRow = styled.div`
@@ -197,10 +181,10 @@ const DataGridContainer = styled.div`
   white-space: nowrap;
 `
 
-const DroppableContainerOverflowY = styled.div`
+const DroppableTableContainer = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: scroll;
 
   .tr {
     :last-child {
@@ -307,7 +291,7 @@ const ResizerComponent = styled.svg`
   z-index: 1;
 `
 
-const HeadingRow = styled.div`
+const TableControlSection = styled.div`
   display: flex;
   gap: 0.4rem;
   flex-wrap: wrap;
@@ -317,6 +301,10 @@ const HeadingRow = styled.div`
   min-height: 4rem;
   padding: 0 2rem;
   width: 100%;
+
+  @media (max-width: 23em) {
+    padding: 0;
+  }
 `
 
 const Resizer = (props: React.SVGAttributes<SVGElement>) => (
@@ -493,7 +481,7 @@ export function DataGrid<DataStructure extends {}>({
 
   return (
     <>
-      <HeadingRow>
+      <TableControlSection>
         {withGlobalFilter && (
           <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
         )}
@@ -510,7 +498,7 @@ export function DataGrid<DataStructure extends {}>({
           pageCount={pageCount}
           totalItems={rows.length}
         />
-      </HeadingRow>
+      </TableControlSection>
       <DragDropContext
         onDragStart={onDragStart}
         onDragUpdate={onDragUpdate}
@@ -518,92 +506,76 @@ export function DataGrid<DataStructure extends {}>({
       >
         <Droppable droppableId="all-columns" direction="horizontal">
           {provided => (
-            <DroppableContainerOverflowY
+            <DroppableTableContainer
               {...getTableProps()}
               className="table"
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              <ScrollSync>
-                <>
-                  <TableHead>
-                    <ScrollSyncNode>
-                      <HorizontalScroller hideScrollBar>
-                        {headerGroups.map(headerGroup => (
-                          <TableHeadRow
-                            {...headerGroup.getHeaderGroupProps()}
-                            className="tr"
+              <TableHead>
+                {headerGroups.map(headerGroup => (
+                  <TableHeadRow
+                    {...headerGroup.getHeaderGroupProps()}
+                    className="tr"
+                  >
+                    {headerGroup.headers.map((column, i) => (
+                      <Draggable
+                        isDragDisabled={isResizing}
+                        key={column.id}
+                        draggableId={column.id}
+                        index={i}
+                      >
+                        {(provided, snapshot) => (
+                          <ColumnComponent
+                            snapshot={snapshot}
+                            provided={provided}
+                            column={column}
+                            setIsResizing={setIsResizing}
+                            nonSortable={nonSortable || !!column.disableSortBy}
+                            disableResize={
+                              disableResize || !!column.disableResizing
+                            }
+                          ></ColumnComponent>
+                        )}
+                      </Draggable>
+                    ))}
+                  </TableHeadRow>
+                ))}
+              </TableHead>
+              <TableBody {...getTableBodyProps()}>
+                {page.map((row, i) => {
+                  prepareRow(row)
+                  return (
+                    <TableRow {...row.getRowProps()} odd={i % 2 !== 0}>
+                      {row.cells.map(cell => {
+                        const cellValue = cell.render('Cell')
+                        return (
+                          <div
+                            {...cell.getCellProps()}
+                            style={{
+                              ...cell.getCellProps().style,
+                              display: ''
+                            }}
+                            className="td"
                           >
-                            {headerGroup.headers.map((column, i) => (
-                              <Draggable
-                                isDragDisabled={isResizing}
-                                key={column.id}
-                                draggableId={column.id}
-                                index={i}
-                              >
-                                {(provided, snapshot) => (
-                                  <ColumnComponent
-                                    snapshot={snapshot}
-                                    provided={provided}
-                                    column={column}
-                                    setIsResizing={setIsResizing}
-                                    nonSortable={
-                                      nonSortable || !!column.disableSortBy
-                                    }
-                                    disableResize={
-                                      disableResize || !!column.disableResizing
-                                    }
-                                  ></ColumnComponent>
-                                )}
-                              </Draggable>
-                            ))}
-                          </TableHeadRow>
-                        ))}
-                      </HorizontalScroller>
-                    </ScrollSyncNode>
-                  </TableHead>
-                  <TableBody {...getTableBodyProps()}>
-                    <ScrollSyncNode>
-                      <HorizontalScroller>
-                        {page.map((row, i) => {
-                          prepareRow(row)
-                          return (
-                            <TableRow {...row.getRowProps()} odd={i % 2 !== 0}>
-                              {row.cells.map(cell => {
-                                const cellValue = cell.render('Cell')
-                                return (
-                                  <div
-                                    {...cell.getCellProps()}
-                                    style={{
-                                      ...cell.getCellProps().style,
-                                      display: ''
-                                    }}
-                                    className="td"
-                                  >
-                                    <TooltipOnOverflow
-                                      tooltip={
-                                        cell.column.id === 'selection' // manually exclude "selection" column
-                                          ? ''
-                                          : cellValue || ''
-                                      }
-                                    >
-                                      <DataGridContainer>
-                                        {cellValue}
-                                      </DataGridContainer>
-                                    </TooltipOnOverflow>
-                                  </div>
-                                )
-                              })}
-                            </TableRow>
-                          )
-                        })}
-                      </HorizontalScroller>
-                    </ScrollSyncNode>
-                  </TableBody>
-                </>
-              </ScrollSync>
+                            <TooltipOnOverflow
+                              tooltip={
+                                cell.column.id === 'selection' // manually exclude "selection" column
+                                  ? ''
+                                  : cellValue || ''
+                              }
+                            >
+                              <DataGridContainer>{cellValue}</DataGridContainer>
+                            </TooltipOnOverflow>
+                          </div>
+                        )
+                      })}
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
               {provided.placeholder}
-            </DroppableContainerOverflowY>
+            </DroppableTableContainer>
           )}
         </Droppable>
       </DragDropContext>
