@@ -6,6 +6,7 @@ import {
   GridCheckbox,
   ScrollableDataGrid
 } from '../../components/common/DataGrid/DataGrid'
+import styled from 'styled-components'
 
 type ArrivingSoonRow = {
   headshot: string
@@ -21,13 +22,18 @@ type ArrivingSoonRow = {
   credit: boolean
 }
 
+const SmallAvatar = styled(Avatar)`
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+`
+
 const arrivingSoonColumns = [
   {
     Header: '',
     accessor: 'headshot',
-    persistant: true,
     Cell: React.memo(({ value, row, column }: any) => {
-      return <Avatar src={value} />
+      return <SmallAvatar src={value} />
     }),
     width: 70,
     disableSortBy: true
@@ -35,7 +41,6 @@ const arrivingSoonColumns = [
   {
     Header: 'Arrival Date',
     accessor: 'arrivalDate',
-    persistant: true,
     width: 120,
     Cell: ({ value }: { value: string }) => value.slice(0, 10)
   },
