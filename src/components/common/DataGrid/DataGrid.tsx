@@ -14,7 +14,8 @@ import {
   useGlobalFilter,
   Row,
   IdType,
-  useAsyncDebounce
+  useAsyncDebounce,
+  TableSortByToggleProps
 } from 'react-table'
 import { IndeterminateCheckbox } from './IndeterminateCheckBox'
 import styled from 'styled-components/macro'
@@ -103,7 +104,14 @@ const TableHeadRow = styled.div`
 `
 
 const StyledColumn = styled.div<{ isDragging: boolean }>`
+  align-items: center;
   ${({ isDragging }) => isDragging && 'background-color: #eee;'}
+  display: flex;
+  font-weight: 400;
+  padding: 1rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 
 function ColumnComponent<DataStructure extends {}>({
@@ -123,56 +131,67 @@ function ColumnComponent<DataStructure extends {}>({
 }) {
   const [onHover, setOnHover] = React.useState(false)
 
+  const { title, ...sortProperties } =
+    column.getSortByToggleProps() as TableSortByToggleProps & { title: string }
+
+  const { style, ...columnHeaderProps } = column.getHeaderProps(
+    !nonSortable ? sortProperties : undefined
+  )
+
   return (
-    <StyledColumn
+    <Heading
       isDragging={snapshot.isDragging}
-      className="th"
-      {...column.getHeaderProps(
-        !nonSortable ? column.getSortByToggleProps() : undefined
-      )}
-      onMouseEnter={() => setOnHover(true)}
-      onMouseLeave={() => setOnHover(false)}
+      {...provided.dragHandleProps}
+      {...provided.draggableProps}
+      ref={provided.innerRef}
+      width={style?.width}
     >
-      <TooltipOnOverflow tooltip={column.render('Header') || ''}>
-        <Heading
-          isDragging={snapshot.isDragging}
-          {...provided.dragHandleProps}
-          {...provided.draggableProps}
-          ref={provided.innerRef}
-        >
-          {column.render('Header')}
-          {/* Use column.getResizerProps to hook up the events correctly */}
-          {!disableResize && (
-            <Resizer
-              {...column.getResizerProps()}
-              onMouseEnter={() => setIsResizing(true)}
-              onMouseLeave={() => setIsResizing(false)}
-            />
-          )}
-          {!nonSortable && (
-            <SortIcon
-              isSorted={column.isSorted}
-              isSortedDesc={column.isSortedDesc}
-              onHover={onHover}
-            ></SortIcon>
-          )}
-        </Heading>
-      </TooltipOnOverflow>
-    </StyledColumn>
+      <StyledColumn
+        isDragging={snapshot.isDragging}
+        className="th"
+        {...columnHeaderProps}
+        onMouseEnter={() => setOnHover(true)}
+        onMouseLeave={() => setOnHover(false)}
+      >
+        <TooltipOnOverflow tooltip={column.render('Header') || ''}>
+          <div
+            style={{
+              flexShrink: 1,
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {column.render('Header')}
+          </div>
+        </TooltipOnOverflow>
+        {!nonSortable && (
+          <SortIcon
+            isSorted={column.isSorted}
+            isSortedDesc={column.isSortedDesc}
+            onHover={onHover}
+          ></SortIcon>
+        )}
+        {!disableResize && (
+          <Resizer
+            {...column.getResizerProps()}
+            onMouseEnter={() => setIsResizing(true)}
+            onMouseLeave={() => setIsResizing(false)}
+          />
+        )}
+      </StyledColumn>
+    </Heading>
   )
 }
 
-const Heading = styled.div<{ isDragging: boolean }>`
+const Heading = styled.div<{
+  isDragging: boolean
+  width: React.CSSProperties['width']
+}>`
   ${({ isDragging }) => !isDragging && 'transform: inherit !important;'}
   background-color: ${({ isDragging }) =>
     isDragging ? 'lightYellow' : 'white'};
-  padding: 1rem 0.5rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  font-weight: 400;
+  width: ${({ width }) => width};
 `
 
 const DataGridContainer = styled.div`
@@ -212,15 +231,13 @@ const DroppableTableContainer = styled.div`
 `
 
 const SortIconHoverComponent = styled.div`
-  border-radius: 50%;
-  margin-left: 0.7rem;
-  margin-right: 0.7rem;
-  padding: 0.2rem;
-  height: 1.8em;
-  width: 1.8em;
-  display: flex;
-  justify-content: center;
   align-items: center;
+  border-radius: 50%;
+  display: flex;
+  flex-basis: 1.8em;
+  flex-shrink: 0;
+  justify-content: center;
+  padding: 0.2rem;
 
   &:hover {
     background-color: ${({ theme }) => theme.palette.grey['200']};
@@ -247,26 +264,31 @@ const SortIcon = ({
 }) => {
   return (
     <SortIconHoverComponent>
-      {(onHover || isSorted) && (
-        <SortIconComponent
-          className="MuiSvgIcon-root MuiDataGrid-sortIcon MuiSvgIcon-fontSizeSmall"
-          focusable="false"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-          hint={!isSorted && onHover}
-          up={!!isSortedDesc}
-        >
-          <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"></path>
-        </SortIconComponent>
-      )}
+      <SortIconComponent
+        show={onHover || isSorted}
+        className="MuiSvgIcon-root MuiDataGrid-sortIcon MuiSvgIcon-fontSizeSmall"
+        focusable="false"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+        hint={!isSorted && onHover}
+        upDirection={!isSortedDesc}
+      >
+        <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"></path>
+      </SortIconComponent>
     </SortIconHoverComponent>
   )
 }
 
-const SortIconComponent = styled.svg<{ hint: boolean; up: boolean }>`
+const SortIconComponent = styled.svg<{
+  show: boolean
+  hint: boolean
+  upDirection: boolean
+}>`
+  opacity: ${({ show }) => (show ? 1 : 0)};
   color: ${({ hint, theme }) => theme.palette.grey[hint ? '500' : '900']};
   fill: currentColor;
-  transform: rotate(${({ up }) => (up ? 0 : 180)}deg);
+  transform: rotate(${({ upDirection }) => (upDirection ? 0 : 180)}deg);
+  transition: opacity 0.2s, color 0.4s, transform 0.3s;
   height: 80%;
   width: 80%;
   display: flex;
@@ -276,15 +298,13 @@ const SortIconComponent = styled.svg<{ hint: boolean; up: boolean }>`
 const ResizerComponent = styled.svg`
   color: #ddd;
   display: inline-block;
+  fill: currentColor;
   font-size: 1.5rem;
   flex-shrink: 0;
   height: 1em;
-  fill: currentColor;
-  position: absolute;
+  margin-left: auto;
   right: 0;
-  top: 50%;
   touch-action: none; // prevents from scrolling while dragging on touch devices
-  transform: translate(50%, -50%);
   transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   user-select: none;
   width: 1em;
@@ -308,7 +328,12 @@ const TableControlSection = styled.div`
 `
 
 const Resizer = (props: React.SVGAttributes<SVGElement>) => (
-  <ResizerComponent {...props}>
+  <ResizerComponent
+    {...props}
+    onClick={
+      e => e.stopPropagation() /* prevent sorting when clicking the resizer */
+    }
+  >
     <path d="M11 19V5h2v14z"></path>
   </ResizerComponent>
 )
@@ -410,9 +435,9 @@ export function DataGrid<DataStructure extends {}>({
 }) {
   const defaultColumn = React.useMemo(
     () => ({
-      minWidth: 30,
+      minWidth: 70,
       width: 150,
-      maxWidth: 400
+      maxWidth: 700
     }),
     []
   )
@@ -753,15 +778,17 @@ export function GridCheckbox({ value }: { value: boolean }) {
 }
 
 const TooltippedDiv = styled.div`
-  width: 100%;
+  overflow: hidden;
 `
 
 function TooltipOnOverflow({
   children,
-  tooltip
+  tooltip,
+  style
 }: {
   children: React.ReactElement
   tooltip: NonNullable<React.ReactNode>
+  style?: React.CSSProperties
 }) {
   const ref = React.createRef<HTMLDivElement>()
   const [overflow, setOverflow] = React.useState(false)
@@ -776,7 +803,7 @@ function TooltipOnOverflow({
   }, [ref])
 
   return (
-    <TooltippedDiv ref={ref}>
+    <TooltippedDiv ref={ref} style={style}>
       {overflow ? <Tooltip title={tooltip}>{children}</Tooltip> : children}
     </TooltippedDiv>
   )
