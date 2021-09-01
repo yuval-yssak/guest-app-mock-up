@@ -10,10 +10,7 @@ import TextField from '@material-ui/core/TextField'
 import { PrimaryButton } from '../components/common/Buttons'
 import styled from 'styled-components'
 
-export const StyledFormControlLabel = styled(FormControlLabel)`
-  color: ${({ theme: { palette } }) =>
-    palette.grey[palette.mode === 'dark' ? '400' : '900']};
-`
+export const StyledFormControlLabel = styled(FormControlLabel)``
 
 // A "Field" contains the field and its error message
 export const Field = styled.div.attrs({ className: 'form-field' })`

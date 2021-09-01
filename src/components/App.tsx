@@ -87,8 +87,10 @@ const AppWrapper = styled.div<{ online: boolean }>`
   ); // https://css-tricks.com/the-trick-to-viewport-units-on-mobile/
   display: grid;
   grid-template-rows: min-content 1fr min-content;
-  background-color: ${({ theme, online }) =>
-    online ? theme.palette.background.paper : theme.palette.grey['300']};
+  background-color: ${({ theme: { palette }, online }) =>
+    online ? palette.background.paper : palette.grey['300']};
+  color: ${({ theme: { palette } }) =>
+    palette.mode === 'dark' ? palette.grey['300'] : 'inherit'};
 `
 
 function setGlobalVhProperty() {

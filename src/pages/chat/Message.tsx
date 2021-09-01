@@ -86,8 +86,6 @@ const OtherMessageFrame = styled(MessageFrame).attrs({
 })`
   background-color: ${({ theme: { palette } }) =>
     palette.mode === 'dark' ? palette.grey['700'] : palette.grey['50']};
-  color: ${({ theme: { palette } }) =>
-    palette.mode === 'dark' ? '#fff' : palette.primary.contrastText};
 `
 
 const StyledAvatar = styled(Avatar)`

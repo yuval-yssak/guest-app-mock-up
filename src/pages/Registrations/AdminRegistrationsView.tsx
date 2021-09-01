@@ -12,7 +12,8 @@ import PageContentWrapper from '../../components/PageContentWrapper'
 
 const StyledTeaser = styled.div`
   text-align: center;
-  background-color: ${({ theme }) => theme.palette.grey['200']};
+  background-color: ${({ theme: { palette } }) =>
+    palette.grey[palette.mode === 'dark' ? '800' : '200']};
   padding: 1rem;
   border-radius: 5px;
   cursor: pointer;

@@ -100,11 +100,12 @@ const TableHeadRow = styled.div`
   border-radius: 0;
   border-spacing: 0;
   margin: 0 auto;
+  background-color: ${({ theme: { palette } }) =>
+    palette.grey[palette.mode === 'dark' ? '900' : '50']};
 `
 
 const StyledColumn = styled.div<{ isDragging: boolean }>`
   align-items: center;
-  ${({ isDragging }) => isDragging && 'background-color: #eee;'}
   display: flex;
   font-weight: 400;
   padding: 1rem 0;
@@ -154,17 +155,12 @@ function ColumnComponent<DataStructure extends {}>({
         onMouseEnter={() => setOnHover(true)}
         onMouseLeave={() => setOnHover(false)}
       >
-        <TooltipOnOverflow tooltip={column.render('Header') || ''}>
-          <div
-            style={{
-              flexShrink: 1,
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap'
-            }}
-          >
-            {column.render('Header')}
-          </div>
+        <TooltipOnOverflow
+          tooltip={
+            column.id === 'selection' ? '' : column.render('Header') || ''
+          }
+        >
+          <HeadingCell>{column.render('Header')}</HeadingCell>
         </TooltipOnOverflow>
         {!nonSortable && (
           <SortIcon
@@ -190,16 +186,20 @@ const Heading = styled.div<{
   width: React.CSSProperties['width']
 }>`
   ${({ isDragging }) => !isDragging && 'transform: inherit !important;'}
-  background-color: ${({ isDragging }) =>
-    isDragging ? 'lightYellow' : 'white'};
   width: ${({ width }) => width};
 `
 
-const DataGridContainer = styled.div`
+const OverflowCell = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 `
+
+const HeadingCell = styled(OverflowCell)`
+  flex-shrink: 1;
+`
+
+const DataGridCell = styled(OverflowCell)``
 
 const DroppableTableContainer = styled.div`
   display: flex;
@@ -271,7 +271,8 @@ const SortIconComponent = styled.svg<{
   upDirection: boolean
 }>`
   opacity: ${({ show }) => (show ? 1 : 0)};
-  color: ${({ hint, theme }) => theme.palette.grey[hint ? '500' : '900']};
+  color: ${({ hint, theme: { palette } }) =>
+    palette.grey[hint ? '500' : palette.mode === 'dark' ? '200' : '900']};
   fill: currentColor;
   transform: rotate(${({ upDirection }) => (upDirection ? 0 : 180)}deg);
   transition: opacity 0.2s, color 0.4s, transform 0.3s;
@@ -313,9 +314,24 @@ const TableControlSection = styled.div`
   }
 `
 
-const SmallCheckbox = styled(Checkbox).attrs({ size: 'small' })`
+const SmallCheckbox = styled(Checkbox).attrs({
+  size: 'small'
+})`
   && {
     padding: 0.4rem;
+  }
+`
+
+const ReadOnlyCheckbox = styled(SmallCheckbox).attrs<{ checked: boolean }>({
+  disabled: true
+})`
+  &&& {
+    color: ${({ theme, checked }) =>
+      checked
+        ? theme.palette.primary.light
+        : theme.palette.mode === 'dark'
+        ? ''
+        : theme.palette.grey['600']};
   }
 `
 
@@ -337,13 +353,18 @@ function pushSelectColumn<DataStructure extends {}>(
     return [
       {
         id: 'selection',
-        Header: React.memo(({ getToggleAllRowsSelectedProps }) => (
-          <SmallCheckbox {...getToggleAllRowsSelectedProps()} />
-        )),
+        Header: React.memo(({ getToggleAllRowsSelectedProps }) => {
+          // exclude title from props
+          const { title, ...toggleAllRowsProps } =
+            getToggleAllRowsSelectedProps()
+          return <SmallCheckbox {...toggleAllRowsProps} />
+        }),
         Cell: React.memo(
-          ({ row }: { row: UseRowSelectRowProps<DataStructure> }) => (
-            <SmallCheckbox {...row.getToggleRowSelectedProps()} />
-          )
+          ({ row }: { row: UseRowSelectRowProps<DataStructure> }) => {
+            // exclude title from props
+            const { title, ...toggleRowProps } = row.getToggleRowSelectedProps()
+            return <SmallCheckbox {...toggleRowProps} />
+          }
         ),
         width: 40,
         minWidth: 40,
@@ -582,7 +603,7 @@ export function DataGrid<DataStructure extends {}>({
                                   : cellValue || ''
                               }
                             >
-                              <DataGridContainer>{cellValue}</DataGridContainer>
+                              <DataGridCell>{cellValue}</DataGridCell>
                             </TooltipOnOverflow>
                           </div>
                         )
@@ -751,19 +772,6 @@ export const EditableCell = React.memo(function EditableCell<
     />
   )
 })
-
-const ReadOnlyCheckbox = styled(Checkbox).attrs<{ checked: boolean }>({
-  disabled: true
-})`
-  &&& {
-    color: ${({ theme, checked }) =>
-      checked
-        ? theme.palette.primary.light
-        : theme.palette.mode === 'dark'
-        ? 'white'
-        : theme.palette.grey['600']};
-  }
-`
 
 export function GridCheckbox({ value }: { value: boolean }) {
   return <ReadOnlyCheckbox checked={value} size="small" />

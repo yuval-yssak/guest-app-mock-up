@@ -21,8 +21,8 @@ const StyledPasswordMeterDiv = styled.div<{ value: number }>`
     flex: 2;
     text-align: center;
     margin: 0;
-    color: ${props =>
-      props.value < 30 ? red[600] : props.value < 80 ? amber[900] : green[800]};
+    color: ${({ value }) =>
+      value < 30 ? red[600] : value < 80 ? amber[900] : green[800]};
   }
 `
 const LinearProgressWithStages = styled(LinearProgress)<{ value: number }>`

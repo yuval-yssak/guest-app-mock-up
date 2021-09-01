@@ -6,12 +6,9 @@ export const Article = styled(PageContentWrapper).attrs({
   className: 'scrollable'
 })`
   && {
-    overflow-y: scroll;
-    color: ${({ theme }) =>
-      theme.palette.grey[theme.palette.mode === 'dark' ? '50' : '700']};
-
     align-items: end;
     box-sizing: content-box;
+    overflow-y: scroll;
 
     @media (max-width: 40em) {
       grid-template-columns: 90%;
