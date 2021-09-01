@@ -17,7 +17,6 @@ import {
   useAsyncDebounce,
   TableSortByToggleProps
 } from 'react-table'
-import { IndeterminateCheckbox } from './IndeterminateCheckBox'
 import styled from 'styled-components/macro'
 import {
   DragDropContext,
@@ -85,7 +84,7 @@ const TableRow = styled.div<{ odd?: boolean }>`
 const TableHead = styled.div`
   /* In this example we use an absolutely position resizer, 
   so a relative position is required, and sticky is also relative. */
-  height: 4rem;
+  min-height: 4rem;
   position: sticky;
   top: 0;
   width: 100%;
@@ -112,6 +111,7 @@ const StyledColumn = styled.div<{ isDragging: boolean }>`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 100%;
 `
 
 function ColumnComponent<DataStructure extends {}>({
@@ -140,6 +140,7 @@ function ColumnComponent<DataStructure extends {}>({
 
   return (
     <Heading
+      className="td"
       isDragging={snapshot.isDragging}
       {...provided.dragHandleProps}
       {...provided.draggableProps}
@@ -206,28 +207,12 @@ const DroppableTableContainer = styled.div`
   overflow: scroll;
   font-size: 0.85rem;
 
-  .tr {
-    :last-child {
-      .td {
-        border-bottom: 0;
-      }
-    }
-  }
-
   .td {
-    padding: 0.1rem 0.3rem;
-    margin: 0;
-    border-bottom: 1px solid ${({ theme }) => theme.palette.grey['200']};
-    /* border-right: 1px solid black; */
-    display: flex;
     align-items: center;
-    :last-child {
-      border-right: 0;
-    }
-    :nth-child(1),
-    :nth-child(2) {
-      border-right: 0;
-    }
+    border-bottom: 1px solid ${({ theme }) => theme.palette.grey['200']};
+    display: flex;
+    margin: 0;
+    padding: 0.1rem 0.3rem;
   }
 `
 
@@ -328,6 +313,12 @@ const TableControlSection = styled.div`
   }
 `
 
+const SmallCheckbox = styled(Checkbox).attrs({ size: 'small' })`
+  && {
+    padding: 0.4rem;
+  }
+`
+
 const Resizer = (props: React.SVGAttributes<SVGElement>) => (
   <ResizerComponent
     {...props}
@@ -347,17 +338,17 @@ function pushSelectColumn<DataStructure extends {}>(
       {
         id: 'selection',
         Header: React.memo(({ getToggleAllRowsSelectedProps }) => (
-          <IndeterminateCheckbox
-            {...getToggleAllRowsSelectedProps()}
-            size="small"
-          />
+          <SmallCheckbox {...getToggleAllRowsSelectedProps()} />
         )),
         Cell: React.memo(
           ({ row }: { row: UseRowSelectRowProps<DataStructure> }) => (
-            <Checkbox {...row.getToggleRowSelectedProps()} size="small" />
+            <SmallCheckbox {...row.getToggleRowSelectedProps()} />
           )
         ),
-        width: 50
+        width: 40,
+        minWidth: 40,
+        disableSortBy: true,
+        disableResizing: true
       },
       ...columns
     ]
@@ -437,7 +428,7 @@ export function DataGrid<DataStructure extends {}>({
   const defaultColumn = React.useMemo(
     () => ({
       minWidth: 70,
-      width: 150,
+      width: 160,
       maxWidth: 700
     }),
     []

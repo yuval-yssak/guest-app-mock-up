@@ -36,7 +36,8 @@ const arrivingSoonColumns = [
       return <SmallAvatar src={value} />
     }),
     width: 70,
-    disableSortBy: true
+    disableSortBy: true,
+    disableResizing: true
   },
   {
     Header: 'Arrival Date',

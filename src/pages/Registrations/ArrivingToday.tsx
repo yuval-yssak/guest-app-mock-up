@@ -33,13 +33,14 @@ const SmallAvatar = styled(Avatar)`
 
 const arrivingTodayColumns = [
   {
-    Header: '',
+    Header: 'Avatar',
     accessor: 'headshot',
     Cell: React.memo(({ value, row, column }: any) => {
       return <SmallAvatar src={value} />
     }),
     width: 70,
-    disableSortBy: true
+    disableSortBy: true,
+    disableResizing: true
   },
   {
     Header: 'Arrival Time',
