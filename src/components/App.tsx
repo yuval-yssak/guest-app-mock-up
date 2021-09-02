@@ -236,10 +236,6 @@ function App() {
                     {store.view.page === '/info-section/abc/123' && (
                       <div>Specific page inside two levels of navigation</div>
                     )}
-                    {store.view.page ===
-                      '/info-section/arriving-at-the-airport' && (
-                      <InfoArrivingAtTheAirport />
-                    )}
                     {store.view.page === '/map' && <div>Map</div>}
                     {store.view.page === '/my-bookings' && (
                       <div>Account Details Page</div>
