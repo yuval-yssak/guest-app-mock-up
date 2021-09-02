@@ -35,12 +35,34 @@ import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
 import ArrowBackIosNewIcon from '@material-ui/icons/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
+import { PrimaryButton } from '../Buttons'
+
+const TableControlSection = styled.div`
+  align-items: center;
+  column-gap: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+  min-height: 4rem;
+  padding: 0 2rem;
+  row-gap: 0.5rem;
+  width: 100%;
+
+  @media (max-width: 23em) {
+    padding: 0;
+  }
+`
 
 const PaginationWrapper = styled.div`
   align-items: center;
   display: flex;
+  flex-basis: 26rem;
+  flex-shrink: 1;
   gap: min(2rem, calc(100vw / 30));
+  justify-content: space-around;
 
+  /* rows per page selection */
   & > div:nth-child(1) {
     align-items: center;
     display: flex;
@@ -54,6 +76,7 @@ const PaginationWrapper = styled.div`
     }
   }
 
+  /* rows indicator */
   & > div:nth-child(2) {
     display: flex;
     flex-wrap: wrap;
@@ -62,6 +85,17 @@ const PaginationWrapper = styled.div`
     flex: 1 3rem 0;
     text-align: center;
   }
+`
+
+const ActionsContainer = styled.div`
+  display: flex;
+  flex-basis: 20rem;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: center;
 `
 
 const CenteredSelect = styled(Select)`
@@ -298,22 +332,6 @@ const ResizerComponent = styled.svg`
   z-index: 1;
 `
 
-const TableControlSection = styled.div`
-  display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 0.5rem;
-  min-height: 4rem;
-  padding: 0 2rem;
-  width: 100%;
-
-  @media (max-width: 23em) {
-    padding: 0;
-  }
-`
-
 const SmallCheckbox = styled(Checkbox).attrs({
   size: 'small'
 })`
@@ -456,25 +474,27 @@ export function DataGrid<DataStructure extends {}>({
   )
 
   const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    setColumnOrder,
-    visibleColumns,
-    state,
-    page,
-    gotoPage,
-    pageCount,
-    nextPage,
-    previousPage,
     canNextPage,
     canPreviousPage,
+    getTableProps,
+    getTableBodyProps,
+    gotoPage,
+    headerGroups,
+    nextPage,
+    page,
+    pageCount,
     pageOptions,
-    state: { pageIndex, pageSize, globalFilter },
-    setPageSize,
+    prepareRow,
+    previousPage,
+    rows,
+    selectedFlatRows,
+    setColumnOrder,
     setGlobalFilter,
-    rows
+    setPageSize,
+    state,
+    state: { pageIndex, pageSize, globalFilter },
+    toggleAllRowsSelected,
+    visibleColumns
   } = useTable<DataStructure>(
     {
       columns,
@@ -520,9 +540,28 @@ export function DataGrid<DataStructure extends {}>({
   return (
     <>
       <TableControlSection>
-        {withGlobalFilter && (
-          <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-        )}
+        <ActionsContainer>
+          {withGlobalFilter && (
+            <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+          )}
+          {selectedFlatRows.length ? (
+            <PrimaryButton
+              onClick={() => {
+                alert(
+                  `inviting ${selectedFlatRows
+                    .map(
+                      r =>
+                        r['cells'].find(c => c.column?.Header === 'Name')?.value
+                    )
+                    .join(', ')}`
+                )
+                toggleAllRowsSelected(false)
+              }}
+            >
+              Invite
+            </PrimaryButton>
+          ) : null}
+        </ActionsContainer>
         <Pagination
           pageIndex={pageIndex}
           pageOptions={pageOptions}
