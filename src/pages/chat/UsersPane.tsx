@@ -22,8 +22,9 @@ import {
 } from './UsersPaneStyles'
 import { useWhenPropSustained } from '../../components/common/hooks'
 
+// should move to the styles module
 const SearchWrapper = styled.div`
-  padding: 0.3rem;
+  padding: 0.5rem 0.7rem;
   background-color: ${({ theme: { palette } }) =>
     palette.mode === 'dark' ? '' : palette.grey['200']};
 `

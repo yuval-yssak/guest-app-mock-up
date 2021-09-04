@@ -26,8 +26,10 @@ const AlignToRight = styled.div`
   border-radius: 10px;
   display: flex;
   height: 2rem;
-  padding-right: 0.3rem;
+  padding: 0 0.3rem 0 0.6rem;
   flex-basis: 20rem;
+  background-color: ${({ theme: { palette } }) =>
+    palette.grey[palette.mode === 'dark' ? '900' : '50']};
 `
 
 const SearchBar = ({
