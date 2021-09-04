@@ -142,7 +142,7 @@ export const EditLine = styled.div.attrs({
       ? `grid-template-columns: max-content minmax(min-content, 1fr) max-content;`
       : `justify-content: end;`}
   column-gap: 1rem;
-  padding-top: 1rem;
+  padding: 1rem 0 0 1rem;
   align-items: center;
   margin-left: 0.3rem;
   margin-right: 0.3rem;

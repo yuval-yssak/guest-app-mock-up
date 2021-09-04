@@ -22,7 +22,6 @@ const StyledTextField = styled(Input)`
 
 const AlignToRight = styled.div`
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
   border-radius: 10px;
   display: flex;
   height: 2rem;
