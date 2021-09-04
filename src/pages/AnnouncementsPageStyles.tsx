@@ -143,7 +143,7 @@ export const EditLine = styled.div.attrs({
       : `justify-content: end;`}
   column-gap: 1rem;
   padding-top: 1rem;
-  align-items: start;
+  align-items: center;
   margin-left: 0.3rem;
   margin-right: 0.3rem;
 `
@@ -187,6 +187,7 @@ export const ReadStats = styled(SecondaryButton).attrs({
 
 export const Buttons = styled.div`
   display: flex;
+  column-gap: 0.5rem;
 `
 
 export const NoAnnouncementsTitle = styled(Typography)`
