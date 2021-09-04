@@ -8,6 +8,7 @@ import { useMst } from '../../models/reactHook'
 import { observer } from 'mobx-react-lite'
 import { isElementInViewport } from '../../components/common/isElementInViewport'
 import SearchBar from '../../components/common/SearchBar'
+import styled from 'styled-components'
 
 import {
   List,
@@ -20,6 +21,12 @@ import {
   TimeSignature
 } from './UsersPaneStyles'
 import { useWhenPropSustained } from '../../components/common/hooks'
+
+const SearchWrapper = styled.div`
+  padding: 0.3rem;
+  background-color: ${({ theme: { palette } }) =>
+    palette.mode === 'dark' ? '' : palette.grey['200']};
+`
 
 //todo: this function has a duplicate in Messages.tsx
 const UserAvatar = ({ src, name }: { src: string; name: string }) => {
@@ -265,7 +272,9 @@ function UsersPaneComponent({
         next={loadNext}
         height={containerHeight - 1}
       >
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <SearchWrapper>
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        </SearchWrapper>
         <List tabIndex={0} onKeyDown={handleKeyDown}>
           {filteredUsersArray.map(id => (
             <User
@@ -279,5 +288,4 @@ function UsersPaneComponent({
     </UsersPaneContainer>
   )
 }
-
 export const UsersPane = observer(UsersPaneComponent)

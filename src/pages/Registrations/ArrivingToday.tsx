@@ -24,11 +24,9 @@ type ArrivingTodayRow = {
 }
 
 const SmallAvatar = styled(Avatar)`
-  && {
-    width: 1.8rem;
-    height: 1.8rem;
-    border-radius: 15%;
-  }
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
 `
 
 const arrivingTodayColumns = [

@@ -705,7 +705,6 @@ function Pagination({
           variant="standard"
           disableUnderline
         >
-          <MenuItem value={1}>1</MenuItem>
           <MenuItem value={10}>10</MenuItem>
           <MenuItem value={25}>25</MenuItem>
           <MenuItem value={50}>50</MenuItem>

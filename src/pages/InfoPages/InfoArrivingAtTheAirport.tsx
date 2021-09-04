@@ -1,11 +1,11 @@
 import React from 'react'
-import Link from '@material-ui/core/Link'
 import {
   Article,
   Heading2,
   Heading3,
   LeadText,
-  Paragraph
+  Paragraph,
+  Link
 } from '../../components/InfoSectionTypography'
 
 export default function InfoArrivingAtTheAirport() {

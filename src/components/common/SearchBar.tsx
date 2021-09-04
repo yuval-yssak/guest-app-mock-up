@@ -41,6 +41,7 @@ const SearchBar = ({
 }) => {
   return (
     <AlignToRight>
+      <SearchIcon />
       <StyledTextField
         disableUnderline
         onKeyDown={e => {
@@ -52,12 +53,10 @@ const SearchBar = ({
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
       />
-      {searchTerm ? (
+      {searchTerm && (
         <IconButton onClick={() => setSearchTerm('')}>
-          <ClearIcon color="primary" />
+          <ClearIcon />
         </IconButton>
-      ) : (
-        <SearchIcon color="primary" />
       )}
     </AlignToRight>
   )

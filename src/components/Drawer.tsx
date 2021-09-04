@@ -121,7 +121,7 @@ export default function TemporaryDrawer({
               <StyledListItemIcon>
                 <InfoIcon />
               </StyledListItemIcon>
-              <Typography>Info Section</Typography>
+              <Typography>Information</Typography>
             </ListItem>
             <ListItem button disabled>
               <StyledListItemIcon>
