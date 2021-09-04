@@ -144,8 +144,6 @@ export const EditLine = styled.div.attrs({
   column-gap: 1rem;
   padding: 1rem 0 0 1rem;
   align-items: center;
-  margin-left: 0.3rem;
-  margin-right: 0.3rem;
 `
 
 export const AnnouncementInfo = styled.div.attrs({
