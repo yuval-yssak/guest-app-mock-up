@@ -251,7 +251,11 @@ const ChatPage = observer(function ChatPage({
             onChange={e => setUserInput(e.target.value)}
             ref={userInputRef}
           />
-          <StyledIconButton aria-label="send" onClick={() => submitMessage()}>
+          <StyledIconButton
+            engaged={!!userInput.trim()}
+            aria-label="send"
+            onClick={() => submitMessage()}
+          >
             <SendIcon />
           </StyledIconButton>
         </UserInputSection>

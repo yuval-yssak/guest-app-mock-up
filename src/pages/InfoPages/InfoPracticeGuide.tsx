@@ -1101,6 +1101,142 @@ export default function InfoPracticeGuide() {
         </Paragraph>
       </section>
       <section>
+        <Heading2>
+          3. The Plough <em>Halasana</em>
+        </Heading2>
+        <Heading3>Preparatory Exercises</Heading3>
+        <Paragraph>
+          From the Shoulderstand, lower one foot to the ground behind the head,
+          exhaling. Inhale, raising the leg. Repeat with the other leg. Coming
+          into the position:
+        </Paragraph>
+        <ol>
+          <li>Come into the Shoulderstand.</li>
+          <li>
+            From the Shoulderstand, drop both feet down to the ground behind the
+            head.
+          </li>
+          <li>
+            If the toes are touching the floor, bring the hands flat on the
+            floor behind the back, palms on the floor, hands parallel to each
+            other. People who are not able to bring the toes to the floor should
+            keep the hands on the back to avoid straining the back muscles.
+          </li>
+          <li>
+            Intermediate / advanced students may try clasping the hands together
+            behind the back.
+          </li>
+        </ol>
+        <Heading3>Holding the position:</Heading3>
+        <Paragraph>
+          Keep the knees straight; point the toes in towards the head, stretch
+          the heels towards the floor. <br />
+          Hold the Plough for 30 seconds to begin, increasing gradually to 2
+          minutes.
+        </Paragraph>
+        <Heading3>Return to Shoulderstand</Heading3>
+        <Heading4>To come out of the position:</Heading4>
+        <Paragraph>
+          Beginners:
+          <br /> bring the hands flat on the flood behind the back. Raise the
+          feet up from the floor behind the head. Using the hands as a brake,
+          slowly roll out of the position. Tyr to lower each vertebrae to the
+          ground separately keeping the head on the ground. When you have come
+          down completely, relax for a moment and then push up into the Bridge.
+        </Paragraph>
+      </section>
+      <section>
+        <Heading2>
+          The Bridge <em>Setubandhasana</em>
+        </Heading2>
+        <Paragraph>
+          The Bridge is done immediately after the Plough, as a counter-position
+          for the thoracic and lumbar regions of the spine. The Bridge
+          compliments and enhances the benefits of the Shoulderstand and the
+          Plough.
+        </Paragraph>
+        <Heading3>Coming into the position</Heading3>
+        beginners:
+        <ol>
+          <li>
+            After coming out of the Shoulderstand/ Plough and relaxing on your
+            back, bend the knees and bring the feet flat on the floor (slightly
+            apart).
+          </li>
+          <li>
+            Lift the hips, bring the hands onto the back in the same position
+            that they were during the Shoulderstand (fingers pointing in towards
+            the spine and thumbs up alongside the body). Keep the head and
+            shoulders on the ground. Raise the hips up as much as possible,
+            getting a good arch to the upper back as well. Hold the position for
+            30 seconds, release the hands, lower the back and return to the
+            relaxation position.
+          </li>
+        </ol>
+        <Paragraph>
+          NOTE WHEN DOING THE BRIDGE: <br />
+          Hips should remain up as high as possible. Feet and legs should be as
+          parallel as possible. Try not to turn feet outwards, nor allow knees
+          to bow outward.
+        </Paragraph>
+        termediate:
+        <ol>
+          <li>Return to the Shoulderstand from the Plough.</li>
+          <li>
+            Bend both knees. Leading with one leg, lower one foot at a time to
+            the ground behind the back (opposite side of the body from the
+            Plough). Do not change the hand positions.
+          </li>
+          <li>
+            The hands will remain on the back in the same position that they
+            were in the Shoulderstand. Make sure that both feet are flat on the
+            floor and that the head and shoulders remain on the ground.
+          </li>
+          <li>
+            Hold the position for 30 seconds, increasing to 1 minute. Return to
+            the Shoulderstand by inhaling deeply as you kick one leg up,
+            followed by the other.
+          </li>
+          <li>
+            Lower both feet halfway down over the head and slowly roll out of
+            the Shoulderstand
+          </li>
+        </ol>
+        <Heading3>Common mistakes in the Bridge</Heading3>
+        <ol>
+          <li>
+            Change of the hand position. Please note that this is dangerous, as
+            you could sprain your thumbs (fingers must point in towards the
+            spine).
+          </li>
+          <li>Lift the shoulders and/or head off the ground.</li>
+          <li>
+            In an attempt to advanced variations that they are not ready for,
+            many people walk feet together, but allow knees to bow out to the
+            sides.
+          </li>
+          <li>Lower the hips in order to walk feet away from the body.</li>
+        </ol>
+        <Heading3>Benefits of the Plough</Heading3>
+        <Paragraph>
+          The plough is a forward-bending position which stretches the entire
+          spine, but the main focus is on the cervical region.
+        </Paragraph>
+        <Heading4>Physical Benefits</Heading4>
+        <ol>
+          <li>
+            All regions of the spine are stretched bringing increased
+            flexibility to the neck and spine. Spinal nerves are nourished.
+          </li>
+          <li>Tension is released from the cervical region.</li>
+          <li>Muscles of back, shoulders, and arms are strengthened.</li>
+          <li>
+            Internal organs are massaged; indigestion and constipation are
+            relieved.
+          </li>
+        </ol>
+      </section>
+      <section>
         <Heading1>Chants</Heading1>
         <Heading2>
           <em>dhyāna ślokaḥ</em>

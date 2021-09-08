@@ -12,9 +12,11 @@ import {
   usersPaneWidth
 } from './UsersPaneStyles'
 
-export const StyledIconButton = styled(IconButton)`
+export const StyledIconButton = styled(IconButton)<{ engaged: boolean }>`
   && {
     align-self: end;
+    bottom: 10px;
+    color: ${({ engaged, theme }) => engaged && theme.palette.primary.main};
   }
 `
 
