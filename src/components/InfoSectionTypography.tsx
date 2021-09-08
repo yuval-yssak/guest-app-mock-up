@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 import PageContentWrapper from './PageContentWrapper'
+import MuiLink from '@material-ui/core/Link'
 
 export const Article = styled(PageContentWrapper).attrs({
   className: 'scrollable'
@@ -62,8 +63,8 @@ export const Paragraph = styled(InfoSectionTypography).attrs({
   && {
     line-height: 1.3;
 
-    &&& + h2,
-    &&& + h3 {
+    // space out headings after paragraphs
+    &&& + :is(h2, h3) {
       margin-top: 1rem;
     }
   }
@@ -80,5 +81,11 @@ export const LeadText = styled(InfoSectionTypography).attrs({
     font-weight: 500;
     line-height: 1.2;
     margin-top: 0;
+  }
+`
+
+export const Link = styled(MuiLink)`
+  && {
+    color: ${({ theme }) => theme.palette.primary.dark};
   }
 `
