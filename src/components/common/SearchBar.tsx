@@ -5,6 +5,14 @@ import SearchIcon from '@material-ui/icons/Search'
 import ClearIcon from '@material-ui/icons/Clear'
 import IconButton from '@material-ui/core/IconButton'
 
+const GreySearchIcon = styled(SearchIcon)`
+  color: ${({ theme }) => theme.palette.grey['500']};
+`
+
+const GreyClearIcon = styled(ClearIcon)`
+  color: ${({ theme }) => theme.palette.grey['500']};
+`
+
 const StyledTextField = styled(Input)`
   flex: 1;
 
@@ -22,25 +30,25 @@ const StyledTextField = styled(Input)`
 
 const AlignToRight = styled.div`
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.palette.grey['400']};
   border-radius: 10px;
   display: flex;
   height: 2rem;
-  padding-right: 0.3rem;
+  padding: 0 0.3rem 0 0.6rem;
   flex-basis: 20rem;
+  background-color: ${({ theme: { palette } }) =>
+    palette.grey[palette.mode === 'dark' ? '900' : '50']};
 `
 
 const SearchBar = ({
   searchTerm,
-  setSearchTerm,
-  hidePlaceHolder
+  setSearchTerm
 }: {
   searchTerm: string
   setSearchTerm: (newTerm: string) => void
-  hidePlaceHolder?: boolean
 }) => {
   return (
     <AlignToRight>
+      <GreySearchIcon />
       <StyledTextField
         disableUnderline
         onKeyDown={e => {
@@ -52,12 +60,10 @@ const SearchBar = ({
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
       />
-      {searchTerm ? (
+      {searchTerm && (
         <IconButton onClick={() => setSearchTerm('')}>
-          <ClearIcon color="primary" />
+          <GreyClearIcon />
         </IconButton>
-      ) : (
-        <SearchIcon color="primary" />
       )}
     </AlignToRight>
   )

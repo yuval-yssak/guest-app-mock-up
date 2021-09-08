@@ -5,9 +5,5 @@ import SearchBar from '../SearchBar'
 export const ColumnFilter = ({
   column: { filterValue, setFilter }
 }: FilterProps<{}>) => (
-  <SearchBar
-    searchTerm={filterValue}
-    setSearchTerm={setFilter}
-    hidePlaceHolder
-  />
+  <SearchBar searchTerm={filterValue} setSearchTerm={setFilter} />
 )
