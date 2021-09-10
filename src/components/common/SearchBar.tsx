@@ -6,7 +6,10 @@ import ClearIcon from '@material-ui/icons/Clear'
 import IconButton from '@material-ui/core/IconButton'
 
 const GreySearchIcon = styled(SearchIcon)`
-  color: ${({ theme }) => theme.palette.grey['500']};
+  && {
+    color: ${({ theme }) => theme.palette.grey['500']};
+    height: 70%;
+  }
 `
 
 const GreyClearIcon = styled(ClearIcon)`
