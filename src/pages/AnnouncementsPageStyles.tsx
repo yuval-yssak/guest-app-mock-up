@@ -142,10 +142,8 @@ export const EditLine = styled.div.attrs({
       ? `grid-template-columns: max-content minmax(min-content, 1fr) max-content;`
       : `justify-content: end;`}
   column-gap: 1rem;
-  padding-top: 1rem;
-  align-items: start;
-  margin-left: 0.3rem;
-  margin-right: 0.3rem;
+  padding: 1rem 0 0 1rem;
+  align-items: center;
 `
 
 export const AnnouncementInfo = styled.div.attrs({
@@ -187,6 +185,7 @@ export const ReadStats = styled(SecondaryButton).attrs({
 
 export const Buttons = styled.div`
   display: flex;
+  column-gap: 0.5rem;
 `
 
 export const NoAnnouncementsTitle = styled(Typography)`
