@@ -37,28 +37,47 @@ import ArrowBackIosNewIcon from '@material-ui/icons/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import { PrimaryButton } from '../Buttons'
 
-const TableControlSection = styled.div`
+const TableControlSection = styled.div<{
+  tableWidth: number
+}>`
   align-items: center;
-  column-gap: 2rem;
+  column-gap: 1rem;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 0.5rem;
+  justify-content: space-between;
+  margin: 0.5rem auto 0;
   min-height: 4rem;
-  padding: 0 2rem;
   row-gap: 0.5rem;
-  width: 100%;
+  min-width: ${({ tableWidth }) => `min(${tableWidth}px, calc(100vw - 4rem))`};
+
+  // media query wrap (a workaround for not being able to switch the justify-content to "center" when the content is wrapped)
+  @media (max-width: 50em) {
+    flex-direction: column;
+
+    && > * {
+      flex-basis: unset;
+    }
+  }
 
   @media (max-width: 23em) {
     padding: 0;
+    min-width: ${({ tableWidth }) => `min(${tableWidth}px, 100vw)`};
+  }
+
+  @media (max-width: 18.5em) {
+    & > div:nth-child(2) {
+      margin-left: 0.2rem;
+      margin-right: -0.3rem;
+    }
+  }
+
+  @media (max-width: 16em) {
+    font-size: 85%;
   }
 `
 
 const PaginationWrapper = styled.div`
   align-items: center;
   display: flex;
-  flex-basis: 26rem;
-  flex-shrink: 1;
   gap: min(2rem, calc(100vw / 30));
   justify-content: space-around;
 
@@ -93,7 +112,6 @@ const ActionsContainer = styled.div`
   gap: 1rem;
   align-items: center;
   flex-wrap: nowrap;
-  flex-grow: 1;
   flex-shrink: 1;
   justify-content: center;
 `
@@ -494,6 +512,7 @@ export function DataGrid<DataStructure extends {}>({
     state,
     state: { pageIndex, pageSize, globalFilter },
     toggleAllRowsSelected,
+    totalColumnsWidth,
     visibleColumns
   } = useTable<DataStructure>(
     {
@@ -540,7 +559,7 @@ export function DataGrid<DataStructure extends {}>({
 
   return (
     <>
-      <TableControlSection>
+      <TableControlSection tableWidth={totalColumnsWidth}>
         <ActionsContainer>
           {withGlobalFilter && (
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />

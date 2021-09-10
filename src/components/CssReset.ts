@@ -80,6 +80,7 @@ export default createGlobalStyle`
     @media (max-width: 17em) {
       font-size: 95%;
     }
+    
     @media (max-width: 15.5em) {
       font-size: 90%;
     }
