@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import * as EmailValidator from 'email-validator'
 import { PasswordMeter } from 'password-meter'
 import Grid from '@material-ui/core/Grid'
@@ -108,37 +108,10 @@ const StyledPasswordTextField = styled(TextField)`
   flex: 1;
 `
 
-function SignupPasswordField({ passwordHidden }: { passwordHidden: boolean }) {
-  return (
-    <StyledPasswordTextField
-      variant="outlined"
-      margin="normal"
-      aria-describedby="password-strength-progress"
-      name="signupPassword"
-      label="Password"
-      type={passwordHidden ? 'password' : 'text'}
-      id="signup-password"
-      autoComplete="current-password"
-    />
-  )
-}
-
-function SignupRepeatPasswordField({
-  passwordHidden
-}: {
-  passwordHidden: boolean
-}) {
-  return (
-    <StyledPasswordTextField
-      variant="outlined"
-      margin="normal"
-      name="repeatPassword"
-      label="Repeat Password"
-      type={passwordHidden ? 'password' : 'text'}
-      id="signup-repeat-password"
-      autoComplete="current-password"
-    />
-  )
+type FormInputs = {
+  signupEmail: string
+  signupPassword: string
+  repeatPassword: string
 }
 
 function ManualSignup() {
@@ -146,15 +119,16 @@ function ManualSignup() {
 
   const {
     register,
-    control,
     handleSubmit,
     formState: { errors },
     watch,
     formState: { dirtyFields }
-  } = useForm({
+  } = useForm<FormInputs>({
     mode: 'onTouched'
   })
 
+  console.log('dirty fields', dirtyFields)
+  console.log('errors', errors)
   const [passwordHidden, setPasswordHidden] = React.useState(true)
   const [repeatPasswordHidden, setRepeatPasswordHidden] = React.useState(true)
 
@@ -180,40 +154,51 @@ function ManualSignup() {
                 justifyContent="space-between"
                 spacing={2}
               >
-                <Controller
-                  name="signupEmail"
-                  control={control}
-                  defaultValue=""
-                  rules={{
-                    required: true,
-                    validate: value => EmailValidator.validate(value)
-                  }}
-                  render={({ field }) => (
-                    <StyledEmailTextField {...field} autoComplete="email" />
+                <div style={{ position: 'relative', marginBottom: '2rem' }}>
+                  <StyledEmailTextField
+                    {...register('signupEmail', {
+                      required: true,
+                      validate: value => EmailValidator.validate(value)
+                    })}
+                    autoComplete="email"
+                    defaultValue=""
+                  />
+                  {errors.signupEmail && <InvalidEmailWarning />}
+                </div>
+                <div style={{ position: 'relative', marginBottom: '2rem' }}>
+                  <StyledPasswordTextField
+                    variant="outlined"
+                    margin="normal"
+                    aria-describedby="password-strength-progress"
+                    label="Password"
+                    type={passwordHidden ? 'password' : 'text'}
+                    autoComplete="current-password"
+                    {...register('signupPassword', {
+                      required: true,
+                      validate: () => isPasswordStrong(passwordWatch)
+                    })}
+                  />
+                  <ShowPasswordIcon callback={setPasswordHidden} />
+                  {dirtyFields.signupPassword && (
+                    <PasswordStrengthMeter password={passwordWatch} />
                   )}
-                />
-                {errors.signupEmail && <InvalidEmailWarning />}
-                <SignupPasswordField
-                  passwordHidden={passwordHidden}
-                  {...register('signupPassword', {
-                    required: true,
-                    validate: () => isPasswordStrong(passwordWatch)
-                  })}
-                />
-                <ShowPasswordIcon callback={setPasswordHidden} />
-                {dirtyFields.signupPassword && (
-                  <PasswordStrengthMeter password={passwordWatch} />
-                )}
-                <SignupRepeatPasswordField
-                  passwordHidden={repeatPasswordHidden}
-                  {...register('repeatPassword', {
-                    required: true,
-                    validate: value => value === passwordWatch
-                  })}
-                />
-                <ShowPasswordIcon callback={setRepeatPasswordHidden} />
-                {errors.repeatPassword && <PasswordsMismatchWarning />}
-
+                </div>
+                <div style={{ position: 'relative', marginBottom: '2rem' }}>
+                  <StyledPasswordTextField
+                    variant="outlined"
+                    margin="normal"
+                    label="Repeat Password"
+                    type={repeatPasswordHidden ? 'password' : 'text'}
+                    id="signup-repeat-password"
+                    autoComplete="current-password"
+                    {...register('repeatPassword', {
+                      required: true,
+                      validate: value => value === passwordWatch
+                    })}
+                  />
+                  <ShowPasswordIcon callback={setRepeatPasswordHidden} />
+                  {errors.repeatPassword && <PasswordsMismatchWarning />}
+                </div>
                 <Button
                   type="submit"
                   fullWidth
