@@ -4,6 +4,7 @@ import Input from '@material-ui/core/Input'
 import SearchIcon from '@material-ui/icons/Search'
 import ClearIcon from '@material-ui/icons/Clear'
 import IconButton from '@material-ui/core/IconButton'
+import { rgba } from 'polished'
 
 const GreySearchIcon = styled(SearchIcon)`
   && {
@@ -31,15 +32,23 @@ const StyledTextField = styled(Input)`
   }
 `
 
-const AlignToRight = styled.div`
+const SearchBarBackground = styled.div`
   align-items: center;
+  background-color: ${({ theme: { palette } }) =>
+    palette.grey[palette.mode === 'dark' ? '900' : '50']};
+  border: ${({ theme: { palette } }) =>
+    palette.mode === 'dark' && `1px solid ${rgba('white', 0.23)}`};
   border-radius: 10px;
   display: flex;
   height: 2rem;
   padding: 0 0.3rem 0 0.6rem;
   flex-basis: 20rem;
-  background-color: ${({ theme: { palette } }) =>
-    palette.grey[palette.mode === 'dark' ? '900' : '50']};
+  transition: border-color 0.2s ease-in-out;
+
+  &:hover {
+    border-color: ${({ theme: { palette } }) =>
+      palette.mode === 'dark' && 'white'};
+  }
 `
 
 const SearchBar = ({
@@ -50,7 +59,7 @@ const SearchBar = ({
   setSearchTerm: (newTerm: string) => void
 }) => {
   return (
-    <AlignToRight>
+    <SearchBarBackground>
       <GreySearchIcon />
       <StyledTextField
         disableUnderline
@@ -68,7 +77,7 @@ const SearchBar = ({
           <GreyClearIcon />
         </IconButton>
       )}
-    </AlignToRight>
+    </SearchBarBackground>
   )
 }
 

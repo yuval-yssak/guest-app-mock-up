@@ -69,6 +69,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '2',
         status: 'unread',
         priority: 'low',
+        sendAlert: false,
         subject:
           'Odit dolores provident sed perferendis blanditiis maiores neque.',
         bodyText:
@@ -84,6 +85,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '3',
         status: 'unread',
         priority: 'high',
+        sendAlert: false,
         subject: 'Ex earum eaque vel rem eos, dolorem officiis.',
         bodyText:
           'Sint vitae, repudiandae dicta cum non, dolorem a, quaerat eum vero labore ipsam nulla similique maiores omnis at expedita vel quasi dolores sequi consequatur deserunt. Alias aut molestiae, fugit ad voluptate voluptatem sed, nam quasi corrupti, tempore sit temporibus doloribus.',
@@ -96,6 +98,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '1',
         status: 'read',
         priority: 'low',
+        sendAlert: false,
         subject: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
         bodyText:
           'Rem culpa, labore dolores et nobis quod deserunt error ad pariatur sunt quasi praesentium officia reprehenderit odit eius numquam quo temporibus repellat voluptatibus placeat doloribus architecto. Repellat, illum sint enim ipsum laboriosam qui maiores repudiandae quas vero accusamus! Fugiat nesciunt minima consequuntur, optio in veritatis sapiente nisi totam autem eaque!',
@@ -108,6 +111,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '4',
         status: 'read',
         priority: 'low',
+        sendAlert: false,
         subject: 'Ad quos dolores quam?',
         bodyText:
           'Inventore aperiam ipsam dolorem quia reiciendis, quam quasi illo ab doloribus perspiciatis quisquam aliquam sit sed eos nulla quod nostrum!',
@@ -120,6 +124,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '5',
         status: 'read',
         priority: 'high',
+        sendAlert: false,
         subject: 'Distinctio reiciendis natus ea?',
         bodyText:
           'Illo, provident dolores! Dolores saepe voluptatibus fugit, vel unde doloribus cumque reprehenderit quidem ipsum recusandae eveniet possimus tempora consequuntur. Vitae.',
@@ -132,6 +137,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '6',
         status: 'unread',
         priority: 'high',
+        sendAlert: false,
         subject: 'Modi at ipsam eaque?',
         bodyText:
           'Alias laboriosam incidunt dolorem dolorum, praesentium ullam est at culpa doloribus dignissimos ipsa atque? Reiciendis voluptatem dolore cumque incidunt ullam.',
@@ -144,6 +150,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '7',
         status: 'read',
         priority: 'low',
+        sendAlert: false,
         subject: 'Qui facilis accusamus magni.',
         bodyText:
           'Explicabo exercitationem cum voluptates dolor iste autem magni quod molestiae, mollitia ratione nihil obcaecati? Repellendus quidem facilis perspiciatis eum sapiente.',
@@ -156,6 +163,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '8',
         status: 'unread',
         priority: 'low',
+        sendAlert: false,
         subject: 'Lorem ipsum dolor sit amet consectetur adipisicing.',
         bodyText:
           'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corrupti quidem ipsum culpa ullam, eius sapiente ratione ad quasi sint saepe quisquam! Libero asperiores magnam sunt adipisci, recusandae, nemo nihil ad et, corporis accusamus qui officiis natus harum voluptatibus? Similique, pariatur.',
@@ -168,6 +176,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '9',
         status: 'read',
         priority: 'low',
+        sendAlert: false,
         subject: 'Nam corrupti consectetur, explicabo fuga libero aperiam?',
         bodyText:
           'Amet rem dolores, magni dolorem optio, illum veniam placeat nesciunt, laborum blanditiis omnis. Sunt nisi incidunt praesentium perspiciatis ea ratione porro eum quae voluptates repellat, illum dolore natus soluta consequatur obcaecati ducimus nobis hic nihil quod tempora animi fuga cum?',
@@ -179,6 +188,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '10',
         status: 'unread',
         priority: 'low',
+        sendAlert: false,
         subject: 'Quidem exercitationem numquam rerum nemo maxime ab.',
         bodyText:
           'Dolor earum a fuga id pariatur aliquam? Earum neque corrupti dicta, molestiae eos iure suscipit aspernatur, error rem minus similique harum qui obcaecati perspiciatis maiores saepe? Maiores veniam rem laboriosam doloribus repudiandae? Repellendus odio possimus architecto nostrum debitis tempora itaque!',
@@ -190,6 +200,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '11',
         status: 'read',
         priority: 'low',
+        sendAlert: false,
         subject: 'Error dolorem, tempore voluptas harum minima hic!',
         bodyText:
           'Illum ipsa delectus consequuntur temporibus sunt est dolores illo rem quaerat maxime commodi doloribus adipisci magni perferendis optio deleniti animi, non, ad distinctio dolore magnam ipsum? Porro dignissimos magnam alias tenetur eius ullam, reiciendis accusantium minus eum! Velit, quidem quis!',
@@ -201,6 +212,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '12',
         status: 'read',
         priority: 'low',
+        sendAlert: false,
         subject: 'Voluptatibus, blanditiis modi. Numquam odit esse quo!',
         bodyText:
           'Molestiae ipsa nostrum fuga! Distinctio voluptatem optio fugiat? Non error impedit ea, sapiente laborum quaerat? Id adipisci, quo dignissimos fugiat earum voluptates dolor facilis, expedita autem nemo itaque dicta qui odio. Error pariatur dolorem, voluptatibus distinctio illum quo officiis expedita?',
@@ -212,6 +224,7 @@ const defaultStore: RootStoreSnapshotIn = {
         id: '13',
         status: 'read',
         priority: 'low',
+        sendAlert: false,
         subject: 'Facilis perferendis animi accusantium ullam alias nostrum.',
         bodyText:
           'Autem necessitatibus voluptatum beatae fuga odio fugiat harum, odit rem similique esse ipsum, dolorem magnam ducimus soluta. Perferendis est provident error magni, cumque amet velit. Eligendi est atque saepe, odio et veritatis, placeat minima ratione animi reiciendis excepturi explicabo modi!',

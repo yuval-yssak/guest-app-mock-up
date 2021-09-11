@@ -9,13 +9,30 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import { PrimaryButton } from '../components/common/Buttons'
 import styled from 'styled-components'
+import { rgba } from 'polished'
 
-export const StyledFormControlLabel = styled(FormControlLabel)``
+export const StyledFormControlLabel = styled(FormControlLabel)`
+  border: 1px solid
+    ${({ theme }) =>
+      rgba(theme.palette.mode === 'dark' ? 'white' : 'black', 0.23)};
+  border-radius: 4px;
+  padding: 0 0.5rem 0 0;
+  transition: border-color 0.2s ease-in-out;
+
+  &:hover {
+    border-color: ${({ theme: { palette } }) =>
+      palette.mode === 'dark' ? 'white' : 'black'};
+  }
+`
 
 // A "Field" contains the field and its error message
-export const Field = styled.div.attrs({ className: 'form-field' })`
+export const Field = styled.div.attrs({
+  className: 'form-field'
+})<{ minimumDesiredWidth?: string }>`
   position: relative;
   flex: 1;
+  flex-basis: ${({ minimumDesiredWidth }) => minimumDesiredWidth};
+  flex-shrink: ${({ minimumDesiredWidth }) => minimumDesiredWidth && 0};
 `
 
 // give room for error message
@@ -60,24 +77,16 @@ export const NewAnnouncementWrapper = styled.div`
 
 // A line wrapper in a form
 export const Wrapper = styled.div.attrs({ className: 'line-wrapper' })<{
-  $alignToRight?: boolean
+  disableColumnGap?: boolean
 }>`
   display: flex;
   flex-wrap: wrap;
-  column-gap: 2rem;
+  column-gap: ${({ disableColumnGap }) => !disableColumnGap && '2rem'};
+  row-gap: 1rem;
 
   &:not(:last-child) {
     margin-bottom: 1rem;
   }
-
-  ${({ $alignToRight }) =>
-    $alignToRight &&
-    `
-      justify-content: flex-end;
-      column-gap: 0.5rem;
-      row-gap: 0.5rem;
-      
-  `}
 `
 
 export const StyledInput = styled(Input)`

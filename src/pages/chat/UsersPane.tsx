@@ -175,7 +175,7 @@ function UsersPaneComponent({
   const filteredUsersArray = usersArray.filter(userID => {
     if (!searchTerm.trim()) return true
     return (
-      !userID ||
+      userID &&
       store.users
         .find(u => u.id === +userID)!
         .personName.toLowerCase()
@@ -238,23 +238,35 @@ function UsersPaneComponent({
     }, 2000)
   }
 
+  // todo: simplify logic here.
   function handleKeyDown(e: React.KeyboardEvent<HTMLUListElement>) {
     // navigate up & down via the arrow keys
     const selectedUserIndex = filteredUsersArray.findIndex(
       id => id === store.view.id
     )
+    console.log(e.key, selectedUserIndex)
 
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault()
       switchToChatView?.()
 
-      if (selectedUserIndex === 0 && e.key === 'ArrowUp')
+      if (selectedUserIndex === 1 && e.key === 'ArrowUp')
         store.view.openChatPage()
-      else {
+      else if (selectedUserIndex === -1) {
+        const nextId =
+          filteredUsersArray[
+            selectedUserIndex + 2 * (e.key === 'ArrowUp' ? -1 : 1)
+          ]
+        console.log('nextId', nextId)
+        if (nextId) {
+          store.view.openChatPage(nextId)
+        }
+      } else {
         const nextId =
           filteredUsersArray[
             selectedUserIndex + 1 * (e.key === 'ArrowUp' ? -1 : 1)
           ]
+        console.log('nextId in else clause', nextId)
         if (nextId) {
           store.view.openChatPage(nextId)
         }

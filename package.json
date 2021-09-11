@@ -20,6 +20,7 @@
     "mobx-react-lite": "^3.2.0",
     "mobx-state-tree": "^5.0.2",
     "mobx-utils": "^6.0.4",
+    "notistack": "^1.0.6-next.2",
     "password-meter": "^3.7.0",
     "path-to-regexp": "^6.2.0",
     "polished": "^4.1.3",
