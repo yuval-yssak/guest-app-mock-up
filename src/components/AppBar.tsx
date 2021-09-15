@@ -179,7 +179,8 @@ export default function ProminentAppBar({
               audience: { targetName: 'all-residents' },
               publishEnd: dayjs().add(1, 'week').toDate(),
               status: 'unread',
-              priority: 'high'
+              priority: 'high',
+              sendAlert: false
             })
             handleMoreClose()
           }}
@@ -196,7 +197,8 @@ export default function ProminentAppBar({
               audience: { targetName: 'all-residents' },
               publishEnd: dayjs().add(1, 'week').toDate(),
               status: 'unread',
-              priority: 'low'
+              priority: 'low',
+              sendAlert: false
             })
             handleMoreClose()
           }}

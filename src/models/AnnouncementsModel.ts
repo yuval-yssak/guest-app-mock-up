@@ -96,6 +96,7 @@ const AnnouncementModel = types
     publishOn: types.Date,
     status: types.union(types.literal('read'), types.literal('unread')),
     priority: types.union(types.literal('low'), types.literal('high')),
+    sendAlert: types.boolean,
     publishEnd: types.Date,
     audience: AudienceTarget,
     admin: types.maybe(AdminExtensionModel)
@@ -118,6 +119,9 @@ const AnnouncementModel = types
     },
     togglePriority() {
       self.priority = self.priority === 'high' ? 'low' : 'high'
+    },
+    toggleNotify() {
+      self.sendAlert = !self.sendAlert
     }
   }))
 
@@ -235,6 +239,7 @@ export const AnnouncementsModel = AnnouncementsProps.actions(self => ({
           id: newDraft.audience.id
         },
         status: 'read',
+        sendAlert: newDraft.sendAlert,
         id: Math.random().toString(36).slice(2),
         priority: newDraft.priority
       }
