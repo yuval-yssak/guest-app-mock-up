@@ -50,7 +50,7 @@ const TableControlSection = styled.div<{
   min-width: ${({ tableWidth }) => `min(${tableWidth}px, calc(100vw - 4rem))`};
 
   // media query wrap (a workaround for not being able to switch the justify-content to "center" when the content is wrapped)
-  @media (max-width: 50em) {
+  @media (max-width: 51em) {
     flex-direction: column;
 
     && > * {
@@ -134,9 +134,10 @@ const TableRow = styled.div<{ odd?: boolean }>`
 `
 
 const TableHead = styled.div`
+  flex-basis: 4rem;
+  flex-shrink: 0;
   /* In this example we use an absolutely position resizer, 
   so a relative position is required, and sticky is also relative. */
-  min-height: 4rem;
   position: sticky;
   top: 0;
   width: 100%;
@@ -814,7 +815,7 @@ export const EditableCell = React.memo(function EditableCell<
     })
   }
 
-  // If the initialValue is changed externall, sync it up with our state
+  // If the initialValue is changed externally, sync it up with our state
   React.useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
