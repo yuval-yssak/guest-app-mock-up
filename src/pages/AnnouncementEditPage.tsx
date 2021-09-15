@@ -36,12 +36,14 @@ import {
   AudienceSegmentName,
   AudienceCountChip,
   PrimaryButtonWithMargin,
-  StyledFormControlLabel
+  StyledFormControlLabel,
+  FormBottomFields,
+  FormBottomButtons
 } from './AnnouncementEditPageStyles'
 
 dayjs.extend(minMax)
 
-type formInputs = {
+type FormInputs = {
   draftSubject: string
   draftBodyText: string
   draftAudience: string
@@ -129,7 +131,7 @@ function EditAnnouncementComponent(
     getValues,
     clearErrors,
     trigger
-  } = useForm<formInputs>({ mode: 'onTouched' })
+  } = useForm<FormInputs>({ mode: 'onTouched' })
 
   const store = useMst()
 
@@ -384,7 +386,7 @@ function EditAnnouncementComponent(
             </Field>
           </Wrapper>
           <Wrapper>
-            <Field>
+            <Field minimumDesiredWidth="14rem">
               <DateTimePicker
                 inputFormat="MM/DD/YYYY HH:mm a"
                 label="Start publishing on"
@@ -423,7 +425,7 @@ function EditAnnouncementComponent(
                 <FormError>* Past date</FormError>
               )}
             </Field>
-            <Field>
+            <Field minimumDesiredWidth="14rem">
               <DateTimePicker
                 inputFormat="MM/DD/YYYY HH:mm a"
                 label="Stop publishing on"
@@ -468,81 +470,83 @@ function EditAnnouncementComponent(
             </Field>
           </Wrapper>
           <br />
-          <Wrapper>
-            <Tooltip title="High importance is for safety & health concerns only">
-              <StyledFormControlLabel
-                label="Important"
-                control={
-                  <Switch
-                    checked={priority === 'high'}
-                    onChange={() => togglePriority()}
-                  />
-                }
-              />
-            </Tooltip>
-            <Tooltip title="Send alert will issue an email and a push notification for the users who have registered to receive notifications in any of their devices. Push notifications currently do not work at all on Apple devices, and email notifications are subject to user preferences.">
-              <StyledFormControlLabel
-                label="Send Alert"
-                control={
-                  <>
+          <Wrapper disableColumnGap>
+            <FormBottomFields>
+              <Tooltip title="High importance is for safety &amp; health concerns only">
+                <StyledFormControlLabel
+                  label="Important"
+                  control={
                     <Switch
-                      checked={sendAlert}
-                      onChange={() => toggleNotify()}
+                      checked={priority === 'high'}
+                      onChange={() => togglePriority()}
                     />
-                  </>
-                }
-              />
-            </Tooltip>
-          </Wrapper>
-          <Wrapper $alignToRight>
-            <Tooltip title="Discard changes">
-              <SecondaryButton
-                onClick={() => {
-                  if (window.history.length) window.history.back()
-                  else store.view.openAnnouncementsPage()
-                }}
-              >
-                Back
-              </SecondaryButton>
-            </Tooltip>
-            <SecondaryButton onClick={reset}>
-              {mode === 'edit' ? `Reset` : `Clear`}
-            </SecondaryButton>
-            {shouldBeAbleToArchive && (
-              // todo: implement archiving
-              <SecondaryButton>Archive</SecondaryButton>
-            )}
-            {shouldBeAbleToDuplicate && (
-              <SecondaryButton
-                onClick={() => {
-                  const currentDraftSnapshot = getSnapshot(
-                    store.announcements.editMode!.newDraft!
-                  )
-                  store.view.openAnnouncementsNewDraftPage()
-                  if (
-                    currentDraftSnapshot?.subject ||
-                    currentDraftSnapshot?.bodyText
-                  ) {
-                    setImmediate(() =>
-                      alert(
-                        'You are currently editing a draft. Reset the draft first if you want to duplicate an archived announcement.'
-                      )
-                    )
-                  } else if (store.announcements.editMode) {
-                    store.announcements.editMode.clearDraft()
-                    const newDraft = store.announcements.editMode.newDraft!
-                    newDraft.setSubject(subject)
-                    newDraft.setBodyText(bodyText)
-                    newDraft.setAudience(audience)
-                    if (priority === 'high') newDraft.togglePriority()
-                    if (sendAlert) newDraft.toggleNotify()
                   }
-                }}
-              >
-                Duplicate
+                />
+              </Tooltip>
+              <Tooltip title="Send alert will issue an email and a push notification for the users who have registered to receive notifications in any of their devices. Push notifications currently do not work at all on Apple devices, and email notifications are subject to user preferences.">
+                <StyledFormControlLabel
+                  label="Send Alert"
+                  control={
+                    <>
+                      <Switch
+                        checked={sendAlert}
+                        onChange={() => toggleNotify()}
+                      />
+                    </>
+                  }
+                />
+              </Tooltip>
+            </FormBottomFields>
+            <FormBottomButtons>
+              <Tooltip title="Discard changes">
+                <SecondaryButton
+                  onClick={() => {
+                    if (window.history.length) window.history.back()
+                    else store.view.openAnnouncementsPage()
+                  }}
+                >
+                  Back
+                </SecondaryButton>
+              </Tooltip>
+              <SecondaryButton onClick={reset}>
+                {mode === 'edit' ? `Reset` : `Clear`}
               </SecondaryButton>
-            )}
-            <PrimaryButton type="submit">Save</PrimaryButton>
+              {shouldBeAbleToArchive && (
+                // todo: implement archiving
+                <SecondaryButton>Archive</SecondaryButton>
+              )}
+              {shouldBeAbleToDuplicate && (
+                <SecondaryButton
+                  onClick={() => {
+                    const currentDraftSnapshot = getSnapshot(
+                      store.announcements.editMode!.newDraft!
+                    )
+                    store.view.openAnnouncementsNewDraftPage()
+                    if (
+                      currentDraftSnapshot?.subject ||
+                      currentDraftSnapshot?.bodyText
+                    ) {
+                      setImmediate(() =>
+                        alert(
+                          'You are currently editing a draft. Reset the draft first if you want to duplicate an archived announcement.'
+                        )
+                      )
+                    } else if (store.announcements.editMode) {
+                      store.announcements.editMode.clearDraft()
+                      const newDraft = store.announcements.editMode.newDraft!
+                      newDraft.setSubject(subject)
+                      newDraft.setBodyText(bodyText)
+                      newDraft.setAudience(audience)
+                      if (priority === 'high') newDraft.togglePriority()
+                      if (sendAlert) newDraft.toggleNotify()
+                    }
+                  }}
+                >
+                  Duplicate
+                </SecondaryButton>
+              )}
+              <PrimaryButton type="submit">Save</PrimaryButton>
+            </FormBottomButtons>
           </Wrapper>
         </form>
       </NewAnnouncementWrapper>
@@ -568,7 +572,6 @@ function AudienceTargetItem({
   return (
     <MultilineListItem
       selected={value === name}
-      // as="div"
       color="transparent"
       onClick={() => setSelected({ targetName: name, id: undefined })}
       disabled={disabled}
@@ -645,8 +648,13 @@ const EditAnnouncement = observer(function EditAnnouncement() {
       setPublishEnd={announcementClone.setPublishEnd}
       priority={announcementClone.priority}
       togglePriority={() => {}}
-      sendAlert={false}
-      toggleNotify={() => {}}
+      sendAlert={announcementClone.sendAlert}
+      toggleNotify={
+        // allow sending an alert only if one hasn't already been sent
+        announcement.sendAlert
+          ? () => {}
+          : () => announcementClone.toggleNotify()
+      }
       reset={() => {
         setAnnouncementClone(clone(announcement))
       }}
@@ -657,7 +665,7 @@ const EditAnnouncement = observer(function EditAnnouncement() {
 const AnnouncementDraftPage = observer(function AnnouncementDraftPage() {
   const store = useMst()
 
-  function saveDraft(_data?: formInputs) {
+  function saveDraft(_data?: FormInputs) {
     store.announcements.saveDraft()
     store.view.openAnnouncementsPage()
   }

@@ -9,13 +9,30 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import { PrimaryButton } from '../components/common/Buttons'
 import styled from 'styled-components'
+import { rgba } from 'polished'
 
-export const StyledFormControlLabel = styled(FormControlLabel)``
+export const StyledFormControlLabel = styled(FormControlLabel)`
+  border: 1px solid
+    ${({ theme }) =>
+      rgba(theme.palette.mode === 'dark' ? 'white' : 'black', 0.23)};
+  border-radius: 4px;
+  padding: 0 0.5rem 0 0;
+  transition: border-color 0.2s ease-in-out;
+
+  &:hover {
+    border-color: ${({ theme: { palette } }) =>
+      palette.mode === 'dark' ? 'white' : 'black'};
+  }
+`
 
 // A "Field" contains the field and its error message
-export const Field = styled.div.attrs({ className: 'form-field' })`
+export const Field = styled.div.attrs({
+  className: 'form-field'
+})<{ minimumDesiredWidth?: string }>`
   position: relative;
   flex: 1;
+  flex-basis: ${({ minimumDesiredWidth }) => minimumDesiredWidth};
+  flex-shrink: ${({ minimumDesiredWidth }) => minimumDesiredWidth && 0};
 `
 
 // give room for error message
@@ -27,7 +44,6 @@ export const StyledTextField = styled(TextField)`
 
 export const DateTimeTextField = styled(TextField)`
   && {
-    min-width: 15rem;
     margin-bottom: 0.8rem;
   }
 `
@@ -54,30 +70,23 @@ export const StyledListSubheader = styled(ListSubheader).attrs({
 export const NewAnnouncementWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  width: clamp(14.5rem, 80%, 60rem);
+  width: clamp(min(100vw, 16rem), 80%, 60rem);
+  justify-self: center;
   margin-top: 1rem;
 `
 
 // A line wrapper in a form
 export const Wrapper = styled.div.attrs({ className: 'line-wrapper' })<{
-  $alignToRight?: boolean
+  disableColumnGap?: boolean
 }>`
   display: flex;
   flex-wrap: wrap;
-  column-gap: 2rem;
+  column-gap: ${({ disableColumnGap }) => !disableColumnGap && '2rem'};
+  row-gap: 1rem;
 
   &:not(:last-child) {
     margin-bottom: 1rem;
   }
-
-  ${({ $alignToRight }) =>
-    $alignToRight &&
-    `
-      justify-content: flex-end;
-      column-gap: 0.5rem;
-      row-gap: 0.5rem;
-      
-  `}
 `
 
 export const StyledInput = styled(Input)`
@@ -138,5 +147,22 @@ export const PrimaryButtonWithMargin = styled(PrimaryButton)`
   && {
     margin: 1rem;
     margin-top: 0;
+  }
+`
+
+export const FormBottomFields = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+`
+
+export const FormBottomButtons = styled(FormBottomFields)`
+  justify-content: end;
+  flex-grow: 1;
+
+  @media (max-width: 14.5em) {
+    flex-direction: column;
+    align-items: stretch;
   }
 `

@@ -30,10 +30,8 @@ const lorem = new LoremIpsum({
 
 const StyledToolbar = styled(Toolbar).attrs({ className: 'toolbar' })`
   && {
-    display: grid;
-    grid-auto-flow: column;
-    grid-template-columns: min-content 1fr minmax(min-content, max-content) max-content;
-    justify-items: start;
+    display: flex;
+    width: 100vw;
 
     @media screen and (max-width: 37.5em), screen and (max-height: 25em) {
       min-height: 2.9rem;
@@ -55,14 +53,16 @@ const PageTitle = styled(Typography)<
   TypographyProps<'h1', { component: 'h1' }>
 >`
   && {
-    text-align: center;
     font-size: 1.4rem;
-    justify-self: start;
+    flex: 1 1 10rem;
     margin-left: 0.5rem;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     @media screen and (max-width: 37.5em), screen and (max-height: 25em) {
       font-size: 1.1rem;
       padding: 0;
-      max-width: 7rem;
     }
   }
 `
