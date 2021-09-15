@@ -252,7 +252,7 @@ const ChatPage = observer(function ChatPage({
             ref={userInputRef}
           />
           <StyledIconButton
-            engaged={!!userInput.trim()}
+            $engaged={!!userInput.trim()}
             aria-label="send"
             onClick={() => submitMessage()}
           >

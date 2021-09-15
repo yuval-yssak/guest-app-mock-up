@@ -168,19 +168,17 @@ function UsersPaneComponent({
   const [containerHeight, setContainerHeight] = React.useState(0)
   const [searchTerm, setSearchTerm] = React.useState('')
 
+  // front desk user (empty string) and all other users concatenated to it
   const usersArray = [''].concat(
     store.chats.withUsers!.map(uc => uc.user.id.toString())
   )
 
   const filteredUsersArray = usersArray.filter(userID => {
     if (!searchTerm.trim()) return true
-    return (
-      !userID ||
-      store.users
-        .find(u => u.id === +userID)!
-        .personName.toLowerCase()
-        .includes(searchTerm.toLowerCase())
-    )
+    return store.users
+      .find(u => u.id === +userID)
+      ?.personName.toLowerCase()
+      .includes(searchTerm.toLowerCase())
   })
 
   // track divHeight whenever DOM element changes or number of items
@@ -241,20 +239,18 @@ function UsersPaneComponent({
   function handleKeyDown(e: React.KeyboardEvent<HTMLUListElement>) {
     // navigate up & down via the arrow keys
     const selectedUserIndex = filteredUsersArray.findIndex(
-      id => id === store.view.id
+      id => id === (store.view.id || '')
     )
 
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault()
       switchToChatView?.()
 
-      if (selectedUserIndex === 0 && e.key === 'ArrowUp')
+      if (selectedUserIndex === 1 && e.key === 'ArrowUp')
         store.view.openChatPage()
       else {
         const nextId =
-          filteredUsersArray[
-            selectedUserIndex + 1 * (e.key === 'ArrowUp' ? -1 : 1)
-          ]
+          filteredUsersArray[selectedUserIndex + (e.key === 'ArrowUp' ? -1 : 1)]
         if (nextId) {
           store.view.openChatPage(nextId)
         }
