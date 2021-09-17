@@ -32,22 +32,26 @@ export const LoginBackground = styled.div`
   position: relative;
 `
 
-export const FixedSizedPaper = styled(PaddedPaper)`
+export const FixedSizedPaper = styled(PaddedPaper)<{
+  capAtScreenHeight?: boolean
+}>`
   display: flex;
   flex-direction: column;
   height: 26rem;
+  max-height: ${({ capAtScreenHeight }) => capAtScreenHeight && '100vh'};
   justify-content: center;
   left: 15%;
   position: relative;
   top: 10%;
   width: 21rem;
 
-  @media (max-height: 31.2em) {
-    top: max(0px, calc(10% - (31.2em - 100vh) / 2));
-  }
-
   @media (max-width: 63em) {
     left: max(0px, calc(15% - (63em - 100vw) / 2));
+  }
+
+  @media (max-height: 31.2em) {
+    top: max(0px, calc(10% - (31.2em - 100vh) / 2));
+    left: 0;
   }
 
   @media (max-width: 42em) {
@@ -55,6 +59,7 @@ export const FixedSizedPaper = styled(PaddedPaper)`
     min-height: 100vh;
     top: 0;
     width: 100vw;
+    padding: max(1rem, calc((100vw - 20rem) / 2));
   }
 `
 
@@ -90,6 +95,7 @@ const OAuthButton = styled(ButtonBase).attrs({ focusRipple: true })`
     border-radius: 0.25rem;
     display: flex;
     font-family: inherit;
+    height: 2rem;
     margin-bottom: 0.3rem;
     padding: 0.2rem 0.5rem;
     text-align: inherit;
@@ -152,7 +158,7 @@ function ManualSignIn() {
   function onSubmit(data: LoginFormInput) {
     applySnapshot(store, {
       ...defaultStore,
-      view: store.view,
+      view: { id: '', page: '/' },
       status: store.status
     })
   }
@@ -222,7 +228,7 @@ function Login() {
 
   return (
     <LoginBackground>
-      <FixedSizedPaper elevation={10} $opacity={0.8}>
+      <FixedSizedPaper elevation={10}>
         <OAuthButton
           onClick={() => {
             alert('Logging in with Google')
