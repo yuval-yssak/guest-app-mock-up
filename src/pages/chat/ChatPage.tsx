@@ -193,12 +193,9 @@ const ChatPage = observer(function ChatPage({
     <>
       {selectAnotherUser && <SwitchBack fn={selectAnotherUser} />}
       <ChatContainer staffView={staffView}>
-        <MessagesScrollable
-          tabIndex={0}
-          ref={containerDomRef}
-          staffView={staffView}
-        >
+        <MessagesScrollable ref={containerDomRef} staffView={staffView}>
           <StyledInfiniteScroll
+            keysScroll
             dataLength={chat.orderedMessages.length}
             hasMore={true}
             loader={<StyledLinearProgress />}

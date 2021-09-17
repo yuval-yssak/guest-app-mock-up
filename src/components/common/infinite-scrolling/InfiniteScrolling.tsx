@@ -24,6 +24,7 @@ export interface Props {
   dataLength: number
   initialScrollY?: number
   className?: string
+  keysScroll?: boolean
 }
 
 export default function InfiniteScroll(props: Props) {
@@ -340,6 +341,7 @@ export default function InfiniteScroll(props: Props) {
       className={`infinite-scroll-component__outerdiv ${props.className}`}
     >
       <div
+        tabIndex={props.keysScroll ? 0 : undefined}
         className={`infinite-scroll-component ${props.className || ''}`}
         ref={(infScroll: HTMLDivElement) => (_infScroll.current = infScroll)}
         style={style}

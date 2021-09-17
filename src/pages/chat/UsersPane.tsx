@@ -53,7 +53,6 @@ const User = observer(
     const store = useMst()
     const domRef = React.createRef<HTMLDivElement>()
     const selected = (store.view.id || '') === id
-    const [firstRender, setFirstRender] = React.useState(true)
 
     // Scroll to selected user if it is not in view
     React.useEffect(() => {
@@ -61,7 +60,6 @@ const User = observer(
         if (
           domRef.current &&
           selected &&
-          firstRender &&
           !isElementInViewport(domRef.current)
         ) {
           domRef.current.scrollIntoView({ block: 'center' })
@@ -69,19 +67,7 @@ const User = observer(
       })
 
       return () => clearImmediate(asyncTaskID)
-    }, [domRef, selected, id, firstRender])
-
-    React.useEffect(
-      // after initial load - do not allow jumping of the scrolling position
-      () => {
-        const timeoutID = setTimeout(() => {
-          setFirstRender(false)
-        }, 1000)
-
-        return () => clearTimeout(timeoutID)
-      },
-      []
-    )
+    }, [domRef, selected, id])
 
     const chat = id
       ? store.chats.withUsers!.find(uc => uc.user.id === +id)!.chat
