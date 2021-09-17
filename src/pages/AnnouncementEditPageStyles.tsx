@@ -25,37 +25,10 @@ export const StyledFormControlLabel = styled(FormControlLabel)`
   }
 `
 
-// A "Field" contains the field and its error message
-export const Field = styled.div.attrs({
-  className: 'form-field'
-})<{ minimumDesiredWidth?: string }>`
-  position: relative;
-  flex: 1;
-  flex-basis: ${({ minimumDesiredWidth }) => minimumDesiredWidth};
-  flex-shrink: ${({ minimumDesiredWidth }) => minimumDesiredWidth && 0};
-`
-
-// give room for error message
-export const StyledTextField = styled(TextField)`
-  && {
-    margin-bottom: 0.8rem;
-  }
-`
-
 export const DateTimeTextField = styled(TextField)`
   && {
     margin-bottom: 0.8rem;
   }
-`
-
-export const FormError = styled(Typography).attrs({
-  className: 'form-error',
-  variant: 'body2'
-})`
-  color: ${({ theme }) => theme.palette.secondary.dark};
-  position: absolute;
-  bottom: 0.7rem;
-  transform: translateY(100%);
 `
 
 export const StyledListSubheader = styled(ListSubheader).attrs({
@@ -73,20 +46,6 @@ export const NewAnnouncementWrapper = styled.div`
   width: clamp(min(100vw, 16rem), 80%, 60rem);
   justify-self: center;
   margin-top: 1rem;
-`
-
-// A line wrapper in a form
-export const Wrapper = styled.div.attrs({ className: 'line-wrapper' })<{
-  disableColumnGap?: boolean
-}>`
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: ${({ disableColumnGap }) => !disableColumnGap && '2rem'};
-  row-gap: 1rem;
-
-  &:not(:last-child) {
-    margin-bottom: 1rem;
-  }
 `
 
 export const StyledInput = styled(Input)`

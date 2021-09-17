@@ -27,6 +27,7 @@ import WarningsNotifier from './WarningsNotifier'
 import InfoCovid19GuidelinesPage from '../pages/InfoPages/InfoCovid19GuidelinesPage'
 import InfoPracticeGuide from '../pages/InfoPages/InfoPracticeGuide'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
+import LoginCoverPage from '../pages/LoginCoverPage'
 
 const scaleFrom0 = keyframes`
 0% {
@@ -201,9 +202,11 @@ function App() {
           <SnackbarProvider>
             <WarningsNotifier />
             <AppWrapper online={store.status.online}>
-              {store.view.page === '/login' ? (
+              {!store.loggedInUser && store.view.page === '/login' ? (
                 <LoginPage />
-              ) : store.view.page === '/manualSignup' ? (
+              ) : !store.loggedInUser && store.view.page === '/' ? (
+                <LoginCoverPage />
+              ) : !store.loggedInUser && store.view.page === '/manualSignup' ? (
                 <ManualSignUpPage />
               ) : (
                 <>

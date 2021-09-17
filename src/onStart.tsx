@@ -24,18 +24,18 @@ export default function onStart(rootStore: RootStoreType) {
     if (ev.type === 'popstate') rootStore.view.setFromURL()
   }
 
-  // direct user to "login" page if not logged in
+  // direct user to cover page if not logged in
   let prevViewSnapshotForLogin: ViewSnapshotType | null
   autorun(() => {
     if (
       !rootStore.loggedInUser &&
-      ['/login', '/manualSignup'].every(
+      ['/', '/login', '/manualSignup'].every(
         allowedPagesWhenLoggedOut =>
           rootStore.view.page !== allowedPagesWhenLoggedOut
       )
     ) {
       prevViewSnapshotForLogin = getSnapshot(rootStore.view)
-      rootStore.view.openLoginPage()
+      rootStore.view.openHomePage()
     } else if (rootStore.loggedInUser && prevViewSnapshotForLogin) {
       applySnapshot(rootStore.view, prevViewSnapshotForLogin)
       prevViewSnapshotForLogin = null

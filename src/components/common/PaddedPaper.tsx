@@ -3,7 +3,7 @@ import Paper from '@material-ui/core/Paper'
 
 const PaddedPaper = styled(Paper)`
   opacity: 0.95;
-  padding: 20px;
+  padding: 1rem;
 `
 
 export default PaddedPaper

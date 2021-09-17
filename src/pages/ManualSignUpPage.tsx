@@ -7,6 +7,7 @@ import * as EmailValidator from 'email-validator'
 import { PasswordMeter } from 'password-meter'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
+import Link from '@material-ui/core/Link'
 import PaddedPaper from '../components/common/PaddedPaper'
 
 import styled from 'styled-components'
@@ -207,6 +208,12 @@ function ManualSignup() {
                 >
                   Sign Up
                 </Button>
+                <Typography variant="caption">
+                  By joining, you agree to our{' '}
+                  <Link href="https://sivanandabahamas.org/terms-conditions/">
+                    Terms and Privacy Policy
+                  </Link>
+                </Typography>
                 <Grid item>
                   {/* {loading && <p>Registering...</p>} */}
                   {/* {error && <Error error={error} />} */}

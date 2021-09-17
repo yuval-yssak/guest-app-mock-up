@@ -17,18 +17,20 @@ import { FieldError, useForm } from 'react-hook-form'
 import { useMst } from '../models/reactHook'
 import TextField from '@material-ui/core/TextField'
 import { PrimaryButton, SecondaryButton } from '../components/common/Buttons'
+import {
+  Field,
+  Wrapper,
+  FormTextField,
+  FormError
+} from '../components/common/Forms'
 import { AnnouncementInstanceType } from '../models/AnnouncementsModel'
 import { clone, applySnapshot, getSnapshot } from 'mobx-state-tree'
 
 import minMax from 'dayjs/plugin/minMax'
 import {
-  Field,
-  StyledTextField,
   DateTimeTextField,
-  FormError,
   StyledListSubheader,
   NewAnnouncementWrapper,
-  Wrapper,
   StyledInput,
   AudienceInputLabel,
   MultilineListItem,
@@ -264,7 +266,7 @@ function EditAnnouncementComponent(
           <Wrapper>
             <Tooltip title="Maximum 80 characters">
               <Field>
-                <StyledTextField
+                <FormTextField
                   label="Subject"
                   placeholder="Enter a one-line subject here"
                   fullWidth
@@ -290,7 +292,7 @@ function EditAnnouncementComponent(
           </Wrapper>
           <Wrapper>
             <Field>
-              <StyledTextField
+              <FormTextField
                 label="Body Text"
                 placeholder="Full announcement contents"
                 multiline

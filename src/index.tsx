@@ -5,11 +5,11 @@ import { RootStore, RootStoreType } from './models/RootStore'
 import { Provider } from './models/reactHook'
 import App from './components/App'
 import onStart from './onStart'
-import defaultStore from './defaultStore'
+// import defaultStore from './defaultStore'
 
 const rootElement = document.getElementById('root')
 
-let rootStore = RootStore.create(defaultStore)
+let rootStore = RootStore.create()
 
 ;(window as unknown as Window & { store: RootStoreType }).store = rootStore
 

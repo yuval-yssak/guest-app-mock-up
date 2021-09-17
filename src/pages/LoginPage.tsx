@@ -1,118 +1,234 @@
 import * as React from 'react'
 import { useMst } from '../models/reactHook'
-import GoogleLogin from '../components/GoogleLogin'
-import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
+import ButtonBase from '@material-ui/core/ButtonBase'
 import Link from '@material-ui/core/Link'
 import { useForm } from 'react-hook-form'
 import * as EmailValidator from 'email-validator'
 import PaddedPaper from '../components/common/PaddedPaper'
+import {
+  Field,
+  Wrapper,
+  FormTextField,
+  FormError
+} from '../components/common/Forms'
+import styled from 'styled-components'
+import { rgba } from 'polished'
+import { PrimaryButton } from '../components/common/Buttons'
+import { applySnapshot } from 'mobx-state-tree'
+import defaultStore from '../defaultStore'
+
+export const LoginBackground = styled.div`
+  background-image: url('./images/login-page-beach-hands-up.jpg');
+  background-position: 50% 40%;
+  background-size: cover;
+  height: 100vh;
+  position: relative;
+  width: 100vw;
+`
+
+export const FixedSizedPaper = styled(PaddedPaper)`
+  display: flex;
+  flex-direction: column;
+  height: 26rem;
+  left: min(20%, 15%);
+  padding: 1rem;
+  position: relative;
+  top: 10%;
+  width: 16rem;
+`
+
+const GoogleIcon = styled.img.attrs({
+  src: 'https://developers.google.com/identity/images/g-logo.png',
+  alt: 'google-sign-in'
+})`
+  height: 1rem;
+`
+
+const FacebookIcon = styled.img.attrs({
+  src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/240px-Facebook_Logo_%282019%29.png',
+  alt: 'facebooks-sign-in'
+})`
+  height: 1rem;
+`
+
+const OAuthButton = styled(ButtonBase).attrs({ focusRipple: true })`
+  && {
+    border: 1px solid ${({ theme }) => rgba(theme.palette.primary.main, 0.5)};
+
+    background-color: ${({ theme, disabled }) =>
+      disabled && theme.palette.grey['200']};
+    color: ${({ theme, disabled }) => disabled && theme.palette.grey['500']};
+
+    &:hover {
+      background-color: ${({ theme }) =>
+        rgba(theme.palette.primary.main, 0.04)};
+      border: 1px solid ${({ theme }) => theme.palette.primary.main};
+    }
+
+    border-radius: 0.25rem;
+    display: flex;
+    font-family: inherit;
+    margin-bottom: 0.3rem;
+    padding: 0.2rem 0.5rem;
+    text-align: inherit;
+    transition: background-color 0.25s, border-color 0.25s;
+  }
+`
+
+const OAuthLabel = styled.div`
+  flex: 1;
+  font-weight: 300;
+  padding-left: 0.8rem;
+  letter-spacing: 0.01rem;
+
+  & strong {
+    font-weight: 400;
+  }
+`
+
+const DividerLines = styled.div`
+  align-items: center;
+  display: flex;
+  margin: 0.9rem 0;
+
+  &::before,
+  &::after {
+    content: '';
+    height: 1px;
+    background-color: ${({ theme: { palette } }) => palette.grey['400']};
+    flex: 1;
+  }
+`
+
+const RoundOr = styled.div`
+  background-color: ${({ theme: { palette } }) => palette.grey['400']};
+  border-radius: 50%;
+  color: ${({ theme: { palette } }) => palette.grey['100']};
+  text-transform: uppercase;
+  padding: 0.4rem;
+  font-size: 0.6rem;
+  font-weight: 500;
+`
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`
+
+type LoginFormInput = { email: string; password: string }
 
 function ManualSignIn() {
+  const store = useMst()
   const {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm({
-    mode: 'onChange'
+  } = useForm<LoginFormInput>({
+    mode: 'onTouched'
   })
 
-  function onSubmit(data: { email: string; password: string }) {
-    console.log('submitting', data)
+  function onSubmit(data: LoginFormInput) {
+    applySnapshot(store, {
+      ...defaultStore,
+      view: store.view,
+      status: store.status
+    })
   }
 
-  const store = useMst()
+  const email = register('email', {
+    required: true,
+    validate: value => EmailValidator.validate(value)
+  })
+
+  const password = register('password', { required: true })
 
   return (
-    <>
-      <Typography component="h1" variant="h5">
-        Sign in manually
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <Wrapper>
+        <Field>
+          <FormTextField
+            variant="outlined"
+            size="small"
+            id="email"
+            label="Email"
+            autoComplete="email"
+            name={email.name}
+            onChange={email.onChange}
+            onBlur={email.onBlur}
+            inputRef={email.ref}
+          />
+          {errors.email && <FormError>Email not valid</FormError>}
+        </Field>
+      </Wrapper>
+      <Wrapper>
+        <Field>
+          <FormTextField
+            variant="outlined"
+            size="small"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            name={password.name}
+            onChange={password.onChange}
+            onBlur={password.onBlur}
+            inputRef={password.ref}
+          />
+          {errors.password && <FormError>Password missing</FormError>}
+        </Field>
+      </Wrapper>
+      <PrimaryButton type="submit">Sign In</PrimaryButton>
+      <Typography align="center">
+        <Link href="#" variant="body2" color="secondary.dark">
+          Forgot password?
+        </Link>
       </Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="email"
-          label="Email Address"
-          type="email"
-          autoComplete="email"
-          autoFocus
-          {...register('email', {
-            required: true,
-            validate: value => EmailValidator.validate(value)
-          })}
-        />
-        {errors.email && <p>error: email is not valid</p>}
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          label="Password"
-          type="password"
-          id="password"
-          autoComplete="current-password"
-          style={{ marginBottom: '0' }}
-          {...register('password', { required: true })}
-        />
-        {errors.password && <p>error: {errors.password.message}</p>}
-        <Typography align="left" style={{ marginLeft: '5px' }}>
-          <Link href="#" variant="body2">
-            Forgot password?
-          </Link>
-        </Typography>
-        <Button type="submit" fullWidth variant="contained" color="primary">
-          Sign In
-        </Button>
-        <Typography
-          style={{ padding: '20px 0 30px' }}
-          variant="body2"
-          component="p"
-        >
-          <Link
-            component="button"
-            onClick={() => {
-              store.view.openManualSignupPage()
-            }}
-          >
-            {"Don't have an account? Sign Up"}
-          </Link>
-        </Typography>
-      </form>
-    </>
+    </Form>
   )
 }
 
+const Divider = () => (
+  <DividerLines>
+    <RoundOr>or</RoundOr>
+  </DividerLines>
+)
+
 function Login() {
+  const store = useMst()
+
   return (
-    <>
-      <Box height="100vh" justifyContent="center" display="flex">
-        <Grid container justifyContent="center" style={{ margin: 'auto 0' }}>
-          <Grid item xs={12} sm={8} md={6} lg={4} xl={3}>
-            <PaddedPaper>
-              <Typography variant="body1" paragraph>
-                Join our community
-              </Typography>
-              <GoogleLogin onClick={() => {}} />
-              <div style={{ marginTop: '8px', marginBottom: '8px' }}>or</div>
-              <ManualSignIn />
-              <Typography variant="caption">
-                By joining, you agree to our{' '}
-                <Link href="https://sivanandabahamas.org/terms-conditions/">
-                  Terms and Privacy Policy
-                </Link>
-              </Typography>
-            </PaddedPaper>
-          </Grid>
-        </Grid>
-      </Box>
-    </>
+    <LoginBackground>
+      <FixedSizedPaper>
+        <OAuthButton
+          onClick={() => {
+            alert('Logging in with Google')
+          }}
+        >
+          <GoogleIcon />
+          <OAuthLabel>
+            Sign in with <strong>Google</strong>
+          </OAuthLabel>
+        </OAuthButton>
+        <OAuthButton disabled>
+          <FacebookIcon />
+          <OAuthLabel>
+            Sign in with <strong>Facebook</strong>
+          </OAuthLabel>
+        </OAuthButton>
+        <Divider />
+        <ManualSignIn />
+        <Divider />
+        <PrimaryButton
+          onClick={() => {
+            store.view.openManualSignupPage()
+          }}
+        >
+          Sign Up
+        </PrimaryButton>
+      </FixedSizedPaper>
+    </LoginBackground>
   )
 }
 
