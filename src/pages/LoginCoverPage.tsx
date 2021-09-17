@@ -16,6 +16,7 @@ const AppLogo = styled.div`
   align-items: center;
   flex: 1;
   font-family: cursive;
+  font-size: 2.7rem;
   justify-content: center;
   text-align: center;
 `
@@ -25,7 +26,7 @@ function LoginCoverPage() {
 
   return (
     <LoginBackground>
-      <FixedSizedPaper>
+      <FixedSizedPaper $opacity={store.preferences.darkMode ? 0.5 : undefined}>
         <WelcomeTitle align="center" variant="h2">
           Welcome
         </WelcomeTitle>

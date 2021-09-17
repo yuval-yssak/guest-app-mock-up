@@ -263,7 +263,7 @@ function EditAnnouncementComponent(
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <NewAnnouncementWrapper>
         <form onSubmit={handleSubmit(save)}>
-          <Wrapper>
+          <Wrapper bottomSpacing>
             <Tooltip title="Maximum 80 characters">
               <Field>
                 <FormTextField
@@ -290,7 +290,7 @@ function EditAnnouncementComponent(
               </Field>
             </Tooltip>
           </Wrapper>
-          <Wrapper>
+          <Wrapper bottomSpacing>
             <Field>
               <FormTextField
                 label="Body Text"
@@ -314,7 +314,7 @@ function EditAnnouncementComponent(
               )}
             </Field>
           </Wrapper>
-          <Wrapper>
+          <Wrapper bottomSpacing={!!errors.draftAudience}>
             <Field>
               <AudienceInputLabel>
                 Audience
@@ -387,7 +387,7 @@ function EditAnnouncementComponent(
               )}
             </Field>
           </Wrapper>
-          <Wrapper>
+          <Wrapper bottomSpacing={!!errors.draftPublishOn}>
             <Field minimumDesiredWidth="14rem">
               <DateTimePicker
                 inputFormat="MM/DD/YYYY HH:mm a"

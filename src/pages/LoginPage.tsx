@@ -20,23 +20,41 @@ import { applySnapshot } from 'mobx-state-tree'
 import defaultStore from '../defaultStore'
 
 export const LoginBackground = styled.div`
-  background-image: url('./images/login-page-beach-hands-up.jpg');
-  background-position: 50% 40%;
-  background-size: cover;
-  height: 100vh;
+  &:before {
+    content: '';
+    background-image: url('./images/login-page-beach-hands-up.jpg');
+    background-position: 50% 40%;
+    background-size: cover;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+  }
   position: relative;
-  width: 100vw;
 `
 
 export const FixedSizedPaper = styled(PaddedPaper)`
   display: flex;
   flex-direction: column;
   height: 26rem;
-  left: min(20%, 15%);
-  padding: 1rem;
+  justify-content: center;
+  left: 15%;
   position: relative;
   top: 10%;
   width: 16rem;
+
+  @media (max-width: 48em) {
+    left: max(0px, calc(15% - (48em - 100vw) / 2));
+  }
+
+  @media (max-height: 31.2em) {
+    top: max(0px, calc(10% - (31.2em - 100vh) / 2));
+  }
+  @media (max-width: 25em) {
+    left: 0;
+    min-height: 100vh;
+    top: 0;
+    width: 100vw;
+  }
 `
 
 const GoogleIcon = styled.img.attrs({
@@ -57,9 +75,10 @@ const OAuthButton = styled(ButtonBase).attrs({ focusRipple: true })`
   && {
     border: 1px solid ${({ theme }) => rgba(theme.palette.primary.main, 0.5)};
 
-    background-color: ${({ theme, disabled }) =>
-      disabled && theme.palette.grey['200']};
-    color: ${({ theme, disabled }) => disabled && theme.palette.grey['500']};
+    background-color: ${({ theme: { palette }, disabled }) =>
+      disabled && palette.grey[palette.mode === 'dark' ? '600' : '200']};
+    color: ${({ theme: { palette }, disabled }) =>
+      disabled && palette.grey[palette.mode === 'dark' ? '500' : '500']};
 
     &:hover {
       background-color: ${({ theme }) =>
@@ -146,10 +165,11 @@ function ManualSignIn() {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <Wrapper>
+      <Wrapper bottomSpacing={!!errors.email}>
         <Field>
           <FormTextField
             variant="outlined"
+            fullWidth
             size="small"
             id="email"
             label="Email"
@@ -162,10 +182,11 @@ function ManualSignIn() {
           {errors.email && <FormError>Email not valid</FormError>}
         </Field>
       </Wrapper>
-      <Wrapper>
+      <Wrapper bottomSpacing={!!errors.password}>
         <Field>
           <FormTextField
             variant="outlined"
+            fullWidth
             size="small"
             label="Password"
             type="password"
@@ -200,7 +221,7 @@ function Login() {
 
   return (
     <LoginBackground>
-      <FixedSizedPaper>
+      <FixedSizedPaper elevation={10} $opacity={0.8}>
         <OAuthButton
           onClick={() => {
             alert('Logging in with Google')

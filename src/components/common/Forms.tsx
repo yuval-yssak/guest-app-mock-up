@@ -5,6 +5,7 @@ import styled from 'styled-components'
 // A line wrapper in a form
 export const Wrapper = styled.div.attrs({ className: 'line-wrapper' })<{
   disableColumnGap?: boolean
+  bottomSpacing?: boolean
 }>`
   display: flex;
   flex-wrap: wrap;
@@ -12,7 +13,7 @@ export const Wrapper = styled.div.attrs({ className: 'line-wrapper' })<{
   row-gap: 1rem;
 
   &:not(:last-child) {
-    margin-bottom: 1rem;
+    margin-bottom: ${({ bottomSpacing }) => bottomSpacing && '1.4rem'};
   }
 `
 
@@ -29,7 +30,7 @@ export const Field = styled.div.attrs({
 // give room for error message
 export const FormTextField = styled(TextField)`
   && {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.4rem;
   }
 `
 
@@ -39,6 +40,6 @@ export const FormError = styled(Typography).attrs({
 })`
   color: ${({ theme }) => theme.palette.secondary.dark};
   position: absolute;
-  bottom: 0.7rem;
+  bottom: 0.4rem;
   transform: translateY(100%);
 `
