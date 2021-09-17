@@ -128,14 +128,11 @@ function ManualSignup() {
     mode: 'onTouched'
   })
 
-  console.log('dirty fields', dirtyFields)
-  console.log('errors', errors)
   const [passwordHidden, setPasswordHidden] = React.useState(true)
   const [repeatPasswordHidden, setRepeatPasswordHidden] = React.useState(true)
 
   const passwordWatch = watch('signupPassword', '')
 
-  React.useEffect(() => console.log(passwordHidden), [passwordHidden])
   return (
     <Box height="100vh" justifyContent="center" display="flex">
       <Grid container justifyContent="center" style={{ margin: 'auto 0' }}>

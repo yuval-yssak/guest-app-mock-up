@@ -57,23 +57,28 @@ const User = observer(
 
     // Scroll to selected user if it is not in view
     React.useEffect(() => {
-      setImmediate(() => {
+      const asyncTaskID = setImmediate(() => {
         if (
           domRef.current &&
           selected &&
           firstRender &&
           !isElementInViewport(domRef.current)
-        )
+        ) {
           domRef.current.scrollIntoView({ block: 'center' })
+        }
       })
+
+      return () => clearImmediate(asyncTaskID)
     }, [domRef, selected, id, firstRender])
 
     React.useEffect(
       // after initial load - do not allow jumping of the scrolling position
       () => {
-        setTimeout(() => {
+        const timeoutID = setTimeout(() => {
           setFirstRender(false)
         }, 1000)
+
+        return () => clearTimeout(timeoutID)
       },
       []
     )
@@ -275,7 +280,7 @@ function UsersPaneComponent({
         <List tabIndex={0} onKeyDown={handleKeyDown}>
           {filteredUsersArray.map(id => (
             <User
-              key={id || store.loggedInUser!.id}
+              key={id || 'front-desk'}
               id={id}
               switchToChatView={switchToChatView}
             />

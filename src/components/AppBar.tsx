@@ -266,6 +266,7 @@ export default function ProminentAppBar({
         <MenuItem
           onClick={() => {
             applySnapshot(store, {
+              users: defaultStore.users!.filter(u => u.id === 4),
               loggedInUser: 4,
               view: store.view,
               status: store.status

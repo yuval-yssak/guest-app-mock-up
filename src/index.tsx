@@ -5,7 +5,6 @@ import { RootStore, RootStoreType } from './models/RootStore'
 import { Provider } from './models/reactHook'
 import App from './components/App'
 import onStart from './onStart'
-// import defaultStore from './defaultStore'
 
 const rootElement = document.getElementById('root')
 

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 // This hook issues a callback when a prop is sustained for a certain timeout
 export function useWhenPropSustained(
@@ -13,8 +13,10 @@ export function useWhenPropSustained(
   }, [prop])
 
   React.useEffect(() => {
-    setTimeout(() => {
+    const timeoutID = setTimeout(() => {
       if (Date.now() - initialTimeRef.current >= timeout) callback()
     }, timeout)
+
+    return () => clearTimeout(timeoutID)
   }, [prop, timeout, callback])
 }

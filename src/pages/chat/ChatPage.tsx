@@ -110,12 +110,13 @@ const ChatPage = observer(function ChatPage({
 
   // holds the DOM user input element.
   const userInputRef = React.createRef<HTMLDivElement>()
+
   function loadNext(lastTimestamp: Date) {
     return function () {
       setTimeout(() => {
         const newMessages = generateRandomMessages(
           store.users,
-          +(store.view.id || '')!,
+          +(store.view.id || store.loggedInUser!.id),
           30,
           lastTimestamp
         )
@@ -201,7 +202,7 @@ const ChatPage = observer(function ChatPage({
             dataLength={chat.orderedMessages.length}
             hasMore={true}
             loader={<StyledLinearProgress />}
-            next={loadNext(chat.orderedMessages[0].timestamp)}
+            next={loadNext(chat.orderedMessages[0]?.timestamp)}
             height={containerHeight - 1 - 4 - 1}
             inverse
             onScroll={e => {
