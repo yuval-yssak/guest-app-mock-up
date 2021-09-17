@@ -11,6 +11,7 @@ export const Wrapper = styled.div.attrs({ className: 'line-wrapper' })<{
   flex-wrap: wrap;
   column-gap: ${({ disableColumnGap }) => !disableColumnGap && '2rem'};
   row-gap: 1rem;
+  transition: all 0.2s;
 
   &:not(:last-child) {
     margin-bottom: ${({ bottomSpacing }) => bottomSpacing && '1.4rem'};

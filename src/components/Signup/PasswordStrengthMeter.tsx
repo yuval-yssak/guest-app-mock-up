@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import styled from 'styled-components'
 import { PasswordMeter } from 'password-meter'
@@ -10,23 +10,24 @@ import green from '@material-ui/core/colors/green'
 import Typography from '@material-ui/core/Typography'
 
 const StyledPasswordMeterDiv = styled.div<{ value: number }>`
-  display: flex;
   align-items: center;
+  bottom: -0.9rem;
+  column-gap: 0.4rem;
+  display: flex;
   justify-content: space-between;
   position: absolute;
-  bottom: -14px;
-  width: calc(100% - 48px);
+  width: 100%;
 
   & p {
-    flex: 2;
-    text-align: center;
-    margin: 0;
     color: ${({ value }) =>
       value < 30 ? red[600] : value < 80 ? amber[900] : green[800]};
+    margin: 0;
+    text-align: center;
+    width: max-content;
   }
 `
 const LinearProgressWithStages = styled(LinearProgress)<{ value: number }>`
-  width: 80%;
+  flex: 1;
 
   & div {
     background-color: ${props =>

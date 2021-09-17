@@ -1,24 +1,39 @@
 import * as React from 'react'
 
 import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
 import { useForm } from 'react-hook-form'
 import * as EmailValidator from 'email-validator'
 import { PasswordMeter } from 'password-meter'
-import Grid from '@material-ui/core/Grid'
-import Box from '@material-ui/core/Box'
 import Link from '@material-ui/core/Link'
-import PaddedPaper from '../components/common/PaddedPaper'
 
 import styled from 'styled-components'
-import red from '@material-ui/core/colors/red'
 import VisibilityIcon from '@material-ui/icons/Visibility'
+import Alert from '@material-ui/core/Alert'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 import PasswordStrengthMeter from '../components/Signup/PasswordStrengthMeter'
-// import { useMst } from '../models/reactHook'
-// import Error from '../components/Error'
 import { observer } from 'mobx-react-lite'
+import { FixedSizedPaper, Form, LoginBackground } from './LoginPage'
+import {
+  Field,
+  FormError,
+  FormTextField,
+  Wrapper
+} from '../components/common/Forms'
+import { PrimaryButton } from '../components/common/Buttons'
+
+const StyledVisibilityIcon = styled(VisibilityIcon)`
+  transform: translateY(-0.2rem);
+`
+
+const SignupProgressReport = styled.div.attrs({ className: 'progress-report' })`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+`
 
 // IconButton which enables showing the password for improved accessibility
 function ShowPasswordIcon({
@@ -53,7 +68,7 @@ function ShowPasswordIcon({
         callback(true)
       }}
     >
-      <VisibilityIcon />
+      <StyledVisibilityIcon />
     </IconButton>
   )
 }
@@ -62,53 +77,6 @@ function isPasswordStrong(password: string) {
   return new PasswordMeter().getResult(password).percent > 80
 }
 
-const InputValidationWarning = styled(Typography)`
-  position: absolute;
-  bottom: -12px;
-  left: 2px;
-  margin: 0;
-  color: ${red[900]};
-`
-
-function InvalidEmailWarning() {
-  return (
-    <InputValidationWarning variant="body2">
-      Email is not valid
-    </InputValidationWarning>
-  )
-}
-
-function PasswordsMismatchWarning() {
-  return (
-    <InputValidationWarning variant="body2">
-      The passwords do not match
-    </InputValidationWarning>
-  )
-}
-
-const StyledEmailTextField = styled(TextField)`
-  width: calc(100% - 48px);
-`
-
-// function SignupEmailField() {
-//   return (
-//     <StyledEmailTextField
-//       variant="outlined"
-//       margin="normal"
-//       id="signup-email"
-//       label="Email Address"
-//       name="signupEmail"
-//       type="email"
-//       autoComplete="email"
-//       autoFocus
-//     />
-//   )
-// }
-
-const StyledPasswordTextField = styled(TextField)`
-  flex: 1;
-`
-
 type FormInputs = {
   signupEmail: string
   signupPassword: string
@@ -116,117 +84,203 @@ type FormInputs = {
 }
 
 function ManualSignup() {
-  //   const store = useMst()
-
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    trigger,
     watch,
-    formState: { dirtyFields }
+    reset,
+    formState: { dirtyFields, submitCount }
   } = useForm<FormInputs>({
     mode: 'onTouched'
   })
+
+  const [state, setState] = React.useState<
+    '' | 'processing' | 'processed' | 'failed'
+  >('')
+  function onSubmit(data: FormInputs) {
+    setState('processing')
+  }
+
+  React.useEffect(() => {
+    let timeoutID: NodeJS.Timeout
+
+    if (state === 'processing')
+      timeoutID = setTimeout(
+        () => setState(Math.random() > 0.5 ? 'processed' : 'failed'),
+        3000
+      )
+
+    return () => clearTimeout(timeoutID)
+  }, [state])
 
   const [passwordHidden, setPasswordHidden] = React.useState(true)
   const [repeatPasswordHidden, setRepeatPasswordHidden] = React.useState(true)
 
   const passwordWatch = watch('signupPassword', '')
 
+  const email = register('signupEmail', {
+    required: true,
+    validate: value => EmailValidator.validate(value)
+  })
+
+  const password = register('signupPassword', {
+    required: true,
+    validate: () => isPasswordStrong(passwordWatch)
+  })
+
+  const repeatPassword = register('repeatPassword', {
+    required: true,
+    validate: value => value === passwordWatch
+  })
+
   return (
-    <Box height="100vh" justifyContent="center" display="flex">
-      <Grid container justifyContent="center" style={{ margin: 'auto 0' }}>
-        <Grid item xs={12} sm={8} md={6} lg={4} xl={3}>
-          <PaddedPaper>
-            <Typography component="h1" variant="h5">
-              Sivananda Bahamas Guests - Sign Up
-            </Typography>
-            <form
-              onSubmit={handleSubmit(data =>
-                alert('logging in with:' + JSON.stringify(data, null, 2))
-              )}
-            >
-              <Grid
-                container
-                direction="column"
-                justifyContent="space-between"
-                spacing={2}
+    <LoginBackground>
+      <FixedSizedPaper>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Wrapper bottomSpacing={!!errors.signupEmail}>
+            <Field>
+              <FormTextField
+                variant="outlined"
+                disabled={!!state}
+                fullWidth
+                size="small"
+                id="email"
+                label="Email"
+                autoComplete="email"
+                name={email.name}
+                onChange={email.onChange}
+                onBlur={email.onBlur}
+                inputRef={email.ref}
+              />
+              {errors.signupEmail && <FormError>Email is not valid</FormError>}
+            </Field>
+          </Wrapper>
+          <Wrapper bottomSpacing={!!dirtyFields.signupPassword}>
+            <Field>
+              <Tooltip
+                title={
+                  submitCount && errors.signupPassword
+                    ? 'Choose a stronger password'
+                    : ''
+                }
               >
-                <div style={{ position: 'relative', marginBottom: '2rem' }}>
-                  <StyledEmailTextField
-                    {...register('signupEmail', {
-                      required: true,
-                      validate: value => EmailValidator.validate(value)
-                    })}
-                    autoComplete="email"
-                    defaultValue=""
-                  />
-                  {errors.signupEmail && <InvalidEmailWarning />}
-                </div>
-                <div style={{ position: 'relative', marginBottom: '2rem' }}>
-                  <StyledPasswordTextField
-                    variant="outlined"
-                    margin="normal"
-                    aria-describedby="password-strength-progress"
-                    label="Password"
-                    type={passwordHidden ? 'password' : 'text'}
-                    autoComplete="current-password"
-                    {...register('signupPassword', {
-                      required: true,
-                      validate: () => isPasswordStrong(passwordWatch)
-                    })}
-                  />
-                  <ShowPasswordIcon callback={setPasswordHidden} />
-                  {dirtyFields.signupPassword && (
-                    <PasswordStrengthMeter password={passwordWatch} />
-                  )}
-                </div>
-                <div style={{ position: 'relative', marginBottom: '2rem' }}>
-                  <StyledPasswordTextField
-                    variant="outlined"
-                    margin="normal"
-                    label="Repeat Password"
-                    type={repeatPasswordHidden ? 'password' : 'text'}
-                    id="signup-repeat-password"
-                    autoComplete="current-password"
-                    {...register('repeatPassword', {
-                      required: true,
-                      validate: value => value === passwordWatch
-                    })}
-                  />
-                  <ShowPasswordIcon callback={setRepeatPasswordHidden} />
-                  {errors.repeatPassword && <PasswordsMismatchWarning />}
-                </div>
-                <Button
-                  type="submit"
+                <FormTextField
+                  aria-describedby="password-strength-progress"
+                  variant="outlined"
+                  disabled={!!state}
                   fullWidth
-                  variant="contained"
-                  color="primary"
-                >
-                  Sign Up
-                </Button>
-                <Typography variant="caption">
-                  By joining, you agree to our{' '}
-                  <Link href="https://sivanandabahamas.org/terms-conditions/">
-                    Terms and Privacy Policy
-                  </Link>
-                </Typography>
-                <Grid item>
-                  {/* {loading && <p>Registering...</p>} */}
-                  {/* {error && <Error error={error} />} */}
-                  {/* {data && (
-                    <>
-                      <p>Registered... {JSON.stringify(data)}</p>
-                      <p>Check your email to verify the registration.</p>
-                    </>
-                  )} */}
-                </Grid>
-              </Grid>
-            </form>
-          </PaddedPaper>
-        </Grid>
-      </Grid>
-    </Box>
+                  size="small"
+                  label="Password"
+                  type={passwordHidden ? 'password' : 'text'}
+                  id="password"
+                  autoComplete="current-password"
+                  name={password.name}
+                  onChange={e => {
+                    password.onChange(e)
+                    // trigger validation on repeatPassword field
+                    setImmediate(() => trigger('repeatPassword'))
+                  }}
+                  onBlur={password.onBlur}
+                  inputRef={password.ref}
+                />
+              </Tooltip>
+              {dirtyFields.signupPassword && (
+                <PasswordStrengthMeter password={passwordWatch} />
+              )}
+            </Field>
+            <ShowPasswordIcon callback={setPasswordHidden} />
+          </Wrapper>
+          <Wrapper bottomSpacing={!!errors.repeatPassword}>
+            <Field>
+              <FormTextField
+                variant="outlined"
+                disabled={!!state}
+                fullWidth
+                size="small"
+                label="Repeat Password"
+                type={repeatPasswordHidden ? 'password' : 'text'}
+                id="signup-repeat-password"
+                autoComplete="current-password"
+                name={repeatPassword.name}
+                onChange={e => {
+                  repeatPassword.onChange(e)
+                  setValue('repeatPassword', e.target.value)
+                }}
+                onBlur={repeatPassword.onBlur}
+                inputRef={repeatPassword.ref}
+              />
+              {errors.repeatPassword && (
+                <FormError>
+                  {errors.repeatPassword.type === 'required'
+                    ? 'Empty Password'
+                    : 'The passwords do not match'}
+                </FormError>
+              )}
+            </Field>
+            <ShowPasswordIcon callback={setRepeatPasswordHidden} />
+          </Wrapper>
+          <Button
+            disabled={!!state}
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            style={{ marginBottom: '1rem' }}
+          >
+            Sign Up
+          </Button>
+          <PrimaryButton disabled={!!state} type="submit">
+            Sign Up
+          </PrimaryButton>
+          <Typography variant="caption">
+            By joining, you agree to our{' '}
+            <Link href="https://sivanandabahamas.org/terms-conditions/">
+              Terms and Privacy Policy
+            </Link>
+          </Typography>
+        </Form>
+        <SignupProgressReport>
+          {state === 'processing' && (
+            <>
+              <CircularProgress />
+              <Typography>Processing your registration...</Typography>
+            </>
+          )}
+          {state === 'processed' && (
+            <Alert severity="success">
+              Great, please check your email to verify the registration.
+            </Alert>
+          )}
+          {state === 'failed' && (
+            <Alert severity="error">
+              Apologies, we could not register you at this time.
+            </Alert>
+          )}
+          {['processed', 'failed'].some(a => a === state) && (
+            <>
+              <button
+                style={{ position: 'absolute', bottom: 0, left: '1rem' }}
+                onClick={() => setState('processing')}
+              >
+                Run simulation again...
+              </button>
+              <button
+                style={{ position: 'absolute', bottom: 0, right: '1rem' }}
+                onClick={() => {
+                  setState('')
+                  reset()
+                }}
+              >
+                Reset Form
+              </button>
+            </>
+          )}
+        </SignupProgressReport>
+      </FixedSizedPaper>
+    </LoginBackground>
   )
 }
 

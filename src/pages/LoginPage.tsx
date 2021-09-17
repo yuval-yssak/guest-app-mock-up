@@ -32,7 +32,7 @@ export const LoginBackground = styled.div`
   position: relative;
 `
 
-export const FixedSizedPaper = styled(PaddedPaper)<{
+export const FixedSizedPaper = styled(PaddedPaper).attrs({ elevation: 2 })<{
   $capAtScreenHeight?: boolean
 }>`
   display: flex;
@@ -138,7 +138,7 @@ const RoundOr = styled.div`
   font-weight: 500;
 `
 
-const Form = styled.form`
+export const Form = styled.form`
   display: flex;
   flex-direction: column;
 `
@@ -156,6 +156,7 @@ function ManualSignIn() {
   })
 
   function onSubmit(data: LoginFormInput) {
+    // simulate logging in
     applySnapshot(store, {
       ...defaultStore,
       view: { id: '', page: '/' },
@@ -228,7 +229,7 @@ function Login() {
 
   return (
     <LoginBackground>
-      <FixedSizedPaper elevation={10}>
+      <FixedSizedPaper>
         <OAuthButton
           onClick={() => {
             alert('Logging in with Google')
