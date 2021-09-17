@@ -25,7 +25,8 @@ const BackButton = styled(IconButton)`
     position: absolute;
     left: 10px;
     top: 10px;
-    background-color: #eee;
+    background-color: ${({ theme: { palette } }) =>
+      palette.grey[palette.mode === 'dark' ? '500' : '300']};
     z-index: 10;
   }
 `
