@@ -33,12 +33,12 @@ export const LoginBackground = styled.div`
 `
 
 export const FixedSizedPaper = styled(PaddedPaper)<{
-  capAtScreenHeight?: boolean
+  $capAtScreenHeight?: boolean
 }>`
   display: flex;
   flex-direction: column;
   height: 26rem;
-  max-height: ${({ capAtScreenHeight }) => capAtScreenHeight && '100vh'};
+  max-height: ${({ $capAtScreenHeight }) => $capAtScreenHeight && '100vh'};
   justify-content: center;
   left: 15%;
   position: relative;

@@ -28,7 +28,7 @@ function LoginCoverPage() {
     <LoginBackground>
       <FixedSizedPaper
         $opacity={store.preferences.darkMode ? 0.8 : undefined}
-        capAtScreenHeight
+        $capAtScreenHeight
       >
         <WelcomeTitle align="center" variant="h2">
           Welcome
