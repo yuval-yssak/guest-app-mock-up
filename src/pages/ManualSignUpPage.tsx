@@ -98,8 +98,8 @@ function ManualSignup() {
   })
 
   const [state, setState] = React.useState<
-    '' | 'processing' | 'processed' | 'failed'
-  >('')
+    'editing' | 'processing' | 'processed' | 'failed'
+  >('editing')
   function onSubmit(data: FormInputs) {
     setState('processing')
   }
@@ -144,7 +144,7 @@ function ManualSignup() {
             <Field>
               <FormTextField
                 variant="outlined"
-                disabled={!!state}
+                disabled={state !== 'editing'}
                 fullWidth
                 size="small"
                 id="email"
@@ -158,7 +158,9 @@ function ManualSignup() {
               {errors.signupEmail && <FormError>Email is not valid</FormError>}
             </Field>
           </Wrapper>
-          <Wrapper bottomSpacing={!!dirtyFields.signupPassword}>
+          <Wrapper
+            bottomSpacing={state === 'editing' && !!dirtyFields.signupPassword}
+          >
             <Field>
               <Tooltip
                 title={
@@ -170,7 +172,7 @@ function ManualSignup() {
                 <FormTextField
                   aria-describedby="password-strength-progress"
                   variant="outlined"
-                  disabled={!!state}
+                  disabled={state !== 'editing'}
                   fullWidth
                   size="small"
                   label="Password"
@@ -187,17 +189,19 @@ function ManualSignup() {
                   inputRef={password.ref}
                 />
               </Tooltip>
-              {dirtyFields.signupPassword && (
+              {state === 'editing' && dirtyFields.signupPassword && (
                 <PasswordStrengthMeter password={passwordWatch} />
               )}
             </Field>
-            <ShowPasswordIcon callback={setPasswordHidden} />
+            {state === 'editing' && (
+              <ShowPasswordIcon callback={setPasswordHidden} />
+            )}
           </Wrapper>
           <Wrapper bottomSpacing={!!errors.repeatPassword}>
             <Field>
               <FormTextField
                 variant="outlined"
-                disabled={!!state}
+                disabled={state !== 'editing'}
                 fullWidth
                 size="small"
                 label="Repeat Password"
@@ -220,10 +224,12 @@ function ManualSignup() {
                 </FormError>
               )}
             </Field>
-            <ShowPasswordIcon callback={setRepeatPasswordHidden} />
+            {state === 'editing' && (
+              <ShowPasswordIcon callback={setRepeatPasswordHidden} />
+            )}
           </Wrapper>
           <Button
-            disabled={!!state}
+            disabled={state !== 'editing'}
             type="submit"
             fullWidth
             variant="contained"
@@ -232,7 +238,7 @@ function ManualSignup() {
           >
             Sign Up
           </Button>
-          <PrimaryButton disabled={!!state} type="submit">
+          <PrimaryButton disabled={state !== 'editing'} type="submit">
             Sign Up
           </PrimaryButton>
           <Typography variant="caption">
@@ -270,7 +276,7 @@ function ManualSignup() {
               <button
                 style={{ position: 'absolute', bottom: 0, right: '1rem' }}
                 onClick={() => {
-                  setState('')
+                  setState('editing')
                   reset()
                 }}
               >
