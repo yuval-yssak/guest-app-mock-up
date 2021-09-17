@@ -40,16 +40,17 @@ export const FixedSizedPaper = styled(PaddedPaper)`
   left: 15%;
   position: relative;
   top: 10%;
-  width: 16rem;
-
-  @media (max-width: 48em) {
-    left: max(0px, calc(15% - (48em - 100vw) / 2));
-  }
+  width: 21rem;
 
   @media (max-height: 31.2em) {
     top: max(0px, calc(10% - (31.2em - 100vh) / 2));
   }
-  @media (max-width: 25em) {
+
+  @media (max-width: 63em) {
+    left: max(0px, calc(15% - (63em - 100vw) / 2));
+  }
+
+  @media (max-width: 42em) {
     left: 0;
     min-height: 100vh;
     top: 0;
