@@ -6,7 +6,6 @@ import AddIcon from '@material-ui/icons/Add'
 import FlagIcon from '@material-ui/icons/Flag'
 import ToggleButtonGroup from '@material-ui/core/ToggleButtonGroup'
 import IconButton from '@material-ui/core/IconButton'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 import Switch from '@material-ui/core/Switch'
@@ -255,12 +254,7 @@ function AnnouncementsPage() {
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
               />
-
-              <Tooltip title="Advanced search">
-                <IconButton>
-                  <MoreHorizIcon />
-                </IconButton>
-              </Tooltip>
+              <br />
             </>
           )}
           {!!viewedAnnouncements.length && <AllSectionHeading />}
