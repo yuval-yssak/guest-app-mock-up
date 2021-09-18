@@ -1162,6 +1162,21 @@ export default function InfoPracticeGuide() {
             relieved.
           </li>
         </ol>
+        <Heading3>Variations of the Plough</Heading3>
+        <Heading4>Variation 1</Heading4>
+        <Paragraph>
+          Keeping the hands on the back, walk both feet to the right. Be sure
+          that the left shoulder remains firmly on the ground. Bend both knees
+          down towards the right shoulder. Straighten knees and walk feet to the
+          left, repeating asana on the other side.
+        </Paragraph>
+        <Heading4>Variation 2</Heading4>
+        <Paragraph>
+          Straighten knees and walk feet to centre. Bend both knees and drop
+          them down to ground on either side of the head. Make sure that feet
+          remain on the ground. Wrap arms around the knees and clasp hands
+          together.
+        </Paragraph>
       </section>
       <section>
         <Heading2>
@@ -1235,6 +1250,187 @@ export default function InfoPracticeGuide() {
           </li>
           <li>Lower the hips in order to walk feet away from the body.</li>
         </ol>
+        <Heading3>Benefits of the bridge</Heading3>
+        <ul>
+          <li>The Bridge reverses the stretch of the Shoudlerstand.</li>
+          <li>Pressure is relieved from the neck (cervical region).</li>
+          <li>Abdominal and lumbar muscles are strengthened.</li>
+          <li>Suppleness of spine and wrists is promoted.</li>
+          <li>
+            Liver and spleen are regulated, thus enhancing the body’s ability
+            to:
+            <ul>
+              <li>Deactivate hormones, drugs, and toxins</li>
+              <li>Manufacture proteins of blood plasma</li>
+              <li>Store and produce glucose</li>
+              <li>Regulate homeostasis of blood sugar</li>
+              <li>Produce, store, and use red blood cells efficiently </li>
+            </ul>
+          </li>
+        </ul>
+        <Heading3>Variations of the bridge</Heading3>
+        <Paragraph>
+          Walk feet and knees inwards until they are together. Do not permit the
+          hips to lower, walk feet away from the body until eventually knees are
+          straight. Make sure that the hips are kept up.
+        </Paragraph>
+      </section>
+      <section>
+        <Heading2>The Fish Matsyasan</Heading2>
+        <Paragraph>
+          As this asana will facilitate floating on the water, it is called the
+          Fish pose or Matsyasan. As counter position to the Shoudlerstand, the
+          Fish gives a backward bending stretch to the cervical, thoracic and
+          lumbar regions of the spine. To derive maximum benefit, the Fish
+          should follow immediately after the Shoulderstand. It relieves any
+          congestion and cramp which may have been caused by the Shoulderstand.
+        </Paragraph>
+        <Heading3>The Fish, with straight legs</Heading3>
+        <Heading4>Coming in the position </Heading4>
+        <ul>
+          <li>Lying flat on the back, bring the feet together.</li>
+          <li>
+            Place the hands, palms flat on the floor beneath the buttocks so
+            that you are sitting on your hands.{' '}
+          </li>
+          <li>
+            Pushing with the elbows, lift the chest until you are sitting
+            halfway up.
+          </li>
+          <li>
+            Drop the head back so that the top of the head is on the ground. The
+            head should be touching the ground, but the weight of the body is on
+            the elbows.
+          </li>
+        </ul>
+        <Heading4>Holding the position</Heading4>
+        <Paragraph>
+          Pushing with the elbows, arch the chest as high as possible. Feel the
+          expansion of the ribcage and, taking advantage of this, breathe as
+          deeply as possible, expanding the ribcage with each inhalation. The
+          fish is held for half as long as the Shoulderstand. (For example, if
+          the Shoulderstand was held for 3 minutes, the Fish would be held for
+          1.5 minutes).
+        </Paragraph>
+        <Heading4>Coming out of the position</Heading4>
+        <Paragraph>
+          Lift the head, sliding it back. Straighten the back and lower the body
+          to the ground. Relax in the corpse pose.
+        </Paragraph>
+        <Heading3>Variation of the Fish, with the legs crossed</Heading3>
+        <ul>
+          <li>Sit in a simple cross-legged position.</li>
+          <li>
+            Bringing the arms around the outside of the knees, catch hold of the
+            toes.
+          </li>
+          <li>Lie back.</li>
+          <li>
+            Arch the back up, shift the buttocks slightly forward onto the feet.
+            Both knees should be on the ground. Do not release the toes.
+            <br />
+            Arch the back as high as possible keeping the buttocks on the heels.
+            Try to keep the majority of weight on the elbows rather than the
+            head or neck.
+          </li>
+        </ul>
+        <Heading3>Variation of the Fish, in the Lotus</Heading3>
+        <ul>
+          <li>Sit up; bring the legs into the tightest Lotus possible.</li>
+          <li>Catch hold of the toes.</li>
+          <li>Lie back.</li>
+          <li>Arch up into the Fish. Try to keep both knees on the ground.</li>
+        </ul>
+        <Paragraph>
+          After completing the Fish rest and relax in the corpse pose. Shake out
+          the shoulders to relieve any tension then roll the neck slowly from
+          side to side once or twice to relax the neck.
+        </Paragraph>
+        <Heading3>Common Mistakes</Heading3>
+        <Paragraph>
+          Never do Pranayama in the Fish. breathing should be deep, but smooth
+          and silent. When doing the Fish in a cross-legged or Lotus position,
+          do not allow either knee to come up. The body should be aligned with
+          both knees on the ground.
+        </Paragraph>
+        <Heading3>Incorrect straight legged Fish pose</Heading3>
+        <ul>
+          <li>Body not straight</li>
+          <li>Buttocks lifting off</li>
+          <li>hands Knees bent</li>
+        </ul>
+        <Heading3>Incorrect crossed leg Fish pose</Heading3>
+        <ul>
+          <li>Back of head on the ground instead of top of head</li>
+          <li>Knees lifting off ground</li>
+        </ul>
+        <Heading3>Incorrect Fish in Lotus</Heading3>
+        <ul>
+          <li>Hands not grasping toes.</li>
+          <li>Not a tight Lotus.</li>
+          <li>One or both knees lifting.</li>
+        </ul>
+        <Heading3>Benefits of the Fish</Heading3>
+        <Heading4>Physical Benefits</Heading4>
+        <ul>
+          <li>
+            The Fish removes stiffness from the cervical, thoracic, and lumbar
+            regions, bringing an increase of blood supply to these parts.
+          </li>
+          <li>A natural massage is given to the shoulders and neck.</li>
+          <li>Round-shoulders are corrected.</li>
+          <li>
+            In the Fish, the rown wide open, so deep breathing may easily be
+            practised. This will:
+            <ul>
+              <li>Increase lung capacity.</li>
+              <li>Relieve spasm in the bronchial tubes.</li>
+              <li>Relieve asthma.</li>
+            </ul>
+          </li>
+          <li>
+            The cervical and upper dorsal nerves are nourished and toned with an
+            increased supply of blood.
+          </li>
+          <li>
+            While in the Fish pose, the energy of the body is focused on the
+            Parathyroid glands. There are 4 small endocrine glands embedded in
+            the thyroid tissue in the neck. The function of the Parathyroid
+            gland is to regulate calcium levels in the blood and absorption by
+            the body. This is critically important in relation to:
+            <ul>
+              <li>Contraction of all muscles including the heart.</li>
+              <li>Clotting of blood.</li>
+              <li>Bone strength, plasticity, and brittleness.</li>
+              <li>Prevention of tooth decay.</li>
+            </ul>
+          </li>
+          <li>
+            If calcium is not being assimilated properly by the body, muscle
+            spasms may occur which may interfere with such essential functions
+            as respiration and may be fatal.
+          </li>
+          <li>
+            The Pituitary and Pineal glands, located in the brain, are
+            stimulated and toned. The Pituitary is considered to be the “Master
+            Gland” because it regulates secretion of all other endocrine glands.
+            However, this gland is itself controlled by the brain and mediates
+            the effects of the Central Nervous System on hormonal activity in
+            the body.
+          </li>
+        </ul>
+        <Heading4>Mental Benefits </Heading4>
+        <ul>
+          <li>Moods, emotions, and stress are regulated.</li>
+        </ul>
+        <Heading4>Psychic Benefits</Heading4>
+        <ul>
+          <li>Increased Prana is brought to the neck and shoulder area.</li>
+          <li>
+            The Practice of the Fish in the Lotus prevents loss of Prana through
+            the lower limbs.
+          </li>
+        </ul>
       </section>
       <section>
         <Heading1>Chants</Heading1>
