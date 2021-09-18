@@ -4,9 +4,9 @@ import Typography from '@material-ui/core/Typography'
 
 import ButtonBase from '@material-ui/core/ButtonBase'
 import Link from '@material-ui/core/Link'
+import Paper from '@material-ui/core/Paper'
 import { useForm } from 'react-hook-form'
 import * as EmailValidator from 'email-validator'
-import PaddedPaper from '../components/common/PaddedPaper'
 import {
   Field,
   Wrapper,
@@ -29,33 +29,44 @@ export const LoginBackground = styled.div`
     height: 100vh;
     width: 100vw;
   }
+
+  height: 100vh;
   position: relative;
+  width: 100vw;
 `
 
-export const FixedSizedPaper = styled(PaddedPaper).attrs({ elevation: 2 })`
+export const FixedSizedPaper = styled(Paper).attrs({ elevation: 6 })<{
+  $opacity?: number
+}>`
+  align-items: center;
   display: flex;
   flex-direction: column;
-  height: 26rem;
-  left: 15%;
+  min-height: 24rem;
+  left: 45%;
+  opacity: ${({ $opacity }) => ($opacity ? $opacity : 0.975)};
+  padding: 1rem 0;
   position: relative;
-  top: 10%;
+  top: 30%;
+  transform: translate(-115%, -18%);
   width: 21rem;
-
-  @media (max-width: 63em) {
-    left: max(0px, calc(15% - (63em - 100vw) / 2));
-  }
 
   @media (max-height: 31.2em) {
     top: max(0px, calc(10% - (31.2em - 100vh) / 2));
     left: 0;
+    transform: initial;
   }
 
   @media (max-width: 42em) {
     left: 0;
     min-height: 100vh;
     top: 0;
+    transform: initial;
     width: 100vw;
     padding: max(1rem, calc((100vw - 20rem) / 2));
+  }
+
+  & > * {
+    width: 14rem;
   }
 `
 
@@ -114,6 +125,7 @@ const DividerLines = styled.div`
   align-items: center;
   display: flex;
   margin: 0.9rem 0;
+  width: 100%;
 
   &::before,
   &::after {
