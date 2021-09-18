@@ -1433,6 +1433,179 @@ export default function InfoPracticeGuide() {
         </ul>
       </section>
       <section>
+        <Heading2>Paschimothanasana - Head to Knee pose</Heading2>
+        <Paragraph>
+          Paschimothanasan provides a comprehensive stretch to the entire back
+          of the body from the neck down to the heels. The name for the pose
+          comes from the Sanskrit word Paschi, meaning West (‘West’ is a
+          metaphor for the back of the body).
+        </Paragraph>
+        <Heading3>Preliminary Stretch </Heading3>
+        <Paragraph>
+          From the Corpse pose (relaxation lying flat on the back), bring the
+          feet together and bring the arms up parallel to the ears. Stretch
+          first the right side, then the left and finally both sides, making the
+          body as long as possible.
+          <br />
+          Release the stretch. With the arms straight up on the ground, inhale
+          up to a sitting position.
+        </Paragraph>
+        <Heading3>Coming into the position </Heading3>
+        <ul>
+          <li>
+            Keeping the legs straight out and the toes back towards the body,
+            inhale and stretch both arms up over the head.
+          </li>
+          <li>
+            Retaining the stretch and bending from the hips, exhale and stretch
+            forward, reaching for the toes.
+          </li>
+          <li>
+            Keeping the back as straight as possible, try to catch hold of the
+            toes. If you are unable to reach the toes, hold the ankles or the
+            shins.
+          </li>
+          <li>
+            Bring the chest as close to the thighs as possible. Keep the knees
+            straight. Hold the feet together; do not permit the feet and legs to
+            rotate outward. Try to have the feet flat with the toes back towards
+            the head.
+          </li>
+        </ul>
+        * Do not hold the heels.
+        <Heading3>Holding the position</Heading3>
+        <Paragraph>
+          Beginners may hold the position for 30 seconds. Repeat the pose 3-4
+          times. Intermediate/ Advanced students may stay in the position for
+          longer periods rather than coming up and down. Gradually increase the
+          time the position is held, the optimum being approximately 5 minutes.
+          Breathe deeply while the position is being held. You may imagine that
+          you are breathing into the hips and, with each exhalation, you are
+          exhaling a bit of the tension from your lower back. As the tension is
+          released, you will feel the body sinking downward. Try to keep the
+          thigh and calf muscles relaxed. Do not bounce; do not try to force the
+          body downwards.
+        </Paragraph>
+        <Heading3>To come out of the position </Heading3>
+        <Paragraph>
+          Inhale and stretch the body forward and upwards until the arms and
+          fingers are pointing towards the ceiling. Relax the arms and come into
+          the Counter pose.
+        </Paragraph>
+        <Heading3>Counter Position - Inclined Plane </Heading3>
+        <ul>
+          <li>
+            Sitting upright with the legs straight, bring the hands flat on the
+            floor behind the back with fingers pointing backwards.
+          </li>
+          <li>
+            Drop the head back and try to bring the shoulder blades together.
+            (Keep the mouth closed.)
+          </li>
+          <li>
+            Lifting the hips up as high as possible, try to bring the feet flat
+            flat onto the floor. Keep the feet together; do not turn them
+            outwards. Keep the knees straight. Beginners may hold the position
+            for 10 seconds, more advanced people will gradually increase the
+            time for up to 1 minute.
+          </li>
+          <li>
+            Release the position. Sit down on the ground and shake out the
+            wrists.
+          </li>
+          <li>
+            Stretch the arms straight out in front and slowly roll down onto the
+            back. Relax in the Corpse position.
+          </li>
+        </ul>
+        <Heading3>Common mistakes</Heading3>
+        <Heading4>Correct: </Heading4>
+        <ul>
+          <li>Back flat</li>
+          <li>Chest on thighs</li>
+          <li>Body relaxed and good alignment</li>
+          <li>Toes pulled back and heels pushing away</li>
+          <li>Legs straight</li>
+        </ul>
+        <Heading3>Incorrect:</Heading3>
+        <ul>
+          <li>Back rounded</li>
+          <li>Forcing forehead to knees</li>
+          <li>Feet apart and rotating to outside</li>
+          <li>Knees bent</li>
+        </ul>
+        <Heading3>Benefits of the forward bend</Heading3>
+        <Paragraph>
+          The Hatha Yoga Pradipika, considered to be the classic guide for the
+          advanced practice of Hatha Yoga says of Paschimothanasan: “This most
+          excellent of asanas, Paschimothanasan, makes the breath flow through
+          the Sushumna, rouses the gastric fire, makes the loins lean and
+          removes all diseases.”
+        </Paragraph>
+        <ul>
+          <li>
+            Paschimothanasan is a specific for corpulence and for the
+            enlargement of the spleen and liver.
+          </li>
+          <li>
+            A powerful massage and stimulation of all abdominal viscera,
+            Paschimothanasan stimulates and tones all the digestive organs and
+            increases the digestive fire.
+          </li>
+          <li>
+            The Forward Bend is said to invigorate all of the internal organs
+            thus reducing body fat.
+          </li>
+          <li>
+            A massage is given to the kidneys, liver, pancreas and other organs
+            in the abdominal cavity.
+          </li>
+          <li>
+            It regulates the pancreas function which controls carbohydrate
+            metabolism and blood sugar levels. This makes it an invaluable asana
+            for diabetes patients and people with hypoglycemia.
+          </li>
+          <li>
+            The intestines are regulated, peristalsis increased. Thus
+            Paschimothanasan aids constipation and other problems of the
+            digestive tract.
+          </li>
+          <li>Paschimothanasan invigorates the entire nervous system.</li>
+          <li>
+            Joints are mobilized, the spine becomes elastic and perennial youth
+            is established.
+          </li>
+          <li>It provides a full stretch of the posterior of the body.</li>
+        </ul>
+        <Heading3>Variations of the Forward Bend</Heading3>
+        <Heading4>Variation 1</Heading4>
+        <Paragraph>
+          Forward bend in the Half Lotus. Beginners place the left foot against
+          the thigh. Gently bounce the knee to the floor. Inhale, stretch up.
+          Exhale, reach forward and catch the toes of the right foot. Bring the
+          chest to the thigh. Try to keep both knees on the floor. Repeat on the
+          other side.
+        </Paragraph>
+        <Heading4>Variation 2</Heading4>
+        <Paragraph>
+          Separate the legs. Inhale, stretch up. Exhale, reach forward, catch
+          the toes and try to bring the forehead and chest to the ground.
+        </Paragraph>
+        <Heading4>Variation 3</Heading4>
+        <Paragraph>
+          Separate legs. Inhale, stretch up. Exhale, reach forward and catch
+          hold of the right toes. Try to bring the chest onto the right thigh.
+          Repeat on the left side.
+        </Paragraph>
+        <Heading4>Variation 4</Heading4>
+        <Paragraph>
+          With legs wide apart turn to the left and come down to the right side.
+          Bring the right elbow to the ground inside the right knee. Catch the
+          toes with both hands and look up at the ceiling. Repeat on the other
+          side.
+        </Paragraph>
+      </section>
+      <section>
         <Heading1>Chants</Heading1>
         <Heading2>
           <em>dhyāna ślokaḥ</em>
