@@ -29,13 +29,13 @@ import {
 import GlobalFilter from './GlobalFilter'
 import Checkbox from '@material-ui/core/Checkbox'
 import TextField from '@material-ui/core/TextField'
-import Tooltip from '@material-ui/core/Tooltip'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import IconButton from '@material-ui/core/IconButton'
 import ArrowBackIosNewIcon from '@material-ui/icons/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import { PrimaryButton } from '../Buttons'
+import { TooltipOnOverflow } from '../Tooltip'
 
 const TableControlSection = styled.div<{
   tableWidth: number
@@ -836,34 +836,3 @@ export function GridCheckbox({ value }: { value: boolean }) {
   return <ReadOnlyCheckbox checked={value} size="small" />
 }
 
-const TooltippedDiv = styled.div`
-  overflow: hidden;
-`
-
-function TooltipOnOverflow({
-  children,
-  tooltip,
-  style
-}: {
-  children: React.ReactElement
-  tooltip: NonNullable<React.ReactNode>
-  style?: React.CSSProperties
-}) {
-  const ref = React.createRef<HTMLDivElement>()
-  const [overflow, setOverflow] = React.useState(false)
-
-  React.useEffect(() => {
-    setOverflow(
-      Math.abs(
-        (ref.current?.firstElementChild as HTMLDivElement)?.offsetWidth -
-          (ref.current?.firstElementChild?.scrollWidth || 0)
-      ) > 1
-    )
-  }, [ref])
-
-  return (
-    <TooltippedDiv ref={ref} style={style}>
-      {overflow ? <Tooltip title={tooltip}>{children}</Tooltip> : children}
-    </TooltippedDiv>
-  )
-}

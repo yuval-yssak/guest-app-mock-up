@@ -16,6 +16,7 @@ import { LoremIpsum } from 'lorem-ipsum'
 import { v4 as uuidv4 } from 'uuid'
 import { applySnapshot, getSnapshot } from 'mobx-state-tree'
 import defaultStore, { users } from '../defaultStore'
+import { TooltipOnOverflow } from './common/Tooltip'
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -54,11 +55,11 @@ const PageTitle = styled(Typography)<
 >`
   && {
     font-size: 1.4rem;
-    flex: 1 1 10rem;
     margin-left: 0.5rem;
 
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 
     @media screen and (max-width: 37.5em), screen and (max-height: 25em) {
       font-size: 1.1rem;
@@ -148,7 +149,9 @@ export default function ProminentAppBar({
           >
             <MenuIcon />
           </IconButton>
-          <PageTitle component="h1">{pageTitle}</PageTitle>
+          <TooltipOnOverflow tooltip={pageTitle} style={{ flex: '1 1 10rem' }}>
+            <PageTitle component="h1">{pageTitle}</PageTitle>
+          </TooltipOnOverflow>
 
           <ShrinkableDarkModeSwitch />
           <IconButton
