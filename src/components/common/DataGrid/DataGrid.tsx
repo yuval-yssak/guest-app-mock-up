@@ -36,6 +36,23 @@ import ArrowBackIosNewIcon from '@material-ui/icons/ArrowBackIosNew'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import { PrimaryButton } from '../Buttons'
 import { TooltipOnOverflow } from '../Tooltip'
+import PageContentWrapper from '../../PageContentWrapper'
+
+export const DataGridContainer = styled(PageContentWrapper)`
+  && {
+    align-content: start;
+    align-items: stretch;
+    grid-template-rows: max-content 1fr;
+    grid-template-columns: 1fr;
+    height: 100%;
+    overflow-y: hidden;
+    width: 100%;
+
+    @media (max-height: 31em) {
+      padding: 0;
+    }
+  }
+`
 
 const TableControlSection = styled.div<{
   tableWidth: number
@@ -447,7 +464,8 @@ export function ScrollableDataGrid<DataStructure extends {}>({
   setData,
   nonSortable = false,
   disableResize = false,
-  withGlobalFilter = false
+  withGlobalFilter = false,
+  renderButtons
 }: {
   columns: Column<DataStructure>[]
   data: DataStructure[]
@@ -455,6 +473,7 @@ export function ScrollableDataGrid<DataStructure extends {}>({
   nonSortable?: boolean
   disableResize?: boolean
   withGlobalFilter?: boolean
+  renderButtons?: () => JSX.Element
 }) {
   return (
     <DataGrid
@@ -464,6 +483,7 @@ export function ScrollableDataGrid<DataStructure extends {}>({
       nonSortable={nonSortable}
       disableResize={disableResize}
       withGlobalFilter={withGlobalFilter}
+      renderButtons={renderButtons}
     />
   )
 }
@@ -474,7 +494,8 @@ export function DataGrid<DataStructure extends {}>({
   setData,
   nonSortable = false,
   disableResize = false,
-  withGlobalFilter = false
+  withGlobalFilter = false,
+  renderButtons
 }: {
   columns: Column<DataStructure>[]
   data: DataStructure[]
@@ -482,6 +503,7 @@ export function DataGrid<DataStructure extends {}>({
   nonSortable?: boolean
   disableResize?: boolean
   withGlobalFilter?: boolean
+  renderButtons?: () => JSX.Element
 }) {
   const defaultColumn = React.useMemo(
     () => ({
@@ -565,6 +587,7 @@ export function DataGrid<DataStructure extends {}>({
           {withGlobalFilter && (
             <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
           )}
+          {renderButtons && renderButtons()}
           {selectedFlatRows.length ? (
             <PrimaryButton
               onClick={() => {
@@ -835,4 +858,3 @@ export const EditableCell = React.memo(function EditableCell<
 export function GridCheckbox({ value }: { value: boolean }) {
   return <ReadOnlyCheckbox checked={value} size="small" />
 }
-

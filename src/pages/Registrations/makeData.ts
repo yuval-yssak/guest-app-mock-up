@@ -45,10 +45,7 @@ const newPerson: () => Person2 = () => {
       .split(' ')
       .map(n => n[0].toUpperCase() + n.slice(1))
       .join(' '),
-    rooms: new Array(Math.floor(Math.random() * 3) + 1)
-      .fill(null)
-      .map(r => Math.floor(Math.random() * 30))
-      .join(', '),
+    rooms: (Math.floor(Math.random() * 3) + 1).toString(),
     visits: Math.floor(Math.random() * 100),
     progress: Math.floor(Math.random() * 100),
     appUser: Math.random() > 0.5,

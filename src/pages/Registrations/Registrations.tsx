@@ -4,24 +4,7 @@ import { useMst } from '../../models/reactHook'
 import AdminRegistrationsView from './AdminRegistrationsView'
 import RegistrationsList from './RegistrationsList'
 import PersonDetails from './PersonDetails'
-import styled from 'styled-components'
-import PageContentWrapper from '../../components/PageContentWrapper'
-
-const DataGridContainer = styled(PageContentWrapper)`
-  && {
-    align-content: start;
-    align-items: stretch;
-    grid-template-rows: max-content 1fr;
-    grid-template-columns: 1fr;
-    height: 100%;
-    overflow-y: hidden;
-    width: 100%;
-
-    @media (max-height: 31em) {
-      padding: 0;
-    }
-  }
-`
+import { DataGridContainer } from '../../components/common/DataGrid/DataGrid'
 
 function RegistrationsEntry() {
   const store = useMst()
