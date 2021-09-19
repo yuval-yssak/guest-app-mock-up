@@ -62,7 +62,6 @@ export const FixedSizedPaper = styled(Paper).attrs({ elevation: 6 })<{
     top: 0;
     transform: initial;
     width: 100vw;
-    padding: max(1rem, calc((100vw - 20rem) / 2));
   }
 
   & > * {

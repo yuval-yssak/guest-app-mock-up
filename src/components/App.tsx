@@ -28,6 +28,7 @@ import InfoCovid19GuidelinesPage from '../pages/InfoPages/InfoCovid19GuidelinesP
 import InfoPracticeGuide from '../pages/InfoPages/InfoPracticeGuide'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import LoginCoverPage from '../pages/LoginCoverPage'
+import { AnnouncementStats } from '../pages/Registrations/AnnouncementStats'
 
 const scaleFrom0 = keyframes`
 0% {
@@ -128,6 +129,8 @@ function App() {
         return 'New Announcement'
       case '/announcements/edit':
         return 'Edit Announcement'
+      case '/announcements/stats':
+        return `Announcement ${store.view.id} Stats`
       case '/chat':
         return 'Chat'
       case '/info-section':
@@ -224,6 +227,9 @@ function App() {
                         {['/announcements/new', '/announcements/edit'].some(
                           page => page === store.view.page
                         ) && <AnnouncementEditPage />}
+                        {store.view.page === '/announcements/stats' && (
+                          <AnnouncementStats />
+                        )}
                         {store.view.page === '/chat' && <ChatPage />}
                         {store.view.page === '/info-section' && (
                           <InfoSectionPage />

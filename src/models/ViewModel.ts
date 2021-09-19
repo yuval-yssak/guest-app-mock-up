@@ -142,16 +142,15 @@ export const CurrentViewModel = types.optional(ViewModel, getViewFromURL())
 
 function getViewFromURL() {
   const { pathname } = window.location
-  const matchCustom = match<{ id: string }>('/custom/:id')
-  const matchedCustom = matchCustom(pathname)
 
+  // custom page (template, not in use)
+  const matchedCustom = match<{ id: string }>('/custom/:id')(pathname)
   if (matchedCustom) return { page: '/custom', id: matchedCustom.params.id }
 
-  const matchRegistrations = match<{ subpage: string }>(
+  // match custom registration pages
+  const matchedRegistrations = match<{ subpage: string }>(
     '/registrations/:subpage'
-  )
-  const matchedRegistrations = matchRegistrations(pathname)
-
+  )(pathname)
   if (
     matchedRegistrations &&
     matchedRegistrations.params.subpage.match(/^\d+$/)
@@ -159,9 +158,8 @@ function getViewFromURL() {
     return { page: '/registrations', id: matchedRegistrations.params.subpage }
   }
 
-  const matchChat = match<{ subpage: string }>('/chat/:subpage')
-  const matchedChat = matchChat(pathname)
-
+  // match custom chat pages
+  const matchedChat = match<{ subpage: string }>('/chat/:subpage')(pathname)
   if (matchedChat) {
     if (matchedChat.params.subpage.match(/^\d+$/)) {
       return { page: '/chat', id: matchedChat.params.subpage }
@@ -169,11 +167,9 @@ function getViewFromURL() {
   }
 
   // catch either an edit or stats page of an announcement
-  const matchAnnouncements = match<{ id: string }>(
+  const matchedAnnouncements = match<{ id: string }>(
     '/announcements/(stats|edit)/:id'
-  )
-  const matchedAnnouncements = matchAnnouncements(pathname)
-
+  )(pathname)
   if (matchedAnnouncements) {
     return {
       page:

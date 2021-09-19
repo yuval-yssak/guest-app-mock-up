@@ -20,7 +20,7 @@ import { PrimaryButton, SecondaryButton } from '../components/common/Buttons'
 import {
   Important,
   HighPriorityContainer,
-  ReadStats,
+  ReadStatsButton,
   breakpointSplitHead,
   StyledAccordionDetails,
   ScrollablePageContentWrapper,
@@ -45,9 +45,13 @@ const StatsButton = observer(function StatsButton({
 }: {
   announcement: AnnouncementInstanceType
 }) {
+  const store = useMst()
   if (announcement.admin?.stats) {
     return (
-      <ReadStats variant="outlined">
+      <ReadStatsButton
+        variant="outlined"
+        onClick={() => store.view.openAnnouncementsStatsPage(announcement.id)}
+      >
         <Typography variant="caption">Confirmations:</Typography>
         <div
           style={{
@@ -68,15 +72,15 @@ const StatsButton = observer(function StatsButton({
             announcement.admin.stats.readPercentage
           )}%`}</Typography>
         </div>
-      </ReadStats>
+      </ReadStatsButton>
     )
   } else {
     return (
-      <ReadStats disabled>
+      <ReadStatsButton disabled>
         <Typography variant="caption">
           Confirmation Stats Unavailable
         </Typography>
-      </ReadStats>
+      </ReadStatsButton>
     )
   }
 })

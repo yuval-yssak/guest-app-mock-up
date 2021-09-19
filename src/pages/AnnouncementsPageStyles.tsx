@@ -167,7 +167,7 @@ export const HighPriorityContainer = styled.div`
   display: flex;
 `
 
-export const ReadStats = styled(SecondaryButton).attrs({
+export const ReadStatsButton = styled(SecondaryButton).attrs({
   className: 'read-stats'
 })`
   & .MuiButton-label {
