@@ -85,7 +85,7 @@ const StatsButton = observer(function StatsButton({
   }
 })
 
-function Announcement({
+export function Announcement({
   announcement,
   keepExpanded = false,
   initialExpanded = false

@@ -469,7 +469,7 @@ export function ScrollableDataGrid<DataStructure extends {}>({
 }: {
   columns: Column<DataStructure>[]
   data: DataStructure[]
-  setData: React.Dispatch<React.SetStateAction<DataStructure[]>>
+  setData?: React.Dispatch<React.SetStateAction<DataStructure[]>>
   nonSortable?: boolean
   disableResize?: boolean
   withGlobalFilter?: boolean
@@ -499,7 +499,7 @@ export function DataGrid<DataStructure extends {}>({
 }: {
   columns: Column<DataStructure>[]
   data: DataStructure[]
-  setData: React.Dispatch<React.SetStateAction<DataStructure[]>>
+  setData?: React.Dispatch<React.SetStateAction<DataStructure[]>>
   nonSortable?: boolean
   disableResize?: boolean
   withGlobalFilter?: boolean
@@ -545,7 +545,7 @@ export function DataGrid<DataStructure extends {}>({
       disableSortBy: nonSortable,
       disableResizing: disableResize,
       disableGlobalFilter: !withGlobalFilter,
-      setData,
+      setData, // a custom prop which is passed to the Cells
       // set global filter to search only in certain columns
       globalFilter: filterFunction,
       initialState: { pageSize: 25 }
