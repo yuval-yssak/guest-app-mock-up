@@ -10,6 +10,7 @@ import dayjs from 'dayjs'
 import { now } from 'mobx-utils'
 import { UserModel } from './UserModel'
 import { ViewType } from './ViewModel'
+
 const MessageModel = types
   .model('MessageModel', {
     user: types.reference(UserModel),
@@ -17,12 +18,10 @@ const MessageModel = types
     content: types.string
   })
   .views(self => ({
+    // determine message side according to the current view or current logged in user
     get messageSide() {
-      let selfSide: boolean
-
-      // determine message side according to the current view or current logged in user
-
       const view = (getRoot(self) as any)?.view as ViewType | undefined
+      let selfSide: boolean
 
       if (view?.page === '/chat' && view.id)
         selfSide = self.user.id !== +view.id
@@ -31,19 +30,23 @@ const MessageModel = types
       return selfSide ? 'self' : 'other'
     },
 
+    // this view triggers a rerender of the entire chat page once a minute.
     get timeSignature() {
-      function displayTime(timestamp: Date) {
-        // triggers a rerender of the entire chat page once a minute
-        if (dayjs(timestamp).year() !== dayjs(now(60000)).year())
-          return dayjs(timestamp).format('MMM D, YYYY, HH:mm')
-        if (
-          dayjs(now(60000)).subtract(1, 'day').startOf('day').isAfter(timestamp)
-        )
-          return dayjs(timestamp).format('MMM D, HH:mm')
-        return dayjs(timestamp).format('HH:mm')
-      }
+      const messagePostedThisYear =
+        dayjs(self.timestamp).year() !== dayjs(now(60000)).year()
 
-      return displayTime(self.timestamp)
+      const messagePostedYesterdayOrToday = dayjs(now(60000))
+        .subtract(1, 'day')
+        .startOf('day')
+        .isAfter(self.timestamp)
+
+      if (messagePostedThisYear)
+        return dayjs(self.timestamp).format('MMM D, YYYY, HH:mm')
+
+      if (messagePostedYesterdayOrToday)
+        return dayjs(self.timestamp).format('MMM D, HH:mm')
+
+      return dayjs(self.timestamp).format('HH:mm')
     }
   }))
 
@@ -65,6 +68,7 @@ const ChatModel = types
     },
     get unreadCount() {
       if (self.lastReadTimestamp.getTime() === 0) return 0
+
       return self.messages.reduce(
         (count, message) =>
           count + (message.timestamp > self.lastReadTimestamp ? 1 : 0),
@@ -73,6 +77,7 @@ const ChatModel = types
     },
     get unreadCountShown() {
       if (self.lastReadTimestampShown.getTime() === 0) return 0
+
       return self.messages.reduce(
         (count, message) =>
           count + (message.timestamp > self.lastReadTimestampShown ? 1 : 0),
@@ -80,6 +85,7 @@ const ChatModel = types
       )
     }
   }))
+
   .actions(self => ({
     insertSelfMessage(message: MessageCreationType) {
       self.messages.push(message)

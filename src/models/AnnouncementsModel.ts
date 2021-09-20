@@ -84,7 +84,6 @@ export const AnnouncementStatsModel = types
   }))
 
 const AdminExtensionModel = types.model('AdminExtensionModel', {
-  sendAlert: types.optional(types.boolean, false),
   stats: AnnouncementStatsModel
 })
 
