@@ -62,7 +62,7 @@ const AnnouncementDraftModel = types
   }))
 
 const AnnouncementReadStatsModel = types.model('AnnouncementReadStatsModel', {
-  readBy: types.reference(UserModel),
+  readBy: types.reference(UserModel), // should be PersonModel
   timestamp: types.Date
 })
 

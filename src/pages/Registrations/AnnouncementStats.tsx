@@ -4,7 +4,7 @@ import {
   DataGridContainer,
   ScrollableDataGrid
 } from '../../components/common/DataGrid/DataGrid'
-import { PrimaryButton } from '../../components/common/Buttons'
+import { PrimaryButton, SecondaryButton } from '../../components/common/Buttons'
 import { useMst } from '../../models/reactHook'
 import { Announcement } from '../AnnouncementsPage'
 
@@ -31,15 +31,38 @@ export function AnnouncementStats() {
   const columns = React.useMemo(() => readConfirmationListColumns, [])
 
   // todo - it is not really guaranteed that there is such an announcement...
-  const announcement = store.announcements.announcementById(store.view.id!)!
+  const announcement = store.announcements.announcementById(store.view.id!)
+
+  if (!announcement)
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ margin: '1rem 0.5rem' }}>Announcement not found</div>
+        <SecondaryButton onClick={() => store.view.openAnnouncementsPage()}>
+          Back to Announcements
+        </SecondaryButton>
+      </div>
+    )
+
   const data =
-    announcement.admin?.stats.readStatistics.map<AnnouncementStatsRow>(s => ({
+    announcement?.admin?.stats.readStatistics.map<AnnouncementStatsRow>(s => ({
       id: s.readBy.id.toString(),
       name: s.readBy.personName,
       readTimestamp: s.timestamp.toISOString()
     }))
 
-  return data ? (
+  if (!data)
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ margin: '1rem 0.5rem' }}>
+          Announcement stats not found
+        </div>
+        <SecondaryButton onClick={() => store.view.openAnnouncementsPage()}>
+          Back to Announcements
+        </SecondaryButton>
+      </div>
+    )
+
+  return (
     <DataGridContainer>
       <Announcement announcement={announcement} />
       <ScrollableDataGrid
@@ -55,7 +78,5 @@ export function AnnouncementStats() {
         )}
       />
     </DataGridContainer>
-  ) : (
-    <></>
   )
 }

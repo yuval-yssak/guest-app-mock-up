@@ -42,10 +42,14 @@ export default function onStart(rootStore: RootStoreType) {
     }
   })
 
-  // prevent unauthorized access to "registrations" page
+  // automatically jump back if accessed an unauthorized page.
   let prevViewSnapshotForRegistrations: ViewSnapshotType | null
   autorun(() => {
-    if (rootStore.view.page !== '/registrations') {
+    if (
+      ['/registrations', '/announcements/edit', '/announcements/stats'].every(
+        privileged => rootStore.view.page !== privileged
+      )
+    ) {
       // store previous page
       prevViewSnapshotForRegistrations = getSnapshot(rootStore.view)
     } else if (rootStore.loggedInUser?.type !== 'staff') {
