@@ -1,6 +1,5 @@
 import * as React from 'react'
 
-import Button from '@material-ui/core/Button'
 import { useForm } from 'react-hook-form'
 import * as EmailValidator from 'email-validator'
 import { PasswordMeter } from 'password-meter'
@@ -28,6 +27,18 @@ const StyledVisibilityIcon = styled(VisibilityIcon)`
   transform: translateY(-0.2rem);
 `
 
+const ManualForm = styled(Form)``
+
+const ManualSignupFixedSizedPaper = styled(FixedSizedPaper)`
+  & > * {
+    width: 18rem;
+  }
+`
+
+const PasswordWrapper = styled(Wrapper)`
+  gap: 0.5rem;
+`
+
 const SignupProgressReport = styled.div.attrs({ className: 'progress-report' })`
   align-items: center;
   display: flex;
@@ -43,6 +54,7 @@ function ShowPasswordIcon({
 }) {
   return (
     <IconButton
+      style={{ padding: 0 }}
       aria-label="show password"
       // show when icon is touched
       onTouchStart={() => {
@@ -74,7 +86,7 @@ function ShowPasswordIcon({
 }
 
 function isPasswordStrong(password: string) {
-  return new PasswordMeter().getResult(password).percent > 80
+  return new PasswordMeter().getResult(password).percent > 60
 }
 
 type FormInputs = {
@@ -138,9 +150,26 @@ function ManualSignup() {
 
   return (
     <LoginBackground>
-      <FixedSizedPaper>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Wrapper bottomSpacing={!!errors.signupEmail}>
+      <ManualSignupFixedSizedPaper>
+        <Typography
+          style={{
+            marginTop: '2rem',
+            marginLeft: '1rem',
+            marginBottom: '1rem'
+          }}
+          variant="h3"
+        >
+          Create an Account
+        </Typography>
+        <ManualForm
+          style={{ marginLeft: '1rem' }}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Wrapper
+            style={{ width: '15.5rem' }}
+            bottomSpacing={!!errors.signupEmail}
+            // bottomSpacing
+          >
             <Field>
               <FormTextField
                 variant="outlined"
@@ -158,10 +187,10 @@ function ManualSignup() {
               {errors.signupEmail && <FormError>Email is not valid</FormError>}
             </Field>
           </Wrapper>
-          <Wrapper
+          <PasswordWrapper
             bottomSpacing={state === 'editing' && !!dirtyFields.signupPassword}
           >
-            <Field>
+            <Field style={{ flexBasis: '15.5rem', flexGrow: 0 }}>
               <Tooltip
                 title={
                   submitCount && errors.signupPassword
@@ -196,9 +225,9 @@ function ManualSignup() {
             {state === 'editing' && (
               <ShowPasswordIcon callback={setPasswordHidden} />
             )}
-          </Wrapper>
-          <Wrapper bottomSpacing={!!errors.repeatPassword}>
-            <Field>
+          </PasswordWrapper>
+          <PasswordWrapper bottomSpacing={!!errors.repeatPassword}>
+            <Field style={{ flexBasis: '15.5rem', flexGrow: 0 }}>
               <FormTextField
                 variant="outlined"
                 disabled={state !== 'editing'}
@@ -227,27 +256,21 @@ function ManualSignup() {
             {state === 'editing' && (
               <ShowPasswordIcon callback={setRepeatPasswordHidden} />
             )}
-          </Wrapper>
-          <Button
+          </PasswordWrapper>
+          <PrimaryButton
+            style={{ width: '15.5rem' }}
             disabled={state !== 'editing'}
             type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            style={{ marginBottom: '1rem' }}
           >
             Sign Up
-          </Button>
-          <PrimaryButton disabled={state !== 'editing'} type="submit">
-            Sign Up
           </PrimaryButton>
-          <Typography variant="caption">
+          <Typography style={{ width: '15.5rem' }} variant="caption">
             By joining, you agree to our{' '}
             <Link href="https://sivanandabahamas.org/terms-conditions/">
               Terms and Privacy Policy
             </Link>
           </Typography>
-        </Form>
+        </ManualForm>
         <SignupProgressReport>
           {state === 'processing' && (
             <>
@@ -285,7 +308,7 @@ function ManualSignup() {
             </>
           )}
         </SignupProgressReport>
-      </FixedSizedPaper>
+      </ManualSignupFixedSizedPaper>
     </LoginBackground>
   )
 }

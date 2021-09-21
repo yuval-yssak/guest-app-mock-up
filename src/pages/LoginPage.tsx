@@ -35,20 +35,23 @@ export const LoginBackground = styled.div`
   width: 100vw;
 `
 
-export const FixedSizedPaper = styled(Paper).attrs({ elevation: 6 })<{
+export const FixedSizedPaper = styled(Paper)<{
   $opacity?: number
 }>`
   align-items: center;
+  && {
+    box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.5);
+  }
   display: flex;
   flex-direction: column;
-  min-height: 24rem;
+  height: 26rem;
   left: 45%;
   opacity: ${({ $opacity }) => ($opacity ? $opacity : 0.975)};
   padding: 1rem 0;
   position: relative;
   top: 30%;
   transform: translate(-115%, -18%);
-  width: 21rem;
+  width: 22rem;
 
   @media (max-height: 31.2em) {
     top: max(0px, calc(10% - (31.2em - 100vh) / 2));
@@ -130,19 +133,30 @@ const DividerLines = styled.div`
   &::after {
     content: '';
     height: 1px;
-    background-color: ${({ theme: { palette } }) => palette.grey['400']};
+    background-color: ${({ theme: { palette } }) => palette.grey['300']};
     flex: 1;
   }
 `
 
 const RoundOr = styled.div`
-  background-color: ${({ theme: { palette } }) => palette.grey['400']};
-  border-radius: 50%;
+  &::before {
+    content: '';
+    width: 2.2rem;
+    height: 2.2rem;
+    z-index: 100;
+    position: absolute;
+    transform: translate(-16%, -15%);
+    top: 0;
+    left: 0;
+    background-color: ${({ theme: { palette } }) => palette.grey['300']};
+    border-radius: 50%;
+  }
   color: ${({ theme: { palette } }) => palette.grey['100']};
   text-transform: uppercase;
-  padding: 0.4rem;
+  padding: 0.7rem;
   font-size: 0.6rem;
   font-weight: 500;
+  position: relative;
 `
 
 export const Form = styled.form`
@@ -164,11 +178,15 @@ function ManualSignIn() {
 
   function onSubmit(data: LoginFormInput) {
     // simulate logging in
-    applySnapshot(store, {
-      ...defaultStore,
-      view: { id: '', page: '/' },
-      status: store.status
-    })
+
+    if (data.password === '123') {
+      alert('wrong password')
+    } else
+      applySnapshot(store, {
+        ...defaultStore,
+        view: { id: '', page: '/' },
+        status: store.status
+      })
   }
 
   const email = register('email', {
@@ -216,18 +234,41 @@ function ManualSignIn() {
         </Field>
       </Wrapper>
       <PrimaryButton type="submit">Sign In</PrimaryButton>
-      <Typography align="center">
-        <Link href="#" variant="body2" color="secondary.dark">
+      <ForgotPassword style={{ marginLeft: '14px' }}>
+        <Link href="#" variant="body2">
           Forgot password?
         </Link>
-      </Typography>
+      </ForgotPassword>
     </Form>
   )
 }
 
+const ForgotPassword = styled(Typography)`
+  color: ${({ theme: { palette } }) => palette.grey['500']};
+
+  & > a {
+    color: inherit;
+    font-size: 0.8rem;
+    text-decoration-color: currentColor;
+  }
+`
+
 const Divider = () => (
   <DividerLines>
-    <RoundOr>or</RoundOr>
+    <RoundOr>
+      <div
+        style={{
+          position: 'absolute',
+          zIndex: 200,
+          fontSize: '.9rem',
+          transform: 'translate(-50%,-50%)',
+          fontWeight: 600,
+          color: 'white'
+        }}
+      >
+        or
+      </div>
+    </RoundOr>
   </DividerLines>
 )
 
@@ -247,7 +288,7 @@ function Login() {
             Sign in with <strong>Google</strong>
           </OAuthLabel>
         </OAuthButton>
-        <OAuthButton disabled>
+        <OAuthButton>
           <FacebookIcon />
           <OAuthLabel>
             Sign in with <strong>Facebook</strong>

@@ -14,7 +14,7 @@ export const Wrapper = styled.div.attrs({ className: 'line-wrapper' })<{
   transition: all 0.2s;
 
   &:not(:last-child) {
-    margin-bottom: ${({ bottomSpacing }) => bottomSpacing && '1.4rem'};
+    margin-bottom: ${({ bottomSpacing }) => bottomSpacing && '1.2rem'};
   }
 `
 
@@ -31,7 +31,11 @@ export const Field = styled.div.attrs({
 // give room for error message
 export const FormTextField = styled(TextField)`
   && {
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.6rem;
+
+    & .MuiOutlinedInput-notchedOutline {
+      border-color: rgba(0, 0, 0, 0.15);
+    }
   }
 `
 
@@ -39,7 +43,10 @@ export const FormError = styled(Typography).attrs({
   className: 'form-error',
   variant: 'body2'
 })`
-  color: ${({ theme }) => theme.palette.secondary.dark};
+  color: ${({ theme }) => theme.palette.grey['500']};
+  && {
+    font-size: 0.8rem;
+  }
   position: absolute;
   bottom: 0.4rem;
   transform: translateY(100%);

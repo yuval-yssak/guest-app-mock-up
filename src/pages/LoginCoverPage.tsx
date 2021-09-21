@@ -8,7 +8,9 @@ import { isElementInViewport } from '../components/common/isElementInViewport'
 
 const WelcomeTitle = styled(Typography)`
   && {
+    margin-top: 1.4rem;
     margin-bottom: 0.4rem;
+    font-size: 2.3rem;
   }
 `
 
@@ -20,8 +22,18 @@ const AppLogo = styled.div`
   font-size: 2.7rem;
   justify-content: center;
   text-align: center;
+  background-image: url(./images/appy.png);
+  background-repeat: no-repeat;
+  background-position: center 10%;
+  background-size: 89%;
+  width: 100% !important;
 `
 
+const CoverFixedSizedPaper = styled(FixedSizedPaper)`
+  & > * {
+    width: 10rem;
+  }
+`
 function LoginCoverPage() {
   const store = useMst()
   const connectRef = React.createRef<HTMLButtonElement>()
@@ -39,22 +51,24 @@ function LoginCoverPage() {
 
   return (
     <LoginBackground>
-      <FixedSizedPaper $opacity={store.preferences.darkMode ? 0.8 : undefined}>
+      <CoverFixedSizedPaper
+        $opacity={store.preferences.darkMode ? 0.8 : undefined}
+      >
         <WelcomeTitle align="center" variant="h2">
           Welcome
         </WelcomeTitle>
         <Typography align="center" variant="h4">
           to
         </Typography>
-        <AppLogo>Sivananda Bahamas App</AppLogo>
+        <AppLogo></AppLogo>
         <PrimaryButton
           onClick={() => store.view.openLoginPage()}
           ref={connectRef}
-          // inputRef={connectRef}
+          style={{ marginBottom: '2rem' }}
         >
           Connect with us
         </PrimaryButton>
-      </FixedSizedPaper>
+      </CoverFixedSizedPaper>
     </LoginBackground>
   )
 }

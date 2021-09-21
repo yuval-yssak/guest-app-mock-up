@@ -19,8 +19,9 @@ const StyledPasswordMeterDiv = styled.div<{ value: number }>`
   width: 100%;
 
   & p {
-    color: ${({ value }) =>
-      value < 30 ? red[600] : value < 80 ? amber[900] : green[800]};
+    /* color: ${({ value }) =>
+      value < 30 ? red[600] : value < 80 ? amber[900] : green[800]}; */
+    color: ${({ theme }) => theme.palette.primary.main};
     margin: 0;
     text-align: center;
     width: max-content;
@@ -47,9 +48,13 @@ function PasswordStrengthMeter({ password }: { password: string }) {
       />
       <Typography variant="body2" component="p">
         {result.status === 'veryStrong'
-          ? 'very strong'
+          ? 'strong'
           : result.status === 'veryWeak'
-          ? 'very weak'
+          ? 'weak'
+          : result.status === 'perfect'
+          ? 'strong'
+          : result.status === 'Empty'
+          ? 'empty'
           : result.status}
       </Typography>
     </StyledPasswordMeterDiv>
