@@ -18,7 +18,9 @@ export const StyledFormControlLabel = styled(FormControlLabel)`
   border-radius: 4px;
   padding: 0 0.5rem 0 0;
   transition: border-color 0.2s ease-in-out;
-
+  && {
+    margin-left: 0;
+  }
   &:hover {
     border-color: ${({ theme: { palette } }) =>
       palette.mode === 'dark' ? 'white' : 'black'};
