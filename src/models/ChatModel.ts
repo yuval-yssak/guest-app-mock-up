@@ -123,20 +123,20 @@ const UserChatModel = types.model('UserChatModel', {
 
 export const ChatsModel = types
   .model('ChatsModel', {
-    withSelf: ChatModel,
+    withStaff: ChatModel,
     withUsers: types.maybe(types.array(UserChatModel))
   })
   .views(self => ({
     findChat(userId: number): ChatType | undefined {
       // userId === 0 means no user ID.
-      if (!userId) return self.withSelf
+      if (!userId) return self.withStaff
       else
         return self.withUsers?.find(chatUser => chatUser.user.id === userId)
           ?.chat
     },
     get overallUnreadCount() {
       return (
-        self.withSelf.unreadCount +
+        self.withStaff.unreadCount +
         (self.withUsers?.reduce(
           (count, userChat) => count + userChat.chat.unreadCount,
           0

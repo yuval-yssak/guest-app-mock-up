@@ -250,7 +250,7 @@ const defaultStore: RootStoreSnapshotIn = {
         }
       }),
 
-    withSelf: (() => {
+    withStaff: (() => {
       const messages = generateRandomMessages(users, loggedInUser, 20)
 
       const lastReadTimestamp = randomlyChooseLastReadMessageTime(messages)

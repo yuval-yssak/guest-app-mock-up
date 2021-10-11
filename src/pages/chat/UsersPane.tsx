@@ -71,7 +71,7 @@ const User = observer(
 
     const chat = id
       ? store.chats.withUsers!.find(uc => uc.user.id === +id)!.chat
-      : store.chats.withSelf
+      : store.chats.withStaff
 
     const [boldenName, setBoldenName] = React.useState(!!chat.unreadCount)
 

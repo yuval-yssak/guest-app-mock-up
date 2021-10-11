@@ -135,7 +135,7 @@ const ChatPage = observer(function ChatPage({
       ? store.chats.withUsers?.find(
           chatUser => chatUser.user.id === +withPerson
         )?.chat
-      : store.chats.withSelf
+      : store.chats.withStaff
   )!
 
   const messagesInDays = React.useMemo(
@@ -229,7 +229,7 @@ const ChatPage = observer(function ChatPage({
           <TextField
             id="user-input"
             label={
-              chat === store.chats.withSelf
+              chat === store.chats.withStaff
                 ? 'Chat with us'
                 : `Write to ${
                     store.users.find(user => user.id === +withPerson!)
@@ -237,7 +237,7 @@ const ChatPage = observer(function ChatPage({
                   }`
             }
             placeholder={
-              chat === store.chats.withSelf
+              chat === store.chats.withStaff
                 ? 'Hi, I would like to'
                 : `Blessed Self,`
             }

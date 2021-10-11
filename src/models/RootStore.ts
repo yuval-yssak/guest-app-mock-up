@@ -14,7 +14,7 @@ export const RootStore = types
     view: CurrentViewModel,
     preferences: Preferences,
     announcements: types.optional(AnnouncementsModel, {}),
-    chats: types.optional(ChatsModel, { withSelf: { messages: [] } }),
+    chats: types.optional(ChatsModel, { withStaff: { messages: [] } }),
     loggedInUser: types.maybeNull(types.reference(UserModel)),
     users: types.array(UserModel),
     warnings: types.optional(WarningsModel, {}),

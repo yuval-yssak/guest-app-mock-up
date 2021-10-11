@@ -221,7 +221,7 @@ export default function ProminentAppBar({
           onClick={() => {
             const staffUsers = users.filter(({ type }) => type === 'staff')
 
-            store.chats.withSelf.insertOtherMessage({
+            store.chats.withStaff.insertOtherMessage({
               user: staffUsers[Math.floor(Math.random() * staffUsers.length)]
                 .id,
               timestamp: new Date(),
@@ -237,7 +237,7 @@ export default function ProminentAppBar({
         <Divider />
         <MenuItem
           onClick={() => {
-            const withSelf = defaultStore.chats!.withUsers!.find(
+            const withStaff = defaultStore.chats!.withUsers!.find(
               chatUser => chatUser.user === 4
             )!.chat
             const view = getSnapshot(store.view)
@@ -246,7 +246,7 @@ export default function ProminentAppBar({
               ...defaultStore,
               loggedInUser: 4,
               view: view.page === '/chat' ? { page: '/chat' } : view,
-              chats: { withSelf },
+              chats: { withStaff },
               status: store.status
             })
             handleMoreClose()
