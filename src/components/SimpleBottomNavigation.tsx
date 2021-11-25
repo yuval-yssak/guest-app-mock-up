@@ -67,10 +67,7 @@ function MainBottomNavigation({ className }: { className?: string }) {
       <BottomNavigationAction
         label="Announcements"
         icon={
-          <Badge
-            badgeContent={store.announcements.unread.length}
-            color="secondary"
-          >
+          <Badge badgeContent={0} color="secondary">
             <AnnouncementIcon />
           </Badge>
         }

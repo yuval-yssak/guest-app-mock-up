@@ -71,47 +71,9 @@ export default function onStart(rootStore: RootStoreType) {
     }
   )
 
-  reaction(() => rootStore.loggedInUser, resetWarnings)
-  resetWarnings()
-
-  setTimeout(() => rootStore.announcements.endSnackbarInitialDelay(), 15000)
-
-  function resetWarnings() {
-    rootStore.warnings.clearAll()
-  }
-
   // add an "online/offline" status
   window.addEventListener('online', () => rootStore.status.setOnline())
   window.addEventListener('offline', () => rootStore.status.setOffline())
-
-  reaction(
-    () => rootStore.status.online,
-    online => {
-      if (online) {
-        rootStore.warnings.removeOne('offline')
-      } else {
-        rootStore.warnings.add({
-          key: 'offline',
-          message: 'You are offline',
-          action: { onClick: 'dismiss', actionText: 'dismiss' },
-          autoHideDuration: null
-        })
-      }
-    }
-  )
-
-  // switch into edit mode when page is on a new annoncement
-  autorun(() => {
-    if (
-      ['/announcements/new', '/announcements/edit'].some(
-        editingPage => rootStore.view.page === editingPage
-      ) &&
-      rootStore.loggedInUser?.type === 'staff' &&
-      !rootStore.announcements.editMode
-    ) {
-      rootStore.announcements.enterIntoEditMode()
-    }
-  })
 
   // when a chat view is changed after being sustained for over 3 seconds,
   // set it as has been read. (while swapping between chat users)

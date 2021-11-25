@@ -1,5 +1,4 @@
 import React from 'react'
-import dayjs from 'dayjs'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Menu from '@material-ui/core/Menu'
@@ -13,7 +12,6 @@ import styled from 'styled-components'
 import DarkModeSwitch from '../components/DarkModeSwitch'
 import { useMst } from '../models/reactHook'
 import { LoremIpsum } from 'lorem-ipsum'
-import { v4 as uuidv4 } from 'uuid'
 import { applySnapshot, getSnapshot } from 'mobx-state-tree'
 import defaultStore, { users } from '../defaultStore'
 import { TooltipOnOverflow } from './common/Tooltip'
@@ -119,13 +117,7 @@ function ShrinkableDarkModeSwitch() {
   )
 }
 
-export default function ProminentAppBar({
-  toggleDrawer,
-  pageTitle
-}: {
-  toggleDrawer: (open: boolean) => React.ReactEventHandler
-  pageTitle: string
-}) {
+export default function ProminentAppBar({ pageTitle }: { pageTitle: string }) {
   const store = useMst()
   const [moreEl, setMoreEl] = React.useState<HTMLElement | null>(null)
 
@@ -142,7 +134,7 @@ export default function ProminentAppBar({
       <StackedAppBar position="relative" /* set stacking context for shadow*/>
         <StyledToolbar>
           <IconButton
-            onClick={toggleDrawer(true)}
+            onClick={() => {}}
             edge="start"
             color="inherit"
             aria-label="open drawer"
@@ -172,50 +164,6 @@ export default function ProminentAppBar({
         open={Boolean(moreEl)}
         onClose={handleMoreClose}
       >
-        <MenuItem
-          onClick={() => {
-            store.announcements.add({
-              id: uuidv4(),
-              subject: lorem.generateWords(8),
-              bodyText: lorem.generateSentences(2),
-              publishOn: new Date(),
-              audience: { targetName: 'all-residents' },
-              publishEnd: dayjs().add(1, 'week').toDate(),
-              status: 'unread',
-              priority: 'high',
-              sendAlert: false
-            })
-            handleMoreClose()
-          }}
-        >
-          Create an important Announcement
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            store.announcements.add({
-              id: uuidv4(),
-              subject: lorem.generateWords(8),
-              bodyText: lorem.generateSentences(2),
-              publishOn: new Date(),
-              audience: { targetName: 'all-residents' },
-              publishEnd: dayjs().add(1, 'week').toDate(),
-              status: 'unread',
-              priority: 'low',
-              sendAlert: false
-            })
-            handleMoreClose()
-          }}
-        >
-          Create an Announcement
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            store.announcements.removeAll()
-            handleMoreClose()
-          }}
-        >
-          Clear all announcements
-        </MenuItem>
         <Divider />
         <MenuItem
           onClick={() => {

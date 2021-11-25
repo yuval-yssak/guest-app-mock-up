@@ -1,15 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { getSnapshot } from 'mobx-state-tree'
+import { getSnapshot, applySnapshot } from 'mobx-state-tree'
 import { RootStore, RootStoreType } from './models/RootStore'
 import { Provider } from './models/reactHook'
 import App from './components/App'
 import onStart from './onStart'
+import defaultStore from './defaultStore'
 
 const rootElement = document.getElementById('root')
 
 let rootStore = RootStore.create()
-
+applySnapshot(rootStore, defaultStore)
 ;(window as unknown as Window & { store: RootStoreType }).store = rootStore
 
 function render() {
@@ -48,3 +49,4 @@ try {
 }
 
 onStart(rootStore)
+rootStore.view.openChatPage()

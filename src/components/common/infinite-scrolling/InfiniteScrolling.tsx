@@ -15,10 +15,6 @@ export interface Props {
   scrollableTarget?: React.ReactNode
   hasChildren?: boolean
   inverse?: boolean
-  pullDownToRefresh?: boolean
-  pullDownToRefreshContent?: React.ReactNode
-  releaseToRefreshContent?: React.ReactNode
-  pullDownToRefreshThreshold?: number
   refreshFunction?: Fn
   onScroll?: (e: MouseEvent) => void
   dataLength: number
@@ -29,8 +25,6 @@ export interface Props {
 
 export default function InfiniteScroll(props: Props) {
   const [showLoader, setShowLoader] = React.useState(false)
-  const [pullToRefreshThresholdBreached, setPullToRefreshThresholdBreached] =
-    React.useState(false)
 
   const el = React.useRef<
     HTMLElement | undefined | (Window & typeof globalThis)
@@ -40,12 +34,6 @@ export default function InfiniteScroll(props: Props) {
   const lastScrollTop = React.useRef(0)
   const [actionTriggered, setActionTriggered] = React.useState(false)
   const lastScrollHeight = React.useRef(0)
-  const _pullDown = React.useRef<HTMLDivElement | undefined>()
-
-  // will be populated in componentDidMount
-  // based on the height of the pull down element
-  const maxPullDownDistance = React.useRef(0)
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0)
 
   React.useEffect(() => {
     if (typeof props.dataLength === 'undefined') {
@@ -140,132 +128,6 @@ export default function InfiniteScroll(props: Props) {
     }
   }, [props.initialScrollY])
 
-  const { pullDownToRefresh, pullDownToRefreshThreshold, refreshFunction } =
-    props
-
-  React.useEffect(() => {
-    // variables to keep track of pull down behaviour
-    let startY = 0
-    let currentY = 0
-    let dragging = false
-
-    function onStart(evt: Event) {
-      if (lastScrollTop.current) return
-
-      dragging = true
-
-      if (evt instanceof MouseEvent) {
-        startY = evt.pageY
-      } else if (evt instanceof TouchEvent) {
-        startY = evt.touches[0].pageY
-      }
-      currentY = startY
-
-      if (_infScroll.current) {
-        _infScroll.current.style.willChange = 'transform'
-        _infScroll.current.style.transition = `transform 0.2s cubic-bezier(0,0,0.31,1)`
-      }
-    }
-
-    function onMove(evt: Event) {
-      if (!dragging) return
-
-      if (evt instanceof MouseEvent) {
-        currentY = evt.pageY
-      } else if (evt instanceof TouchEvent) {
-        currentY = evt.touches[0].pageY
-      }
-
-      // user is scrolling down to up
-      if (currentY < startY) return
-
-      if (currentY - startY >= Number(pullDownToRefreshThreshold)) {
-        setPullToRefreshThresholdBreached(true)
-      }
-
-      // so you can drag upto 1.5 times of the maxPullDownDistance
-      if (currentY - startY > maxPullDownDistance.current * 1.5) return
-
-      if (_infScroll.current) {
-        _infScroll.current.style.overflow = 'visible'
-        _infScroll.current.style.transform = `translate3d(0px, ${
-          currentY - startY
-        }px, 0px)`
-      }
-    }
-
-    function onEnd() {
-      startY = 0
-      currentY = 0
-
-      dragging = false
-
-      if (pullToRefreshThresholdBreached) {
-        refreshFunction?.()
-        setPullToRefreshThresholdBreached(false)
-      }
-
-      requestAnimationFrame(() => {
-        // _infScroll.current
-        if (_infScroll.current) {
-          _infScroll.current.style.overflow = 'auto'
-          _infScroll.current.style.transform = 'none'
-          _infScroll.current.style.willChange = 'unset'
-        }
-      })
-    }
-
-    if (pullDownToRefresh && el.current) {
-      if (typeof refreshFunction !== 'function') {
-        throw new Error(
-          `Mandatory prop "refreshFunction" missing.
-        Pull Down To Refresh functionality will not work
-        as expected. Check README.md for usage'`
-        )
-      }
-
-      el.current.addEventListener('touchstart', onStart)
-      el.current.addEventListener('touchmove', onMove)
-      el.current.addEventListener('touchend', onEnd)
-
-      el.current.addEventListener('mousedown', onStart)
-      el.current.addEventListener('mousemove', onMove)
-      el.current.addEventListener('mouseup', onEnd)
-
-      // get BCR of pullDown element to position it above
-      maxPullDownDistance.current =
-        (_pullDown.current &&
-          _pullDown.current.firstChild &&
-          (
-            _pullDown.current.firstChild as HTMLDivElement
-          ).getBoundingClientRect().height) ||
-        0
-
-      // not sure this is needed...
-      forceUpdate()
-    }
-
-    // teardown logic
-    return function () {
-      if (el.current) {
-        if (pullDownToRefresh) {
-          el.current.removeEventListener('touchstart', onStart)
-          el.current.removeEventListener('touchmove', onMove)
-          el.current.removeEventListener('touchend', onEnd)
-
-          el.current.removeEventListener('mousedown', onStart)
-          el.current.removeEventListener('mousemove', onMove)
-          el.current.removeEventListener('mouseup', onEnd)
-        }
-      }
-    }
-  }, [
-    pullDownToRefresh,
-    refreshFunction,
-    pullToRefreshThresholdBreached,
-    pullDownToRefreshThreshold
-  ])
-
   const previousDataLength = usePrevious(props.dataLength)
   React.useLayoutEffect(() => {
     if (props.dataLength !== previousDataLength) {
@@ -333,8 +195,7 @@ export default function InfiniteScroll(props: Props) {
 
   // because heighted infiniteScroll visualy breaks
   // on drag down as overflow becomes visible
-  const outerDivStyle =
-    props.pullDownToRefresh && props.height ? { overflow: 'auto' } : {}
+  const outerDivStyle = {}
   return (
     <div
       style={outerDivStyle}
@@ -353,25 +214,6 @@ export default function InfiniteScroll(props: Props) {
           props.loader}
         {props.inverse && showLoader && props.hasMore && props.loader}
 
-        {props.pullDownToRefresh && (
-          <div
-            style={{ position: 'relative' }}
-            ref={(pullDown: HTMLDivElement) => (_pullDown.current = pullDown)}
-          >
-            <div
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: -1 * maxPullDownDistance.current
-              }}
-            >
-              {pullToRefreshThresholdBreached
-                ? props.releaseToRefreshContent
-                : props.pullDownToRefreshContent}
-            </div>
-          </div>
-        )}
         {props.children}
         {!props.inverse &&
           !showLoader &&
