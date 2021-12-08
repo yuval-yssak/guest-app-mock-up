@@ -193,14 +193,18 @@ const ChatPage = observer(function ChatPage({
     <>
       {selectAnotherUser && <SwitchBack fn={selectAnotherUser} />}
       <ChatContainer staffView={staffView}>
-        <MessagesScrollable ref={containerDomRef} staffView={staffView}>
+        <MessagesScrollable
+          id="chat-messages-scrollable"
+          ref={containerDomRef}
+          staffView={staffView}
+        >
           <StyledInfiniteScroll
             keysScroll
             dataLength={chat.orderedMessages.length}
             hasMore={true}
             loader={<StyledLinearProgress />}
             next={loadNext(chat.orderedMessages[0]?.timestamp)}
-            height={containerHeight - 1 - 4 - 1}
+            // height={containerHeight - 1 - 4 - 1}
             inverse
             onScroll={e => {
               const scrollingDiv = e.target as HTMLDivElement
@@ -210,6 +214,7 @@ const ChatPage = observer(function ChatPage({
                   scrollingDiv.scrollHeight - 20
               )
             }}
+            scrollableTarget="chat-messages-scrollable"
           >
             {messagesInDays}
           </StyledInfiniteScroll>

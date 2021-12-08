@@ -11,9 +11,7 @@ export interface Props {
   scrollThreshold?: number | string
   endMessage?: React.ReactNode
   style?: React.CSSProperties
-  height?: number | string
   scrollableTarget?: React.ReactNode
-  hasChildren?: boolean
   inverse?: boolean
   refreshFunction?: Fn
   onScroll?: (e: MouseEvent) => void
@@ -26,7 +24,7 @@ export interface Props {
 export default function InfiniteScroll(props: Props) {
   const [showLoader, setShowLoader] = React.useState(false)
 
-  const el = React.useRef<
+  const theRefToElement = React.useRef<
     HTMLElement | undefined | (Window & typeof globalThis)
   >()
   const _scrollableNode = React.useRef<HTMLElement | undefined | null>()
@@ -44,7 +42,7 @@ export default function InfiniteScroll(props: Props) {
     }
   }, [props.dataLength])
 
-  const { height, scrollThreshold, onScroll, inverse, hasMore, next } = props
+  const { scrollThreshold, onScroll, inverse, hasMore, next } = props
   const onScrollListener = React.useCallback(
     function (evt: MouseEvent) {
       if (typeof onScroll === 'function') {
@@ -53,12 +51,11 @@ export default function InfiniteScroll(props: Props) {
         setTimeout(() => onScroll && onScroll(evt), 0)
       }
 
-      const target =
-        height || _scrollableNode.current
-          ? (evt.target as HTMLElement)
-          : document.documentElement.scrollTop
-          ? document.documentElement
-          : document.body
+      const target = _scrollableNode.current
+        ? (evt.target as HTMLElement)
+        : document.documentElement.scrollTop
+        ? document.documentElement
+        : document.body
 
       // return immediately if the action has already been triggered,
       // prevents multiple triggers.
@@ -71,20 +68,28 @@ export default function InfiniteScroll(props: Props) {
         if (atBottom && hasMore) {
           setActionTriggered(true)
           setShowLoader(true)
-          lastScrollHeight.current = (el.current as Element).scrollHeight
+          lastScrollHeight.current = (
+            theRefToElement.current as Element
+          ).scrollHeight
           next()
         }
       }
       lastScrollTop.current = target.scrollTop
     },
-    [height, scrollThreshold, actionTriggered, hasMore, inverse, onScroll, next]
+    [scrollThreshold, actionTriggered, hasMore, inverse, onScroll, next]
   )
 
   React.useEffect(() => {
     function getScrollableTarget() {
-      if (props.scrollableTarget instanceof HTMLElement)
+      if (props.scrollableTarget instanceof HTMLElement) {
+        console.log('getScrollableTarget returns', props.scrollableTarget)
         return props.scrollableTarget
+      }
       if (typeof props.scrollableTarget === 'string') {
+        console.log(
+          'getScrollableTarget returns from string',
+          document.getElementById(props.scrollableTarget)
+        )
         return document.getElementById(props.scrollableTarget)
       }
       if (props.scrollableTarget === null) {
@@ -97,34 +102,33 @@ export default function InfiniteScroll(props: Props) {
     }
 
     _scrollableNode.current = getScrollableTarget()
-    el.current = props.height
-      ? _infScroll.current
-      : _scrollableNode.current || window
-
-    if (el.current) {
-      el.current.addEventListener(
+    console.log('_scrollableNode = ', _scrollableNode.current)
+    theRefToElement.current = _scrollableNode.current || window
+    console.log('init scroll listener', theRefToElement.current)
+    if (theRefToElement.current) {
+      theRefToElement.current.addEventListener(
         'scroll',
         onScrollListener as EventListenerOrEventListenerObject
       )
     }
     return () => {
-      if (el.current) {
-        el.current.removeEventListener(
+      if (theRefToElement.current) {
+        theRefToElement.current.removeEventListener(
           'scroll',
           onScrollListener as EventListenerOrEventListenerObject
         )
       }
     }
-  }, [props.height, onScrollListener, props.scrollableTarget])
+  }, [onScrollListener, props.scrollableTarget])
 
   React.useEffect(() => {
     if (
       typeof props.initialScrollY === 'number' &&
-      el.current &&
-      el.current instanceof HTMLElement &&
-      el.current.scrollHeight > props.initialScrollY
+      theRefToElement.current &&
+      theRefToElement.current instanceof HTMLElement &&
+      theRefToElement.current.scrollHeight > props.initialScrollY
     ) {
-      el.current.scrollTo(0, props.initialScrollY)
+      theRefToElement.current.scrollTo(0, props.initialScrollY)
     }
   }, [props.initialScrollY])
 
@@ -132,9 +136,9 @@ export default function InfiniteScroll(props: Props) {
   React.useLayoutEffect(() => {
     if (props.dataLength !== previousDataLength) {
       setActionTriggered(false)
-      if (props.inverse && el.current) {
-        ;(el.current as Element).scrollTop =
-          (el.current as Element).scrollHeight -
+      if (props.inverse && theRefToElement.current) {
+        ;(theRefToElement.current as Element).scrollTop =
+          (theRefToElement.current as Element).scrollHeight -
           lastScrollHeight.current +
           lastScrollTop.current
       }
@@ -180,26 +184,22 @@ export default function InfiniteScroll(props: Props) {
   }
 
   const style = {
-    height: props.height || 'auto',
+    height: 'auto',
     overflow: 'auto',
     WebkitOverflowScrolling: 'touch',
     ...props.style
   } as React.CSSProperties
-  const hasChildren =
-    props.hasChildren ||
-    !!(
-      props.children &&
-      props.children instanceof Array &&
-      props.children.length
-    )
+  const hasChildren = !!(
+    props.children &&
+    props.children instanceof Array &&
+    props.children.length
+  )
 
-  // because heighted infiniteScroll visualy breaks
-  // on drag down as overflow becomes visible
   const outerDivStyle = {}
   return (
     <div
       style={outerDivStyle}
-      className={`infinite-scroll-component__outerdiv ${props.className}`}
+      className={`infinite-scroll-component__outerdiv ${props.className || ''}`}
     >
       <div
         tabIndex={props.keysScroll ? 0 : undefined}

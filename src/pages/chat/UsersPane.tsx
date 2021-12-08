@@ -250,7 +250,11 @@ function UsersPaneComponent({
   }
 
   return (
-    <UsersPaneContainer ref={containerDomRef} role="navigation">
+    <UsersPaneContainer
+      id="chat-users-pane"
+      ref={containerDomRef}
+      role="navigation"
+    >
       <InfiniteScroll
         dataLength={store.chats.withUsers?.length || 0}
         hasMore={
@@ -258,7 +262,8 @@ function UsersPaneComponent({
         }
         loader={<LinearProgress />}
         next={loadNext}
-        height={containerHeight - 1}
+        // height={containerHeight - 1}
+        scrollableTarget="chat-users-pane"
       >
         <SearchWrapper>
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
