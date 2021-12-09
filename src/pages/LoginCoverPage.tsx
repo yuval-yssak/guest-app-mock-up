@@ -22,10 +22,10 @@ const AppLogo = styled.div`
   font-size: 2.7rem;
   justify-content: center;
   text-align: center;
-  background-image: url(./images/appy.png);
+  background-image: url(./images/sanapp-logo.svg);
   background-repeat: no-repeat;
-  background-position: center 10%;
-  background-size: 89%;
+  background-position: center 42.5%;
+  background-size: 368%;
   width: 100% !important;
 `
 
